@@ -1,4 +1,4 @@
-baseurl: ""
+baseurl: "wsztrush.github.io"
 markdown: redcarpet
 redcarpet:
     extensions: [tables]
