@@ -1,0 +1,42 @@
+#bar {
+	position: fixed;
+	left: 0px;
+	right: 0px;
+	top: 0px;
+	background-color: #000;
+	opacity:0.8;
+	font-size:30px;
+	color: #fff;
+	padding:10px;
+	margin:0px;
+	border:0px;
+	max-height:50px;
+}
+
+.vertical-box {
+	-webkit-box-orient:horizontal;
+	-moz-box-orient:horizontal;
+	-ms-box-orient:horizontal;
+	box-orient:horizontal;
+	display:-webkit-box;
+	display:-moz-box;
+	display:-o-box;
+	display:-ms-box;
+	display:box;
+	list-style:none;
+}
+
+#titles{
+	margin:0px;
+}
+
+.vertical-box li{
+	-webkit-box-flex:1;-moz-box-flex:1;-o-box-flex:1;-ms-box-flex:1;box-flex:1;
+}
+
+a:link{
+	text-decoration:none;
+}
+a:visited{
+	color:#fff;
+}
