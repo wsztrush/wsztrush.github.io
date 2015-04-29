@@ -1,5 +1,8 @@
 <!-- 导航栏设计 -->
 <nav>
+	<div style="padding:10px;">
+		<img src="/assets/blog-images/head-pic.jpg" style="width:220px;"/>
+	</div>
 	<div style="color:#FFF;font-size:24px;padding:10px;">
 		<b>WsztRush's Blog</b>
 		<ul style="padding-left:0px;list-style-type:none;">
@@ -8,8 +11,5 @@
 			<a href="{{ site.baseurl }}/categories/{{ cat[0] }}">{{ cat[0] }} x {{ cat | last | size }}</a></li>
 			{% endfor %}
 		</ul>
-	</div>
-	<div style="padding:10px;margin-bottom:0px;">
-		<img src="/assets/blog-images/head-pic.jpg" style="width:220px;"/>
 	</div>
 </nav>
