@@ -6,11 +6,23 @@
 		<div class="post-container">
 			<div style="padding:40px;">
 				{{ content }}
+				<div class="ds-thread" data-thread-key="请将此处替换成文章在你的站点中的ID" data-title="请替换成文章的标题" data-url="请替换成文章的网址"></div>
 				<div id="disqus_thread"/><!-- 评论组件 -->
 			</div>
 		</div>
 	</body>
 </html>
+<script type="text/javascript">
+	var duoshuoQuery = {short_name:"wsztrush"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+</script>
 <!-- 评论组件 -->
 <script type="text/javascript">
 	var disqus_shortname = 'wsztrush';
