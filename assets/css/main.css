@@ -29,4 +29,10 @@ a {
 .ds-comment-body{
 	color:#FFF;
 }
+
+h1{
+	background-color:#333;
+	padding:10px;
+	border-left-width:5px;
+	border-left-style:solid;
 }
