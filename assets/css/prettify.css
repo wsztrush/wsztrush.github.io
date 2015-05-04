@@ -58,7 +58,8 @@
 pre.prettyprint {
   background-color: #042029;
   padding: 10px;
-  border: 1px solid #E1E1E8; }
+  /* border: 1px solid #E1E1E8; */
+}
 
 /* Specify class=linenums on a pre to get line numbering */
 ol.linenums {
@@ -66,5 +67,6 @@ ol.linenums {
   margin: 0 0 0 0px; }
 
 ol.linenums li {
-  line-height: 1.5em;
-  padding-left: 1em; }
+  line-height: 20px;
+  font-size:16px;
+  padding-left: 12px; }
