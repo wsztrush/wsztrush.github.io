@@ -1,10 +1,10 @@
 ---
-layout: default
+layout: post
 permalink: /about/
 title: About
 ---
 
-# abc
+## abc
 
 **abc**
 

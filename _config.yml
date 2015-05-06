@@ -1,7 +1,5 @@
 baseurl: ""
 markdown: kramdown
-redcarpet:
-    extensions: ["no_intra_emphasis", "fenced_code_blocks", "autolink", "tables", "strikethrough", "superscript", "with_toc_data", "highlight", "prettify"]
 safe: false
 excerpt_separator: "\n\n\n"
 paginate: 5
