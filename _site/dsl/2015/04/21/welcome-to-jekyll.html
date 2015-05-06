@@ -1,16 +1,21 @@
 <!DOCTYPE html>
 <html>
-	<head>
+	<!-- 引入CSS/JS -->
+<head>
 	<meta charset="utf-8">
 	<link rel="stylesheet" type="text/css" href="/assets/css/main.css"/>
 	<script type="text/javascript" src="/assets/javascripts/main.js"></script>
 
-	<!-- code -->
-	<link rel="stylesheet" type="text/css" href="/assets/css/pygments.css"/>
+	<!-- pygments代码高亮 -->
+	<!-- <link rel="stylesheet" type="text/css" href="/assets/css/pygments.css"/> -->
+	<!-- google代码高亮 -->
+	<script src="/assets/css/prettify.js"></script>
+	<link href="/assets/css/prettify.css" rel="stylesheet">
 </head>
 
-	<body>
-		<nav>
+	<body onload="prettyPrint()">
+		<!-- 导航栏设计 -->
+<nav>
 	<div style="padding:10px;">
 		<img src="/assets/blog-images/head-pic.jpg" style="width:220px;"/>
 	</div>
@@ -19,13 +24,14 @@
 		<ul style="padding-left:0px;list-style-type:none;">
 			
 			<li>
-			<a href="/categories/jekyllupdate">jekyllupdate x 1</a></li>
+			<a href="/categories/dsl">dsl x 1</a>
+			</li>
 			
 		</ul>
 	</div>
 </nav>
 
-		<div class="post">
+		<div class="post-container">
 			<div style="padding:40px;">
 				<div class="post">
 
@@ -35,17 +41,45 @@
   </header>
 
   <article class="post-content">
-    <p>You’ll find this post in your <code>_posts</code> directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run <code>jekyll serve</code>, which launches a web server and auto-regenerates your site when a file is updated.</p>
+    <h1>景景景景景景</h1>
+
+<h2>景景景景景景</h2>
+
+<p>明天会更好明天会更好明天会更好明天会更好明天会更好</p>
+
+<p><code>明天会更好</code>
+** 明天会更好 **
+<em>明天会更好</em></p>
+
+<p>明天会更好</p>
+
+<blockquote>
+<p>明天会更好
+明天会更好</p>
+</blockquote>
+<div class="highlight"><pre><code class="language-text" data-lang="text">明天会更好
+</code></pre></div>
+<ol>
+<li>明天会更好</li>
+<li>明天会更好</li>
+<li>明天会更好</li>
+<li>明天会更好</li>
+<li>明天会更好</li>
+</ol>
+
+<p>You’ll find this post in your <code>_posts</code> directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run <code>jekyll serve</code>, which launches a web server and auto-regenerates your site when a file is updated.</p>
 
 <p>To add new posts, simply add a file in the <code>_posts</code> directory that follows the convention <code>YYYY-MM-DD-name-of-post.ext</code> and includes the necessary front matter. Take a look at the source for this post to get an idea about how it works.</p>
 
 <p>Jekyll also offers powerful support for code snippets:</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">def</span> <span class="nf">print_hi</span><span class="p">(</span><span class="nb">name</span><span class="p">)</span>
-  <span class="nb">puts</span> <span class="s2">&quot;Hi, </span><span class="si">#{</span><span class="nb">name</span><span class="si">}</span><span class="s2">&quot;</span>
-<span class="k">end</span>
-<span class="n">print_hi</span><span class="p">(</span><span class="s1">&#39;Tom&#39;</span><span class="p">)</span>
-<span class="c1">#=&gt; prints &#39;Hi, Tom&#39; to STDOUT.</span></code></pre></div>
+<pre class="prettyprint linenums">
+def print_hi(name)
+    puts "Hi, #{name}"
+end
+print_hi('Tom')
+#=> prints 'Hi, Tom' to STDOUT.
+</pre>
 
 <p>Check out the <a href="http://jekyllrb.com">Jekyll docs</a> for more info on how to get the most out of Jekyll. File all bugs/feature requests at <a href="https://github.com/jekyll/jekyll">Jekyll’s GitHub repo</a>. If you have questions, you can ask them on <a href="https://github.com/jekyll/jekyll-help">Jekyll’s dedicated Help repository</a>.</p>
 
@@ -53,11 +87,13 @@
 
 </div>
 
+				<!-- 评论组件 -->
 				<div id="disqus_thread"/>
 			</div>
 		</div>
 	</body>
 </html>
+<!-- 评论组件 -->
 <script type="text/javascript">
 	var disqus_shortname = 'wsztrush';
 	(function() {
@@ -68,3 +104,14 @@
 		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
 	})();
 </script>
+<!-- 百度访问统计 -->
+<script>
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?08a976e8d7e5a20acfcb566bd22a1db1";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
