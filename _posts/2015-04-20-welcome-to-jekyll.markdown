@@ -1,43 +1,16 @@
 ---
 layout: post
-title:  "Welcome to Jekyll!"
+title:  自由，就是可以选择
 date:   2015-04-20 21:04:53
-categories: DSL
+categories: 里程碑
 ---
-# 景景景景景景
-
-## 景景景景景景
-
-
-明天会更好明天会更好明天会更好明天会更好明天会更好
-
-`明天会更好`
-** 明天会更好 **
-_明天会更好_
-
-明天会更好
-
-> 明天会更好
-> 明天会更好
-
-
-    明天会更好
-
-
-
+# 自由，就是可以
 
 1. 明天会更好
 2. 明天会更好
 3. 明天会更好
 4. 明天会更好
 5. 明天会更好
-
-
-You’ll find this post in your `_posts` directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run `jekyll serve`, which launches a web server and auto-regenerates your site when a file is updated.
-
-To add new posts, simply add a file in the `_posts` directory that follows the convention `YYYY-MM-DD-name-of-post.ext` and includes the necessary front matter. Take a look at the source for this post to get an idea about how it works.
-
-Jekyll also offers powerful support for code snippets:
 
 <pre class="prettyprint linenums">
 def print_hi(name)
@@ -47,8 +20,3 @@ print_hi('Tom')
 #=> prints 'Hi, Tom' to STDOUT.
 </pre>
 
-Check out the [Jekyll docs][jekyll] for more info on how to get the most out of Jekyll. File all bugs/feature requests at [Jekyll’s GitHub repo][jekyll-gh]. If you have questions, you can ask them on [Jekyll’s dedicated Help repository][jekyll-help].
-
-[jekyll]:      http://jekyllrb.com
-[jekyll-gh]:   https://github.com/jekyll/jekyll
-[jekyll-help]: https://github.com/jekyll/jekyll-help
