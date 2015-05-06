@@ -5,8 +5,8 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 06 May 2015 23:24:25 +0800</pubDate>
-    <lastBuildDate>Wed, 06 May 2015 23:24:25 +0800</lastBuildDate>
+    <pubDate>Wed, 06 May 2015 23:26:38 +0800</pubDate>
+    <lastBuildDate>Wed, 06 May 2015 23:26:38 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
@@ -30,6 +30,10 @@
 &lt;blockquote&gt;
 &lt;p&gt;abc&lt;/p&gt;
 &lt;/blockquote&gt;
+
+&lt;p&gt;a|b
+-|-
+1|2&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;System.out.println();
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;pre class=&quot;prettyprint linenums&quot;&gt;
