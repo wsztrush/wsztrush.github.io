@@ -1,6 +1,0 @@
----
-layout: page
-permalink: /about/
----
-
-
