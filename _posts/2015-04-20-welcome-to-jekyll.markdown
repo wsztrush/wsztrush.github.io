@@ -14,6 +14,8 @@ categories: 里程碑
 4. 明天会更好
 5. 明天会更好
 
+	这是缩进的部分
+
 <pre class="prettyprint linenums">
 def print_hi(name)
     puts "Hi, #{name}"
