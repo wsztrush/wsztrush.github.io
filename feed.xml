@@ -5,17 +5,17 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 06 May 2015 23:26:38 +0800</pubDate>
-    <lastBuildDate>Wed, 06 May 2015 23:26:38 +0800</lastBuildDate>
+    <pubDate>Wed, 06 May 2015 23:30:38 +0800</pubDate>
+    <lastBuildDate>Wed, 06 May 2015 23:30:38 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
         <title>自由，就是可以选择</title>
-        <description>&lt;h1&gt;自由，就是可以选择&lt;/h1&gt;
+        <description>&lt;h1 id=&quot;自由，就是可以选择&quot;&gt;自由，就是可以选择&lt;/h1&gt;
 
-&lt;h2&gt;二级标题&lt;/h2&gt;
+&lt;h2 id=&quot;二级标题&quot;&gt;二级标题&lt;/h2&gt;
 
-&lt;h1&gt;第二个一级i标题&lt;/h1&gt;
+&lt;h1 id=&quot;第二个一级i标题&quot;&gt;第二个一级i标题&lt;/h1&gt;
 
 &lt;ol&gt;
 &lt;li&gt;明天会更好&lt;/li&gt;
