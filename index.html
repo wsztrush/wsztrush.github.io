@@ -9,6 +9,7 @@ title: WsztRush's Blog
 			<a href="{{site.baseurl}}{{post.url}}"> {{post.title}}</a> &nbsp; {{ post.date | date: "%F" }} </br>
 		</div>
 	</li>
+	{% endfor %}
 </ul>
 
 {% if paginator.total_pages > 1 %}
