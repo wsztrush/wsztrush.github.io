@@ -42,5 +42,7 @@ a {
 	border-left-style:solid;
 }
 
-
-
+.post-container img {
+	max-width:600px;
+	vertical-align:middle;
+}	
