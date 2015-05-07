@@ -5,8 +5,8 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 07 May 2015 22:28:57 +0800</pubDate>
-    <lastBuildDate>Thu, 07 May 2015 22:28:57 +0800</lastBuildDate>
+    <pubDate>Thu, 07 May 2015 22:34:30 +0800</pubDate>
+    <lastBuildDate>Thu, 07 May 2015 22:34:30 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
@@ -90,11 +90,11 @@
 
 &lt;h2 id=&quot;section-1&quot;&gt;博客&lt;/h2&gt;
 
-&lt;p&gt;之前用过不少博客产品：CSDN、博客园、简书等等。写了不少文章，但是又逐渐越来越不喜欢它们的风格，因此有了这个博客。&lt;/p&gt;
+&lt;p&gt;之前用过不少博客产品：CSDN、博客园、简书等等。写了不少文章，但是又逐渐越来越不喜欢它们的风格，因此有了这个博客。使用GitHub搭建，基于jekyll，样式完全自己控制，图片用七牛。&lt;/p&gt;
 
-&lt;p&gt;另外，就像刘末鹏大牛讲的，把自己的想法写下来与大家分享，好处多多!&lt;/p&gt;
+&lt;p&gt;博客的作用就不多说，就像刘末鹏大牛讲的，把自己的想法写下来与大家分享，好处多多!&lt;/p&gt;
 
-&lt;p&gt;其次，一个博客就像一个土地，种下理想，辛勤劳作让它生根发芽、开花结果，长成一棵惨天大树。&lt;/p&gt;
+&lt;p&gt;另外我想，一个博客就像一个土地，种下理想，辛勤劳作让它生根发芽、开花结果，长成一棵惨天大树。&lt;/p&gt;
 
 &lt;h2 id=&quot;section-2&quot;&gt;自由&lt;/h2&gt;
 
