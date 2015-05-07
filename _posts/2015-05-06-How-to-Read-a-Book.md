@@ -41,7 +41,7 @@ categories: 读书笔记
 
 另外，对于不同类型的书有不同的读法，比如++小说++你就可以很快地阅读，重在感同身受，而不是去分析。完整的笔记如下：
 
-![](http://7xiz10.com1.z0.glb.clouddn.com/%E5%A6%82%E4%BD%95%E9%98%85%E8%AF%BB%E4%B8%80%E6%9C%AC%E4%B9%A6.png)
+![](http://7xiz10.com1.z0.glb.clouddn.com/如何阅读一本书.png)
 
 ## 总结
 
