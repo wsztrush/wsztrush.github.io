@@ -45,6 +45,8 @@ categories: 读书笔记
 
 读书是这样，看人、看事也是如此。对一件事情，先粗略地搞清楚来龙去脉，发现如果值得投入，再花时间去理解细节。对不同的事情可以横向对比，形成自己的做事风格。
 
+另外，写博客就像是写一本书，告诉别人我是什么样的一个人:D。
+
 附[百度脑图笔记](http://naotu.baidu.com/viewshare.html?shareId=av2aukso52ww)，另外笔记如下：
 
 ![](http://7xiz10.com1.z0.glb.clouddn.com/如何阅读一本书.png)
