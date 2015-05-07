@@ -5,8 +5,8 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 07 May 2015 21:44:24 +0800</pubDate>
-    <lastBuildDate>Thu, 07 May 2015 21:44:24 +0800</lastBuildDate>
+    <pubDate>Thu, 07 May 2015 21:58:54 +0800</pubDate>
+    <lastBuildDate>Thu, 07 May 2015 21:58:54 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
@@ -74,57 +74,22 @@
     
       <item>
         <title>自由，就是可以选择</title>
-        <description>&lt;h2 id=&quot;section&quot;&gt;自由，就是可以选择&lt;/h2&gt;
+        <description>&lt;h2 id=&quot;section&quot;&gt;年轻&lt;/h2&gt;
 
-&lt;h3 id=&quot;section-1&quot;&gt;二级标题&lt;/h3&gt;
+&lt;p&gt;青春不是年华，而是心境；青春不是桃面、丹唇、柔膝，而是深沉的意志、恢宏的想象、炽热的感情；青春是生命的深泉在涌流。&lt;/p&gt;
 
-&lt;h2 id=&quot;i&quot;&gt;第二个一级i标题&lt;/h2&gt;
+&lt;p&gt;青春气贯长虹，勇锐盖过怯弱，进取压倒苟安。如此锐气，二十后生有之，六旬男子则更多见。年岁有加，并非垂老；理想丢弃，方堕暮年。&lt;/p&gt;
 
-&lt;ol&gt;
-  &lt;li&gt;明天会更好&lt;/li&gt;
-  &lt;li&gt;明天会更好&lt;/li&gt;
-  &lt;li&gt;明天会更好&lt;/li&gt;
-  &lt;li&gt;明天会更好&lt;/li&gt;
-  &lt;li&gt;明天会更好&lt;/li&gt;
-&lt;/ol&gt;
+&lt;p&gt;岁月悠悠，衰微只及肌肤；热忱抛却，颓唐必至灵魂。忧烦、惶恐、丧失自信，定使心灵扭曲，意气如灰。&lt;/p&gt;
 
-&lt;blockquote&gt;
-  &lt;p&gt;这是缩进的部分这是缩进块&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;无论年届花甲，抑或二八芳龄，心中皆有生命之欢乐，奇迹之诱惑，孩童般天真久盛不衰。人人心中皆有一台天线，只要你从天上人间接受美好、希望、欢乐、勇气和力量的信号，你就青春永驻，风华常存。&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;加粗&lt;/strong&gt;&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;a&lt;/th&gt;
-      &lt;th&gt;b&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;1&lt;/td&gt;
-      &lt;td&gt;2&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;&lt;code&gt;
-System.out.println();
-&lt;/code&gt;&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint linenums&quot;&gt;
-def print_hi(name)
-    puts &quot;Hi, #{name}&quot;
-end
-print_hi('Tom')
-#=&amp;gt; prints 'Hi, Tom' to STDOUT.
-&lt;/pre&gt;
+&lt;p&gt;一旦天线降下，锐气便被冰雪覆盖，玩世不恭、自暴自弃油然而生，即便年方二十，实已垂垂老矣；然则只要竖起天线，捕捉乐观的信号，你就有望在八十离龄告别尘寰时仍觉年轻。&lt;/p&gt;
 
 </description>
-        <pubDate>Tue, 21 Apr 2015 05:04:53 +0800</pubDate>
-        <link>/%E9%87%8C%E7%A8%8B%E7%A2%91/2015/04/21/welcome-to-jekyll.html</link>
-        <guid isPermaLink="true">/%E9%87%8C%E7%A8%8B%E7%A2%91/2015/04/21/welcome-to-jekyll.html</guid>
+        <pubDate>Sat, 02 May 2015 05:04:53 +0800</pubDate>
+        <link>/%E9%87%8C%E7%A8%8B%E7%A2%91/2015/05/02/Freedom.html</link>
+        <guid isPermaLink="true">/%E9%87%8C%E7%A8%8B%E7%A2%91/2015/05/02/Freedom.html</guid>
         
         
         <category>里程碑</category>
