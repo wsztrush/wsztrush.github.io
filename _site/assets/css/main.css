@@ -54,6 +54,7 @@ li {
 }
 
 .post-container table {
+	border:1px solid #FFF;
 	width:100%;
 	background-color:#666;
 	color:#FFF;
