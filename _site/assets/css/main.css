@@ -56,14 +56,18 @@ li {
 .post-container table {
 	border:1px solid #FFF;
 	width:100%;
-	background-color:#666;
 	color:#FFF;
 }
 
 .post-container th {
 	padding:8px;
+	border-bottom:1px solid #fff;
 }
 
 .post-container td {
 	padding:8px;
+}
+
+th+th, td+td {
+	border-left:1px solid #fff;
 }
