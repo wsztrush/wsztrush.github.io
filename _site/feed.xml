@@ -5,8 +5,8 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 08 May 2015 22:54:35 +0800</pubDate>
-    <lastBuildDate>Fri, 08 May 2015 22:54:35 +0800</lastBuildDate>
+    <pubDate>Fri, 08 May 2015 22:57:27 +0800</pubDate>
+    <lastBuildDate>Fri, 08 May 2015 22:57:27 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
@@ -356,7 +356,7 @@ istore_0 // 将栈顶的值放到局部变量表第0个Solt
 
 &lt;p&gt;Thread的底层实现还是比较麻烦的，但是最起码应该知道Thread的状态是如何进行转换：&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/195376-13b897ff6d77702b.png&quot; alt=&quot;线程状态转换图&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/JVM之基础-线程状态转换.png&quot; alt=&quot;线程状态转换图&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;最后，常见的同步方式是&lt;strong&gt;synchronized&lt;/strong&gt;或者&lt;strong&gt;aqs&lt;/strong&gt;的各种实现，这里就不讲了，因为每个都足够写一大篇。&lt;/p&gt;
 </description>
