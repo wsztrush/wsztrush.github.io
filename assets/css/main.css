@@ -23,7 +23,7 @@ li {
 }
 .post-container {
 	background-color:#3C4043;
-	color:#FAFAFA;
+	color:#FFF;
 	margin-left:255px;
 	margin-right:0px;
 	min-width:800px;
@@ -47,7 +47,6 @@ li {
 
 .post-container img {
 	max-width:600px;
-	vertical-align:middle;
 }	
 
 .post-container strong {
@@ -56,6 +55,7 @@ li {
 
 .post-container table {
 	background-color:#042029;
+	color:#FFF;
 }
 
 .post-container th {
