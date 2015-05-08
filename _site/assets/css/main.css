@@ -58,7 +58,10 @@ li {
 	background-color:#042029;
 }
 
-.post-container th td {
+.post-container th {
 	padding:8px;
 }
 
+.post-container td {
+	padding:8px;
+}
