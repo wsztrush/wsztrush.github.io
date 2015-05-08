@@ -53,3 +53,12 @@ li {
 .post-container strong {
 	color:#FF0;
 }
+
+.post-container table {
+	background-color:#042029;
+}
+
+.post-container th td {
+	padding:8px;
+}
+
