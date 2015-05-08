@@ -24,8 +24,9 @@ li {
 
 blockquote  {
 	margin:0px;
-	padding-left:40px;
+	padding:10px 15px 10px 15px;
 	border-left-style:solid;
+	border-left-color:#555;
 	border-left-width:4px;
 	background-color:#333;
 }
