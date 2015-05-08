@@ -19,6 +19,10 @@ a {
 	border-bottom-width:1px;
 }
 
+li {
+	margin-top:5px;
+	margin-bottom:5px;
+}
 .post-container {
 	background-color:#3C4043;
 	color:#FAFAFA;
