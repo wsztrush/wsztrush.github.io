@@ -5,67 +5,427 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 07 May 2015 22:37:58 +0800</pubDate>
-    <lastBuildDate>Thu, 07 May 2015 22:37:58 +0800</lastBuildDate>
+    <pubDate>Fri, 08 May 2015 21:43:11 +0800</pubDate>
+    <lastBuildDate>Fri, 08 May 2015 21:43:11 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
-        <title>如何阅读一本书</title>
-        <description>&lt;p&gt;&lt;img src=&quot;http://img5.douban.com/mpic/s1670978.jpg&quot; alt=&quot;如何阅读一本书&quot; /&gt;&lt;/p&gt;
+        <title>哥德尔不完备性定理</title>
+        <description>&lt;h2 id=&quot;section&quot;&gt;写在前面&lt;/h2&gt;
 
-&lt;h2 id=&quot;section&quot;&gt;写在前面&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;希尔伯特&lt;/strong&gt;是19世纪和20世纪初最具影响力的数学家之一，在严格化的大纷争中，他带领的形式主义派系技压群雄，得到许多当时有名望的数学家的支持。希尔伯特打算通过形式化的手段，将证明抽象成一堆符号的转换。令人惊奇的是这似乎真的可行！为此，希尔伯特希望能够证明：&lt;/p&gt;
 
-&lt;p&gt;看到这个书名可能会想：阅读谁不会，还需要买本书来学？刚开始我也是这么想的，但是自从发奋读书之后发现不是那么回事，遇到一些问题：&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;在任意一个无矛盾的形式系统中，对任意的陈述，都能判断出真伪。&lt;/p&gt;
+&lt;/blockquote&gt;
 
-&lt;ol&gt;
-  &lt;li&gt;难啃的书看一半就丢到一边不再管了。&lt;/li&gt;
-  &lt;li&gt;读完之后也不知道书里面讲了些什么。&lt;/li&gt;
-  &lt;li&gt;更悲剧的是花了很长的时间读完之后发现是一本烂书。&lt;/li&gt;
-&lt;/ol&gt;
+&lt;p&gt;然而，这一企图被&lt;strong&gt;哥德尔&lt;/strong&gt;的博士论文《论数学原理及有关系统中不可判定命题》无情击碎，不完备性定理揭示：&lt;/p&gt;
 
-&lt;p&gt;然后立即在网上找指导阅读的书。花了两周的时间把这本书看了两遍，非常佩服作者对阅读这件看似简单的事情有这么系统、深入的思考，印象最深的是要带着问题读书：&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;在任意一个无矛盾的形式系统中，存在命题，无法证明其真伪。&lt;/p&gt;
+&lt;/blockquote&gt;
 
-&lt;ol&gt;
-  &lt;li&gt;这本书讲了些什么？&lt;/li&gt;
-  &lt;li&gt;细说了哪些部分？&lt;/li&gt;
-  &lt;li&gt;说的有道理吗？&lt;/li&gt;
-  &lt;li&gt;这本书跟我有什么关系？&lt;/li&gt;
-&lt;/ol&gt;
+&lt;p&gt;这在当时的数学界掀起轩然大波，它不仅具有数学意义，还蕴含着深刻的哲学意义。&lt;/p&gt;
 
-&lt;p&gt;之前比较追求豆瓣读书上长长的书单带来的一点点成就感，太Low了。我们应该追求精读书、读好书、让书改变行动和思维，从而真正成为我们的一部分。&lt;/p&gt;
+&lt;h2 id=&quot;section-1&quot;&gt;证明&lt;/h2&gt;
 
-&lt;h2 id=&quot;section-1&quot;&gt;内容笔记&lt;/h2&gt;
+&lt;h2 id=&quot;section-2&quot;&gt;图灵停机问题&lt;/h2&gt;
 
-&lt;p&gt;这本书涉及的内容有：阅读质量、阅读意义和阅读的四个层次。要保证阅读的质量本质上就是要主动，主动做笔记，主动思考（思考上面的四个问题），阅读的意义就略过了（大家应该都懂），重点来看阅读的四个层次。&lt;/p&gt;
-
-&lt;p&gt;第一个层次是&lt;strong&gt;基础阅读&lt;/strong&gt;，简单来说就是识字、能做一些功能性阅读。基础阅读是根本，如果这个都不行就不用看后面的了，所以现在当务之急是把英语补起来&amp;gt;_&amp;lt;。&lt;/p&gt;
-
-&lt;p&gt;第二个层次是&lt;strong&gt;检视阅读&lt;/strong&gt;，目的是为了熟悉架构，那么最直接的方法就是从书的结构入手：书名、目录等，另外可以快速把书过一遍，遇到不理解的地方也不要停。&lt;/p&gt;
-
-&lt;p&gt;第三个层次是&lt;strong&gt;分析阅读&lt;/strong&gt;，所谓分析，就是明白作者写书的出发点、提炼主旨观点并做出评价。书中讲了一些不错的技巧，比如为了更好的理解含义的两个办法：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;用自己的话描述出来。&lt;/li&gt;
-  &lt;li&gt;举出一个和主旨吻合的例子。&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;第四个层次是&lt;strong&gt;主题阅读&lt;/strong&gt;，到了这个层次，要求我们带着明确的目的去读书，比如想了解明朝的历史，你可以找多本相关的书进行阅读，并且将不同的观点进行比较、思考，形成自己的观点。&lt;/p&gt;
-
-&lt;p&gt;另外，对于不同类型的书有不同的读法，比如小说你就可以很快地阅读，重在感同身受，而不是去分析。&lt;/p&gt;
-
-&lt;h2 id=&quot;section-2&quot;&gt;思考&lt;/h2&gt;
-
-&lt;p&gt;读书是这样，看人、看事也是如此。对一件事情，先粗略地搞清楚来龙去脉，发现如果值得投入，再花时间去理解细节。对不同的事情可以横向对比，形成自己的做事风格。&lt;/p&gt;
-
-&lt;p&gt;另外，写博客就像是写一本书，告诉别人我是什么样的一个人:D。&lt;/p&gt;
-
-&lt;p&gt;附&lt;a href=&quot;http://naotu.baidu.com/viewshare.html?shareId=av2aukso52ww&quot;&gt;百度脑图笔记&lt;/a&gt;，另外笔记如下：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/如何阅读一本书.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 </description>
-        <pubDate>Thu, 07 May 2015 05:04:53 +0800</pubDate>
-        <link>/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/2015/05/07/How-to-Read-a-Book.html</link>
-        <guid isPermaLink="true">/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/2015/05/07/How-to-Read-a-Book.html</guid>
+        <pubDate>Sat, 09 May 2015 03:00:00 +0800</pubDate>
+        <link>/%E6%95%B0%E5%AD%A6/2015/05/09/Incompleteness-Theorems.html</link>
+        <guid isPermaLink="true">/%E6%95%B0%E5%AD%A6/2015/05/09/Incompleteness-Theorems.html</guid>
+        
+        
+        <category>数学</category>
+        
+      </item>
+    
+      <item>
+        <title>REWORK</title>
+        <description>&lt;p&gt;&lt;img src=&quot;http://img3.douban.com/mpic/s4502451.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;第一次听说这本说是在看陈皓在公司做的一次演讲，里面提到：&lt;strong&gt;条件受限是好事&lt;/strong&gt;。工作的久了，很多事情早在这边书之前就有所感悟，下面是几个印象深刻的：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;哪里来的从错误中学习；&lt;/li&gt;
+  &lt;li&gt;工作狂；&lt;/li&gt;
+  &lt;li&gt;“没时间”不是借口；&lt;/li&gt;
+  &lt;li&gt;条件受限是好事；&lt;/li&gt;
+  &lt;li&gt;会议有毒；&lt;/li&gt;
+  &lt;li&gt;给竞争力做减法；&lt;/li&gt;
+  &lt;li&gt;养成对客户说“不”的习惯；&lt;/li&gt;
+  &lt;li&gt;普及知识，赢得竞争；&lt;/li&gt;
+  &lt;li&gt;主动掌控负面新闻；&lt;/li&gt;
+  &lt;li&gt;文化不是由谁创造的；&lt;/li&gt;
+  &lt;li&gt;灵感稍纵即逝；&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;在实际的工作中常常会有很多问题被忽略掉，而往往它们就是效率最大的敌人。要变得更好？那么将学到的东西慢慢地融入到平时的行为中！&lt;/p&gt;
+</description>
+        <pubDate>Fri, 08 May 2015 21:00:00 +0800</pubDate>
+        <link>/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/2015/05/08/Rework.html</link>
+        <guid isPermaLink="true">/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/2015/05/08/Rework.html</guid>
+        
+        
+        <category>读书笔记</category>
+        
+      </item>
+    
+      <item>
+        <title>JVM之基础</title>
+        <description>&lt;h2 id=&quot;section&quot;&gt;写在前面&lt;/h2&gt;
+
+&lt;p&gt;之前老大让做一些面试，我的问题很简单：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;介绍一下工作中解决过比较有意思的问题。&lt;/li&gt;
+  &lt;li&gt;HashMap使用中需要注意的点。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;第一个问题主要是想了解一下对方项目经验的含金量，第二个问题则是测试下是否知道一些细节，比如HashMap是线程不安全的、用HashMap来做缓存的话可能导致内存泄露等，自我感觉问题设计的还可以:D~ 但是看了其他同事的题目就泪崩了：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;设计模式XXX&lt;/li&gt;
+  &lt;li&gt;垃圾回收XXX&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;擦，怎么感觉这个问题我也不会。。。&lt;/p&gt;
+
+&lt;p&gt;虚拟机给人的感觉像是操作系统、编译器：非常高大上。但是Java程序就跑在上面，遇到问题还得去排查，性能不行还得去优化，基础的知识还是需要的！&lt;/p&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;内存管理&lt;/h2&gt;
+
+&lt;p&gt;Java虚拟机在执行的过程中会把它所管理的内存划分为若干个不同的数据区域，大致如下：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/195376-bd42f530944f2832.png&quot; alt=&quot;内存模型&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;各部分的功能如下：&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;区域&lt;/th&gt;
+      &lt;th&gt;功能&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;程序计数器&lt;/td&gt;
+      &lt;td&gt;可以看做当前线程执行字节码的行号&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;虚拟机栈&lt;/td&gt;
+      &lt;td&gt;存放局部变量、操作栈等&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;本地方法栈&lt;/td&gt;
+      &lt;td&gt;与虚拟机栈类似，不过是服务于本地方法&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;堆&lt;/td&gt;
+      &lt;td&gt;存放对象&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;方法区&lt;/td&gt;
+      &lt;td&gt;存放类信息、常量、静态变量、JIT编译后的代码等&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;运行时常量池&lt;/td&gt;
+      &lt;td&gt;编译时生成的各种字面量和符号使用&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;直接内存&lt;/td&gt;
+      &lt;td&gt;通过NIO分配的对外内存&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;在内存管理部分比较大的一块内容是GC（垃圾回收），所谓垃圾回收就是将垃圾占用的内存回收掉。那么第一个问题：&lt;strong&gt;什么是垃圾？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;引用计数算法：被引用次数为0的对象。&lt;/li&gt;
+  &lt;li&gt;根搜索算法：从GC Roots沿着引用找不到的对象。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;这里都提到了&lt;strong&gt;引用&lt;/strong&gt;，在JDK 1.2之后Java就已经对引用的概念进行了扩充，那么第二个问题：&lt;strong&gt;有哪些类型的引用？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;强引用：Object o = new Object()这种都是强引用。&lt;/li&gt;
+  &lt;li&gt;弱引用：还有用但非必须的，在OOM之前被回收。&lt;/li&gt;
+  &lt;li&gt;软引用：更弱的引用，在下次GC的时候被回收。&lt;/li&gt;
+  &lt;li&gt;虚引用：最弱的，唯一的作用是在对象被回收的时候可以收到通知。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;这里只有强引用才能对对象的生命周期造成影响。在虚拟机发展的过程中进化出不少垃圾回收算法，比如：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;标记-清除算法&lt;/li&gt;
+  &lt;li&gt;复制算法&lt;/li&gt;
+  &lt;li&gt;标记-整理算法&lt;/li&gt;
+  &lt;li&gt;分代收集算法&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;在实际中用到的回收器都是这几种算法的组合，比如从VisualVM中看到的内存是这样的（需要明白各部分都是怎样互相配合的）：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/195376-b429e22e9f5156ef.png&quot; alt=&quot;分代回收&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;整体上来看是分代收集算法，而S0、S1这两部分可以看做是标记-整理算法。那么第三个问题：&lt;strong&gt;常见的CMS垃圾回收器的执行流程是怎样的？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;初始标记：GC Roots直接关联的对象。&lt;/li&gt;
+  &lt;li&gt;并发标记：Root Tracing。&lt;/li&gt;
+  &lt;li&gt;重新标记：修复由于程序运行导致标记产生变动。&lt;/li&gt;
+  &lt;li&gt;并发清除&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;具体如下图所示：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/195376-a644e18c16dbd4dc.png&quot; alt=&quot;CMS执行流程&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;可以看到只有在初始标记和重新标记的时候才需要Stop The World，其他都是和用户线程一起执行，不要以为这就完美了，并行执行的过程会消耗掉一些CPU资源。&lt;/p&gt;
+
+&lt;h2 id=&quot;section-2&quot;&gt;代码执行&lt;/h2&gt;
+
+&lt;p&gt;把Java源码丢给JVM肯定是不能执行的，需要先用javac编译成class文件才行，那么第一个问题：&lt;strong&gt;class文件的结构是怎样的？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;常量池&lt;/li&gt;
+  &lt;li&gt;访问标志&lt;/li&gt;
+  &lt;li&gt;类索引、父类索引和接口索引&lt;/li&gt;
+  &lt;li&gt;字段表&lt;/li&gt;
+  &lt;li&gt;方法表&lt;/li&gt;
+  &lt;li&gt;属性表&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;虚拟机规范并没有规定在什么时候要加载类，但是规定了在遇到&lt;strong&gt;new、反射、父类、Main&lt;/strong&gt;的时候需要初始化完成。整个类的生命周期如下：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/195376-033df2818baaebb2.png&quot; alt=&quot;类的生命周期&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;在虚拟机中通过ClassLoader来进行类的加载，这地方需要明白：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;两个类是否相同，除了类名外还需要判断ClassLoader是否相同。&lt;/li&gt;
+  &lt;li&gt;双亲委派模式并不是一个强制约束。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;在类加载完成之后就可以开始执行了，和线程运转相关的东西都放在栈帧中，其结构如下：&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;属性&lt;/th&gt;
+      &lt;th&gt;作用/含义&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;局部变量表&lt;/td&gt;
+      &lt;td&gt;方法参数及方法内部定义的局部变量&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;操作数栈&lt;/td&gt;
+      &lt;td&gt;用来被指令操作&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;动态连接&lt;/td&gt;
+      &lt;td&gt;指向运行时常量池中该栈帧所属方法的引用&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;方法返回地址&lt;/td&gt;
+      &lt;td&gt;上层方法调用本方法的位置&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;附加信息&lt;/td&gt;
+      &lt;td&gt;调试信息等&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;执行中具体调用哪个方法是个头疼的问题，需要处理：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;静态分派：相同名称、不同参数类型的方法。&lt;/li&gt;
+  &lt;li&gt;动态分派：继承中复写的方法。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;字节码中的指令都是基于栈的操作，比如要完成1+1这样的计算，对应的指令如下：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+iconst_1 // 将常量1压入栈
+iconst_1
+iadd // 把栈顶的两个值相加并出栈，然后把结果放回栈
+istore_0 // 将栈顶的值放到局部变量表第0个Solt
+&lt;/pre&gt;
+
+&lt;p&gt;解释执行的好处是下载后启动速度快，但是确定也非常明显：运行速度慢。JIT正是用来解决这个问题的，能够将&lt;strong&gt;多次调用的方法、多次执行的循环体&lt;/strong&gt;编译成本地代码。&lt;/p&gt;
+
+&lt;p&gt;优化是个很好玩的题目，记得在参加一次变成比赛的时候用gcc -O3编译之后的代码把printf()都没输出了。。在JIT中比较常见的优化手段有：&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;手段&lt;/th&gt;
+      &lt;th&gt;描述&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;公共子表达式消除&lt;/td&gt;
+      &lt;td&gt;如果一个表达式已经计算过了，那么后面不需要重复计算&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;数组范围检查消除&lt;/td&gt;
+      &lt;td&gt;并不是必须一次不漏地检查&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;方法内联&lt;/td&gt;
+      &lt;td&gt;把代码复制到调用方法中&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;逃逸分析&lt;/td&gt;
+      &lt;td&gt;判断对象是否可能被方法外引用到&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;程序执行一定会涉及到内存操作，在Java中定义了八种操作来完成：&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;操作&lt;/th&gt;
+      &lt;th&gt;含义&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;lock&lt;/td&gt;
+      &lt;td&gt;把一个变量标识为线程独占状态&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;unlock&lt;/td&gt;
+      &lt;td&gt;释放变量&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;read&lt;/td&gt;
+      &lt;td&gt;将变量从主存读取到工作内存&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;load&lt;/td&gt;
+      &lt;td&gt;将read到的变量值放入工作内存中的副本&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;use&lt;/td&gt;
+      &lt;td&gt;将工作内存中的变量传递给执行引擎&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;assign&lt;/td&gt;
+      &lt;td&gt;引擎返回的值传递给工作内存中的副本&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;store&lt;/td&gt;
+      &lt;td&gt;将工作内存中的变量传递给主存&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;write&lt;/td&gt;
+      &lt;td&gt;把从工作内存得到的变量写入主存对应的变量中&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;这里有必要讲一下&lt;strong&gt;volatile&lt;/strong&gt;的作用，在使用到的时候能明白下面两条即可：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;保证变量对所有线程是可见的。&lt;/li&gt;
+  &lt;li&gt;禁止&lt;a href=&quot;http://ifeve.com/jvm-memory-reordering/&quot;&gt;指令重排&lt;/a&gt;优化。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;如果Java中所有的操作都需要程序员来控制的话，会有大量的重复代码，而且写起来很累，那么我们可以通过&lt;strong&gt;先行发生原则&lt;/strong&gt;来判断并行的两个操作是否存在冲突：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;程序次序规则：单线程内按照程序书写顺序。&lt;/li&gt;
+  &lt;li&gt;管程锁定规则：unlock必须在lock之前。&lt;/li&gt;
+  &lt;li&gt;volatile变量规则：写操作先行发生于读操作。&lt;/li&gt;
+  &lt;li&gt;线程启动规则：Thread.start()先于线程的其他任意方法。&lt;/li&gt;
+  &lt;li&gt;线程终止规则：线程中所有的操作都先于对此线程的终止检测。&lt;/li&gt;
+  &lt;li&gt;线程中断规则：interrupt()先于中断检测。&lt;/li&gt;
+  &lt;li&gt;对象终结规则：对象的初始化完成先于它的finalize()方法。&lt;/li&gt;
+  &lt;li&gt;传递规则：如果A先于B、B先于C，那么A先于C。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Thread的底层实现还是比较麻烦的，但是最起码应该知道Thread的状态是如何进行转换：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/195376-13b897ff6d77702b.png&quot; alt=&quot;线程状态转换图&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;最后，常见的同步方式是&lt;strong&gt;synchronized&lt;/strong&gt;或者&lt;strong&gt;aqs&lt;/strong&gt;的各种实现，这里就不讲了，因为每个都足够写一大篇。&lt;/p&gt;
+</description>
+        <pubDate>Fri, 08 May 2015 21:00:00 +0800</pubDate>
+        <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/05/08/JVM-Basis.html</link>
+        <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/05/08/JVM-Basis.html</guid>
+        
+        
+        <category>编程技术</category>
+        
+      </item>
+    
+      <item>
+        <title>暗时间</title>
+        <description>&lt;p&gt;&lt;img src=&quot;http://img3.douban.com/mpic/s6586365.jpg&quot; alt=&quot;暗时间&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;在很早之前在网上看过前面部分，感觉很受用，所以买下来打算细看一下。细读之前感觉&lt;strong&gt;暗时间&lt;/strong&gt;的含义是指利用琐碎的时间，但完全不是这么回事，这部分的内容花的篇幅很少，想更多的了解可以继续去看《奇特的一生》。&lt;/p&gt;
+
+&lt;p&gt;另外，这本书更像是一个文集，各个文章之间并没有很强的关系，总体上围绕：&lt;strong&gt;如何学习&lt;/strong&gt;、&lt;strong&gt;如何做事&lt;/strong&gt;、&lt;strong&gt;如何思维&lt;/strong&gt;来展开。&lt;/p&gt;
+
+&lt;p&gt;关于如何学习记忆比较深的几点：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;利用碎片时间思考。&lt;/li&gt;
+  &lt;li&gt;专注。&lt;/li&gt;
+  &lt;li&gt;为知识建立索引，以便在合适的时候被回忆。&lt;/li&gt;
+  &lt;li&gt;通过教别人来验证自己是否真的懂了。&lt;/li&gt;
+  &lt;li&gt;抽象&amp;amp;推广。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;关于如何做事：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;进度条。&lt;/li&gt;
+  &lt;li&gt;遇到问题亲自动手：困难的路越走越容易，容易的路越走越难。&lt;/li&gt;
+  &lt;li&gt;用特例引发思考。&lt;/li&gt;
+  &lt;li&gt;普通人遵守规则，牛人无视规则，伟人创造规则。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;关于如何思维，更多的是一些想象：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;认知失调和自我辩解。&lt;/li&gt;
+  &lt;li&gt;20万年前的自己：天性。&lt;/li&gt;
+  &lt;li&gt;能够改变习惯的不是自制力，而是知识。&lt;/li&gt;
+  &lt;li&gt;知识是双刃剑，一方面提供解决问题的捷径，另一方面也是思维的桎梏。&lt;/li&gt;
+  &lt;li&gt;如果手里有一把锤子，所有的东西看上去都像钉子。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;另外很喜欢其中的&lt;strong&gt;哥德尔不完备定理&lt;/strong&gt;部分，一方面之前不知道这么叼的东西，另一方面能把各种问题联系在一起确实比较厉害。&lt;/p&gt;
+
+</description>
+        <pubDate>Fri, 08 May 2015 21:00:00 +0800</pubDate>
+        <link>/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/2015/05/08/Dark-Time.html</link>
+        <guid isPermaLink="true">/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/2015/05/08/Dark-Time.html</guid>
+        
+        
+        <category>读书笔记</category>
+        
+      </item>
+    
+      <item>
+        <title>暗时间</title>
+        <description>&lt;p&gt;&lt;img src=&quot;http://img3.douban.com/mpic/s6586365.jpg&quot; alt=&quot;暗时间&quot; /&gt;&lt;/p&gt;
+
+</description>
+        <pubDate>Fri, 08 May 2015 20:30:00 +0800</pubDate>
+        <link>/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/2015/05/08/How-to-Read-a-Book.html</link>
+        <guid isPermaLink="true">/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/2015/05/08/How-to-Read-a-Book.html</guid>
         
         
         <category>读书笔记</category>
