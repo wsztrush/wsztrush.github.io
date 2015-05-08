@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html>
+	<!-- 引入CSS/JS -->
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="/assets/css/main.css"/>
+	<script type="text/javascript" src="/assets/javascripts/main.js"></script>
+
+	<!-- pygments代码高亮 -->
+	<!-- <link rel="stylesheet" type="text/css" href="/assets/css/pygments.css"/> -->
+	<!-- google代码高亮 -->
+	<script src="/assets/css/prettify.js"></script>
+	<link href="/assets/css/prettify.css" rel="stylesheet">
+	<title>JVM之基础</title>
+</head>
+
+	<body onload="prettyPrint()">
+		<!-- 导航栏设计 -->
+<nav>
+	<div style="padding:10px;">
+		<a href="/" style="border-bottom-style:none;"><img src="/assets/blog-images/head-pic.jpg" style="width:220px;"/></a>
+	</div>
+	<div style="color:#FFF;font-size:24px;padding:10px;">
+		<b>wsztrush</b>
+		<ul style="padding-left:0px;list-style-type:none;">
+			
+			<li>
+			<a href="/categories/里程碑">里程碑 x 1</a>
+			</li>
+			
+			<li>
+			<a href="/categories/读书笔记">读书笔记 x 3</a>
+			</li>
+			
+			<li>
+			<a href="/categories/编程技术">编程技术 x 1</a>
+			</li>
+			
+			<li>
+			<a href="/categories/数学">数学 x 1</a>
+			</li>
+			
+		</ul>
+	</div>
+</nav>
+
+		<div class="post-container">
+			<div style="padding:40px;">
+				<h1>JVM之基础</h1>
+				<h2 id="section">写在前面</h2>
+
+<p>之前老大让做一些面试，我的问题很简单：</p>
+
+<ol>
+  <li>介绍一下工作中解决过比较有意思的问题。</li>
+  <li>HashMap使用中需要注意的点。</li>
+</ol>
+
+<p>第一个问题主要是想了解一下对方项目经验的含金量，第二个问题则是测试下是否知道一些细节，比如HashMap是线程不安全的、用HashMap来做缓存的话可能导致内存泄露等，自我感觉问题设计的还可以:D~ 但是看了其他同事的题目就泪崩了：</p>
+
+<ol>
+  <li>设计模式XXX</li>
+  <li>垃圾回收XXX</li>
+</ol>
+
+<p>擦，怎么感觉这个问题我也不会。。。</p>
+
+<p>虚拟机给人的感觉像是操作系统、编译器：非常高大上。但是Java程序就跑在上面，遇到问题还得去排查，性能不行还得去优化，基础的知识还是需要的！</p>
+
+<h2 id="section-1">内存管理</h2>
+
+<p>Java虚拟机在执行的过程中会把它所管理的内存划分为若干个不同的数据区域，大致如下：</p>
+
+<p><img src="http://upload-images.jianshu.io/upload_images/195376-bd42f530944f2832.png" alt="内存模型" /></p>
+
+<p>各部分的功能如下：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>区域</th>
+      <th>功能</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>程序计数器</td>
+      <td>可以看做当前线程执行字节码的行号</td>
+    </tr>
+    <tr>
+      <td>虚拟机栈</td>
+      <td>存放局部变量、操作栈等</td>
+    </tr>
+    <tr>
+      <td>本地方法栈</td>
+      <td>与虚拟机栈类似，不过是服务于本地方法</td>
+    </tr>
+    <tr>
+      <td>堆</td>
+      <td>存放对象</td>
+    </tr>
+    <tr>
+      <td>方法区</td>
+      <td>存放类信息、常量、静态变量、JIT编译后的代码等</td>
+    </tr>
+    <tr>
+      <td>运行时常量池</td>
+      <td>编译时生成的各种字面量和符号使用</td>
+    </tr>
+    <tr>
+      <td>直接内存</td>
+      <td>通过NIO分配的对外内存</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>在内存管理部分比较大的一块内容是GC（垃圾回收），所谓垃圾回收就是将垃圾占用的内存回收掉。那么第一个问题：<strong>什么是垃圾？</strong></p>
+
+<ol>
+  <li>引用计数算法：被引用次数为0的对象。</li>
+  <li>根搜索算法：从GC Roots沿着引用找不到的对象。</li>
+</ol>
+
+<p>这里都提到了<strong>引用</strong>，在JDK 1.2之后Java就已经对引用的概念进行了扩充，那么第二个问题：<strong>有哪些类型的引用？</strong></p>
+
+<ol>
+  <li>强引用：Object o = new Object()这种都是强引用。</li>
+  <li>弱引用：还有用但非必须的，在OOM之前被回收。</li>
+  <li>软引用：更弱的引用，在下次GC的时候被回收。</li>
+  <li>虚引用：最弱的，唯一的作用是在对象被回收的时候可以收到通知。</li>
+</ol>
+
+<p>这里只有强引用才能对对象的生命周期造成影响。在虚拟机发展的过程中进化出不少垃圾回收算法，比如：</p>
+
+<ol>
+  <li>标记-清除算法</li>
+  <li>复制算法</li>
+  <li>标记-整理算法</li>
+  <li>分代收集算法</li>
+</ol>
+
+<p>在实际中用到的回收器都是这几种算法的组合，比如从VisualVM中看到的内存是这样的（需要明白各部分都是怎样互相配合的）：</p>
+
+<p><img src="http://upload-images.jianshu.io/upload_images/195376-b429e22e9f5156ef.png" alt="分代回收" /></p>
+
+<p>整体上来看是分代收集算法，而S0、S1这两部分可以看做是标记-整理算法。那么第三个问题：<strong>常见的CMS垃圾回收器的执行流程是怎样的？</strong></p>
+
+<ol>
+  <li>初始标记：GC Roots直接关联的对象。</li>
+  <li>并发标记：Root Tracing。</li>
+  <li>重新标记：修复由于程序运行导致标记产生变动。</li>
+  <li>并发清除</li>
+</ol>
+
+<p>具体如下图所示：</p>
+
+<p><img src="http://upload-images.jianshu.io/upload_images/195376-a644e18c16dbd4dc.png" alt="CMS执行流程" /></p>
+
+<p>可以看到只有在初始标记和重新标记的时候才需要Stop The World，其他都是和用户线程一起执行，不要以为这就完美了，并行执行的过程会消耗掉一些CPU资源。</p>
+
+<h2 id="section-2">代码执行</h2>
+
+<p>把Java源码丢给JVM肯定是不能执行的，需要先用javac编译成class文件才行，那么第一个问题：<strong>class文件的结构是怎样的？</strong></p>
+
+<ul>
+  <li>常量池</li>
+  <li>访问标志</li>
+  <li>类索引、父类索引和接口索引</li>
+  <li>字段表</li>
+  <li>方法表</li>
+  <li>属性表</li>
+</ul>
+
+<p>虚拟机规范并没有规定在什么时候要加载类，但是规定了在遇到<strong>new、反射、父类、Main</strong>的时候需要初始化完成。整个类的生命周期如下：</p>
+
+<p><img src="http://upload-images.jianshu.io/upload_images/195376-033df2818baaebb2.png" alt="类的生命周期" /></p>
+
+<p>在虚拟机中通过ClassLoader来进行类的加载，这地方需要明白：</p>
+
+<ul>
+  <li>两个类是否相同，除了类名外还需要判断ClassLoader是否相同。</li>
+  <li>双亲委派模式并不是一个强制约束。</li>
+</ul>
+
+<p>在类加载完成之后就可以开始执行了，和线程运转相关的东西都放在栈帧中，其结构如下：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>属性</th>
+      <th>作用/含义</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>局部变量表</td>
+      <td>方法参数及方法内部定义的局部变量</td>
+    </tr>
+    <tr>
+      <td>操作数栈</td>
+      <td>用来被指令操作</td>
+    </tr>
+    <tr>
+      <td>动态连接</td>
+      <td>指向运行时常量池中该栈帧所属方法的引用</td>
+    </tr>
+    <tr>
+      <td>方法返回地址</td>
+      <td>上层方法调用本方法的位置</td>
+    </tr>
+    <tr>
+      <td>附加信息</td>
+      <td>调试信息等</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>执行中具体调用哪个方法是个头疼的问题，需要处理：</p>
+
+<ul>
+  <li>静态分派：相同名称、不同参数类型的方法。</li>
+  <li>动态分派：继承中复写的方法。</li>
+</ul>
+
+<p>字节码中的指令都是基于栈的操作，比如要完成1+1这样的计算，对应的指令如下：</p>
+
+<pre class="prettyprint">
+iconst_1 // 将常量1压入栈
+iconst_1
+iadd // 把栈顶的两个值相加并出栈，然后把结果放回栈
+istore_0 // 将栈顶的值放到局部变量表第0个Solt
+</pre>
+
+<p>解释执行的好处是下载后启动速度快，但是确定也非常明显：运行速度慢。JIT正是用来解决这个问题的，能够将<strong>多次调用的方法、多次执行的循环体</strong>编译成本地代码。</p>
+
+<p>优化是个很好玩的题目，记得在参加一次变成比赛的时候用gcc -O3编译之后的代码把printf()都没输出了。。在JIT中比较常见的优化手段有：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>手段</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>公共子表达式消除</td>
+      <td>如果一个表达式已经计算过了，那么后面不需要重复计算</td>
+    </tr>
+    <tr>
+      <td>数组范围检查消除</td>
+      <td>并不是必须一次不漏地检查</td>
+    </tr>
+    <tr>
+      <td>方法内联</td>
+      <td>把代码复制到调用方法中</td>
+    </tr>
+    <tr>
+      <td>逃逸分析</td>
+      <td>判断对象是否可能被方法外引用到</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>程序执行一定会涉及到内存操作，在Java中定义了八种操作来完成：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>操作</th>
+      <th>含义</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>lock</td>
+      <td>把一个变量标识为线程独占状态</td>
+    </tr>
+    <tr>
+      <td>unlock</td>
+      <td>释放变量</td>
+    </tr>
+    <tr>
+      <td>read</td>
+      <td>将变量从主存读取到工作内存</td>
+    </tr>
+    <tr>
+      <td>load</td>
+      <td>将read到的变量值放入工作内存中的副本</td>
+    </tr>
+    <tr>
+      <td>use</td>
+      <td>将工作内存中的变量传递给执行引擎</td>
+    </tr>
+    <tr>
+      <td>assign</td>
+      <td>引擎返回的值传递给工作内存中的副本</td>
+    </tr>
+    <tr>
+      <td>store</td>
+      <td>将工作内存中的变量传递给主存</td>
+    </tr>
+    <tr>
+      <td>write</td>
+      <td>把从工作内存得到的变量写入主存对应的变量中</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>这里有必要讲一下<strong>volatile</strong>的作用，在使用到的时候能明白下面两条即可：</p>
+
+<ul>
+  <li>保证变量对所有线程是可见的。</li>
+  <li>禁止<a href="http://ifeve.com/jvm-memory-reordering/">指令重排</a>优化。</li>
+</ul>
+
+<p>如果Java中所有的操作都需要程序员来控制的话，会有大量的重复代码，而且写起来很累，那么我们可以通过<strong>先行发生原则</strong>来判断并行的两个操作是否存在冲突：</p>
+
+<ul>
+  <li>程序次序规则：单线程内按照程序书写顺序。</li>
+  <li>管程锁定规则：unlock必须在lock之前。</li>
+  <li>volatile变量规则：写操作先行发生于读操作。</li>
+  <li>线程启动规则：Thread.start()先于线程的其他任意方法。</li>
+  <li>线程终止规则：线程中所有的操作都先于对此线程的终止检测。</li>
+  <li>线程中断规则：interrupt()先于中断检测。</li>
+  <li>对象终结规则：对象的初始化完成先于它的finalize()方法。</li>
+  <li>传递规则：如果A先于B、B先于C，那么A先于C。</li>
+</ul>
+
+<p>Thread的底层实现还是比较麻烦的，但是最起码应该知道Thread的状态是如何进行转换：</p>
+
+<p><img src="http://upload-images.jianshu.io/upload_images/195376-13b897ff6d77702b.png" alt="线程状态转换图" /></p>
+
+<p>最后，常见的同步方式是<strong>synchronized</strong>或者<strong>aqs</strong>的各种实现，这里就不讲了，因为每个都足够写一大篇。</p>
+
+				<!-- 评论组件 -->
+				<div id="disqus_thread"/>
+			</div>
+		</div>
+	</body>
+</html>
+<!-- 评论组件 -->
+<script type="text/javascript">
+	var disqus_shortname = 'wsztrush';
+	(function() {
+		var dsq = document.createElement('script');
+		dsq.type = 'text/javascript';
+		dsq.async = true;
+		dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	})();
+</script>
+<!-- 百度访问统计 -->
+<script>
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?08a976e8d7e5a20acfcb566bd22a1db1";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+

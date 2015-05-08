@@ -1,5 +1,6 @@
 body {
 	margin:0px;
+	font-family:Georgia, "Times New Roman", Times, "Kai", "Kaiti SC", "KaiTi", "BiauKai", "¿¬Ìå", "¿¬Ìå_GB2312", serif;
 }
 
 nav {
@@ -18,7 +19,7 @@ a {
 	border-bottom-width:1px;
 }
 
-.post-container{
+.post-container {
 	background-color:#3C4043;
 	color:#FAFAFA;
 	margin-left:255px;
@@ -26,7 +27,7 @@ a {
 	min-width:800px;
 }
 
-.post-container h1{
+.post-container h1 {
 	text-align:center;
 	border-style:solid;
 	border-width:1px;
@@ -35,7 +36,7 @@ a {
 	margin-bottom:20px;
 }
 
-.post-container h2{
+.post-container h2 {
 	background-color:black;
 	padding:10px;
 	border-left-width:8px;
@@ -46,3 +47,7 @@ a {
 	max-width:600px;
 	vertical-align:middle;
 }	
+
+.post-container strong {
+	color:#FF0;
+}
