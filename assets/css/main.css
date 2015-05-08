@@ -21,6 +21,14 @@ li {
 	margin-top:5px;
 	margin-bottom:5px;
 }
+
+blockquote  {
+	margin-left:0px;
+	padding-left:40px;
+	border-left-style:solid;
+	border-left-width:4px;
+	background-color:#333;
+}
 .post-container {
 	background-color:#3C4043;
 	color:#FFF;
