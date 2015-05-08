@@ -5,8 +5,8 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 08 May 2015 22:52:34 +0800</pubDate>
-    <lastBuildDate>Fri, 08 May 2015 22:52:34 +0800</lastBuildDate>
+    <pubDate>Fri, 08 May 2015 22:54:35 +0800</pubDate>
+    <lastBuildDate>Fri, 08 May 2015 22:54:35 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
@@ -98,7 +98,7 @@
 
 &lt;p&gt;Java虚拟机在执行的过程中会把它所管理的内存划分为若干个不同的数据区域，大致如下：&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/195376-bd42f530944f2832.png&quot; alt=&quot;内存模型&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/JVM之基础-内存划分.png&quot; alt=&quot;内存模型&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;各部分的功能如下：&lt;/p&gt;
 
@@ -168,7 +168,7 @@
 
 &lt;p&gt;在实际中用到的回收器都是这几种算法的组合，比如从VisualVM中看到的内存是这样的（需要明白各部分都是怎样互相配合的）：&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/195376-b429e22e9f5156ef.png&quot; alt=&quot;分代回收&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/JVM之基础-GC.png&quot; alt=&quot;分代回收&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;整体上来看是分代收集算法，而S0、S1这两部分可以看做是标记-整理算法。那么第三个问题：&lt;strong&gt;常见的CMS垃圾回收器的执行流程是怎样的？&lt;/strong&gt;&lt;/p&gt;
 
@@ -181,7 +181,7 @@
 
 &lt;p&gt;具体如下图所示：&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/195376-a644e18c16dbd4dc.png&quot; alt=&quot;CMS执行流程&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/JVM之基础-CMS.png&quot; alt=&quot;CMS执行流程&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;可以看到只有在初始标记和重新标记的时候才需要Stop The World，其他都是和用户线程一起执行，不要以为这就完美了，并行执行的过程会消耗掉一些CPU资源。&lt;/p&gt;
 
@@ -200,7 +200,7 @@
 
 &lt;p&gt;虚拟机规范并没有规定在什么时候要加载类，但是规定了在遇到&lt;strong&gt;new、反射、父类、Main&lt;/strong&gt;的时候需要初始化完成。整个类的生命周期如下：&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/195376-033df2818baaebb2.png&quot; alt=&quot;类的生命周期&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/JVM之基础-类生命周期.png&quot; alt=&quot;类的生命周期&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;在虚拟机中通过ClassLoader来进行类的加载，这地方需要明白：&lt;/p&gt;
 
