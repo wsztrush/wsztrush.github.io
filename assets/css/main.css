@@ -54,7 +54,8 @@ li {
 }
 
 .post-container table {
-	background-color:#042029;
+	width:100%;
+	background-color:#666;
 	color:#FFF;
 }
 
