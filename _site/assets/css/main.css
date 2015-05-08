@@ -14,9 +14,7 @@ nav {
 a {
 	font-size:15px;
 	color:#CCC;
-	border-color:#CCC;
-	border-bottom-style:dashed;
-	border-bottom-width:1px;
+	border-bottom-style:none;
 }
 
 li {
