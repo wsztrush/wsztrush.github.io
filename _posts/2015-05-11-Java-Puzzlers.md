@@ -12,7 +12,7 @@ categories: 读书笔记
 
 1、在刚开始学编程的时候都会遇到__swap__操作，开始作为一个新手老老实实地用另外一个变量tmp来存，偶然看到用异或来实现感觉好牛逼，不过这种方式在Java上行不通：
 
-<pre class="prettyprint linenums lang-c prettyprinted">
+<pre class="prettyprint prettyprinted">
 int x = 1;
 int y = 2;
 x ^= y ^= x ^= y;
@@ -21,7 +21,7 @@ System.out.println("x = " + x + " y = " + y);
 
 出乎意料地是这段代码执行的结果是__x = 0 y = 1__，而不是希望的__x = 2 y = 1__，接下来从字节码（javap -c）中找答案：
 
-<pre class="prettyprint lang-c prettyprinted">
+<pre class="prettyprint prettyprinted">
    0:   iconst_1
    1:   istore_1
    2:   iconst_2
@@ -46,18 +46,20 @@ System.out.println("x = " + x + " y = " + y);
 在Java语言规范描述中：操作符的操作数是从左到右求值的，对于__x^=expr__的表达式，x的值是在计算expr之前被提取的，那么因此也就有了上面这个结果。
 
 2、在做ACM的时候经常会用到位操作，但是被下面这个代码还是惊了一下：
+
 <pre class="prettyprint linenums lang-c prettyprinted">
 int i = 0;
 while (-1 << i != 0)
     i++;
 System.out.println(i);// 没输出，死循环啦。
 </pre>
-对于-1直观的想法是在i=32的时候__-1<<i==0__，因为左移了32位嘛，随便什么数都成0了。
 
-原因很简单：对于太大的数位操作会取模，比如int来说移位数为__i&31__，对于long来说移位数为__i&63__。
+对于-1直观的想法是在i=32的时候**-1\<\<i==0**，因为左移了32位嘛，随便什么数都成0了。
+
+原因很简单：对于太大的数位操作会取模，比如int来说移位数为__i&31__，对于long来说移位数为**i&63**。
 
 3、对于初始化顺序大家应该都是知道的，但是当看到下面这段代码输出9900的时候还是得仔细看一下：
-<pre class="prettyprint linenums lang-c prettyprinted">
+<pre class="prettyprint prettyprinted">
 public class TestMain {
     static {
         initializeIfNecessary();
@@ -86,8 +88,8 @@ public class TestMain {
 </pre>
 在加载的时候会先分配内存，然后依次执行static，而其顺序和申明的顺序一致，那么这个结果自然就明白了。
 
-4、第一眼看去这段代码重写的equals，而且非常正确，但是输出却是__false__。
-<pre class="prettyprint linenums lang-c prettyprinted">
+4、第一眼看去这段代码重写的equals，而且非常正确，但是输出却是**false**。
+<pre class="prettyprint prettyprinted">
 public class Name {
 	private String first, last;
 	public Name(String first, String last) {
@@ -108,10 +110,10 @@ public class Name {
 	}
 }
 </pre>
-这就是没有仔细思考的结果，想一下__HashSet.contains()__的运行机制就会焕然大悟：肯定是先比较hashCode，相同的情况下才调用equals。所以：__无论何时，只要你覆盖了equals方法，就同时必须覆盖hashCode方法__。
+这就是没有仔细思考的结果，想一下**HashSet.contains()**的运行机制就会焕然大悟：肯定是先比较hashCode，相同的情况下才调用equals。所以：**无论何时，只要你覆盖了equals方法，就同时必须覆盖hashCode方法**。
 
-5、对于这段代码可能会直观的顺着代码写的顺序去执行，但是非常容易忽略掉一点__static是类初始化的一部分__，当执行到t.join()的时候貌似主线程在等待t执行完成，但是此时主线程也在等待自己执行完成，所以**死锁**了。。。
-<pre class="prettyprint linenums lang-c prettyprinted">
+5、对于这段代码可能会直观的顺着代码写的顺序去执行，但是非常容易忽略掉一点**static是类初始化的一部分**，当执行到t.join()的时候貌似主线程在等待t执行完成，但是此时主线程也在等待自己执行完成，所以**死锁**了。。。
+<pre class="prettyprint prettyprinted">
 public class Lazy {
 	private static boolean initialized = false;
 	static {
