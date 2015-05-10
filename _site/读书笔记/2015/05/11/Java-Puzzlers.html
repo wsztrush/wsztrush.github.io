@@ -51,7 +51,7 @@
 
 <p>这本书给我们列举了很多Java编程中容易产生迷惑的地方，先看几个例子：</p>
 
-<p>1、在刚开始学编程的时候都会遇到__swap__操作，开始作为一个新手老老实实地用另外一个变量tmp来存，偶然看到用异或来实现感觉好牛逼，不过这种方式在Java上行不通：</p>
+<p>1、在刚开始学编程的时候都会遇到swap操作，开始作为一个新手老老实实地用另外一个变量tmp来存，偶然看到用异或来实现感觉好牛逼，不过这种方式在Java上行不通：</p>
 
 <pre class="prettyprint prettyprinted">
 int x = 1;
@@ -60,7 +60,7 @@ x ^= y ^= x ^= y;
 System.out.println("x = " + x + " y = " + y);
 </pre>
 
-<p>出乎意料地是这段代码执行的结果是__x = 0 y = 1__，而不是希望的__x = 2 y = 1__，接下来从字节码（javap -c）中找答案：</p>
+<p>出乎意料地是这段代码执行的结果是x = 0 y = 1，而不是希望的x = 2 y = 1，接下来从字节码（javap -c）中找答案：</p>
 
 <pre class="prettyprint prettyprinted">
    0:   iconst_1
@@ -84,7 +84,7 @@ System.out.println("x = " + x + " y = " + y);
 
 <p><img src="http://7xiz10.com1.z0.glb.clouddn.com/Java解惑-Stack.png" alt="栈帧的变化" /></p>
 
-<p>在Java语言规范描述中：操作符的操作数是从左到右求值的，对于__x^=expr__的表达式，x的值是在计算expr之前被提取的，那么因此也就有了上面这个结果。</p>
+<p>在Java语言规范描述中：操作符的操作数是从左到右求值的，对于x^=expr的表达式，x的值是在计算expr之前被提取的，那么因此也就有了上面这个结果。</p>
 
 <p>2、在做ACM的时候经常会用到位操作，但是被下面这个代码还是惊了一下：</p>
 
@@ -97,7 +97,7 @@ System.out.println(i);// 没输出，死循环啦。
 
 <p>对于-1直观的想法是在i=32的时候<strong>-1&lt;&lt;i==0</strong>，因为左移了32位嘛，随便什么数都成0了。</p>
 
-<p>原因很简单：对于太大的数位操作会取模，比如int来说移位数为__i&amp;31__，对于long来说移位数为<strong>i&amp;63</strong>。</p>
+<p>原因很简单：对于太大的数位操作会取模，比如int来说移位数为<strong>i&amp;31</strong>，对于long来说移位数为<strong>i&amp;63</strong>。</p>
 
 <p>3、对于初始化顺序大家应该都是知道的，但是当看到下面这段代码输出9900的时候还是得仔细看一下：</p>
 <pre class="prettyprint prettyprinted">

@@ -5,8 +5,8 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 11 May 2015 07:35:56 +0800</pubDate>
-    <lastBuildDate>Mon, 11 May 2015 07:35:56 +0800</lastBuildDate>
+    <pubDate>Mon, 11 May 2015 07:38:04 +0800</pubDate>
+    <lastBuildDate>Mon, 11 May 2015 07:38:04 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
@@ -15,7 +15,7 @@
 
 &lt;p&gt;这本书给我们列举了很多Java编程中容易产生迷惑的地方，先看几个例子：&lt;/p&gt;
 
-&lt;p&gt;1、在刚开始学编程的时候都会遇到__swap__操作，开始作为一个新手老老实实地用另外一个变量tmp来存，偶然看到用异或来实现感觉好牛逼，不过这种方式在Java上行不通：&lt;/p&gt;
+&lt;p&gt;1、在刚开始学编程的时候都会遇到swap操作，开始作为一个新手老老实实地用另外一个变量tmp来存，偶然看到用异或来实现感觉好牛逼，不过这种方式在Java上行不通：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint prettyprinted&quot;&gt;
 int x = 1;
@@ -24,7 +24,7 @@ x ^= y ^= x ^= y;
 System.out.println(&quot;x = &quot; + x + &quot; y = &quot; + y);
 &lt;/pre&gt;
 
-&lt;p&gt;出乎意料地是这段代码执行的结果是__x = 0 y = 1__，而不是希望的__x = 2 y = 1__，接下来从字节码（javap -c）中找答案：&lt;/p&gt;
+&lt;p&gt;出乎意料地是这段代码执行的结果是x = 0 y = 1，而不是希望的x = 2 y = 1，接下来从字节码（javap -c）中找答案：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint prettyprinted&quot;&gt;
    0:   iconst_1
@@ -48,7 +48,7 @@ System.out.println(&quot;x = &quot; + x + &quot; y = &quot; + y);
 
 &lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Java解惑-Stack.png&quot; alt=&quot;栈帧的变化&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;在Java语言规范描述中：操作符的操作数是从左到右求值的，对于__x^=expr__的表达式，x的值是在计算expr之前被提取的，那么因此也就有了上面这个结果。&lt;/p&gt;
+&lt;p&gt;在Java语言规范描述中：操作符的操作数是从左到右求值的，对于x^=expr的表达式，x的值是在计算expr之前被提取的，那么因此也就有了上面这个结果。&lt;/p&gt;
 
 &lt;p&gt;2、在做ACM的时候经常会用到位操作，但是被下面这个代码还是惊了一下：&lt;/p&gt;
 
@@ -61,7 +61,7 @@ System.out.println(i);// 没输出，死循环啦。
 
 &lt;p&gt;对于-1直观的想法是在i=32的时候&lt;strong&gt;-1&amp;lt;&amp;lt;i==0&lt;/strong&gt;，因为左移了32位嘛，随便什么数都成0了。&lt;/p&gt;
 
-&lt;p&gt;原因很简单：对于太大的数位操作会取模，比如int来说移位数为__i&amp;amp;31__，对于long来说移位数为&lt;strong&gt;i&amp;amp;63&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;原因很简单：对于太大的数位操作会取模，比如int来说移位数为&lt;strong&gt;i&amp;amp;31&lt;/strong&gt;，对于long来说移位数为&lt;strong&gt;i&amp;amp;63&lt;/strong&gt;。&lt;/p&gt;
 
 &lt;p&gt;3、对于初始化顺序大家应该都是知道的，但是当看到下面这段代码输出9900的时候还是得仔细看一下：&lt;/p&gt;
 &lt;pre class=&quot;prettyprint prettyprinted&quot;&gt;
