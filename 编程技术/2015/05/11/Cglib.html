@@ -1,0 +1,246 @@
+<!DOCTYPEhtmlPUBLIC"-//W3C//DTDXHTML1.0Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html>
+	<!-- 引入CSS/JS -->
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="/assets/css/main.css"/>
+	<script type="text/javascript" src="/assets/javascripts/main.js"></script>
+
+	<!-- pygments代码高亮 -->
+	<!-- <link rel="stylesheet" type="text/css" href="/assets/css/pygments.css"/> -->
+	<!-- google代码高亮 -->
+	<script src="/assets/css/prettify.js"></script>
+	<link href="/assets/css/prettify.css" rel="stylesheet">
+	<title>CGlib</title>
+</head>
+
+	<body onload="prettyPrint()">
+		<!-- 导航栏设计 -->
+<nav>
+	<div style="padding:10px;">
+		<a href="/" style="border-bottom-style:none;"><img src="http://7xiz10.com1.z0.glb.clouddn.com/三人行.jpg" style="width:220px;"/></a>
+	</div>
+	<div style="color:#FFF;font-size:24px;padding:10px;">
+		<b>wsztrush</b>
+		<ul style="padding-left:0px;list-style-type:none;">
+			
+			<li>
+			<a href="/categories/里程碑">里程碑 x 1</a>
+			</li>
+			
+			<li>
+			<a href="/categories/读书笔记">读书笔记 x 4</a>
+			</li>
+			
+			<li>
+			<a href="/categories/编程技术">编程技术 x 2</a>
+			</li>
+			
+			<li>
+			<a href="/categories/数学">数学 x 1</a>
+			</li>
+			
+		</ul>
+	</div>
+</nav>
+
+		<div class="post-container">
+			<div style="padding:40px;">
+				<h1>CGlib</h1>
+				<p>在学习Spring的时候接触到CGlib，是一个强大的Code生成类库！可以在运行期扩展Java接口，其底层是ASM框架。当然可以直接使用ASM，不过门槛较高。</p>
+
+<h2 id="section">代理</h2>
+
+<p>首先来看JDK中原生的代理实现，首先实现<strong>InvocationHandler</strong>接口，相当于目标方法的代理：</p>
+<pre class="prettyprint">
+public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+	System.out.println("------------------before------------------");
+	Object result = method.invoke(target, args); // 调用方法
+	System.out.println("-------------------after------------------");
+	return result;
+}
+</pre>
+
+<p>然后创建代理对象：</p>
+
+<pre class="prettyprint">
+Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
+	target.getClass().getInterfaces(), // 要实现的接口
+	this); // InvocationHandler的实现
+</pre>
+
+<p>JDK的代理最大的限制在于必须实现接口，而CGlib则并没有设置这个限制，而<strong>MethodInterceptor</strong>的用法与InvocationHandler几乎相同：</p>
+
+<pre class="prettyprint">
+static class MyMethodInterceptor implements MethodInterceptor {
+	public Object intercept(Object targe, Method method, Object[] args, MethodProxy methodProxy) throws Throwable {
+		System.out.println("BEFORE");
+		Object result = methodProxy.invokeSuper(targe, args);
+		System.out.println("AFTER");
+		return result;
+	}
+	public Object createProxy() {
+		Enhancer enhancer = new Enhancer();
+		enhancer.setSuperclass(MyService.class);
+		enhancer.setCallback(this);
+		return enhancer.create();
+	}
+}
+</pre>
+
+<p>当<strong>Enhancer.setCallbacks</strong>设置了多个代理类怎么办呢？可以通过<strong>CallbackFilter</strong>来指定其执行顺序：</p>
+
+<pre class="prettyprint">
+public interface CallbackFilter {
+	int accept(Method method);// 返回方法对应的下标
+}
+</pre>
+
+<p>总感觉accept这个方法名起得太失败- -!再来看一个<strong>LazyLoader</strong>的例子，不明觉厉啊：</p>
+
+<pre class="prettyprint">
+public class TestLazyLoader {
+	static class MyBean {
+	}
+	static class My {
+		MyBean myBean = (MyBean) Enhancer.create(MyBean.class, new MyLazy());
+	}
+	static class MyLazy implements LazyLoader {
+		public Object loadObject() throws Exception {
+			System.out.println("开始延迟加载!");
+			return new MyBean();
+		}
+	}
+	public static void main(String[] args) {
+		My my = new My();
+		System.out.println(my.myBean);// 如果没有这一句，就不会有任何输出
+	}
+}
+</pre>
+
+<p>感觉有点不可思议，用什么方法才能拦截获取属性这个操作？再仔细想一下，应该不是这样！在System.out.println()执行的时候会调用对象的toString方法，赶紧用<strong>javap -verbose xxx</strong>来看生成的字节码，发现：</p>
+
+<pre class="prettyprint">
+public final java.lang.String toString();
+  Code:
+   Stack=2, Locals=1, Args_size=1
+   0:   aload_0
+   1:   dup
+   2:   invokevirtual   #30; //Method CGLIB$LOAD_PRIVATE_0:()Ljava/lang/Object;
+   5:   invokevirtual   #38; //Method java/lang/Object.toString:()Ljava/lang/String;
+   8:   areturn
+</pre>
+
+<p>果然如此:D。</p>
+
+<h2 id="section-1">多继承</h2>
+
+<p>在Java中都是单继承的，当然CGlib也没办法打破这个限制，用多继承来描述<strong>Mixin</strong>貌似并不合适，但现在也没想到其他更好的：</p>
+
+<pre class="prettyprint">
+public static void main(String[] args) {
+	Mixin mixin = Mixin.create(new Class[] { Inter1.class, Inter2.class },
+	new Object[] {
+		new Inter1() {
+			public void fun1(String arg0) {
+				System.out.println("Inter1 - " + arg0);
+			}
+		},
+		new Inter2() {
+			public void fun1(String arg0) {
+				System.out.println("Inter2 - " + arg0);
+			}
+			public void fun2(int arg0) {
+				System.out.println("Inter2 - " + arg0);
+			}
+		},
+	});
+	Inter1 inter1 = (Inter1) mixin;
+	inter1.fun1("hello");// Inter1 - hello
+	Inter2 inter2 = (Inter2) mixin;
+	inter2.fun1("world");// Inter1 - world
+	inter2.fun2(999);// Inter2 - 999
+}
+</pre>
+
+<p>在多个类中有多个相同的方法时，总是前面的覆盖后面的，在底层具体的实现中应该是循环多次继承来实现多重继承的效果。</p>
+
+<h2 id="section-2">工具类</h2>
+
+<p>在业务代码中总会涉及到各种DO、BO、DTO等等，并需要经常在他们之间转化，CGlib提供了BeanCopier用来自动完成相同属性名称的映射：</p>
+
+<pre class="prettyprint">
+static class A {
+	private int a = 1;
+	private int b = 2;
+	/** Setter And Getter */
+}
+static class B {
+	private int a = 3;
+	private int c = 4;
+	/** Setter And Getter */
+}
+public static void main(String[] args) {
+	BeanCopier beanCopier = BeanCopier.create(A.class, B.class, false);
+	A a = new A();
+	B b = new B();
+	beanCopier.copy(a, b, null);// 从a拷贝到b
+	System.out.println(a.a + " " + a.b); // 1 2
+	System.out.println(b.a + " " + b.c); // 1 4
+}
+</pre>
+
+<p>当类型不匹配的时候需要用<strong>Converter</strong>进行转换：</p>
+
+<pre class="prettyprint">
+public interface Converter {
+	/**
+	* @param value 源对象属性
+	* @param targetClass 目标对象属性类
+	* @param setterName 目标对象setter方法名
+	* @return 转换后的结果
+	*/
+	java.lang.Object convert(Object value, Class targetClass, Object setterName);
+}
+</pre>
+
+<p>另外和Bean相关的还有其他几个类：</p>
+
+<ol>
+  <li><strong>BeanGenerator</strong>：根据Map动态生成BeanClass。</li>
+  <li><strong>BeanMap</strong>：将Bean转换成一个Map。</li>
+  <li><strong>BulkBean</strong>：更方便地操作属性。</li>
+</ol>
+
+<p>CGlib提供了<strong>FastClass</strong>来方便地进行反射操作。</p>
+
+<p><a href="https://github.com/wsztrush/cglib-demo">这里</a>有我写的一些测试DEMO。最后，其他操作字节码的工具还有：javassist，BCEL，ASM等。</p>
+
+				<!-- 评论组件 -->
+				<div id="disqus_thread"/>
+			</div>
+		</div>
+	</body>
+</html>
+<!-- 评论组件 -->
+<script type="text/javascript">
+	var disqus_shortname = 'wsztrush';
+	(function() {
+		var dsq = document.createElement('script');
+		dsq.type = 'text/javascript';
+		dsq.async = true;
+		dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	})();
+</script>
+<!-- 百度访问统计 -->
+<script>
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?08a976e8d7e5a20acfcb566bd22a1db1";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
