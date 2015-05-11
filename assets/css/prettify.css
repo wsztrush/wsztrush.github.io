@@ -58,6 +58,8 @@
 pre.prettyprint {
   background-color: #042029;
   padding: 10px;
+  font-family: Menlo,Monaco,"Andale Mono","lucida console","Courier New",monospace !important;
+  font-size:13px;
   /* border: 1px solid #E1E1E8; */
 }
 
