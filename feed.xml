@@ -5,8 +5,8 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 13 May 2015 22:19:11 +0800</pubDate>
-    <lastBuildDate>Wed, 13 May 2015 22:19:11 +0800</lastBuildDate>
+    <pubDate>Wed, 13 May 2015 22:21:17 +0800</pubDate>
+    <lastBuildDate>Wed, 13 May 2015 22:21:17 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
@@ -23,7 +23,7 @@
       </item>
     
       <item>
-        <title>Linux内存管理</title>
+        <title>歌德尔不完备定理</title>
         <description>&lt;h2 id=&quot;section&quot;&gt;写在前面&lt;/h2&gt;
 
 &lt;p&gt;&lt;strong&gt;希尔伯特&lt;/strong&gt;是19世纪和20世纪初最具影响力的数学家之一，在严格化的大纷争中，他带领的形式主义派系技压群雄，得到许多当时有名望的数学家的支持。希尔伯特打算通过形式化的手段，将证明抽象成一堆符号的转换。令人惊奇的是这似乎真的可行！为此，希尔伯特希望能够证明：&lt;/p&gt;
@@ -87,11 +87,11 @@ p：SU(G(SU))。&lt;/p&gt;
 
 </description>
         <pubDate>Wed, 13 May 2015 00:00:00 +0800</pubDate>
-        <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/05/13/Incompleteness-Theorems.html</link>
-        <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/05/13/Incompleteness-Theorems.html</guid>
+        <link>/%E6%95%B0%E5%AD%A6/2015/05/13/Incompleteness-Theorems.html</link>
+        <guid isPermaLink="true">/%E6%95%B0%E5%AD%A6/2015/05/13/Incompleteness-Theorems.html</guid>
         
         
-        <category>编程技术</category>
+        <category>数学</category>
         
       </item>
     
