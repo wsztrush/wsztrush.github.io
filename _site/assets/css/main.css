@@ -48,10 +48,12 @@ blockquote  {
 }
 
 .post-container h2 {
-	background-color:black;
-	padding:10px;
-	border-left-width:8px;
-	border-left-style:solid;
+	background-color: white;
+	padding: 10px;
+	border-left-width: 8px;
+	border-left-style: solid;
+	color: black;
+	border-left-color: #0af;
 }
 
 .post-container img {
