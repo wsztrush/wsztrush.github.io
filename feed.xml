@@ -5,9 +5,142 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 13 May 2015 21:59:20 +0800</pubDate>
-    <lastBuildDate>Wed, 13 May 2015 21:59:20 +0800</lastBuildDate>
+    <pubDate>Wed, 13 May 2015 22:16:51 +0800</pubDate>
+    <lastBuildDate>Wed, 13 May 2015 22:16:51 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
+    
+      <item>
+        <title>Linux内存管理</title>
+        <description>
+</description>
+        <pubDate>Wed, 13 May 2015 00:00:00 +0800</pubDate>
+        <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/05/13/Linux-Memory.html</link>
+        <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/05/13/Linux-Memory.html</guid>
+        
+        
+        <category>编程技术</category>
+        
+      </item>
+    
+      <item>
+        <title>Linux内存管理</title>
+        <description>&lt;h2 id=&quot;section&quot;&gt;写在前面&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;希尔伯特&lt;/strong&gt;是19世纪和20世纪初最具影响力的数学家之一，在严格化的大纷争中，他带领的形式主义派系技压群雄，得到许多当时有名望的数学家的支持。希尔伯特打算通过形式化的手段，将证明抽象成一堆符号的转换。令人惊奇的是这似乎真的可行！为此，希尔伯特希望能够证明：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;在任意一个无矛盾的形式系统中，对任意的陈述，都能判断出真伪。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;然而，这一企图被&lt;strong&gt;哥德尔&lt;/strong&gt;的博士论文《论数学原理及有关系统中不可判定命题》无情击碎，不完备性定理揭示：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;在任意一个无矛盾的形式系统中，存在命题，无法证明其真伪。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;这在当时的数学界掀起轩然大波，它不仅具有数学意义，还蕴含着深刻的哲学意义。&lt;/p&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;证明&lt;/h2&gt;
+
+&lt;p&gt;不能判断出真伪，自然就想到古老的悖论：&lt;strong&gt;这句话是假的&lt;/strong&gt;（说它真也不行，说它假也不行！）。1905年法国数学家&lt;strong&gt;理查德&lt;/strong&gt;在数学系统中构造出来这样的悖论：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;用语言描述自然数的性质；&lt;/li&gt;
+  &lt;li&gt;将性质的描述语言映射到一个自然数；&lt;/li&gt;
+  &lt;li&gt;如果自然数不符合对应的性质，则称其具有理查兹性，该自然数称为理查德数；&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;理查兹性也是一个自然数的性质，对应的编号为N，那么N是理查德数吗？&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;理查德悖论&lt;/strong&gt;是有瑕疵的：自然数的性质应该是“能被2整除”、“大于100”等，而理查兹性质则把性质和描述性质的语言纠缠在一起了！&lt;/p&gt;
+
+&lt;p&gt;罗素和一些人认为如果把对象语言和讨论对象语言的&lt;strong&gt;元语言&lt;/strong&gt;区分开来就能避免这种问题。希尔伯特用精确的形式语言构建的形式公理系统，已经严格区分了数学和元数学，建立起隔离墙，堵住了这个漏洞。哥德尔要想把&lt;strong&gt;这个公式是不可证明的&lt;/strong&gt;放在系统里，必须绕过这堵墙，用数学语言来描述即证明：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;在任何相容的形式系统，只要蕴含皮亚诺算术公理，就可以在其中构造在体系中不能被证明的命题，因此通过推演不能得到所有的真命题（即体系是不完备的）。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;所谓&lt;strong&gt;相容&lt;/strong&gt;，就是不矛盾，所谓&lt;strong&gt;完备&lt;/strong&gt;，就是所有的真理都能被形式证明，所谓&lt;strong&gt;皮亚诺算术公理&lt;/strong&gt;是指意大利数学家&lt;strong&gt;皮亚诺&lt;/strong&gt;提出的关于自然数的五条公理系统：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;1是自然数&lt;/li&gt;
+  &lt;li&gt;每一个确定的自然数a都有一个确定的后继数a’&lt;/li&gt;
+  &lt;li&gt;当且仅当b’=c’时有b=c&lt;/li&gt;
+  &lt;li&gt;1不是任何自然数的后继数&lt;/li&gt;
+  &lt;li&gt;任意关于自然数的命题，如果证明1是对的，并且假设n对的情况下n’也是对的，那么所有的自然数都是对的（数学归纳法）&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;根据这五条公理系统可以建立起一阶算术系统。&lt;/p&gt;
+
+&lt;p&gt;我们来看哥德尔的证明，首先他将命题映射成自然数，现在搞计算机的一看可能觉得用Unicode不就完了？但是这个论文比计算机早了很多年，可以了解一下&lt;strong&gt;哥德尔编码&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;G(F)：命题F(x)的哥德尔数。
+P(x)：在系统中哥德尔数x对应的命题是可证明的。
+SU(z)：对于F(x)有z=G(F)，设y是命题F(G(F))的哥德尔数，则有~P(y)成立。
+p：SU(G(SU))。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;当问到p是否为真的时候，我们其实就是在问&lt;strong&gt;不可证这个特性本身是不可证的吗？&lt;/strong&gt;这样就造成了矛盾（这是Wikipedia上面给出的）。&lt;/p&gt;
+
+&lt;h2 id=&quot;section-2&quot;&gt;意义&lt;/h2&gt;
+
+</description>
+        <pubDate>Wed, 13 May 2015 00:00:00 +0800</pubDate>
+        <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/05/13/Incompleteness-Theorems.html</link>
+        <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/05/13/Incompleteness-Theorems.html</guid>
+        
+        
+        <category>编程技术</category>
+        
+      </item>
+    
+      <item>
+        <title>2015/5~2015/7</title>
+        <description>&lt;h2 id=&quot;section&quot;&gt;计划&lt;/h2&gt;
+
+&lt;h3 id=&quot;section-1&quot;&gt;工作&lt;/h3&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;拣选单执行情况实时计算完成&lt;/li&gt;
+  &lt;li&gt;大宝监控方案设计&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;section-2&quot;&gt;生活&lt;/h3&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;一周最少五天晨跑(2KM)&lt;/li&gt;
+  &lt;li&gt;五月份每周一次10KM晨跑，六月份每周一次半马(21KM)&lt;/li&gt;
+  &lt;li&gt;结婚&lt;/li&gt;
+  &lt;li&gt;找个避暑的地方玩一把&lt;/li&gt;
+  &lt;li&gt;放弃DOTA &amp;gt;_&amp;lt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;section-3&quot;&gt;读书&amp;amp;学习&lt;/h3&gt;
+
+&lt;p&gt;读一些开阔视野但是不需要深入思考的书：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://img5.douban.com/mpic/s1331728.jpg&quot; alt=&quot;费马大定理&quot; /&gt;
+&lt;img src=&quot;http://img3.douban.com/mpic/s3010562.jpg&quot; alt=&quot;哥德尔证明&quot; /&gt;
+&lt;img src=&quot;http://img3.douban.com/mpic/s10685385.jpg&quot; alt=&quot;自控力&quot; /&gt;
+&lt;img src=&quot;http://img3.douban.com/mpic/s1055134.jpg&quot; alt=&quot;晚清七十年&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;精读并实践进而转化成自己的技能的书：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://img5.douban.com/mpic/s7661036.jpg&quot; alt=&quot;编程语言实现模式&quot; /&gt;
+&lt;img src=&quot;http://img5.douban.com/mpic/s24436529.jpg&quot; alt=&quot;The Definitive ANTLR 4 Reference&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;section-4&quot;&gt;完成情况&lt;/h2&gt;
+
+</description>
+        <pubDate>Wed, 13 May 2015 00:00:00 +0800</pubDate>
+        <link>/%E9%87%8C%E7%A8%8B%E7%A2%91/2015/05/13/15-5-6.html</link>
+        <guid isPermaLink="true">/%E9%87%8C%E7%A8%8B%E7%A2%91/2015/05/13/15-5-6.html</guid>
+        
+        
+        <category>里程碑</category>
+        
+      </item>
     
       <item>
         <title>Java 解惑</title>
@@ -349,79 +482,6 @@ public interface Converter {
         
         
         <category>编程技术</category>
-        
-      </item>
-    
-      <item>
-        <title>哥德尔不完备性定理</title>
-        <description>&lt;h2 id=&quot;section&quot;&gt;写在前面&lt;/h2&gt;
-
-&lt;p&gt;&lt;strong&gt;希尔伯特&lt;/strong&gt;是19世纪和20世纪初最具影响力的数学家之一，在严格化的大纷争中，他带领的形式主义派系技压群雄，得到许多当时有名望的数学家的支持。希尔伯特打算通过形式化的手段，将证明抽象成一堆符号的转换。令人惊奇的是这似乎真的可行！为此，希尔伯特希望能够证明：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;在任意一个无矛盾的形式系统中，对任意的陈述，都能判断出真伪。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;然而，这一企图被&lt;strong&gt;哥德尔&lt;/strong&gt;的博士论文《论数学原理及有关系统中不可判定命题》无情击碎，不完备性定理揭示：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;在任意一个无矛盾的形式系统中，存在命题，无法证明其真伪。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;这在当时的数学界掀起轩然大波，它不仅具有数学意义，还蕴含着深刻的哲学意义。&lt;/p&gt;
-
-&lt;h2 id=&quot;section-1&quot;&gt;证明&lt;/h2&gt;
-
-&lt;p&gt;不能判断出真伪，自然就想到古老的悖论：&lt;strong&gt;这句话是假的&lt;/strong&gt;（说它真也不行，说它假也不行！）。1905年法国数学家&lt;strong&gt;理查德&lt;/strong&gt;在数学系统中构造出来这样的悖论：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;用语言描述自然数的性质；&lt;/li&gt;
-  &lt;li&gt;将性质的描述语言映射到一个自然数；&lt;/li&gt;
-  &lt;li&gt;如果自然数不符合对应的性质，则称其具有理查兹性，该自然数称为理查德数；&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;理查兹性也是一个自然数的性质，对应的编号为N，那么N是理查德数吗？&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;理查德悖论&lt;/strong&gt;是有瑕疵的：自然数的性质应该是“能被2整除”、“大于100”等，而理查兹性质则把性质和描述性质的语言纠缠在一起了！&lt;/p&gt;
-
-&lt;p&gt;罗素和一些人认为如果把对象语言和讨论对象语言的&lt;strong&gt;元语言&lt;/strong&gt;区分开来就能避免这种问题。希尔伯特用精确的形式语言构建的形式公理系统，已经严格区分了数学和元数学，建立起隔离墙，堵住了这个漏洞。哥德尔要想把&lt;strong&gt;这个公式是不可证明的&lt;/strong&gt;放在系统里，必须绕过这堵墙，用数学语言来描述即证明：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;在任何相容的形式系统，只要蕴含皮亚诺算术公理，就可以在其中构造在体系中不能被证明的命题，因此通过推演不能得到所有的真命题（即体系是不完备的）。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;所谓&lt;strong&gt;相容&lt;/strong&gt;，就是不矛盾，所谓&lt;strong&gt;完备&lt;/strong&gt;，就是所有的真理都能被形式证明，所谓&lt;strong&gt;皮亚诺算术公理&lt;/strong&gt;是指意大利数学家&lt;strong&gt;皮亚诺&lt;/strong&gt;提出的关于自然数的五条公理系统：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;1是自然数&lt;/li&gt;
-  &lt;li&gt;每一个确定的自然数a都有一个确定的后继数a’&lt;/li&gt;
-  &lt;li&gt;当且仅当b’=c’时有b=c&lt;/li&gt;
-  &lt;li&gt;1不是任何自然数的后继数&lt;/li&gt;
-  &lt;li&gt;任意关于自然数的命题，如果证明1是对的，并且假设n对的情况下n’也是对的，那么所有的自然数都是对的（数学归纳法）&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;根据这五条公理系统可以建立起一阶算术系统。&lt;/p&gt;
-
-&lt;p&gt;我们来看哥德尔的证明，首先他将命题映射成自然数，现在搞计算机的一看可能觉得用Unicode不就完了？但是这个论文比计算机早了很多年，可以了解一下&lt;strong&gt;哥德尔编码&lt;/strong&gt;。&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;G(F)：命题F(x)的哥德尔数。
-P(x)：在系统中哥德尔数x对应的命题是可证明的。
-SU(z)：对于F(x)有z=G(F)，设y是命题F(G(F))的哥德尔数，则有~P(y)成立。
-p：SU(G(SU))。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;当问到p是否为真的时候，我们其实就是在问&lt;strong&gt;不可证这个特性本身是不可证的吗？&lt;/strong&gt;这样就造成了矛盾（这是Wikipedia上面给出的）。&lt;/p&gt;
-
-&lt;h2 id=&quot;section-2&quot;&gt;意义&lt;/h2&gt;
-
-</description>
-        <pubDate>Sat, 09 May 2015 03:00:00 +0800</pubDate>
-        <link>/%E6%95%B0%E5%AD%A6/2015/05/09/Incompleteness-Theorems.html</link>
-        <guid isPermaLink="true">/%E6%95%B0%E5%AD%A6/2015/05/09/Incompleteness-Theorems.html</guid>
-        
-        
-        <category>数学</category>
         
       </item>
     
