@@ -1,8 +1,8 @@
 ---
 layout: post
-title: 哥德尔不完备性定理
-date: 2015-05-08 19:00:00
-categories: 数学
+title: Linux内存管理
+date: 2015-05-13
+categories: 编程技术
 
 ---
 
