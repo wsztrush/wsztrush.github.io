@@ -5,8 +5,8 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 11 May 2015 22:54:07 +0800</pubDate>
-    <lastBuildDate>Mon, 11 May 2015 22:54:07 +0800</lastBuildDate>
+    <pubDate>Wed, 13 May 2015 21:47:53 +0800</pubDate>
+    <lastBuildDate>Wed, 13 May 2015 21:47:53 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
@@ -372,13 +372,48 @@ public interface Converter {
 
 &lt;h2 id=&quot;section-1&quot;&gt;证明&lt;/h2&gt;
 
+&lt;p&gt;不能判断出真伪，自然就想到古老的悖论：&lt;strong&gt;这句话是假的&lt;/strong&gt;（说它真也不行，说它假也不行！）。1905年法国数学家&lt;strong&gt;理查德&lt;/strong&gt;在数学系统中构造出来这样的悖论：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;用语言描述自然数的性质；&lt;/li&gt;
+  &lt;li&gt;将性质的描述语言映射到一个自然数；&lt;/li&gt;
+  &lt;li&gt;如果自然数不符合对应的性质，则称其具有理查兹性，该自然数称为理查德数；&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;理查兹性也是一个自然数的性质，对应的编号为N，那么N是理查德数吗？&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;理查德悖论&lt;/strong&gt;是有瑕疵的：自然数的性质应该是“能被2整除”、“大于100”等，而理查兹性质则把性质和描述性质的语言纠缠在一起了！&lt;/p&gt;
+
+&lt;p&gt;罗素和一些人认为如果把对象语言和讨论对象语言的&lt;strong&gt;元语言&lt;/strong&gt;区分开来就能避免这种问题。希尔伯特用精确的形式语言构建的形式公理系统，已经严格区分了数学和元数学，建立起隔离墙，堵住了这个漏洞。哥德尔要想把&lt;strong&gt;这个公式是不可证明的&lt;/strong&gt;放在系统里，必须绕过这堵墙，用数学语言来描述即证明：&lt;/p&gt;
+
 &lt;blockquote&gt;
-  &lt;p&gt;我说的&lt;strong&gt;这句话&lt;/strong&gt;是假的。&lt;/p&gt;
+  &lt;p&gt;在任何相容的形式系统，只要蕴含皮亚诺算术公理，就可以在其中构造在体系中不能被证明的命题，因此通过推演不能得到所有的真命题（即体系是不完备的）。&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;h2 id=&quot;section-2&quot;&gt;意义&lt;/h2&gt;
+&lt;p&gt;所谓&lt;strong&gt;相容&lt;/strong&gt;，就是不矛盾，所谓&lt;strong&gt;完备&lt;/strong&gt;，就是所有的真理都能被形式证明，所谓&lt;strong&gt;皮亚诺算术公理&lt;/strong&gt;是指意大利数学家&lt;strong&gt;皮亚诺&lt;/strong&gt;提出的关于自然数的五条公理系统：&lt;/p&gt;
 
-&lt;h2 id=&quot;section-3&quot;&gt;图灵停机问题&lt;/h2&gt;
+&lt;ol&gt;
+  &lt;li&gt;1是自然数&lt;/li&gt;
+  &lt;li&gt;每一个确定的自然数a都有一个确定的后继数a’&lt;/li&gt;
+  &lt;li&gt;当且仅当b’=c’时有b=c&lt;/li&gt;
+  &lt;li&gt;1不是任何自然数的后继数&lt;/li&gt;
+  &lt;li&gt;任意关于自然数的命题，如果证明1是对的，并且假设n对的情况下n’也是对的，那么所有的自然数都是对的（数学归纳法）&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;根据这五条公理系统可以建立起一阶算术系统。&lt;/p&gt;
+
+&lt;p&gt;我们来看哥德尔的证明，首先他将命题映射成自然数，现在搞计算机的一看可能觉得用Unicode不就完了？但是这个论文比计算机早了很多年，可以了解一下&lt;strong&gt;哥德尔编码&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;G(F)：命题F(x)的哥德尔数。
+P(x)：在系统中哥德尔数x对应的命题是可证明的。
+SU(z)：对于F(x)有z=G(F)，设y是命题F(G(F))的哥德尔数，则有~P(y)成立。
+p：SU(G(SU))。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;当问到p是否为真的时候，我们其实就是在问&lt;strong&gt;不可证这个特性本身是不可证的吗？&lt;/strong&gt;这样就造成了矛盾（这是Wikipedia上面给出的）。&lt;/p&gt;
+
+&lt;h2 id=&quot;section-2&quot;&gt;意义&lt;/h2&gt;
 
 </description>
         <pubDate>Sat, 09 May 2015 03:00:00 +0800</pubDate>
