@@ -1,8 +1,8 @@
 ---
 layout: post
-title: Linux内存管理
+title: 歌德尔不完备定理
 date: 2015-05-13
-categories: 编程技术
+categories: 数学
 
 ---
 
