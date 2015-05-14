@@ -53,7 +53,7 @@
 
 <pre class="prettyprint">
 class JavaBean {
-    ThreadLocal<integer> threadLocal = new ThreadLocal<integer>();
+    ThreadLocal\&lt;Integer\&gt; threadLocal = new ThreadLocal\&lt;Integer\&gt;();
 
     public void prepare() {
         threadLocal.set(0);
@@ -90,22 +90,21 @@ public class ThreadLocalDemo {
         }
     }
 }
+</pre>
 
+<p>可以将ThreadLocal看做是对<strong>Thread.threadLocals</strong>的封装，况且在程序中也是不能直接访问到Thread.threadLocals。</p>
 
+<h2 id="section-1">原理</h2>
 
-可以将ThreadLocal看做是对**Thread.threadLocals**的封装，况且在程序中也是不能直接访问到Thread.threadLocals。
-
-## 原理
-
-下面简单看ThreadLocal的原理，在Thread中保存了一个Map，类型可以认为是**Map\&lt;ThreadLocal, T\&gt;**，其中T是要保存数据的类型。当要从中取出数据时，调用的流程如下：
+<p>下面简单看ThreadLocal的原理，在Thread中保存了一个Map，类型可以认为是<strong>Map&lt;ThreadLocal, T&gt;</strong>，其中T是要保存数据的类型。当要从中取出数据时，调用的流程如下：</p>
 
 <pre class="prettyprint">
 Thread.currentThread().threadLocals.getEntry(threadLocal).value
 </pre>
 
-这样，不同的线程在执行的时候在同一个threadLocal上获取到的是不同的数据，线程之间的隔离性是通过"各自保存不同的Map"来实现的。其实如果让你来做一个线程安全的数据保存的解决方法很可能也是这个思路。
+<p>这样，不同的线程在执行的时候在同一个threadLocal上获取到的是不同的数据，线程之间的隔离性是通过”各自保存不同的Map”来实现的。其实如果让你来做一个线程安全的数据保存的解决方法很可能也是这个思路。</p>
 
-在ThreadLocalMap中使用的并不是普通的引用保存数据，而是使用WeakReference来做：
+<p>在ThreadLocalMap中使用的并不是普通的引用保存数据，而是使用WeakReference来做：</p>
 
 <pre class="prettyprint">
 static class Entry extends WeakReference<threadlocal> {
@@ -118,7 +117,7 @@ static class Entry extends WeakReference<threadlocal> {
 
 
 这样如果ThreadLocal被释放了，那么ThreadLocalMap中的Entry也会被释放，不至于造成内存泄露。
-</threadlocal></pre></integer></integer></pre>
+</threadlocal></pre>
 
 				<!-- 评论组件 -->
 				<div id="disqus_thread"/>
