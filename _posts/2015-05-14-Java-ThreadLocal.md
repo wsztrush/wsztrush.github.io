@@ -12,7 +12,7 @@ categories: 编程技术
 
 <pre class="prettyprint">
 class JavaBean {
-    ThreadLocal\<Integer\> threadLocal = new ThreadLocal\<Integer\>();
+    ThreadLocal<Integer\> threadLocal = new ThreadLocal\<Integer\>();
 
     public void prepare() {
         threadLocal.set(0);
