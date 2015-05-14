@@ -12,14 +12,14 @@ categories: 编程技术
 
 <pre class="prettyprint">
 class JavaBean {
-    ThreadLocal<Integer&gt; threadLocal = new ThreadLocal<Integer\>();
+    ThreadLocal&lt;Integer&gt; threadLocal = new ThreadLocal&lt;Integer&gt;();
 
     public void prepare() {
         threadLocal.set(0);
     }
 
     public void work() {
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i &lt; 1000; i++) {
             int val = threadLocal.get();
             val++;
             threadLocal.set(val);
@@ -44,7 +44,7 @@ class Worker extends Thread {
 public class ThreadLocalDemo {
     public static void main(String[] args) {
         JavaBean bean = new JavaBean();
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i &lt; 100; i++) {
             new Worker(bean).start();
         }
     }
@@ -67,7 +67,7 @@ Thread.currentThread().threadLocals.getEntry(threadLocal).value
 在ThreadLocalMap中使用的并不是普通的引用保存数据，而是使用WeakReference来做：
 
 <pre class="prettyprint">
-static class Entry extends WeakReference<ThreadLocal> {
+static class Entry extends WeakReference&lt;ThreadLocal&gt; {
     Object value;
     Entry(ThreadLocal k, Object v) {
         super(k);
