@@ -10,6 +10,10 @@ categories: 编程技术
 
 多个线程在调用同一个方法的时候，会有并发问题，解决这种问题最简单的办法就是将数据保存在Thread的自己的结构中，也就是ThreadLocal的作用了。用法如下：
 
+```
+class JavaBean {
+```
+
 <pre class="prettyprint">
 class JavaBean {
     ThreadLocal<Integer> threadLocal = new ThreadLocal<Integer>();
@@ -19,7 +23,7 @@ class JavaBean {
     }
 
     public void work() {
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i  1000; i++) {
             int val = threadLocal.get();
             val++;
             threadLocal.set(val);
@@ -44,12 +48,13 @@ class Worker extends Thread {
 public class ThreadLocalDemo {
     public static void main(String[] args) {
         JavaBean bean = new JavaBean();
-        for (int i = 0; i \< 100; i++) {
+        for (int i = 0; i < 100; i++) {
             new Worker(bean).start();
         }
     }
 }
 </pre>
+
 
 可以将ThreadLocal看做是对**Thread.threadLocals**的封装，况且在程序中也是不能直接访问到Thread.threadLocals。
 

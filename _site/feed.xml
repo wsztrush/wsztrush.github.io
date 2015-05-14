@@ -5,8 +5,8 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 15 May 2015 07:35:46 +0800</pubDate>
-    <lastBuildDate>Fri, 15 May 2015 07:35:46 +0800</lastBuildDate>
+    <pubDate>Fri, 15 May 2015 07:39:27 +0800</pubDate>
+    <lastBuildDate>Fri, 15 May 2015 07:39:27 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
@@ -188,6 +188,10 @@ public void func(Color);
 
 &lt;p&gt;多个线程在调用同一个方法的时候，会有并发问题，解决这种问题最简单的办法就是将数据保存在Thread的自己的结构中，也就是ThreadLocal的作用了。用法如下：&lt;/p&gt;
 
+&lt;p&gt;&lt;code&gt;
+class JavaBean {
+&lt;/code&gt;&lt;/p&gt;
+
 &lt;pre class=&quot;prettyprint&quot;&gt;
 class JavaBean {
     ThreadLocal&lt;integer&gt; threadLocal = new ThreadLocal&lt;integer&gt;();
@@ -197,7 +201,7 @@ class JavaBean {
     }
 
     public void work() {
-        for (int i = 0; i &amp;lt; 1000; i++) {
+        for (int i = 0; i  1000; i++) {
             int val = threadLocal.get();
             val++;
             threadLocal.set(val);
@@ -222,11 +226,12 @@ class Worker extends Thread {
 public class ThreadLocalDemo {
     public static void main(String[] args) {
         JavaBean bean = new JavaBean();
-        for (int i = 0; i \&amp;lt; 100; i++) {
+        for (int i = 0; i &amp;lt; 100; i++) {
             new Worker(bean).start();
         }
     }
 }
+
 
 
 可以将ThreadLocal看做是对**Thread.threadLocals**的封装，况且在程序中也是不能直接访问到Thread.threadLocals。
