@@ -12,14 +12,14 @@ categories: 编程技术
 
 <pre class="prettyprint">
 class JavaBean {
-    ThreadLocal<Integer\> threadLocal = new ThreadLocal\<Integer\>();
+    ThreadLocal<Integer\> threadLocal = new ThreadLocal<Integer\>();
 
     public void prepare() {
         threadLocal.set(0);
     }
 
     public void work() {
-        for (int i = 0; i  1000; i++) {
+        for (int i = 0; i < 1000; i++) {
             int val = threadLocal.get();
             val++;
             threadLocal.set(val);
@@ -44,7 +44,7 @@ class Worker extends Thread {
 public class ThreadLocalDemo {
     public static void main(String[] args) {
         JavaBean bean = new JavaBean();
-        for (int i = 0; i  100; i++) {
+        for (int i = 0; i < 100; i++) {
             new Worker(bean).start();
         }
     }

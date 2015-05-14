@@ -5,8 +5,8 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 15 May 2015 07:45:07 +0800</pubDate>
-    <lastBuildDate>Fri, 15 May 2015 07:45:07 +0800</lastBuildDate>
+    <pubDate>Fri, 15 May 2015 07:46:16 +0800</pubDate>
+    <lastBuildDate>Fri, 15 May 2015 07:46:16 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
@@ -190,14 +190,14 @@ public void func(Color);
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 class JavaBean {
-    ThreadLocal&amp;lt;Integer\&amp;gt; threadLocal = new ThreadLocal\&amp;lt;Integer\&amp;gt;();
+    ThreadLocal&amp;lt;Integer\&amp;gt; threadLocal = new ThreadLocal&amp;lt;Integer\&amp;gt;();
 
     public void prepare() {
         threadLocal.set(0);
     }
 
     public void work() {
-        for (int i = 0; i  1000; i++) {
+        for (int i = 0; i &amp;lt; 1000; i++) {
             int val = threadLocal.get();
             val++;
             threadLocal.set(val);
@@ -222,7 +222,7 @@ class Worker extends Thread {
 public class ThreadLocalDemo {
     public static void main(String[] args) {
         JavaBean bean = new JavaBean();
-        for (int i = 0; i  100; i++) {
+        for (int i = 0; i &amp;lt; 100; i++) {
             new Worker(bean).start();
         }
     }
