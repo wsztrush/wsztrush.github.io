@@ -1,0 +1,203 @@
+<!DOCTYPEhtmlPUBLIC"-//W3C//DTDXHTML1.0Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html>
+	<!-- 引入CSS/JS -->
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="/assets/css/main.css"/>
+	<script type="text/javascript" src="/assets/javascripts/main.js"></script>
+
+	<!-- pygments代码高亮 -->
+	<!-- <link rel="stylesheet" type="text/css" href="/assets/css/pygments.css"/> -->
+	<!-- google代码高亮 -->
+	<script src="/assets/css/prettify.js"></script>
+	<link href="/assets/css/prettify.css" rel="stylesheet">
+	<title>Java中的泛型</title>
+</head>
+
+	<body onload="prettyPrint()">
+		<!-- 导航栏设计 -->
+<nav>
+	<div style="padding:10px;">
+		<a href="/" style="border-bottom-style:none;"><img src="http://7xiz10.com1.z0.glb.clouddn.com/三人行.jpg" style="width:220px;"/></a>
+	</div>
+	<div style="color:#FFF;font-size:24px;padding:10px;">
+		<b>wsztrush</b>
+		<ul style="padding-left:0px;list-style-type:none;">
+			
+			<li>
+			<a href="/categories/里程碑">里程碑 x 2</a>
+			</li>
+			
+			<li>
+			<a href="/categories/读书笔记">读书笔记 x 4</a>
+			</li>
+			
+			<li>
+			<a href="/categories/编程技术">编程技术 x 7</a>
+			</li>
+			
+			<li>
+			<a href="/categories/数学">数学 x 1</a>
+			</li>
+			
+		</ul>
+	</div>
+</nav>
+
+		<div class="post-container">
+			<div style="padding:40px;">
+				<h1>Java中的泛型</h1>
+				<h2 id="section">什么是泛型</h2>
+
+<p>泛型是JDK 1.5中引入的特性，允许在定义类、接口、方法的时候使用类型参数，声明的类型参数在使用时用具体的类型替换。从好的方面来看，泛型的引入可以在编译时刻就发现很多明显的错误。从不好的方面，为了保证与旧有版本的兼容性，Java泛型的实现上存在一些不优雅的地方。</p>
+
+<h2 id="section-1">使用方法</h2>
+
+<p>最常见的使用场景是泛型类或者接口：</p>
+
+<pre class="prettyprint">
+interface TestInterface<t> {
+}
+class TestClass<t> {
+    T data;
+}
+
+
+看以看到泛型的好处能节省我们的代码量，当**data**的类型变化的时候，我们不需要去写不同的接口或者类。当然有时候你需要指定多个类型，那么可以：
+
+<pre class="prettyprint">
+class TestClass&lt;K, V, OTHER&gt; {
+    K     key;
+    V     value;
+    OTHER other;
+}
+</pre>
+
+有时候我们希望只支持Number类型，那么可以：
+
+<pre class="prettyprint">
+class TestClass<t extends="" number=""> {
+    T data;
+}
+
+
+当然，泛型也可以用在方法上，举个例子：
+
+<pre class="prettyprint">
+public <t> T doSth(T a){
+    return a;
+}
+
+
+你可能会比较好奇如果同时在方法和类上面使用泛型的话会出现什么情况：
+
+<pre class="prettyprint">
+public class Test<t> {
+    T data;
+    @SuppressWarnings("hiding")
+    public <t> T doSth(T a) {
+        return a;
+    }
+
+    public static void main(String[] args) {
+        Test<string> t = new Test<string>();
+        System.out.println(t.doSth(123));
+        t.data = "123";
+    }
+}
+
+
+结论是方法上的用方法的，其他的用类上的，如果方法上没有，方法用类上的。
+
+## 多想一点
+
+现在想一下泛型具体是如何实现的，用**javap Test**看doSth的方法声明如下：
+
+<pre class="prettyprint">
+public java.lang.Object doSth(java.lang.Object);
+</pre>
+
+如果是受限的泛型，比如：
+
+<pre class="prettyprint">
+public class Test<t extends="" number=""> {
+    public T doSth(T a) {
+        return a;
+    }
+}
+
+
+那么得到的结果则是：
+
+<pre class="prettyprint">
+public java.lang.Number doSth(java.lang.Number);
+</pre>
+
+如果限制类型有两个（比如\&lt;T extends Comparable &amp; Serializable\&gt;）则生成的字节码中选用第一个（Comparable）。Java中的泛型是伪泛型，在运行期间，所有的泛型信息都会被擦除。也就是说在生成的Java字节码中没有包含泛型中的类型信息。那么在重载的时候会有什么影响，举个例子：
+
+<pre class="prettyprint">
+public class Test {
+    public void doSth(List<integer> list) { }
+    public void doSth(List<string> list) { }
+}
+
+
+现在应该会猜到：**因为类型擦除，这个类是不能被编译通过的。**那么下面这段代码呢？
+
+<pre class="prettyprint">
+public class Test {
+    public Integer doSth(List<integer> list) { return null; }
+    public String doSth(List<string> list) { return null; }
+}
+
+
+编译通过了。这貌似与我们之前对重载的认识不相同：函数之间的区分是依据参数和方法名，返回值并不参与。上面这段代码中常在不是根据返回值来判断的，但是增加不同类型的返回值是的这两个方法能够共存在同一个Class文件中：
+&gt; 重载要求方法有不同的方法签名，而返回值并不在方法签名中。但是在Class文件格式中，只要描述符不是完全一致的方法就可以共存，也就是说：返回值也能影响方法能不能共存在同一个Class中。
+可以通过javap -s Test看到方法签名。
+
+## 获取泛型的类型
+
+首先来看通过**ParameterizedType**获取类型的方法，如下：
+
+<pre class="prettyprint">
+public class Test {
+    public List<string> list;
+
+    public static void main(String[] args) throws Exception {
+        ParameterizedType pt = (ParameterizedType) Test.class.getField("list").getGenericType();
+        System.out.println(pt.getActualTypeArguments()[0]);
+    }
+}
+
+
+其中getGenericType方法返回一个Type对象，如果是一个参数化类型，那么返回的Type会反映源码中使用的实际参数类型，实际的参数类型通过getActualTypeArguments获取。
+</string></pre></string></integer></pre></string></integer></pre></t></pre></string></string></t></t></pre></t></pre></t></pre></t></t></pre>
+
+				<!-- 评论组件 -->
+				<div id="disqus_thread"/>
+			</div>
+		</div>
+	</body>
+</html>
+<!-- 评论组件 -->
+<script type="text/javascript">
+	var disqus_shortname = 'wsztrush';
+	(function() {
+		var dsq = document.createElement('script');
+		dsq.type = 'text/javascript';
+		dsq.async = true;
+		dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	})();
+</script>
+<!-- 百度访问统计 -->
+<script>
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?08a976e8d7e5a20acfcb566bd22a1db1";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+

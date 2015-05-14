@@ -1,0 +1,149 @@
+<!DOCTYPEhtmlPUBLIC"-//W3C//DTDXHTML1.0Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html>
+	<!-- 引入CSS/JS -->
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="/assets/css/main.css"/>
+	<script type="text/javascript" src="/assets/javascripts/main.js"></script>
+
+	<!-- pygments代码高亮 -->
+	<!-- <link rel="stylesheet" type="text/css" href="/assets/css/pygments.css"/> -->
+	<!-- google代码高亮 -->
+	<script src="/assets/css/prettify.js"></script>
+	<link href="/assets/css/prettify.css" rel="stylesheet">
+	<title>Java中的ThreadLocal</title>
+</head>
+
+	<body onload="prettyPrint()">
+		<!-- 导航栏设计 -->
+<nav>
+	<div style="padding:10px;">
+		<a href="/" style="border-bottom-style:none;"><img src="http://7xiz10.com1.z0.glb.clouddn.com/三人行.jpg" style="width:220px;"/></a>
+	</div>
+	<div style="color:#FFF;font-size:24px;padding:10px;">
+		<b>wsztrush</b>
+		<ul style="padding-left:0px;list-style-type:none;">
+			
+			<li>
+			<a href="/categories/里程碑">里程碑 x 2</a>
+			</li>
+			
+			<li>
+			<a href="/categories/读书笔记">读书笔记 x 4</a>
+			</li>
+			
+			<li>
+			<a href="/categories/编程技术">编程技术 x 7</a>
+			</li>
+			
+			<li>
+			<a href="/categories/数学">数学 x 1</a>
+			</li>
+			
+		</ul>
+	</div>
+</nav>
+
+		<div class="post-container">
+			<div style="padding:40px;">
+				<h1>Java中的ThreadLocal</h1>
+				<h2 id="section">用法</h2>
+
+<p>多个线程在调用同一个方法的时候，会有并发问题，解决这种问题最简单的办法就是将数据保存在Thread的自己的结构中，也就是ThreadLocal的作用了。用法如下：</p>
+
+<pre class="prettyprint">
+class JavaBean {
+    ThreadLocal<integer> threadLocal = new ThreadLocal<integer>();
+
+    public void prepare() {
+        threadLocal.set(0);
+    }
+
+    public void work() {
+        for (int i = 0; i &lt; 1000; i++) {
+            int val = threadLocal.get();
+            val++;
+            threadLocal.set(val);
+        }
+        System.out.println(threadLocal.get());
+    }
+}
+
+class Worker extends Thread {
+    JavaBean bean;
+
+    public Worker(JavaBean bean) {
+        this.bean = bean;
+    }
+
+    public void run() {
+        bean.prepare();
+        bean.work();
+    }
+}
+
+public class ThreadLocalDemo {
+    public static void main(String[] args) {
+        JavaBean bean = new JavaBean();
+        for (int i = 0; i &lt; 100; i++) {
+            new Worker(bean).start();
+        }
+    }
+}
+
+
+可以将ThreadLocal看做是对**Thread.threadLocals**的封装，况且在程序中也是不能直接访问到Thread.threadLocals。
+
+## 原理
+
+下面简单看ThreadLocal的原理，在Thread中保存了一个Map，类型可以认为是**Map\&lt;ThreadLocal, T\&gt;**，其中T是要保存数据的类型。当要从中取出数据时，调用的流程如下：
+
+<pre class="prettyprint">
+Thread.currentThread().threadLocals.getEntry(threadLocal).value
+</pre>
+
+这样，不同的线程在执行的时候在同一个threadLocal上获取到的是不同的数据，线程之间的隔离性是通过"各自保存不同的Map"来实现的。其实如果让你来做一个线程安全的数据保存的解决方法很可能也是这个思路。
+
+在ThreadLocalMap中使用的并不是普通的引用保存数据，而是使用WeakReference来做：
+
+<pre class="prettyprint">
+static class Entry extends WeakReference<threadlocal> {
+    Object value;
+    Entry(ThreadLocal k, Object v) {
+        super(k);
+        value = v;
+    }
+}
+
+
+这样如果ThreadLocal被释放了，那么ThreadLocalMap中的Entry也会被释放，不至于造成内存泄露。
+</threadlocal></pre></integer></integer></pre>
+
+				<!-- 评论组件 -->
+				<div id="disqus_thread"/>
+			</div>
+		</div>
+	</body>
+</html>
+<!-- 评论组件 -->
+<script type="text/javascript">
+	var disqus_shortname = 'wsztrush';
+	(function() {
+		var dsq = document.createElement('script');
+		dsq.type = 'text/javascript';
+		dsq.async = true;
+		dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	})();
+</script>
+<!-- 百度访问统计 -->
+<script>
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?08a976e8d7e5a20acfcb566bd22a1db1";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+

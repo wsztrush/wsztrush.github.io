@@ -5,9 +5,480 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 13 May 2015 22:21:17 +0800</pubDate>
-    <lastBuildDate>Wed, 13 May 2015 22:21:17 +0800</lastBuildDate>
+    <pubDate>Fri, 15 May 2015 07:32:30 +0800</pubDate>
+    <lastBuildDate>Fri, 15 May 2015 07:32:30 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
+    
+      <item>
+        <title>Java枚举</title>
+        <description>&lt;h2 id=&quot;section&quot;&gt;用法&lt;/h2&gt;
+&lt;p&gt;在JDK 1.5之前通常用final来定义各种常量，现在新加了枚举类型，最简单的用法如下：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+enum Color {
+    RED,
+    GREEN
+}
+&lt;/pre&gt;
+
+&lt;p&gt;还可以像普通的类那样自己定义属性和方法：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+enum Color {
+    RED(&quot;red&quot;),
+    GREEN(&quot;green&quot;);
+    String name;
+
+    Color(String name) {
+        this.name = name;
+    }
+
+    public String toString(){
+        return name;
+    }
+}
+&lt;/pre&gt;
+
+&lt;p&gt;甚至enum还可以去实现接口：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+enum Color implements Comparable&lt;color&gt; {
+    RED,
+    GREEN;
+}
+
+
+在使用的时候，枚举可以用来比较：
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+Color c = Color.RED;
+if(c == Color.GREEN){
+    // ...
+}
+&lt;/pre&gt;
+
+也可以用来switch：
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+Color c = Color.RED;
+switch (c) {
+    case RED:
+    case GREEN:
+}
+&lt;/pre&gt;
+
+而且你可以很方便的变量一个枚举类型中所有的属性：
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+for (Color c : Color.values()) {
+    System.out.println(c);
+}
+&lt;/pre&gt;
+
+甚至在你只知道枚举的变量名的时候也能拿到对应的属性：
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+System.out.println(Color.valueOf(&quot;RED&quot;));
+&lt;/pre&gt;
+
+看下来，枚举在定义常量上面的作用还真大。
+
+## 枚举VS常量
+
+首先不同的枚举类是不同的类型，而你用final static修饰的一般都是int等基本类型，这样的常量不容易做到类型检查，这也算是一个枚举的优势：
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+public static void check(Color c){
+
+}
+&lt;/pre&gt;
+
+如果你想封装一种类型的常量类型检查的话（除非有现成的类），为什么不用enum？
+
+## enum到底是什么
+
+在编译之后会有一个Color.class文件，使用javap查看：
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+final class Color extends java.lang.Enum implements java.lang.Comparable{
+    public static final Color RED;
+    public static final Color GREEN;
+    public static Color[] values();
+    public static Color valueOf(java.lang.String);
+    static {};
+}
+&lt;/pre&gt;
+
+该类继承自**java.lang.Enum**，然后通过**javap -c Color**来看初始化的代码：
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+static {};
+  Code:
+   0:   new     #4; //class Color
+   3:   dup
+   4:   ldc     #7; //String RED
+   6:   iconst_0
+   7:   invokespecial   #8; //Method &quot;&lt;init&gt;&quot;:(Ljava/lang/String;I)V
+   10:  putstatic       #9; //Field RED:LColor;
+   13:  new     #4; //class Color
+   16:  dup
+   17:  ldc     #10; //String GREEN
+   19:  iconst_1
+   20:  invokespecial   #8; //Method &quot;&lt;init&gt;&quot;:(Ljava/lang/String;I)V
+   23:  putstatic       #11; //Field GREEN:LColor;
+   26:  iconst_2
+   27:  anewarray       #4; //class Color
+   30:  dup
+   31:  iconst_0
+   32:  getstatic       #9; //Field RED:LColor;
+   35:  aastore
+   36:  dup
+   37:  iconst_1
+   38:  getstatic       #11; //Field GREEN:LColor;
+   41:  aastore
+   42:  putstatic       #1; //Field $VALUES:[LColor;
+   45:  return
+
+
+这里大家可能会对枚举switch有疑问，我们写代码来看下：
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+public class Test {
+    public void func(Color c){
+        switch(c){
+            case RED:
+            case GREEN:
+        }
+    }
+}
+&lt;/pre&gt;
+
+然后用javap -c查看，得到：
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+public void func(Color);
+  Code:
+   0:   getstatic       #2; //Field Test$1.$SwitchMap$Color:[I
+   3:   aload_1
+   4:   invokevirtual   #3; //Method Color.ordinal:()I
+   7:   iaload
+   8:   lookupswitch{ //2
+                1: 36;
+                2: 36;
+                default: 36 }
+   36:  return
+}
+&lt;/pre&gt;
+
+可以看到这里switch的其实还是enum类中的ordinal（int），和之前我们对switch的认识是一致的。
+&lt;/init&gt;&lt;/init&gt;&lt;/pre&gt;&lt;/color&gt;&lt;/pre&gt;
+</description>
+        <pubDate>Fri, 15 May 2015 04:34:00 +0800</pubDate>
+        <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/05/15/Java-Enum.html</link>
+        <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/05/15/Java-Enum.html</guid>
+        
+        
+        <category>编程技术</category>
+        
+      </item>
+    
+      <item>
+        <title>Java中的ThreadLocal</title>
+        <description>&lt;h2 id=&quot;section&quot;&gt;用法&lt;/h2&gt;
+
+&lt;p&gt;多个线程在调用同一个方法的时候，会有并发问题，解决这种问题最简单的办法就是将数据保存在Thread的自己的结构中，也就是ThreadLocal的作用了。用法如下：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+class JavaBean {
+    ThreadLocal&lt;integer&gt; threadLocal = new ThreadLocal&lt;integer&gt;();
+
+    public void prepare() {
+        threadLocal.set(0);
+    }
+
+    public void work() {
+        for (int i = 0; i &amp;lt; 1000; i++) {
+            int val = threadLocal.get();
+            val++;
+            threadLocal.set(val);
+        }
+        System.out.println(threadLocal.get());
+    }
+}
+
+class Worker extends Thread {
+    JavaBean bean;
+
+    public Worker(JavaBean bean) {
+        this.bean = bean;
+    }
+
+    public void run() {
+        bean.prepare();
+        bean.work();
+    }
+}
+
+public class ThreadLocalDemo {
+    public static void main(String[] args) {
+        JavaBean bean = new JavaBean();
+        for (int i = 0; i &amp;lt; 100; i++) {
+            new Worker(bean).start();
+        }
+    }
+}
+
+
+可以将ThreadLocal看做是对**Thread.threadLocals**的封装，况且在程序中也是不能直接访问到Thread.threadLocals。
+
+## 原理
+
+下面简单看ThreadLocal的原理，在Thread中保存了一个Map，类型可以认为是**Map\&amp;lt;ThreadLocal, T\&amp;gt;**，其中T是要保存数据的类型。当要从中取出数据时，调用的流程如下：
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+Thread.currentThread().threadLocals.getEntry(threadLocal).value
+&lt;/pre&gt;
+
+这样，不同的线程在执行的时候在同一个threadLocal上获取到的是不同的数据，线程之间的隔离性是通过&quot;各自保存不同的Map&quot;来实现的。其实如果让你来做一个线程安全的数据保存的解决方法很可能也是这个思路。
+
+在ThreadLocalMap中使用的并不是普通的引用保存数据，而是使用WeakReference来做：
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+static class Entry extends WeakReference&lt;threadlocal&gt; {
+    Object value;
+    Entry(ThreadLocal k, Object v) {
+        super(k);
+        value = v;
+    }
+}
+
+
+这样如果ThreadLocal被释放了，那么ThreadLocalMap中的Entry也会被释放，不至于造成内存泄露。
+&lt;/threadlocal&gt;&lt;/pre&gt;&lt;/integer&gt;&lt;/integer&gt;&lt;/pre&gt;
+</description>
+        <pubDate>Thu, 14 May 2015 00:00:00 +0800</pubDate>
+        <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/05/14/Java-ThreadLocal.html</link>
+        <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/05/14/Java-ThreadLocal.html</guid>
+        
+        
+        <category>编程技术</category>
+        
+      </item>
+    
+      <item>
+        <title>Java对象占用了多少空间？</title>
+        <description>&lt;p&gt;在Java中没有sizeof运算符，所以没办法知道一个对象到底占用了多大的空间，但是在分配对象的时候会有一些基本的规则，我们根据这些规则大致能判断出来对象大小。&lt;/p&gt;
+
+&lt;h2 id=&quot;section&quot;&gt;对象头&lt;/h2&gt;
+
+&lt;p&gt;对象的头部至少有两个WORD，如果是数组的话，那么三个WORD，内容如下：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;对象的HashCode，锁信息等&lt;/li&gt;
+  &lt;li&gt;到对象类型数据的指针&lt;/li&gt;
+  &lt;li&gt;数组的长度（如果是数组的话）&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;规则&lt;/h2&gt;
+
+&lt;p&gt;首先，任何对象都是8字节对齐，属性按照[long,double]、[int,float]、[char,short]、[byte,boolean]、reference的顺序存放，举个例子：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+public class Test {
+    byte a;
+    int b;
+    boolean c;
+    long d;
+    Object e;
+}
+&lt;/pre&gt;
+
+&lt;p&gt;如果这个对象的属性按照顺序存放的话，要占用的空间为：head(8) + a(1) + padding(3) + b(4) + c(1) + padding(7) + d(8) + e(4) + padding(4) = 40。但是按照这个规则得到：head(8) + d(8) + b(4) + a(1) + c(1) + padding(2) + e(4) + padding(4) = 32。可以看到节省了不少空间。&lt;/p&gt;
+
+&lt;p&gt;在涉及继承关系的时候有一个最基本的规则：首先存放父类中的成员，接着才是子类中的成员，举个例子：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+class A {
+    long a;
+    int b;
+    int c;
+}
+class B extends A {
+    long d;
+}
+&lt;/pre&gt;
+
+&lt;p&gt;这样存放的顺序及占用空间如下：head(8) + a(8) + b(4) + c(4) + d(8) = 32。那如果父类中的属性不够八个字节怎么办？这样就有了新的一条规则：父类中最后一个成员与子类的第一个成员的间隔如果不够4个字节，此时需要扩展到4个字节的基本单位，举个例子：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+class A {
+    byte a;
+}
+class B extends A {
+    byte b;
+}
+&lt;/pre&gt;
+
+&lt;p&gt;那么此时占用的空间如下：head(8) + a(1) + padding(3) + b(1) + padding(3) = 16。显然这种方式比较浪费空间，那么就有了：如果子类的第一个成员是double或者long，并且父类并没有用完8个字节，JVM活破坏规将较小的数据填充到该空间，举个例子：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+class A {
+    byte a;
+}
+class B extends A {
+    long b;
+    short c;
+    byte d;
+}
+&lt;/pre&gt;
+
+&lt;p&gt;此时占用的空间如下：head(8) + a(1) + padding(3) + c(2) + d(1) + padding(1) + b(8) = 24。&lt;/p&gt;
+</description>
+        <pubDate>Thu, 14 May 2015 00:00:00 +0800</pubDate>
+        <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/05/14/Java-Sizeof.html</link>
+        <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/05/14/Java-Sizeof.html</guid>
+        
+        
+        <category>编程技术</category>
+        
+      </item>
+    
+      <item>
+        <title>Java中的泛型</title>
+        <description>&lt;h2 id=&quot;section&quot;&gt;什么是泛型&lt;/h2&gt;
+
+&lt;p&gt;泛型是JDK 1.5中引入的特性，允许在定义类、接口、方法的时候使用类型参数，声明的类型参数在使用时用具体的类型替换。从好的方面来看，泛型的引入可以在编译时刻就发现很多明显的错误。从不好的方面，为了保证与旧有版本的兼容性，Java泛型的实现上存在一些不优雅的地方。&lt;/p&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;使用方法&lt;/h2&gt;
+
+&lt;p&gt;最常见的使用场景是泛型类或者接口：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+interface TestInterface&lt;t&gt; {
+}
+class TestClass&lt;t&gt; {
+    T data;
+}
+
+
+看以看到泛型的好处能节省我们的代码量，当**data**的类型变化的时候，我们不需要去写不同的接口或者类。当然有时候你需要指定多个类型，那么可以：
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+class TestClass&amp;lt;K, V, OTHER&amp;gt; {
+    K     key;
+    V     value;
+    OTHER other;
+}
+&lt;/pre&gt;
+
+有时候我们希望只支持Number类型，那么可以：
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+class TestClass&lt;t extends=&quot;&quot; number=&quot;&quot;&gt; {
+    T data;
+}
+
+
+当然，泛型也可以用在方法上，举个例子：
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+public &lt;t&gt; T doSth(T a){
+    return a;
+}
+
+
+你可能会比较好奇如果同时在方法和类上面使用泛型的话会出现什么情况：
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+public class Test&lt;t&gt; {
+    T data;
+    @SuppressWarnings(&quot;hiding&quot;)
+    public &lt;t&gt; T doSth(T a) {
+        return a;
+    }
+
+    public static void main(String[] args) {
+        Test&lt;string&gt; t = new Test&lt;string&gt;();
+        System.out.println(t.doSth(123));
+        t.data = &quot;123&quot;;
+    }
+}
+
+
+结论是方法上的用方法的，其他的用类上的，如果方法上没有，方法用类上的。
+
+## 多想一点
+
+现在想一下泛型具体是如何实现的，用**javap Test**看doSth的方法声明如下：
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+public java.lang.Object doSth(java.lang.Object);
+&lt;/pre&gt;
+
+如果是受限的泛型，比如：
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+public class Test&lt;t extends=&quot;&quot; number=&quot;&quot;&gt; {
+    public T doSth(T a) {
+        return a;
+    }
+}
+
+
+那么得到的结果则是：
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+public java.lang.Number doSth(java.lang.Number);
+&lt;/pre&gt;
+
+如果限制类型有两个（比如\&amp;lt;T extends Comparable &amp;amp; Serializable\&amp;gt;）则生成的字节码中选用第一个（Comparable）。Java中的泛型是伪泛型，在运行期间，所有的泛型信息都会被擦除。也就是说在生成的Java字节码中没有包含泛型中的类型信息。那么在重载的时候会有什么影响，举个例子：
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+public class Test {
+    public void doSth(List&lt;integer&gt; list) { }
+    public void doSth(List&lt;string&gt; list) { }
+}
+
+
+现在应该会猜到：**因为类型擦除，这个类是不能被编译通过的。**那么下面这段代码呢？
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+public class Test {
+    public Integer doSth(List&lt;integer&gt; list) { return null; }
+    public String doSth(List&lt;string&gt; list) { return null; }
+}
+
+
+编译通过了。这貌似与我们之前对重载的认识不相同：函数之间的区分是依据参数和方法名，返回值并不参与。上面这段代码中常在不是根据返回值来判断的，但是增加不同类型的返回值是的这两个方法能够共存在同一个Class文件中：
+&amp;gt; 重载要求方法有不同的方法签名，而返回值并不在方法签名中。但是在Class文件格式中，只要描述符不是完全一致的方法就可以共存，也就是说：返回值也能影响方法能不能共存在同一个Class中。
+可以通过javap -s Test看到方法签名。
+
+## 获取泛型的类型
+
+首先来看通过**ParameterizedType**获取类型的方法，如下：
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+public class Test {
+    public List&lt;string&gt; list;
+
+    public static void main(String[] args) throws Exception {
+        ParameterizedType pt = (ParameterizedType) Test.class.getField(&quot;list&quot;).getGenericType();
+        System.out.println(pt.getActualTypeArguments()[0]);
+    }
+}
+
+
+其中getGenericType方法返回一个Type对象，如果是一个参数化类型，那么返回的Type会反映源码中使用的实际参数类型，实际的参数类型通过getActualTypeArguments获取。
+&lt;/string&gt;&lt;/pre&gt;&lt;/string&gt;&lt;/integer&gt;&lt;/pre&gt;&lt;/string&gt;&lt;/integer&gt;&lt;/pre&gt;&lt;/t&gt;&lt;/pre&gt;&lt;/string&gt;&lt;/string&gt;&lt;/t&gt;&lt;/t&gt;&lt;/pre&gt;&lt;/t&gt;&lt;/pre&gt;&lt;/t&gt;&lt;/pre&gt;&lt;/t&gt;&lt;/t&gt;&lt;/pre&gt;
+</description>
+        <pubDate>Thu, 14 May 2015 00:00:00 +0800</pubDate>
+        <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/05/14/Java-Generics.html</link>
+        <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/05/14/Java-Generics.html</guid>
+        
+        
+        <category>编程技术</category>
+        
+      </item>
     
       <item>
         <title>Linux内存管理</title>
@@ -513,458 +984,6 @@ public interface Converter {
         
         
         <category>读书笔记</category>
-        
-      </item>
-    
-      <item>
-        <title>JVM之基础</title>
-        <description>&lt;h2 id=&quot;section&quot;&gt;写在前面&lt;/h2&gt;
-
-&lt;p&gt;之前老大让做一些外包面试，我的问题很简单：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;介绍一下工作中解决过比较有意思的问题。&lt;/li&gt;
-  &lt;li&gt;HashMap使用中需要注意的点。&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;第一个问题主要是想了解一下对方项目经验的含金量，第二个问题则是测试下是否知道一些细节，比如HashMap是线程不安全的、用HashMap来做缓存的话可能导致内存泄露等，自我感觉问题设计的还可以:D~ 但是看了其他同事的题目就泪崩了：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;设计模式XXX&lt;/li&gt;
-  &lt;li&gt;垃圾回收XXX&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;擦，怎么感觉这个问题我也不会。。。&lt;/p&gt;
-
-&lt;p&gt;虚拟机给人的感觉像是操作系统、编译器：非常高大上。但是Java程序就跑在上面，遇到问题还得去排查，性能不行还得去优化，基础的知识还是需要的！&lt;/p&gt;
-
-&lt;h2 id=&quot;section-1&quot;&gt;内存管理&lt;/h2&gt;
-
-&lt;p&gt;Java虚拟机在执行的过程中会把它所管理的内存划分为若干个不同的数据区域，大致如下：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/JVM之基础-内存划分.png&quot; alt=&quot;内存模型&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;各部分的功能如下：&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;区域&lt;/th&gt;
-      &lt;th&gt;功能&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;程序计数器&lt;/td&gt;
-      &lt;td&gt;可以看做当前线程执行字节码的行号&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;虚拟机栈&lt;/td&gt;
-      &lt;td&gt;存放局部变量、操作栈等&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;本地方法栈&lt;/td&gt;
-      &lt;td&gt;与虚拟机栈类似，不过是服务于本地方法&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;堆&lt;/td&gt;
-      &lt;td&gt;存放对象&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;方法区&lt;/td&gt;
-      &lt;td&gt;存放类信息、常量、静态变量、JIT编译后的代码等&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;运行时常量池&lt;/td&gt;
-      &lt;td&gt;编译时生成的各种字面量和符号使用&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;直接内存&lt;/td&gt;
-      &lt;td&gt;通过NIO分配的对外内存&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;在内存管理部分比较大的一块内容是GC（垃圾回收），所谓垃圾回收就是将垃圾占用的内存回收掉。那么第一个问题：&lt;strong&gt;什么是垃圾？&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;引用计数算法：被引用次数为0的对象。&lt;/li&gt;
-  &lt;li&gt;根搜索算法：从GC Roots沿着引用找不到的对象。&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;这里都提到了&lt;strong&gt;引用&lt;/strong&gt;，在JDK 1.2之后Java就已经对引用的概念进行了扩充，那么第二个问题：&lt;strong&gt;有哪些类型的引用？&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;强引用：Object o = new Object()这种都是强引用。&lt;/li&gt;
-  &lt;li&gt;弱引用：还有用但非必须的，在OOM之前被回收。&lt;/li&gt;
-  &lt;li&gt;软引用：更弱的引用，在下次GC的时候被回收。&lt;/li&gt;
-  &lt;li&gt;虚引用：最弱的，唯一的作用是在对象被回收的时候可以收到通知。&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;这里只有强引用才能对对象的生命周期造成影响。在虚拟机发展的过程中进化出不少垃圾回收算法，比如：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;标记-清除算法&lt;/li&gt;
-  &lt;li&gt;复制算法&lt;/li&gt;
-  &lt;li&gt;标记-整理算法&lt;/li&gt;
-  &lt;li&gt;分代收集算法&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;在实际中用到的回收器都是这几种算法的组合，比如从VisualVM中看到的内存是这样的（需要明白各部分都是怎样互相配合的）：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/JVM之基础-GC.png&quot; alt=&quot;分代回收&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;整体上来看是分代收集算法，而S0、S1这两部分可以看做是标记-整理算法。那么第三个问题：&lt;strong&gt;常见的CMS垃圾回收器的执行流程是怎样的？&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;初始标记：GC Roots直接关联的对象。&lt;/li&gt;
-  &lt;li&gt;并发标记：Root Tracing。&lt;/li&gt;
-  &lt;li&gt;重新标记：修复由于程序运行导致标记产生变动。&lt;/li&gt;
-  &lt;li&gt;并发清除&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;具体如下图所示：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/JVM之基础-CMS.png&quot; alt=&quot;CMS执行流程&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;可以看到只有在初始标记和重新标记的时候才需要Stop The World，其他都是和用户线程一起执行，不要以为这就完美了，并行执行的过程会消耗掉一些CPU资源。&lt;/p&gt;
-
-&lt;h2 id=&quot;section-2&quot;&gt;代码执行&lt;/h2&gt;
-
-&lt;p&gt;把Java源码丢给JVM肯定是不能执行的，需要先用javac编译成class文件才行，那么第一个问题：&lt;strong&gt;class文件的结构是怎样的？&lt;/strong&gt;&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;常量池&lt;/li&gt;
-  &lt;li&gt;访问标志&lt;/li&gt;
-  &lt;li&gt;类索引、父类索引和接口索引&lt;/li&gt;
-  &lt;li&gt;字段表&lt;/li&gt;
-  &lt;li&gt;方法表&lt;/li&gt;
-  &lt;li&gt;属性表&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;虚拟机规范并没有规定在什么时候要加载类，但是规定了在遇到&lt;strong&gt;new、反射、父类、Main&lt;/strong&gt;的时候需要初始化完成。整个类的生命周期如下：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/JVM之基础-类生命周期.png&quot; alt=&quot;类的生命周期&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;在虚拟机中通过ClassLoader来进行类的加载，这地方需要明白：&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;两个类是否相同，除了类名外还需要判断ClassLoader是否相同。&lt;/li&gt;
-  &lt;li&gt;双亲委派模式并不是一个强制约束。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;在类加载完成之后就可以开始执行了，和线程运转相关的东西都放在栈帧中，其结构如下：&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;属性&lt;/th&gt;
-      &lt;th&gt;作用/含义&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;局部变量表&lt;/td&gt;
-      &lt;td&gt;方法参数及方法内部定义的局部变量&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;操作数栈&lt;/td&gt;
-      &lt;td&gt;用来被指令操作&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;动态连接&lt;/td&gt;
-      &lt;td&gt;指向运行时常量池中该栈帧所属方法的引用&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;方法返回地址&lt;/td&gt;
-      &lt;td&gt;上层方法调用本方法的位置&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;附加信息&lt;/td&gt;
-      &lt;td&gt;调试信息等&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;执行中具体调用哪个方法是个头疼的问题，需要处理：&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;静态分派：相同名称、不同参数类型的方法。&lt;/li&gt;
-  &lt;li&gt;动态分派：继承中复写的方法。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;字节码中的指令都是基于栈的操作，比如要完成1+1这样的计算，对应的指令如下：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-iconst_1 // 将常量1压入栈
-iconst_1
-iadd // 把栈顶的两个值相加并出栈，然后把结果放回栈
-istore_0 // 将栈顶的值放到局部变量表第0个Solt
-&lt;/pre&gt;
-
-&lt;p&gt;解释执行的好处是下载后启动速度快，但是确定也非常明显：运行速度慢。JIT正是用来解决这个问题的，能够将&lt;strong&gt;多次调用的方法、多次执行的循环体&lt;/strong&gt;编译成本地代码。&lt;/p&gt;
-
-&lt;p&gt;优化是个很好玩的题目，记得在参加一次变成比赛的时候用gcc -O3编译之后的代码把printf()都没输出了。。在JIT中比较常见的优化手段有：&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;手段&lt;/th&gt;
-      &lt;th&gt;描述&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;公共子表达式消除&lt;/td&gt;
-      &lt;td&gt;如果一个表达式已经计算过了，那么后面不需要重复计算&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;数组范围检查消除&lt;/td&gt;
-      &lt;td&gt;并不是必须一次不漏地检查&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;方法内联&lt;/td&gt;
-      &lt;td&gt;把代码复制到调用方法中&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;逃逸分析&lt;/td&gt;
-      &lt;td&gt;判断对象是否可能被方法外引用到&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;程序执行一定会涉及到内存操作，在Java中定义了八种操作来完成：&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;操作&lt;/th&gt;
-      &lt;th&gt;含义&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;lock&lt;/td&gt;
-      &lt;td&gt;把一个变量标识为线程独占状态&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;unlock&lt;/td&gt;
-      &lt;td&gt;释放变量&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;read&lt;/td&gt;
-      &lt;td&gt;将变量从主存读取到工作内存&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;load&lt;/td&gt;
-      &lt;td&gt;将read到的变量值放入工作内存中的副本&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;use&lt;/td&gt;
-      &lt;td&gt;将工作内存中的变量传递给执行引擎&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;assign&lt;/td&gt;
-      &lt;td&gt;引擎返回的值传递给工作内存中的副本&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;store&lt;/td&gt;
-      &lt;td&gt;将工作内存中的变量传递给主存&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;write&lt;/td&gt;
-      &lt;td&gt;把从工作内存得到的变量写入主存对应的变量中&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;这里有必要讲一下&lt;strong&gt;volatile&lt;/strong&gt;的作用，在使用到的时候能明白下面两条即可：&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;保证变量对所有线程是可见的。&lt;/li&gt;
-  &lt;li&gt;禁止&lt;a href=&quot;http://ifeve.com/jvm-memory-reordering/&quot;&gt;指令重排&lt;/a&gt;优化。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;如果Java中所有的操作都需要程序员来控制的话，会有大量的重复代码，而且写起来很累，那么我们可以通过&lt;strong&gt;先行发生原则&lt;/strong&gt;来判断并行的两个操作是否存在冲突：&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;程序次序规则：单线程内按照程序书写顺序。&lt;/li&gt;
-  &lt;li&gt;管程锁定规则：unlock必须在lock之前。&lt;/li&gt;
-  &lt;li&gt;volatile变量规则：写操作先行发生于读操作。&lt;/li&gt;
-  &lt;li&gt;线程启动规则：Thread.start()先于线程的其他任意方法。&lt;/li&gt;
-  &lt;li&gt;线程终止规则：线程中所有的操作都先于对此线程的终止检测。&lt;/li&gt;
-  &lt;li&gt;线程中断规则：interrupt()先于中断检测。&lt;/li&gt;
-  &lt;li&gt;对象终结规则：对象的初始化完成先于它的finalize()方法。&lt;/li&gt;
-  &lt;li&gt;传递规则：如果A先于B、B先于C，那么A先于C。&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Thread的底层实现还是比较麻烦的，但是最起码应该知道Thread的状态是如何进行转换：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/JVM之基础-线程状态转换.png&quot; alt=&quot;线程状态转换图&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;最后，常见的同步方式是&lt;strong&gt;synchronized&lt;/strong&gt;或者&lt;strong&gt;aqs&lt;/strong&gt;的各种实现，这里就不讲了，因为每个都足够写一大篇。&lt;/p&gt;
-</description>
-        <pubDate>Fri, 08 May 2015 21:00:00 +0800</pubDate>
-        <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/05/08/JVM-Basis.html</link>
-        <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/05/08/JVM-Basis.html</guid>
-        
-        
-        <category>编程技术</category>
-        
-      </item>
-    
-      <item>
-        <title>暗时间</title>
-        <description>&lt;p&gt;&lt;img src=&quot;http://img3.douban.com/mpic/s6586365.jpg&quot; alt=&quot;暗时间&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;在很早之前在网上看过前面部分，感觉很受用，所以买下来打算细看一下。细读之前感觉&lt;strong&gt;暗时间&lt;/strong&gt;的含义是指利用琐碎的时间，但完全不是这么回事，这部分的内容花的篇幅很少，想更多的了解可以继续去看《奇特的一生》。&lt;/p&gt;
-
-&lt;p&gt;另外，这本书更像是一个文集，各个文章之间并没有很强的关系，总体上围绕：&lt;strong&gt;如何学习&lt;/strong&gt;、&lt;strong&gt;如何做事&lt;/strong&gt;、&lt;strong&gt;如何思维&lt;/strong&gt;来展开。&lt;/p&gt;
-
-&lt;p&gt;关于如何学习记忆比较深的几点：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;利用碎片时间思考。&lt;/li&gt;
-  &lt;li&gt;专注。&lt;/li&gt;
-  &lt;li&gt;为知识建立索引，以便在合适的时候被回忆。&lt;/li&gt;
-  &lt;li&gt;通过教别人来验证自己是否真的懂了。&lt;/li&gt;
-  &lt;li&gt;抽象&amp;amp;推广。&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;关于如何做事：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;进度条。&lt;/li&gt;
-  &lt;li&gt;遇到问题亲自动手：困难的路越走越容易，容易的路越走越难。&lt;/li&gt;
-  &lt;li&gt;用特例引发思考。&lt;/li&gt;
-  &lt;li&gt;普通人遵守规则，牛人无视规则，伟人创造规则。&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;关于如何思维，更多的是一些想象：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;认知失调和自我辩解。&lt;/li&gt;
-  &lt;li&gt;20万年前的自己：天性。&lt;/li&gt;
-  &lt;li&gt;能够改变习惯的不是自制力，而是知识。&lt;/li&gt;
-  &lt;li&gt;知识是双刃剑，一方面提供解决问题的捷径，另一方面也是思维的桎梏。&lt;/li&gt;
-  &lt;li&gt;如果手里有一把锤子，所有的东西看上去都像钉子。&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;另外很喜欢其中的&lt;strong&gt;哥德尔不完备定理&lt;/strong&gt;部分，一方面之前不知道这么叼的东西，另一方面能把各种问题联系在一起确实比较厉害。&lt;/p&gt;
-
-</description>
-        <pubDate>Fri, 08 May 2015 21:00:00 +0800</pubDate>
-        <link>/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/2015/05/08/Dark-Time.html</link>
-        <guid isPermaLink="true">/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/2015/05/08/Dark-Time.html</guid>
-        
-        
-        <category>读书笔记</category>
-        
-      </item>
-    
-      <item>
-        <title>如何阅读一本书</title>
-        <description>&lt;p&gt;&lt;img src=&quot;http://img5.douban.com/mpic/s1670978.jpg&quot; alt=&quot;如何阅读一本书&quot; /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;section&quot;&gt;写在前面&lt;/h2&gt;
-
-&lt;p&gt;看到这个书名可能会想：阅读谁不会，还需要买本书来学？刚开始我也是这么想的，但是自从发奋读书之后发现不是那么回事，遇到一些问题：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;难啃的书看一半就丢到一边不再管了。&lt;/li&gt;
-  &lt;li&gt;读完之后也不知道书里面讲了些什么。&lt;/li&gt;
-  &lt;li&gt;更悲剧的是花了很长的时间读完之后发现是一本烂书。&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;然后立即在网上找指导阅读的书。花了两周的时间把这本书看了两遍，非常佩服作者对阅读这件看似简单的事情有这么系统、深入的思考，印象最深的是要带着问题读书：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;这本书讲了些什么？&lt;/li&gt;
-  &lt;li&gt;细说了哪些部分？&lt;/li&gt;
-  &lt;li&gt;说的有道理吗？&lt;/li&gt;
-  &lt;li&gt;这本书跟我有什么关系？&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;之前比较追求豆瓣读书上长长的书单带来的一点点成就感，太Low了。我们应该追求精读书、读好书、让书改变行动和思维，从而真正成为我们的一部分。&lt;/p&gt;
-
-&lt;h2 id=&quot;section-1&quot;&gt;内容笔记&lt;/h2&gt;
-
-&lt;p&gt;这本书涉及的内容有：阅读质量、阅读意义和阅读的四个层次。要保证阅读的质量本质上就是要主动，主动做笔记，主动思考（思考上面的四个问题），阅读的意义就略过了（大家应该都懂），重点来看阅读的四个层次。&lt;/p&gt;
-
-&lt;p&gt;第一个层次是&lt;strong&gt;基础阅读&lt;/strong&gt;，简单来说就是识字、能做一些功能性阅读。基础阅读是根本，如果这个都不行就不用看后面的了，所以现在当务之急是把英语补起来&amp;gt;_&amp;lt;。&lt;/p&gt;
-
-&lt;p&gt;第二个层次是&lt;strong&gt;检视阅读&lt;/strong&gt;，目的是为了熟悉架构，那么最直接的方法就是从书的结构入手：书名、目录等，另外可以快速把书过一遍，遇到不理解的地方也不要停。&lt;/p&gt;
-
-&lt;p&gt;第三个层次是&lt;strong&gt;分析阅读&lt;/strong&gt;，所谓分析，就是明白作者写书的出发点、提炼主旨观点并做出评价。书中讲了一些不错的技巧，比如为了更好的理解含义的两个办法：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;用自己的话描述出来。&lt;/li&gt;
-  &lt;li&gt;举出一个和主旨吻合的例子。&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;第四个层次是&lt;strong&gt;主题阅读&lt;/strong&gt;，到了这个层次，要求我们带着明确的目的去读书，比如想了解明朝的历史，你可以找多本相关的书进行阅读，并且将不同的观点进行比较、思考，形成自己的观点。&lt;/p&gt;
-
-&lt;p&gt;另外，对于不同类型的书有不同的读法，比如小说你就可以很快地阅读，重在感同身受，而不是去分析。&lt;/p&gt;
-
-&lt;h2 id=&quot;section-2&quot;&gt;思考&lt;/h2&gt;
-
-&lt;p&gt;读书是这样，看人、看事也是如此。对一件事情，先粗略地搞清楚来龙去脉，发现如果值得投入，再花时间去理解细节。对不同的事情可以横向对比，形成自己的做事风格。&lt;/p&gt;
-
-&lt;p&gt;另外，写博客就像是写一本书，告诉别人我是什么样的一个人:D。&lt;/p&gt;
-
-&lt;p&gt;附&lt;a href=&quot;http://naotu.baidu.com/viewshare.html?shareId=av2aukso52ww&quot;&gt;百度脑图笔记&lt;/a&gt;，另外笔记如下：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/如何阅读一本书.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-</description>
-        <pubDate>Thu, 07 May 2015 05:04:53 +0800</pubDate>
-        <link>/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/2015/05/07/How-to-Read-a-Book.html</link>
-        <guid isPermaLink="true">/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/2015/05/07/How-to-Read-a-Book.html</guid>
-        
-        
-        <category>读书笔记</category>
-        
-      </item>
-    
-      <item>
-        <title>自由，就是可以选择</title>
-        <description>&lt;h2 id=&quot;section&quot;&gt;年轻&lt;/h2&gt;
-
-&lt;p&gt;青春不是年华，而是心境；青春不是桃面、丹唇、柔膝，而是深沉的意志、恢宏的想象、炽热的感情；青春是生命的深泉在涌流。&lt;/p&gt;
-
-&lt;p&gt;青春气贯长虹，勇锐盖过怯弱，进取压倒苟安。如此锐气，二十后生有之，六旬男子则更多见。年岁有加，并非垂老；理想丢弃，方堕暮年。&lt;/p&gt;
-
-&lt;p&gt;岁月悠悠，衰微只及肌肤；热忱抛却，颓唐必至灵魂。忧烦、惶恐、丧失自信，定使心灵扭曲，意气如灰。&lt;/p&gt;
-
-&lt;p&gt;无论年届花甲，抑或二八芳龄，心中皆有生命之欢乐，奇迹之诱惑，孩童般天真久盛不衰。人人心中皆有一台天线，只要你从天上人间接受美好、希望、欢乐、勇气和力量的信号，你就青春永驻，风华常存。&lt;/p&gt;
-
-&lt;p&gt;一旦天线降下，锐气便被冰雪覆盖，玩世不恭、自暴自弃油然而生，即便年方二十，实已垂垂老矣；然则只要竖起天线，捕捉乐观的信号，你就有望在八十离龄告别尘寰时仍觉年轻。&lt;/p&gt;
-
-&lt;p&gt;每次读《年轻》都会热血沸腾，但现实中，干着没有激情的工作、混着得过且过的日子。终于有一天番然悔悟，怎么能这样马虎地度过，我要&lt;strong&gt;选择&lt;/strong&gt;自己想要的生活。&lt;/p&gt;
-
-&lt;h2 id=&quot;section-1&quot;&gt;博客&lt;/h2&gt;
-
-&lt;p&gt;之前用过不少博客产品：CSDN、博客园、简书等等。写了不少文章，但是又逐渐越来越不喜欢它们的风格，因此有了这个博客。使用GitHub搭建，基于jekyll，样式完全自己控制，图片用七牛。&lt;/p&gt;
-
-&lt;p&gt;博客的作用就不多说，就像刘末鹏大牛讲的，把自己的想法写下来与大家分享，好处多多!&lt;/p&gt;
-
-&lt;p&gt;另外我想，一个博客就像一个土地，种下理想，辛勤劳作让它生根发芽、开花结果，长成一棵惨天大树。&lt;/p&gt;
-
-&lt;h2 id=&quot;section-2&quot;&gt;自由&lt;/h2&gt;
-
-&lt;p&gt;自由是什么？自由就是可以选择！&lt;/p&gt;
-
-&lt;p&gt;当你必须按时、按照既有的规则完成每天安排给你的任务，你是自由的吗？&lt;/p&gt;
-
-&lt;p&gt;当你作为底层毫无话语权，你是自由的吗？&lt;/p&gt;
-
-&lt;p&gt;当然不是。想要自由，那就努力提高自己的能力和层次。&lt;/p&gt;
-</description>
-        <pubDate>Sat, 02 May 2015 05:04:53 +0800</pubDate>
-        <link>/%E9%87%8C%E7%A8%8B%E7%A2%91/2015/05/02/Freedom.html</link>
-        <guid isPermaLink="true">/%E9%87%8C%E7%A8%8B%E7%A2%91/2015/05/02/Freedom.html</guid>
-        
-        
-        <category>里程碑</category>
         
       </item>
     
