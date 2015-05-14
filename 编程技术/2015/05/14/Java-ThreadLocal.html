@@ -53,7 +53,7 @@
 
 <pre class="prettyprint">
 class JavaBean {
-    ThreadLocal&lt;Integer&gt; threadLocal = new ThreadLocal&lt;Integer\&gt;();
+    ThreadLocal&lt;Integer&gt; threadLocal = new ThreadLocal&lt;Integer&gt;();
 
     public void prepare() {
         threadLocal.set(0);
@@ -107,17 +107,16 @@ Thread.currentThread().threadLocals.getEntry(threadLocal).value
 <p>在ThreadLocalMap中使用的并不是普通的引用保存数据，而是使用WeakReference来做：</p>
 
 <pre class="prettyprint">
-static class Entry extends WeakReference<threadlocal> {
+static class Entry extends WeakReference&lt;ThreadLocal&gt; {
     Object value;
     Entry(ThreadLocal k, Object v) {
         super(k);
         value = v;
     }
 }
+</pre>
 
-
-这样如果ThreadLocal被释放了，那么ThreadLocalMap中的Entry也会被释放，不至于造成内存泄露。
-</threadlocal></pre>
+<p>这样如果ThreadLocal被释放了，那么ThreadLocalMap中的Entry也会被释放，不至于造成内存泄露。</p>
 
 				<!-- 评论组件 -->
 				<div id="disqus_thread"/>

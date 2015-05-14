@@ -5,8 +5,8 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 15 May 2015 07:52:44 +0800</pubDate>
-    <lastBuildDate>Fri, 15 May 2015 07:52:44 +0800</lastBuildDate>
+    <pubDate>Fri, 15 May 2015 07:54:46 +0800</pubDate>
+    <lastBuildDate>Fri, 15 May 2015 07:54:46 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
@@ -190,7 +190,7 @@ public void func(Color);
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 class JavaBean {
-    ThreadLocal&amp;lt;Integer&amp;gt; threadLocal = new ThreadLocal&amp;lt;Integer\&amp;gt;();
+    ThreadLocal&amp;lt;Integer&amp;gt; threadLocal = new ThreadLocal&amp;lt;Integer&amp;gt;();
 
     public void prepare() {
         threadLocal.set(0);
@@ -244,17 +244,16 @@ Thread.currentThread().threadLocals.getEntry(threadLocal).value
 &lt;p&gt;在ThreadLocalMap中使用的并不是普通的引用保存数据，而是使用WeakReference来做：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
-static class Entry extends WeakReference&lt;threadlocal&gt; {
+static class Entry extends WeakReference&amp;lt;ThreadLocal&amp;gt; {
     Object value;
     Entry(ThreadLocal k, Object v) {
         super(k);
         value = v;
     }
 }
+&lt;/pre&gt;
 
-
-这样如果ThreadLocal被释放了，那么ThreadLocalMap中的Entry也会被释放，不至于造成内存泄露。
-&lt;/threadlocal&gt;&lt;/pre&gt;
+&lt;p&gt;这样如果ThreadLocal被释放了，那么ThreadLocalMap中的Entry也会被释放，不至于造成内存泄露。&lt;/p&gt;
 </description>
         <pubDate>Thu, 14 May 2015 00:00:00 +0800</pubDate>
         <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/05/14/Java-ThreadLocal.html</link>
