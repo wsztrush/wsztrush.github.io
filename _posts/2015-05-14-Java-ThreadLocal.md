@@ -44,7 +44,7 @@ class Worker extends Thread {
 public class ThreadLocalDemo {
     public static void main(String[] args) {
         JavaBean bean = new JavaBean();
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i \< 100; i++) {
             new Worker(bean).start();
         }
     }
