@@ -57,20 +57,18 @@ blockquote  {
 
 .post-container h1 {
 	text-align:center;
-	border-style:solid;
-	border-width:1px;
+	border-bottom-style:solid;
 	padding:10px;
-	border-radius:10px/5px;
 	margin-bottom:20px;
 }
 
 .post-container h2 {
-	background-color: #dfd;
+	background-color: #000;
 	padding: 10px;
-	border-left-width: 8px;
+	border-left-width: 10px;
 	border-left-style: solid;
-	color: black;
-	border-left-color: #0af;
+	color: #FFF;
+	border-left-color: #0FF;
 }
 
 .post-container img {
@@ -78,18 +76,18 @@ blockquote  {
 }	
 
 .post-container strong {
-	color:#FF0;
+	color:#B00;
 }
 
 .post-container table {
-	border:1px solid #FFF;
+	border:1px solid #333;
 	width:100%;
-	color:#FFF;
+	color:#333;
 }
 
 .post-container th {
 	padding:8px;
-	border-bottom:1px solid #fff;
+	border-bottom:1px solid #333;
 }
 
 .post-container td {
@@ -97,5 +95,5 @@ blockquote  {
 }
 
 th+th, td+td {
-	border-left:1px solid #fff;
+	border-left:1px solid #333;
 }
