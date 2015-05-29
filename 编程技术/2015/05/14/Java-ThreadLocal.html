@@ -15,39 +15,9 @@
 </head>
 
 	<body onload="prettyPrint()">
-		<!-- 导航栏设计 -->
-<nav>
-	<div style="padding:10px;">
-		<a href="/" style="border-bottom-style:none;"><img src="http://7xiz10.com1.z0.glb.clouddn.com/三人行.jpg" style="width:220px;"/></a>
-	</div>
-	<div style="color:#FFF;font-size:24px;padding:10px;">
-		<b>wsztrush</b>
-		<ul style="padding-left:0px;list-style-type:none;">
-			
-			<li>
-			<a href="/categories/里程碑">里程碑 x 2</a>
-			</li>
-			
-			<li>
-			<a href="/categories/读书笔记">读书笔记 x 4</a>
-			</li>
-			
-			<li>
-			<a href="/categories/编程技术">编程技术 x 7</a>
-			</li>
-			
-			<li>
-			<a href="/categories/数学">数学 x 1</a>
-			</li>
-			
-		</ul>
-	</div>
-</nav>
-
 		<div class="post-container">
-			<div style="padding:40px;">
-				<h1>Java中的ThreadLocal</h1>
-				<h2 id="section">用法</h2>
+			<h1>Java中的ThreadLocal</h1>
+			<h2 id="section">用法</h2>
 
 <p>多个线程在调用同一个方法的时候，会有并发问题，解决这种问题最简单的办法就是将数据保存在Thread的自己的结构中，也就是ThreadLocal的作用了。用法如下：</p>
 
@@ -118,9 +88,8 @@ static class Entry extends WeakReference&lt;ThreadLocal&gt; {
 
 <p>这样如果ThreadLocal被释放了，那么ThreadLocalMap中的Entry也会被释放，不至于造成内存泄露。</p>
 
-				<!-- 评论组件 -->
-				<div id="disqus_thread"/>
-			</div>
+			<!-- 评论组件 -->
+			<div id="disqus_thread"/>
 		</div>
 	</body>
 </html>

@@ -15,39 +15,9 @@
 </head>
 
 	<body onload="prettyPrint()">
-		<!-- 导航栏设计 -->
-<nav>
-	<div style="padding:10px;">
-		<a href="/" style="border-bottom-style:none;"><img src="http://7xiz10.com1.z0.glb.clouddn.com/三人行.jpg" style="width:220px;"/></a>
-	</div>
-	<div style="color:#FFF;font-size:24px;padding:10px;">
-		<b>wsztrush</b>
-		<ul style="padding-left:0px;list-style-type:none;">
-			
-			<li>
-			<a href="/categories/里程碑">里程碑 x 2</a>
-			</li>
-			
-			<li>
-			<a href="/categories/读书笔记">读书笔记 x 4</a>
-			</li>
-			
-			<li>
-			<a href="/categories/编程技术">编程技术 x 7</a>
-			</li>
-			
-			<li>
-			<a href="/categories/数学">数学 x 1</a>
-			</li>
-			
-		</ul>
-	</div>
-</nav>
-
 		<div class="post-container">
-			<div style="padding:40px;">
-				<h1>Java对象占用了多少空间？</h1>
-				<p>在Java中没有sizeof运算符，所以没办法知道一个对象到底占用了多大的空间，但是在分配对象的时候会有一些基本的规则，我们根据这些规则大致能判断出来对象大小。</p>
+			<h1>Java对象占用了多少空间？</h1>
+			<p>在Java中没有sizeof运算符，所以没办法知道一个对象到底占用了多大的空间，但是在分配对象的时候会有一些基本的规则，我们根据这些规则大致能判断出来对象大小。</p>
 
 <h2 id="section">对象头</h2>
 
@@ -114,9 +84,8 @@ class B extends A {
 
 <p>此时占用的空间如下：head(8) + a(1) + padding(3) + c(2) + d(1) + padding(1) + b(8) = 24。</p>
 
-				<!-- 评论组件 -->
-				<div id="disqus_thread"/>
-			</div>
+			<!-- 评论组件 -->
+			<div id="disqus_thread"/>
 		</div>
 	</body>
 </html>
