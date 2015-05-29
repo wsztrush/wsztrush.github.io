@@ -1,5 +1,3 @@
-document.getElementById("barClick").onclick = click;
-
 var left = -165;
 var direction = 10;
 var sleepTime = 10;
