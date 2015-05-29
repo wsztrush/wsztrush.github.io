@@ -27,7 +27,7 @@ a{
 	width:200px;
 	height:30px;
 	position:fixed;
-	top:20px;
+	bottom:20px;
 	margin:0px;
 	display:-webkit-box;
 	-webkit-box-orient:horizontal;
