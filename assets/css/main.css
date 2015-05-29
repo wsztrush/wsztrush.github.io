@@ -1,25 +1,42 @@
 body {
 	margin:0px;
-	/** font-family:Georgia, "Times New Roman", Times, "Kai", "Kaiti SC", "KaiTi", "BiauKai", "¿¬Ìå", "¿¬Ìå_GB2312", serif; */
-}
-
-nav {
-	position:fixed;
-	background-color:#3C4043;
-	width:240px;
 	bottom:0px;
-	top:0px;
+	font-family: STFangSong, Helvetica, Arial, Vernada, Tahoma, STXihei, "Microsoft YaHei", "Songti SC", SimSun, Heiti, sans-serif;
+	font-size: 18px;
+	line-height: 1.42857143;
 }
-
-a {
-	font-size:15px;
-	color:#CCC;
-	text-decoration: NONE;
+ul{
+	display: block;
+	list-style-type: disc;
+	padding-left:0px;
+	-webkit-margin-before: 0px;
 }
-
-li {
-	margin-top:5px;
-	margin-bottom:5px;
+li{
+	position: relative;
+	display: block;
+	padding: 10px 15px;
+	margin-bottom: -1px;
+	background-color: #fff;
+	border: 1px solid #ddd;
+}
+a{
+	color: #428bca;
+	text-decoration: none;
+}
+.category{
+	width:200px;
+	height:30px;
+	position:fixed;
+	top:20px;
+	margin:0px;
+	display:-webkit-box;
+	-webkit-box-orient:horizontal;
+} 
+.icon{
+	-webkit-box-flex:1;
+}
+.icon img{
+	height:30px;
 }
 
 blockquote  {
@@ -31,11 +48,11 @@ blockquote  {
 	background-color:#333;
 }
 .post-container {
-	background-color:#3C4043;
-	color:#FFF;
-	margin-left:255px;
-	margin-right:0px;
-	min-width:800px;
+	display:block;
+	margin-left:auto;
+	margin-right:auto;
+	width:80%;
+	padding:50px;
 }
 
 .post-container h1 {
