@@ -8,6 +8,7 @@
 			<!-- 评论组件 -->
 			<div id="disqus_thread"/>
 		</div>
+		{% include tool.html %}
 	</body>
 </html>
 <!-- 评论组件 -->
@@ -22,3 +23,7 @@
 	})();
 </script>
 {% include statistical.html %}
+<script type="text/javascript">
+	document.getElementById("barClick").onclick = click;
+</script>
+
