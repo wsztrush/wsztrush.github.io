@@ -1,0 +1,9 @@
+---
+layout: default
+title: Categories
+---
+<ul class="cul">
+	{% for cat in site.categories %}
+	<li class="cli"><a href="{{ site.baseurl }}/categories/{{ cat[0] }}">{{ cat[0] }} x {{ cat | last | size }}</a></li>
+	{% endfor %}
+</ul>
