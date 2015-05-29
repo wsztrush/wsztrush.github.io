@@ -5,13 +5,13 @@ body {
 	font-size: 18px;
 	line-height: 1.42857143;
 }
-ul{
+.cul{
 	display: block;
 	list-style-type: disc;
 	padding-left:0px;
 	-webkit-margin-before: 0px;
 }
-li{
+.cli{
 	position: relative;
 	display: block;
 	padding: 10px 15px;
