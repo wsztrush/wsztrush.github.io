@@ -86,12 +86,12 @@ blockquote  {
 }
 
 .post-container th {
-	padding:8px;
+	padding:10px;
 	border-bottom:1px solid #333;
 }
 
 .post-container td {
-	padding:8px;
+	padding:10px;
 }
 
 th+th, td+td {
