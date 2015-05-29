@@ -2,13 +2,9 @@
 layout: default
 title: WsztRush's Blog
 ---
-<ul class="post-list">
+<ul>
 	{% for post in paginator.posts %}
-	<li>
-		<div class="post-title">
-			<a href="{{site.baseurl}}{{post.url}}"> {{post.title}}</a> &nbsp; {{ post.date | date: "%F" }} </br>
-		</div>
-	</li>
+	<li><a href="{{site.baseurl}}{{post.url}}"> {{post.title}}</a></li>
 	{% endfor %}
 </ul>
 
