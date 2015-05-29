@@ -2,14 +2,11 @@
 <html>
 	{% include head.html %}
 	<body onload="prettyPrint()">
-		{% include bar.html %}
 		<div class="post-container">
-			<div style="padding:40px;">
-				<h1>{{ page.title }}</h1>
-				{{ content }}
-				<!-- 评论组件 -->
-				<div id="disqus_thread"/>
-			</div>
+			<h1>{{ page.title }}</h1>
+			{{ content }}
+			<!-- 评论组件 -->
+			<div id="disqus_thread"/>
 		</div>
 	</body>
 </html>
