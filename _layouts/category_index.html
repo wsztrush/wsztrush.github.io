@@ -5,7 +5,7 @@ title: 分类
 <ul class="cul">
 	{% for post in site.categories[page.category] %}
 	<li class="cli">
-		<a href="{{site.baseurl}}{{post.url}}"> {{post.title}}</a> {{ post.date | date: '%Y-%m-%d' }}
+		<a href="{{site.baseurl}}{{post.url}}"> {{post.title}}</a>
 	</li>
 	{% endfor %}
 </ul>
