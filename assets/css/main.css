@@ -63,7 +63,7 @@ blockquote  {
 }
 
 .post-container h2 {
-	background-color: #000;
+	/* background-color: #000; */
 	padding: 10px;
 	border-left-width: 10px;
 	border-left-style: solid;
