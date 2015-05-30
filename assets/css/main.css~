@@ -66,14 +66,9 @@ blockquote  {
 	background-color: #444;
 	color: #FFF;
 	padding: 8px;
-	/* border:1px solid #000; */
 	border-left-width: 10px;
 	border-left-style: solid;
-	border-left-color: #000;
-	/* border-bottom-width: 1px;
-	border-bottom-style: solid;
-	border-bottom-color: #000; */
-	
+	border-left-color: #0DD;	
 }
 
 .post-container img {
