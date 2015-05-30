@@ -64,6 +64,7 @@ blockquote  {
 
 .post-container h2 {
 	/* background-color: #000; */
+	/* color: #FFF; */
 	padding: 10px;
 	border-left-width: 10px;
 	border-left-style: solid;
@@ -71,7 +72,6 @@ blockquote  {
 	border-bottom-width: 1px;
 	border-bottom-style: solid;
 	border-bottom-color: #000;
-	color: #FFF;
 	
 }
 
