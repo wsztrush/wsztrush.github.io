@@ -15,9 +15,9 @@ categories: 编程技术
 最常见的使用场景是泛型类或者接口：
 
 <pre class="prettyprint">
-interface TestInterface<T> {
+interface TestInterface&lt;T&gt; {
 }
-class TestClass<T> {
+class TestClass&lt;T&gt; {
     T data;
 }
 </pre>
@@ -25,7 +25,7 @@ class TestClass<T> {
 看以看到泛型的好处能节省我们的代码量，当**data**的类型变化的时候，我们不需要去写不同的接口或者类。当然有时候你需要指定多个类型，那么可以：
 
 <pre class="prettyprint">
-class TestClass<K, V, OTHER> {
+class TestClass&lt;K, V, OTHER&gt; {
     K     key;
     V     value;
     OTHER other;
@@ -35,7 +35,7 @@ class TestClass<K, V, OTHER> {
 有时候我们希望只支持Number类型，那么可以：
 
 <pre class="prettyprint">
-class TestClass<T extends Number> {
+class TestClass&lt;T extends Number&gt; {
     T data;
 }
 </pre>
@@ -43,7 +43,7 @@ class TestClass<T extends Number> {
 当然，泛型也可以用在方法上，举个例子：
 
 <pre class="prettyprint">
-public <T> T doSth(T a){
+public &lt;T&gt; T doSth(T a){
     return a;
 }
 </pre>
@@ -51,15 +51,15 @@ public <T> T doSth(T a){
 你可能会比较好奇如果同时在方法和类上面使用泛型的话会出现什么情况：
 
 <pre class="prettyprint">
-public class Test<T> {
+public class Test&lt;T&gt; {
     T data;
     @SuppressWarnings("hiding")
-    public <T> T doSth(T a) {
+    public &lt;T&gt; T doSth(T a) {
         return a;
     }
 
     public static void main(String[] args) {
-        Test<String> t = new Test<String>();
+        Test&lt;String&gt; t = new Test&lt;String&gt;();
         System.out.println(t.doSth(123));
         t.data = "123";
     }
@@ -79,7 +79,7 @@ public java.lang.Object doSth(java.lang.Object);
 如果是受限的泛型，比如：
 
 <pre class="prettyprint">
-public class Test<T extends Number> {
+public class Test&lt;T extends Number&gt; {
     public T doSth(T a) {
         return a;
     }
@@ -96,8 +96,8 @@ public java.lang.Number doSth(java.lang.Number);
 
 <pre class="prettyprint">
 public class Test {
-    public void doSth(List<Integer> list) { }
-    public void doSth(List<String> list) { }
+    public void doSth(List&lt;Integer&gt; list) { }
+    public void doSth(List&lt;String&gt; list) { }
 }
 </pre>
 
@@ -105,8 +105,8 @@ public class Test {
 
 <pre class="prettyprint">
 public class Test {
-    public Integer doSth(List<Integer> list) { return null; }
-    public String doSth(List<String> list) { return null; }
+    public Integer doSth(List&lt;Integer&gt; list) { return null; }
+    public String doSth(List&lt;String&gt; list) { return null; }
 }
 </pre>
 
@@ -120,7 +120,7 @@ public class Test {
 
 <pre class="prettyprint">
 public class Test {
-    public List<String> list;
+    public List&lt;String&gt; list;
 
     public static void main(String[] args) throws Exception {
         ParameterizedType pt = (ParameterizedType) Test.class.getField("list").getGenericType();
