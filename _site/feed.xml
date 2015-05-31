@@ -5,8 +5,8 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sat, 30 May 2015 10:11:44 +0800</pubDate>
-    <lastBuildDate>Sat, 30 May 2015 10:11:44 +0800</lastBuildDate>
+    <pubDate>Sun, 31 May 2015 09:08:37 +0800</pubDate>
+    <lastBuildDate>Sun, 31 May 2015 09:08:37 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
@@ -42,13 +42,13 @@ enum Color {
 &lt;p&gt;甚至enum还可以去实现接口：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
-enum Color implements Comparable&lt;color&gt; {
+enum Color implements Comparable&amp;lt;Color&amp;gt; {
     RED,
     GREEN;
 }
+&lt;/pre&gt;
 
-
-在使用的时候，枚举可以用来比较：
+&lt;p&gt;在使用的时候，枚举可以用来比较：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 Color c = Color.RED;
@@ -57,7 +57,7 @@ if(c == Color.GREEN){
 }
 &lt;/pre&gt;
 
-也可以用来switch：
+&lt;p&gt;也可以用来switch：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 Color c = Color.RED;
@@ -67,7 +67,7 @@ switch (c) {
 }
 &lt;/pre&gt;
 
-而且你可以很方便的变量一个枚举类型中所有的属性：
+&lt;p&gt;而且你可以很方便的变量一个枚举类型中所有的属性：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 for (Color c : Color.values()) {
@@ -75,17 +75,17 @@ for (Color c : Color.values()) {
 }
 &lt;/pre&gt;
 
-甚至在你只知道枚举的变量名的时候也能拿到对应的属性：
+&lt;p&gt;甚至在你只知道枚举的变量名的时候也能拿到对应的属性：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 System.out.println(Color.valueOf(&quot;RED&quot;));
 &lt;/pre&gt;
 
-看下来，枚举在定义常量上面的作用还真大。
+&lt;p&gt;看下来，枚举在定义常量上面的作用还真大。&lt;/p&gt;
 
-## 枚举VS常量
+&lt;h2 id=&quot;vs&quot;&gt;枚举VS常量&lt;/h2&gt;
 
-首先不同的枚举类是不同的类型，而你用final static修饰的一般都是int等基本类型，这样的常量不容易做到类型检查，这也算是一个枚举的优势：
+&lt;p&gt;首先不同的枚举类是不同的类型，而你用final static修饰的一般都是int等基本类型，这样的常量不容易做到类型检查，这也算是一个枚举的优势：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 public static void check(Color c){
@@ -93,11 +93,11 @@ public static void check(Color c){
 }
 &lt;/pre&gt;
 
-如果你想封装一种类型的常量类型检查的话（除非有现成的类），为什么不用enum？
+&lt;p&gt;如果你想封装一种类型的常量类型检查的话（除非有现成的类），为什么不用enum？&lt;/p&gt;
 
-## enum到底是什么
+&lt;h2 id=&quot;enum&quot;&gt;enum到底是什么&lt;/h2&gt;
 
-在编译之后会有一个Color.class文件，使用javap查看：
+&lt;p&gt;在编译之后会有一个Color.class文件，使用javap查看：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 final class Color extends java.lang.Enum implements java.lang.Comparable{
@@ -109,7 +109,7 @@ final class Color extends java.lang.Enum implements java.lang.Comparable{
 }
 &lt;/pre&gt;
 
-该类继承自**java.lang.Enum**，然后通过**javap -c Color**来看初始化的代码：
+&lt;p&gt;该类继承自&lt;strong&gt;java.lang.Enum&lt;/strong&gt;，然后通过&lt;strong&gt;javap -c Color&lt;/strong&gt;来看初始化的代码：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 static {};
@@ -118,13 +118,13 @@ static {};
    3:   dup
    4:   ldc     #7; //String RED
    6:   iconst_0
-   7:   invokespecial   #8; //Method &quot;&lt;init&gt;&quot;:(Ljava/lang/String;I)V
+   7:   invokespecial   #8; //Method &quot;&amp;lt;init&amp;gt;&quot;:(Ljava/lang/String;I)V
    10:  putstatic       #9; //Field RED:LColor;
    13:  new     #4; //class Color
    16:  dup
    17:  ldc     #10; //String GREEN
    19:  iconst_1
-   20:  invokespecial   #8; //Method &quot;&lt;init&gt;&quot;:(Ljava/lang/String;I)V
+   20:  invokespecial   #8; //Method &quot;&amp;lt;init&amp;gt;&quot;:(Ljava/lang/String;I)V
    23:  putstatic       #11; //Field GREEN:LColor;
    26:  iconst_2
    27:  anewarray       #4; //class Color
@@ -138,9 +138,9 @@ static {};
    41:  aastore
    42:  putstatic       #1; //Field $VALUES:[LColor;
    45:  return
+&lt;/pre&gt;
 
-
-这里大家可能会对枚举switch有疑问，我们写代码来看下：
+&lt;p&gt;这里大家可能会对枚举switch有疑问，我们写代码来看下：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 public class Test {
@@ -153,7 +153,7 @@ public class Test {
 }
 &lt;/pre&gt;
 
-然后用javap -c查看，得到：
+&lt;p&gt;然后用javap -c查看，得到：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 public void func(Color);
@@ -170,8 +170,7 @@ public void func(Color);
 }
 &lt;/pre&gt;
 
-可以看到这里switch的其实还是enum类中的ordinal（int），和之前我们对switch的认识是一致的。
-&lt;/init&gt;&lt;/init&gt;&lt;/pre&gt;&lt;/color&gt;&lt;/pre&gt;
+&lt;p&gt;可以看到这里switch的其实还是enum类中的ordinal（int），和之前我们对switch的认识是一致的。&lt;/p&gt;
 </description>
         <pubDate>Fri, 15 May 2015 04:34:00 +0800</pubDate>
         <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/05/15/Java-Enum.html</link>

@@ -48,13 +48,13 @@ enum Color {
 <p>甚至enum还可以去实现接口：</p>
 
 <pre class="prettyprint">
-enum Color implements Comparable<color> {
+enum Color implements Comparable&lt;Color&gt; {
     RED,
     GREEN;
 }
+</pre>
 
-
-在使用的时候，枚举可以用来比较：
+<p>在使用的时候，枚举可以用来比较：</p>
 
 <pre class="prettyprint">
 Color c = Color.RED;
@@ -63,7 +63,7 @@ if(c == Color.GREEN){
 }
 </pre>
 
-也可以用来switch：
+<p>也可以用来switch：</p>
 
 <pre class="prettyprint">
 Color c = Color.RED;
@@ -73,7 +73,7 @@ switch (c) {
 }
 </pre>
 
-而且你可以很方便的变量一个枚举类型中所有的属性：
+<p>而且你可以很方便的变量一个枚举类型中所有的属性：</p>
 
 <pre class="prettyprint">
 for (Color c : Color.values()) {
@@ -81,17 +81,17 @@ for (Color c : Color.values()) {
 }
 </pre>
 
-甚至在你只知道枚举的变量名的时候也能拿到对应的属性：
+<p>甚至在你只知道枚举的变量名的时候也能拿到对应的属性：</p>
 
 <pre class="prettyprint">
 System.out.println(Color.valueOf("RED"));
 </pre>
 
-看下来，枚举在定义常量上面的作用还真大。
+<p>看下来，枚举在定义常量上面的作用还真大。</p>
 
-## 枚举VS常量
+<h2 id="vs">枚举VS常量</h2>
 
-首先不同的枚举类是不同的类型，而你用final static修饰的一般都是int等基本类型，这样的常量不容易做到类型检查，这也算是一个枚举的优势：
+<p>首先不同的枚举类是不同的类型，而你用final static修饰的一般都是int等基本类型，这样的常量不容易做到类型检查，这也算是一个枚举的优势：</p>
 
 <pre class="prettyprint">
 public static void check(Color c){
@@ -99,11 +99,11 @@ public static void check(Color c){
 }
 </pre>
 
-如果你想封装一种类型的常量类型检查的话（除非有现成的类），为什么不用enum？
+<p>如果你想封装一种类型的常量类型检查的话（除非有现成的类），为什么不用enum？</p>
 
-## enum到底是什么
+<h2 id="enum">enum到底是什么</h2>
 
-在编译之后会有一个Color.class文件，使用javap查看：
+<p>在编译之后会有一个Color.class文件，使用javap查看：</p>
 
 <pre class="prettyprint">
 final class Color extends java.lang.Enum implements java.lang.Comparable{
@@ -115,7 +115,7 @@ final class Color extends java.lang.Enum implements java.lang.Comparable{
 }
 </pre>
 
-该类继承自**java.lang.Enum**，然后通过**javap -c Color**来看初始化的代码：
+<p>该类继承自<strong>java.lang.Enum</strong>，然后通过<strong>javap -c Color</strong>来看初始化的代码：</p>
 
 <pre class="prettyprint">
 static {};
@@ -124,13 +124,13 @@ static {};
    3:   dup
    4:   ldc     #7; //String RED
    6:   iconst_0
-   7:   invokespecial   #8; //Method "<init>":(Ljava/lang/String;I)V
+   7:   invokespecial   #8; //Method "&lt;init&gt;":(Ljava/lang/String;I)V
    10:  putstatic       #9; //Field RED:LColor;
    13:  new     #4; //class Color
    16:  dup
    17:  ldc     #10; //String GREEN
    19:  iconst_1
-   20:  invokespecial   #8; //Method "<init>":(Ljava/lang/String;I)V
+   20:  invokespecial   #8; //Method "&lt;init&gt;":(Ljava/lang/String;I)V
    23:  putstatic       #11; //Field GREEN:LColor;
    26:  iconst_2
    27:  anewarray       #4; //class Color
@@ -144,9 +144,9 @@ static {};
    41:  aastore
    42:  putstatic       #1; //Field $VALUES:[LColor;
    45:  return
+</pre>
 
-
-这里大家可能会对枚举switch有疑问，我们写代码来看下：
+<p>这里大家可能会对枚举switch有疑问，我们写代码来看下：</p>
 
 <pre class="prettyprint">
 public class Test {
@@ -159,7 +159,7 @@ public class Test {
 }
 </pre>
 
-然后用javap -c查看，得到：
+<p>然后用javap -c查看，得到：</p>
 
 <pre class="prettyprint">
 public void func(Color);
@@ -176,8 +176,7 @@ public void func(Color);
 }
 </pre>
 
-可以看到这里switch的其实还是enum类中的ordinal（int），和之前我们对switch的认识是一致的。
-</init></init></pre></color></pre>
+<p>可以看到这里switch的其实还是enum类中的ordinal（int），和之前我们对switch的认识是一致的。</p>
 
 			<!-- 评论组件 -->
 			<div id="disqus_thread"/>
