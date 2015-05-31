@@ -26,14 +26,14 @@
 <p>最常见的使用场景是泛型类或者接口：</p>
 
 <pre class="prettyprint">
-interface TestInterface<t> {
+interface TestInterface&lt;T&gt; {
 }
-class TestClass<t> {
+class TestClass&lt;T&gt; {
     T data;
 }
+</pre>
 
-
-看以看到泛型的好处能节省我们的代码量，当**data**的类型变化的时候，我们不需要去写不同的接口或者类。当然有时候你需要指定多个类型，那么可以：
+<p>看以看到泛型的好处能节省我们的代码量，当<strong>data</strong>的类型变化的时候，我们不需要去写不同的接口或者类。当然有时候你需要指定多个类型，那么可以：</p>
 
 <pre class="prettyprint">
 class TestClass&lt;K, V, OTHER&gt; {
@@ -43,105 +43,104 @@ class TestClass&lt;K, V, OTHER&gt; {
 }
 </pre>
 
-有时候我们希望只支持Number类型，那么可以：
+<p>有时候我们希望只支持Number类型，那么可以：</p>
 
 <pre class="prettyprint">
-class TestClass<t extends="" number=""> {
+class TestClass&lt;T extends Number&gt; {
     T data;
 }
+</pre>
 
-
-当然，泛型也可以用在方法上，举个例子：
+<p>当然，泛型也可以用在方法上，举个例子：</p>
 
 <pre class="prettyprint">
-public <t> T doSth(T a){
+public &lt;T&gt; T doSth(T a){
     return a;
 }
+</pre>
 
-
-你可能会比较好奇如果同时在方法和类上面使用泛型的话会出现什么情况：
+<p>你可能会比较好奇如果同时在方法和类上面使用泛型的话会出现什么情况：</p>
 
 <pre class="prettyprint">
-public class Test<t> {
+public class Test&lt;T&gt; {
     T data;
     @SuppressWarnings("hiding")
-    public <t> T doSth(T a) {
+    public &lt;T&gt; T doSth(T a) {
         return a;
     }
 
     public static void main(String[] args) {
-        Test<string> t = new Test<string>();
+        Test&lt;String&gt; t = new Test&lt;String&gt;();
         System.out.println(t.doSth(123));
         t.data = "123";
     }
 }
+</pre>
 
+<p>结论是方法上的用方法的，其他的用类上的，如果方法上没有，方法用类上的。</p>
 
-结论是方法上的用方法的，其他的用类上的，如果方法上没有，方法用类上的。
+<h2 id="section-2">多想一点</h2>
 
-## 多想一点
-
-现在想一下泛型具体是如何实现的，用**javap Test**看doSth的方法声明如下：
+<p>现在想一下泛型具体是如何实现的，用<strong>javap Test</strong>看doSth的方法声明如下：</p>
 
 <pre class="prettyprint">
 public java.lang.Object doSth(java.lang.Object);
 </pre>
 
-如果是受限的泛型，比如：
+<p>如果是受限的泛型，比如：</p>
 
 <pre class="prettyprint">
-public class Test<t extends="" number=""> {
+public class Test&lt;T extends Number&gt; {
     public T doSth(T a) {
         return a;
     }
 }
+</pre>
 
-
-那么得到的结果则是：
+<p>那么得到的结果则是：</p>
 
 <pre class="prettyprint">
 public java.lang.Number doSth(java.lang.Number);
 </pre>
 
-如果限制类型有两个（比如\&lt;T extends Comparable &amp; Serializable\&gt;）则生成的字节码中选用第一个（Comparable）。Java中的泛型是伪泛型，在运行期间，所有的泛型信息都会被擦除。也就是说在生成的Java字节码中没有包含泛型中的类型信息。那么在重载的时候会有什么影响，举个例子：
+<p>如果限制类型有两个（比如&lt;T extends Comparable &amp; Serializable&gt;）则生成的字节码中选用第一个（Comparable）。Java中的泛型是伪泛型，在运行期间，所有的泛型信息都会被擦除。也就是说在生成的Java字节码中没有包含泛型中的类型信息。那么在重载的时候会有什么影响，举个例子：</p>
 
 <pre class="prettyprint">
 public class Test {
-    public void doSth(List<integer> list) { }
-    public void doSth(List<string> list) { }
+    public void doSth(List&lt;Integer&gt; list) { }
+    public void doSth(List&lt;String&gt; list) { }
 }
+</pre>
 
-
-现在应该会猜到：**因为类型擦除，这个类是不能被编译通过的。**那么下面这段代码呢？
+<p>现在应该会猜到：<strong>因为类型擦除，这个类是不能被编译通过的。</strong>那么下面这段代码呢？</p>
 
 <pre class="prettyprint">
 public class Test {
-    public Integer doSth(List<integer> list) { return null; }
-    public String doSth(List<string> list) { return null; }
+    public Integer doSth(List&lt;Integer&gt; list) { return null; }
+    public String doSth(List&lt;String&gt; list) { return null; }
 }
+</pre>
 
-
-编译通过了。这貌似与我们之前对重载的认识不相同：函数之间的区分是依据参数和方法名，返回值并不参与。上面这段代码中常在不是根据返回值来判断的，但是增加不同类型的返回值是的这两个方法能够共存在同一个Class文件中：
+<p>编译通过了。这貌似与我们之前对重载的认识不相同：函数之间的区分是依据参数和方法名，返回值并不参与。上面这段代码中常在不是根据返回值来判断的，但是增加不同类型的返回值是的这两个方法能够共存在同一个Class文件中：
 &gt; 重载要求方法有不同的方法签名，而返回值并不在方法签名中。但是在Class文件格式中，只要描述符不是完全一致的方法就可以共存，也就是说：返回值也能影响方法能不能共存在同一个Class中。
-可以通过javap -s Test看到方法签名。
+可以通过javap -s Test看到方法签名。</p>
 
-## 获取泛型的类型
+<h2 id="section-3">获取泛型的类型</h2>
 
-首先来看通过**ParameterizedType**获取类型的方法，如下：
+<p>首先来看通过<strong>ParameterizedType</strong>获取类型的方法，如下：</p>
 
 <pre class="prettyprint">
 public class Test {
-    public List<string> list;
+    public List&lt;String&gt; list;
 
     public static void main(String[] args) throws Exception {
         ParameterizedType pt = (ParameterizedType) Test.class.getField("list").getGenericType();
         System.out.println(pt.getActualTypeArguments()[0]);
     }
 }
+</pre>
 
-
-其中getGenericType方法返回一个Type对象，如果是一个参数化类型，那么返回的Type会反映源码中使用的实际参数类型，实际的参数类型通过getActualTypeArguments获取。
-</string></pre></string></integer></pre></string></integer></pre></t></pre></string></string></t></t></pre></t></pre></t></pre></t></t></pre>
+<p>其中getGenericType方法返回一个Type对象，如果是一个参数化类型，那么返回的Type会反映源码中使用的实际参数类型，实际的参数类型通过getActualTypeArguments获取。</p>
 
 			<!-- 评论组件 -->
 			<div id="disqus_thread"/>

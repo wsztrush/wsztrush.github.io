@@ -5,8 +5,8 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 31 May 2015 09:39:00 +0800</pubDate>
-    <lastBuildDate>Sun, 31 May 2015 09:39:00 +0800</lastBuildDate>
+    <pubDate>Sun, 31 May 2015 09:45:10 +0800</pubDate>
+    <lastBuildDate>Sun, 31 May 2015 09:45:10 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
@@ -354,14 +354,14 @@ class B extends A {
 &lt;p&gt;最常见的使用场景是泛型类或者接口：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
-interface TestInterface&lt;t&gt; {
+interface TestInterface&amp;lt;T&amp;gt; {
 }
-class TestClass&lt;t&gt; {
+class TestClass&amp;lt;T&amp;gt; {
     T data;
 }
+&lt;/pre&gt;
 
-
-看以看到泛型的好处能节省我们的代码量，当**data**的类型变化的时候，我们不需要去写不同的接口或者类。当然有时候你需要指定多个类型，那么可以：
+&lt;p&gt;看以看到泛型的好处能节省我们的代码量，当&lt;strong&gt;data&lt;/strong&gt;的类型变化的时候，我们不需要去写不同的接口或者类。当然有时候你需要指定多个类型，那么可以：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 class TestClass&amp;lt;K, V, OTHER&amp;gt; {
@@ -371,105 +371,104 @@ class TestClass&amp;lt;K, V, OTHER&amp;gt; {
 }
 &lt;/pre&gt;
 
-有时候我们希望只支持Number类型，那么可以：
+&lt;p&gt;有时候我们希望只支持Number类型，那么可以：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
-class TestClass&lt;t extends=&quot;&quot; number=&quot;&quot;&gt; {
+class TestClass&amp;lt;T extends Number&amp;gt; {
     T data;
 }
+&lt;/pre&gt;
 
-
-当然，泛型也可以用在方法上，举个例子：
+&lt;p&gt;当然，泛型也可以用在方法上，举个例子：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
-public &lt;t&gt; T doSth(T a){
+public &amp;lt;T&amp;gt; T doSth(T a){
     return a;
 }
+&lt;/pre&gt;
 
-
-你可能会比较好奇如果同时在方法和类上面使用泛型的话会出现什么情况：
+&lt;p&gt;你可能会比较好奇如果同时在方法和类上面使用泛型的话会出现什么情况：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
-public class Test&lt;t&gt; {
+public class Test&amp;lt;T&amp;gt; {
     T data;
     @SuppressWarnings(&quot;hiding&quot;)
-    public &lt;t&gt; T doSth(T a) {
+    public &amp;lt;T&amp;gt; T doSth(T a) {
         return a;
     }
 
     public static void main(String[] args) {
-        Test&lt;string&gt; t = new Test&lt;string&gt;();
+        Test&amp;lt;String&amp;gt; t = new Test&amp;lt;String&amp;gt;();
         System.out.println(t.doSth(123));
         t.data = &quot;123&quot;;
     }
 }
+&lt;/pre&gt;
 
+&lt;p&gt;结论是方法上的用方法的，其他的用类上的，如果方法上没有，方法用类上的。&lt;/p&gt;
 
-结论是方法上的用方法的，其他的用类上的，如果方法上没有，方法用类上的。
+&lt;h2 id=&quot;section-2&quot;&gt;多想一点&lt;/h2&gt;
 
-## 多想一点
-
-现在想一下泛型具体是如何实现的，用**javap Test**看doSth的方法声明如下：
+&lt;p&gt;现在想一下泛型具体是如何实现的，用&lt;strong&gt;javap Test&lt;/strong&gt;看doSth的方法声明如下：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 public java.lang.Object doSth(java.lang.Object);
 &lt;/pre&gt;
 
-如果是受限的泛型，比如：
+&lt;p&gt;如果是受限的泛型，比如：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
-public class Test&lt;t extends=&quot;&quot; number=&quot;&quot;&gt; {
+public class Test&amp;lt;T extends Number&amp;gt; {
     public T doSth(T a) {
         return a;
     }
 }
+&lt;/pre&gt;
 
-
-那么得到的结果则是：
+&lt;p&gt;那么得到的结果则是：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 public java.lang.Number doSth(java.lang.Number);
 &lt;/pre&gt;
 
-如果限制类型有两个（比如\&amp;lt;T extends Comparable &amp;amp; Serializable\&amp;gt;）则生成的字节码中选用第一个（Comparable）。Java中的泛型是伪泛型，在运行期间，所有的泛型信息都会被擦除。也就是说在生成的Java字节码中没有包含泛型中的类型信息。那么在重载的时候会有什么影响，举个例子：
+&lt;p&gt;如果限制类型有两个（比如&amp;lt;T extends Comparable &amp;amp; Serializable&amp;gt;）则生成的字节码中选用第一个（Comparable）。Java中的泛型是伪泛型，在运行期间，所有的泛型信息都会被擦除。也就是说在生成的Java字节码中没有包含泛型中的类型信息。那么在重载的时候会有什么影响，举个例子：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 public class Test {
-    public void doSth(List&lt;integer&gt; list) { }
-    public void doSth(List&lt;string&gt; list) { }
+    public void doSth(List&amp;lt;Integer&amp;gt; list) { }
+    public void doSth(List&amp;lt;String&amp;gt; list) { }
 }
+&lt;/pre&gt;
 
-
-现在应该会猜到：**因为类型擦除，这个类是不能被编译通过的。**那么下面这段代码呢？
+&lt;p&gt;现在应该会猜到：&lt;strong&gt;因为类型擦除，这个类是不能被编译通过的。&lt;/strong&gt;那么下面这段代码呢？&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 public class Test {
-    public Integer doSth(List&lt;integer&gt; list) { return null; }
-    public String doSth(List&lt;string&gt; list) { return null; }
+    public Integer doSth(List&amp;lt;Integer&amp;gt; list) { return null; }
+    public String doSth(List&amp;lt;String&amp;gt; list) { return null; }
 }
+&lt;/pre&gt;
 
-
-编译通过了。这貌似与我们之前对重载的认识不相同：函数之间的区分是依据参数和方法名，返回值并不参与。上面这段代码中常在不是根据返回值来判断的，但是增加不同类型的返回值是的这两个方法能够共存在同一个Class文件中：
+&lt;p&gt;编译通过了。这貌似与我们之前对重载的认识不相同：函数之间的区分是依据参数和方法名，返回值并不参与。上面这段代码中常在不是根据返回值来判断的，但是增加不同类型的返回值是的这两个方法能够共存在同一个Class文件中：
 &amp;gt; 重载要求方法有不同的方法签名，而返回值并不在方法签名中。但是在Class文件格式中，只要描述符不是完全一致的方法就可以共存，也就是说：返回值也能影响方法能不能共存在同一个Class中。
-可以通过javap -s Test看到方法签名。
+可以通过javap -s Test看到方法签名。&lt;/p&gt;
 
-## 获取泛型的类型
+&lt;h2 id=&quot;section-3&quot;&gt;获取泛型的类型&lt;/h2&gt;
 
-首先来看通过**ParameterizedType**获取类型的方法，如下：
+&lt;p&gt;首先来看通过&lt;strong&gt;ParameterizedType&lt;/strong&gt;获取类型的方法，如下：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 public class Test {
-    public List&lt;string&gt; list;
+    public List&amp;lt;String&amp;gt; list;
 
     public static void main(String[] args) throws Exception {
         ParameterizedType pt = (ParameterizedType) Test.class.getField(&quot;list&quot;).getGenericType();
         System.out.println(pt.getActualTypeArguments()[0]);
     }
 }
+&lt;/pre&gt;
 
-
-其中getGenericType方法返回一个Type对象，如果是一个参数化类型，那么返回的Type会反映源码中使用的实际参数类型，实际的参数类型通过getActualTypeArguments获取。
-&lt;/string&gt;&lt;/pre&gt;&lt;/string&gt;&lt;/integer&gt;&lt;/pre&gt;&lt;/string&gt;&lt;/integer&gt;&lt;/pre&gt;&lt;/t&gt;&lt;/pre&gt;&lt;/string&gt;&lt;/string&gt;&lt;/t&gt;&lt;/t&gt;&lt;/pre&gt;&lt;/t&gt;&lt;/pre&gt;&lt;/t&gt;&lt;/pre&gt;&lt;/t&gt;&lt;/t&gt;&lt;/pre&gt;
+&lt;p&gt;其中getGenericType方法返回一个Type对象，如果是一个参数化类型，那么返回的Type会反映源码中使用的实际参数类型，实际的参数类型通过getActualTypeArguments获取。&lt;/p&gt;
 </description>
         <pubDate>Thu, 14 May 2015 00:00:00 +0800</pubDate>
         <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/05/14/Java-Generics.html</link>
