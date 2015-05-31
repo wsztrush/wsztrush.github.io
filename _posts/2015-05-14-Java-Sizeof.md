@@ -56,7 +56,7 @@ class B extends A {
 }
 </pre>
 
-那么此时占用的空间如下：head(8) + a(1) + padding(3) + b(1) + padding(3) = 16。显然这种方式比较浪费空间，那么就有了：如果子类的第一个成员是double或者long，并且父类并没有用完8个字节，JVM活破坏规将较小的数据填充到该空间，举个例子：
+那么此时占用的空间如下：head(8) + a(1) + padding(3) + b(1) + padding(3) = 16。显然这种方式比较浪费空间，那么就有了：如果子类的第一个成员是double或者long，并且父类并没有用完8个字节，JVM会破坏规将较小的数据填充到该空间，举个例子：
 
 <pre class="prettyprint">
 class A {

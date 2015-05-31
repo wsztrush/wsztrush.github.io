@@ -5,8 +5,8 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 31 May 2015 09:28:18 +0800</pubDate>
-    <lastBuildDate>Sun, 31 May 2015 09:28:18 +0800</lastBuildDate>
+    <pubDate>Sun, 31 May 2015 09:33:26 +0800</pubDate>
+    <lastBuildDate>Sun, 31 May 2015 09:33:26 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
@@ -319,7 +319,7 @@ class B extends A {
 }
 &lt;/pre&gt;
 
-&lt;p&gt;那么此时占用的空间如下：head(8) + a(1) + padding(3) + b(1) + padding(3) = 16。显然这种方式比较浪费空间，那么就有了：如果子类的第一个成员是double或者long，并且父类并没有用完8个字节，JVM活破坏规将较小的数据填充到该空间，举个例子：&lt;/p&gt;
+&lt;p&gt;那么此时占用的空间如下：head(8) + a(1) + padding(3) + b(1) + padding(3) = 16。显然这种方式比较浪费空间，那么就有了：如果子类的第一个成员是double或者long，并且父类并没有用完8个字节，JVM会破坏规将较小的数据填充到该空间，举个例子：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 class A {
