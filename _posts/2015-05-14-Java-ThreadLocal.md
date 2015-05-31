@@ -12,7 +12,7 @@ categories: 编程技术
 
 <pre class="prettyprint">
 class JavaBean {
-    ThreadLocal&lt;Integer&gt; threadLocal = new ThreadLocal&lt;Integer&gt;();
+    static ThreadLocal&lt;Integer&gt; threadLocal = new ThreadLocal&lt;Integer&gt;();
 
     public void prepare() {
         threadLocal.set(0);
@@ -51,6 +51,7 @@ public class ThreadLocalDemo {
 }
 </pre>
 
+从输出中可以看到，多个线程操作同一个threadLocal时，结果并不会出错。
 
 可以将ThreadLocal看做是对**Thread.threadLocals**的封装，况且在程序中也是不能直接访问到Thread.threadLocals。
 
@@ -62,9 +63,9 @@ public class ThreadLocalDemo {
 Thread.currentThread().threadLocals.getEntry(threadLocal).value
 </pre>
 
-这样，不同的线程在执行的时候在同一个threadLocal上获取到的是不同的数据，线程之间的隔离性是通过"各自保存不同的Map"来实现的。其实如果让你来做一个线程安全的数据保存的解决方法很可能也是这个思路。
+这样，不同的线程在执行的时候在同一个threadLocal上获取到的是不同的数据，线程之间的隔离性是通过"各自保存不同的Map"来实现的，而看到的threadLocal对象其实是**KEY**，在操作前get到的是**VALUE**。其实自己动手做一个线程安全的数据保存的解决方法也是这个思路。
 
-在ThreadLocalMap中使用的并不是普通的引用保存数据，而是使用WeakReference来做：
+在ThreadLocalMap中使用的并不是普通的引用保存数据，而是使用**WeakReference**来做：
 
 <pre class="prettyprint">
 static class Entry extends WeakReference&lt;ThreadLocal&gt; {

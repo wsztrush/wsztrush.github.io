@@ -5,8 +5,8 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 31 May 2015 09:19:03 +0800</pubDate>
-    <lastBuildDate>Sun, 31 May 2015 09:19:03 +0800</lastBuildDate>
+    <pubDate>Sun, 31 May 2015 09:28:18 +0800</pubDate>
+    <lastBuildDate>Sun, 31 May 2015 09:28:18 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
@@ -189,7 +189,7 @@ public void func(Color);
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 class JavaBean {
-    ThreadLocal&amp;lt;Integer&amp;gt; threadLocal = new ThreadLocal&amp;lt;Integer&amp;gt;();
+    static ThreadLocal&amp;lt;Integer&amp;gt; threadLocal = new ThreadLocal&amp;lt;Integer&amp;gt;();
 
     public void prepare() {
         threadLocal.set(0);
@@ -228,6 +228,8 @@ public class ThreadLocalDemo {
 }
 &lt;/pre&gt;
 
+&lt;p&gt;从输出中可以看到，多个线程操作同一个threadLocal时，结果并不会出错。&lt;/p&gt;
+
 &lt;p&gt;可以将ThreadLocal看做是对&lt;strong&gt;Thread.threadLocals&lt;/strong&gt;的封装，况且在程序中也是不能直接访问到Thread.threadLocals。&lt;/p&gt;
 
 &lt;h2 id=&quot;section-1&quot;&gt;原理&lt;/h2&gt;
@@ -238,9 +240,9 @@ public class ThreadLocalDemo {
 Thread.currentThread().threadLocals.getEntry(threadLocal).value
 &lt;/pre&gt;
 
-&lt;p&gt;这样，不同的线程在执行的时候在同一个threadLocal上获取到的是不同的数据，线程之间的隔离性是通过”各自保存不同的Map”来实现的。其实如果让你来做一个线程安全的数据保存的解决方法很可能也是这个思路。&lt;/p&gt;
+&lt;p&gt;这样，不同的线程在执行的时候在同一个threadLocal上获取到的是不同的数据，线程之间的隔离性是通过”各自保存不同的Map”来实现的，而看到的threadLocal对象其实是&lt;strong&gt;KEY&lt;/strong&gt;，在操作前get到的是&lt;strong&gt;VALUE&lt;/strong&gt;。其实自己动手做一个线程安全的数据保存的解决方法也是这个思路。&lt;/p&gt;
 
-&lt;p&gt;在ThreadLocalMap中使用的并不是普通的引用保存数据，而是使用WeakReference来做：&lt;/p&gt;
+&lt;p&gt;在ThreadLocalMap中使用的并不是普通的引用保存数据，而是使用&lt;strong&gt;WeakReference&lt;/strong&gt;来做：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 static class Entry extends WeakReference&amp;lt;ThreadLocal&amp;gt; {
