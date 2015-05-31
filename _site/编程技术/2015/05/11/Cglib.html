@@ -88,7 +88,7 @@ public class TestLazyLoader {
 }
 </pre>
 
-<p>感觉有点不可思议，用什么方法才能拦截获取属性这个操作？再仔细想一下，应该不是这样！在System.out.println()执行的时候会调用对象的toString方法，赶紧用<strong>javap -verbose xxx</strong>来看生成的字节码，发现：</p>
+<p>感觉有点不可思议，用什么方法才能拦截获取属性这个操作？再仔细想一下，应该不是这样！在System.out.println()执行的时候会调用对象的toString方法，而cglib做的仅仅是重写toString方法。赶紧用<strong>javap -verbose xxx</strong>来看生成的字节码，发现：</p>
 
 <pre class="prettyprint">
 public final java.lang.String toString();
