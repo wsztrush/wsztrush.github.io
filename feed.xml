@@ -5,8 +5,8 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 31 May 2015 09:33:26 +0800</pubDate>
-    <lastBuildDate>Sun, 31 May 2015 09:33:26 +0800</lastBuildDate>
+    <pubDate>Sun, 31 May 2015 09:39:00 +0800</pubDate>
+    <lastBuildDate>Sun, 31 May 2015 09:39:00 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
@@ -849,7 +849,7 @@ public class TestLazyLoader {
 }
 &lt;/pre&gt;
 
-&lt;p&gt;感觉有点不可思议，用什么方法才能拦截获取属性这个操作？再仔细想一下，应该不是这样！在System.out.println()执行的时候会调用对象的toString方法，赶紧用&lt;strong&gt;javap -verbose xxx&lt;/strong&gt;来看生成的字节码，发现：&lt;/p&gt;
+&lt;p&gt;感觉有点不可思议，用什么方法才能拦截获取属性这个操作？再仔细想一下，应该不是这样！在System.out.println()执行的时候会调用对象的toString方法，而cglib做的仅仅是重写toString方法。赶紧用&lt;strong&gt;javap -verbose xxx&lt;/strong&gt;来看生成的字节码，发现：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 public final java.lang.String toString();
