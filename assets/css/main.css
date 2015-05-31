@@ -23,6 +23,9 @@ a{
 	color: #428bca;
 	text-decoration: none;
 }
+a:active{
+	test:expression(target="_blank");
+}
 .category{
 	width:200px;
 	height:30px;
