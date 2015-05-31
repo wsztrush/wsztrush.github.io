@@ -87,11 +87,11 @@ for (Color c : Color.values()) {
 System.out.println(Color.valueOf("RED"));
 </pre>
 
-<p>看下来，枚举在定义常量上面的作用还真大。</p>
+<p>看下来，枚举在定义常量上面做了不少友好的封装。</p>
 
 <h2 id="vs">枚举VS常量</h2>
 
-<p>首先不同的枚举类是不同的类型，而你用final static修饰的一般都是int等基本类型，这样的常量不容易做到类型检查，这也算是一个枚举的优势：</p>
+<p>首先不同的枚举类是不同的类型，而你用final static修饰的一般都是int等基本类型，这样很难做类型检查，这算是Enum比较大的一个优势的优势，在写代码的时候不会传错参数：</p>
 
 <pre class="prettyprint">
 public static void check(Color c){
@@ -99,7 +99,7 @@ public static void check(Color c){
 }
 </pre>
 
-<p>如果你想封装一种类型的常量类型检查的话（除非有现成的类），为什么不用enum？</p>
+<p>当你传入其他类型参数时会编译出错。</p>
 
 <h2 id="enum">enum到底是什么</h2>
 
