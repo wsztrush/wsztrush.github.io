@@ -5,8 +5,8 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 01 Jun 2015 22:38:46 +0800</pubDate>
-    <lastBuildDate>Mon, 01 Jun 2015 22:38:46 +0800</lastBuildDate>
+    <pubDate>Mon, 01 Jun 2015 22:53:28 +0800</pubDate>
+    <lastBuildDate>Mon, 01 Jun 2015 22:53:28 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
@@ -536,7 +536,7 @@ public class Test {
 
 &lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Linux内存-逻辑地址.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;在Linux中的逻辑地址等于线性地址。&lt;/p&gt;
+&lt;p&gt;在Linux中的逻辑地址等于线性地址，也就是说Inter为了兼容把事情搞得很复杂，Linux简化顺便偷个懒。&lt;/p&gt;
 
 &lt;h2 id=&quot;section-1&quot;&gt;内存管理的方式&lt;/h2&gt;
 
