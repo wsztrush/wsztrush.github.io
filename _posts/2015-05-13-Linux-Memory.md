@@ -25,7 +25,7 @@ categories: 编程技术
 
 ![](http://7xiz10.com1.z0.glb.clouddn.com/Linux内存-逻辑地址.png)
 
-在Linux中的逻辑地址等于线性地址。
+在Linux中的逻辑地址等于线性地址，也就是说Inter为了兼容把事情搞得很复杂，Linux简化顺便偷个懒。
 
 ## 内存管理的方式
 
