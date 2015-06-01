@@ -5,8 +5,8 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 01 Jun 2015 22:28:38 +0800</pubDate>
-    <lastBuildDate>Mon, 01 Jun 2015 22:28:38 +0800</lastBuildDate>
+    <pubDate>Mon, 01 Jun 2015 22:36:43 +0800</pubDate>
+    <lastBuildDate>Mon, 01 Jun 2015 22:36:43 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
@@ -530,11 +530,11 @@ public class Test {
 
 &lt;p&gt;在Linux内部的地址的映射过程为&lt;strong&gt;逻辑地址&lt;/strong&gt;–&amp;gt;&lt;strong&gt;线性地址&lt;/strong&gt;–&amp;gt;&lt;strong&gt;物理地址&lt;/strong&gt;，物理地址最简单：地址总线中传输的数字信号，而线性地址和逻辑地址所表示的则是一种转换规则，线性地址规则如下：&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Linux内存-线性地址.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;这部分由MMU完成，其中涉及到主要的寄存器哟CR0、CR3。机器指令中出现的是逻辑地址，逻辑地址规则如下：&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Linux内存-逻辑地址.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;在Linux中的逻辑地址等于线性地址。&lt;/p&gt;
 

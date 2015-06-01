@@ -32,11 +32,11 @@
 
 <p>在Linux内部的地址的映射过程为<strong>逻辑地址</strong>–&gt;<strong>线性地址</strong>–&gt;<strong>物理地址</strong>，物理地址最简单：地址总线中传输的数字信号，而线性地址和逻辑地址所表示的则是一种转换规则，线性地址规则如下：</p>
 
-<p><img src="http://" alt="" /></p>
+<p><img src="http://7xiz10.com1.z0.glb.clouddn.com/Linux内存-线性地址.png" alt="" /></p>
 
 <p>这部分由MMU完成，其中涉及到主要的寄存器哟CR0、CR3。机器指令中出现的是逻辑地址，逻辑地址规则如下：</p>
 
-<p><img src="http://" alt="" /></p>
+<p><img src="http://7xiz10.com1.z0.glb.clouddn.com/Linux内存-逻辑地址.png" alt="" /></p>
 
 <p>在Linux中的逻辑地址等于线性地址。</p>
 
