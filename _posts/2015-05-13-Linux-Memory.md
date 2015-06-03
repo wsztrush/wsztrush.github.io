@@ -45,6 +45,11 @@ __find_buddy_index(unsigned long page_idx, unsigned int order)
 }
 </pre>
 
+从上面这段代码中可以看到，0、1是buddy，2、3是buddy，虽然1、2相邻，但他们不是。可能出现释放一个页面的时候合并很多次，分配的时候切割很多次，不过这个比较极端~~
+
+可以通过cat /proc/buddyinfo获取到各order中的空闲的页面数。
+
+
 ![](http://7xiz10.com1.z0.glb.clouddn.com/Linux内存-ALL.png)
 
 
