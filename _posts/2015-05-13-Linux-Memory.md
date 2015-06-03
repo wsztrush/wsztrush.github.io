@@ -35,6 +35,36 @@ bootmem再怎么优化，效率都不高，在要分配内存的时候毕竟是�
 
 ![](http://7xiz10.com1.z0.glb.clouddn.com/Linux内存-伙伴系统.png)
 
+可以看到0、4、5、6、7都是正在使用的，那么，1、2被释放的时候，他们会合并吗？
+
+<pre class="prettyprint">
+static inline void __free_one_page(struct page *page,
+                unsigned long pfn,
+                struct zone *zone, unsigned int order,
+                int migratetype)
+{
+	...
+    while (order < max_order - 1) {
+		buddy_idx = __find_buddy_index(page_idx, order);
+		buddy = page + (buddy_idx - page_idx);
+		if (!page_is_buddy(page, buddy, order))
+			break;
+        if (page_is_guard(buddy)) {
+            clear_page_guard(zone, buddy, order, migratetype);
+        } else {
+            list_del(&buddy->lru);
+            zone->free_area[order].nr_free--;
+			rmv_page_order(buddy);
+		}
+		combined_idx = buddy_idx & page_idx;
+		page = page + (combined_idx - page_idx);
+		page_idx = combined_idx;
+		order++;
+	}
+    ...
+}
+</pre>
+
 ![](http://7xiz10.com1.z0.glb.clouddn.com/Linux内存-ALL.png)
 
 

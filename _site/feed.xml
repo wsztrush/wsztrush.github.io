@@ -5,8 +5,8 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 03 Jun 2015 21:31:26 +0800</pubDate>
-    <lastBuildDate>Wed, 03 Jun 2015 21:31:26 +0800</lastBuildDate>
+    <pubDate>Wed, 03 Jun 2015 21:51:41 +0800</pubDate>
+    <lastBuildDate>Wed, 03 Jun 2015 21:51:41 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
@@ -545,6 +545,36 @@ public class Test {
 &lt;p&gt;bootmem再怎么优化，效率都不高，在要分配内存的时候毕竟是要去遍历，&lt;strong&gt;buddy&lt;/strong&gt;系统刚好能解决这个问题：在内部保存一些2的幂次大小的空闲内存片段，如果要分配3page，去4page的列表里面取一个，分配3个之后将生效的1个放回去，内存释放的过程刚好是一个逆过程。用一个图来表示：&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Linux内存-伙伴系统.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;可以看到0、4、5、6、7都是正在使用的，那么，1、2被释放的时候，他们会合并吗？&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+static inline void __free_one_page(struct page *page,
+                unsigned long pfn,
+                struct zone *zone, unsigned int order,
+                int migratetype)
+{
+	...
+    while (order &amp;lt; max_order - 1) {
+		buddy_idx = __find_buddy_index(page_idx, order);
+		buddy = page + (buddy_idx - page_idx);
+		if (!page_is_buddy(page, buddy, order))
+			break;
+        if (page_is_guard(buddy)) {
+            clear_page_guard(zone, buddy, order, migratetype);
+        } else {
+            list_del(&amp;amp;buddy-&amp;gt;lru);
+            zone-&amp;gt;free_area[order].nr_free--;
+			rmv_page_order(buddy);
+		}
+		combined_idx = buddy_idx &amp;amp; page_idx;
+		page = page + (combined_idx - page_idx);
+		page_idx = combined_idx;
+		order++;
+	}
+    ...
+}
+&lt;/pre&gt;
 
 &lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Linux内存-ALL.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
