@@ -5,8 +5,8 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 03 Jun 2015 22:25:04 +0800</pubDate>
-    <lastBuildDate>Wed, 03 Jun 2015 22:25:04 +0800</lastBuildDate>
+    <pubDate>Wed, 03 Jun 2015 22:26:13 +0800</pubDate>
+    <lastBuildDate>Wed, 03 Jun 2015 22:26:13 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
@@ -556,9 +556,7 @@ __find_buddy_index(unsigned long page_idx, unsigned int order)
 }
 &lt;/pre&gt;
 
-&lt;p&gt;从上面这段代码中可以看到，0、1是buddy，2、3是buddy，虽然1、2相邻，但他们不是。可能出现释放一个页面的时候合并很多次，分配的时候切割很多次，不过这个比较极端~~&lt;/p&gt;
-
-&lt;p&gt;可以通过cat /proc/buddyinfo获取到各order中的空闲的页面数。&lt;/p&gt;
+&lt;p&gt;从上面这段代码中可以看到，0、1是buddy，2、3是buddy，虽然1、2相邻，但他们不是。可能出现释放一个页面的时候合并很多次，分配的时候切割很多次，不过这个比较极端~~另外，我们可以通过cat /proc/buddyinfo获取到各order中的空闲的页面数。&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Linux内存-ALL.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
