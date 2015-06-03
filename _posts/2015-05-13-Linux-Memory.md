@@ -63,6 +63,11 @@ static inline void __free_one_page(struct page *page,
     }
     ...
 }
+static inline unsigned long
+__find_buddy_index(unsigned long page_idx, unsigned int order)
+{
+    return page_idx ^ (1 &lt;&lt; order);// 注意看这里
+}
 </pre>
 
 ![](http://7xiz10.com1.z0.glb.clouddn.com/Linux内存-ALL.png)
