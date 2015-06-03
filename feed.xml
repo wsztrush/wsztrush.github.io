@@ -5,8 +5,8 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 03 Jun 2015 21:55:47 +0800</pubDate>
-    <lastBuildDate>Wed, 03 Jun 2015 21:55:47 +0800</lastBuildDate>
+    <pubDate>Wed, 03 Jun 2015 21:58:36 +0800</pubDate>
+    <lastBuildDate>Wed, 03 Jun 2015 21:58:36 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
@@ -557,21 +557,21 @@ static inline void __free_one_page(struct page *page,
     ...
     while (order &amp;lt; max_order - 1) {
         buddy_idx = __find_buddy_index(page_idx, order);
-		buddy = page + (buddy_idx - page_idx);
-		if (!page_is_buddy(page, buddy, order))
-			break;
+        buddy = page + (buddy_idx - page_idx);
+        if (!page_is_buddy(page, buddy, order))
+            break;
         if (page_is_guard(buddy)) {
             clear_page_guard(zone, buddy, order, migratetype);
         } else {
             list_del(&amp;amp;buddy-&amp;gt;lru);
             zone-&amp;gt;free_area[order].nr_free--;
-			rmv_page_order(buddy);
-		}
-		combined_idx = buddy_idx &amp;amp; page_idx;
-		page = page + (combined_idx - page_idx);
-		page_idx = combined_idx;
-		order++;
-	}
+            rmv_page_order(buddy);
+        }
+        combined_idx = buddy_idx &amp;amp; page_idx;
+        page = page + (combined_idx - page_idx);
+        page_idx = combined_idx;
+        order++;
+    }
     ...
 }
 &lt;/pre&gt;
