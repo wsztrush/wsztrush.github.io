@@ -5,8 +5,8 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 01 Jun 2015 22:53:28 +0800</pubDate>
-    <lastBuildDate>Mon, 01 Jun 2015 22:53:28 +0800</lastBuildDate>
+    <pubDate>Wed, 03 Jun 2015 21:31:26 +0800</pubDate>
+    <lastBuildDate>Wed, 03 Jun 2015 21:31:26 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
@@ -542,7 +542,9 @@ public class Test {
 
 &lt;p&gt;在系统boot的时候会去探测内存的大小和情况，在建立复杂的结构之前，需要用一个简单的方式来管理这些内存，这就是&lt;strong&gt;bootmem&lt;/strong&gt;，简单来说就是位图，不过其中也有一些优化的思路。&lt;/p&gt;
 
-&lt;p&gt;bootmem再怎么优化，效率都不高，在要分配内存的时候毕竟是要去遍历，&lt;strong&gt;buddy&lt;/strong&gt;系统刚好能解决这个问题：在内部保存一些2的幂次大小的空闲内存片段，如果要分配3page，去4page的列表里面取一个，分配3个之后将生效的1个放回去，内存释放的过程刚好是一个逆过程。&lt;/p&gt;
+&lt;p&gt;bootmem再怎么优化，效率都不高，在要分配内存的时候毕竟是要去遍历，&lt;strong&gt;buddy&lt;/strong&gt;系统刚好能解决这个问题：在内部保存一些2的幂次大小的空闲内存片段，如果要分配3page，去4page的列表里面取一个，分配3个之后将生效的1个放回去，内存释放的过程刚好是一个逆过程。用一个图来表示：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Linux内存-伙伴系统.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Linux内存-ALL.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
