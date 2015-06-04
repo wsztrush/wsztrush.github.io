@@ -13,7 +13,13 @@ categories: 编程技术
 3. 缺页异常
 4. 文件映射
 
-下面分别来看。
+先来看一些基本的知识，在进程看来，内存分为内核态和用户态两部分，经典比例如下：
+
+![](http://7xiz10.com1.z0.glb.clouddn.com/Linux内存-虚拟地址.png)
+
+从用户态到内核态一般通过系统调用、中断来实现。用户态的内存被划分为不同的区域用于不同的目的：
+
+![](http://7xiz10.com1.z0.glb.clouddn.com/Linux内存-用户区分段.png)
 
 ## 地址
 
@@ -49,7 +55,7 @@ __find_buddy_index(unsigned long page_idx, unsigned int order)
 
 伙伴系统每次分配内存都是以页（4KB）为单位的，但系统运行的时候使用的绝大部分的数据结构都是很小的，为一个小对象分配4KB显然是不划算了。Linux中使用**slab**来解决小对象的分配：
 
-![](http://)
+![](http://7xiz10.com1.z0.glb.clouddn.com/Linux内存-SLAB.png)
 
 在运行时，salb向buddy“批发”一些内存，加工切块以后“散卖。随着大规模多处理器系统和NUMA系统的广泛应用，slab终于暴露出不足：
 
