@@ -45,7 +45,22 @@ __find_buddy_index(unsigned long page_idx, unsigned int order)
 }
 </pre>
 
-从上面这段代码中可以看到，0、1是buddy，2、3是buddy，虽然1、2相邻，但他们不是。可能出现释放一个页面的时候合并很多次，分配的时候切割很多次，不过这个比较极端~~另外，我们可以通过cat /proc/buddyinfo获取到各order中的空闲的页面数。
+从上面这段代码中可以看到，0、1是buddy，2、3是buddy，虽然1、2相邻，但他们不是。内存碎片是系统运行的大敌，伙伴系统机制可以在一定程度上防止碎片~~另外，我们可以通过cat /proc/buddyinfo获取到各order中的空闲的页面数。
+
+伙伴系统每次分配内存都是以页（4KB）为单位的，但系统运行的时候使用的绝大部分的数据结构都是很小的，为一个小对象分配4KB显然是不划算了。Linux中使用**slab**来解决小对象的分配：
+
+![](http://)
+
+在运行时，salb向buddy“批发”一些内存，加工切块以后“散卖。随着大规模多处理器系统和NUMA系统的广泛应用，slab终于暴露出不足：
+
+1. 复杂的队列管理
+2. 管理数据和队列存储开销较大
+3. 长时间运行partial队列可能会非常长
+4. 对NUMA支持非常复杂
+
+为了解决这些高手们开发了**slub**：改造page结构来削减slab管理结构的开销、每个CPU都有一个本地活动的slab(kmem_cache_cpu)等。对于小型的嵌入式系统存在一个slab模拟层**slob**，在这种系统中它更有优势。
+
+
 
 
 ![](http://7xiz10.com1.z0.glb.clouddn.com/Linux内存-ALL.png)
