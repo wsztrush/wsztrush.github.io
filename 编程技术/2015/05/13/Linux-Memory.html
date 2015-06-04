@@ -26,7 +26,13 @@
   <li>文件映射</li>
 </ol>
 
-<p>下面分别来看。</p>
+<p>先来看一些基本的知识，在进程看来，内存分为内核态和用户态两部分，经典比例如下：</p>
+
+<p><img src="http://7xiz10.com1.z0.glb.clouddn.com/Linux内存-虚拟地址.png" alt="" /></p>
+
+<p>从用户态到内核态一般通过系统调用、中断来实现。用户态的内存被划分为不同的区域用于不同的目的：</p>
+
+<p><img src="http://7xiz10.com1.z0.glb.clouddn.com/Linux内存-用户区分段.png" alt="" /></p>
 
 <h2 id="section">地址</h2>
 
@@ -58,7 +64,22 @@ __find_buddy_index(unsigned long page_idx, unsigned int order)
 }
 </pre>
 
-<p>从上面这段代码中可以看到，0、1是buddy，2、3是buddy，虽然1、2相邻，但他们不是。可能出现释放一个页面的时候合并很多次，分配的时候切割很多次，不过这个比较极端~~另外，我们可以通过cat /proc/buddyinfo获取到各order中的空闲的页面数。</p>
+<p>从上面这段代码中可以看到，0、1是buddy，2、3是buddy，虽然1、2相邻，但他们不是。内存碎片是系统运行的大敌，伙伴系统机制可以在一定程度上防止碎片~~另外，我们可以通过cat /proc/buddyinfo获取到各order中的空闲的页面数。</p>
+
+<p>伙伴系统每次分配内存都是以页（4KB）为单位的，但系统运行的时候使用的绝大部分的数据结构都是很小的，为一个小对象分配4KB显然是不划算了。Linux中使用<strong>slab</strong>来解决小对象的分配：</p>
+
+<p><img src="http://7xiz10.com1.z0.glb.clouddn.com/Linux内存-SLAB.png" alt="" /></p>
+
+<p>在运行时，salb向buddy“批发”一些内存，加工切块以后“散卖。随着大规模多处理器系统和NUMA系统的广泛应用，slab终于暴露出不足：</p>
+
+<ol>
+  <li>复杂的队列管理</li>
+  <li>管理数据和队列存储开销较大</li>
+  <li>长时间运行partial队列可能会非常长</li>
+  <li>对NUMA支持非常复杂</li>
+</ol>
+
+<p>为了解决这些高手们开发了<strong>slub</strong>：改造page结构来削减slab管理结构的开销、每个CPU都有一个本地活动的slab(kmem_cache_cpu)等。对于小型的嵌入式系统存在一个slab模拟层<strong>slob</strong>，在这种系统中它更有优势。</p>
 
 <p><img src="http://7xiz10.com1.z0.glb.clouddn.com/Linux内存-ALL.png" alt="" /></p>
 
