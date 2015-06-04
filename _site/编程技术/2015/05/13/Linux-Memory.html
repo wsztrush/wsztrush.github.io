@@ -34,6 +34,12 @@
 
 <p><img src="http://7xiz10.com1.z0.glb.clouddn.com/Linux内存-用户区分段.png" alt="" /></p>
 
+<p>当然内核态也不会无差别地使用，所以，其划分如下：</p>
+
+<p><img src="http://7xiz10.com1.z0.glb.clouddn.com/Linux内存-内核地址空间划分.png" alt="" /></p>
+
+<p>下面来仔细看这些内存是如何管理的。</p>
+
 <h2 id="section">地址</h2>
 
 <p>在Linux内部的地址的映射过程为<strong>逻辑地址</strong>–&gt;<strong>线性地址</strong>–&gt;<strong>物理地址</strong>，物理地址最简单：地址总线中传输的数字信号，而线性地址和逻辑地址所表示的则是一种转换规则，线性地址规则如下：</p>
@@ -70,7 +76,7 @@ __find_buddy_index(unsigned long page_idx, unsigned int order)
 
 <p><img src="http://7xiz10.com1.z0.glb.clouddn.com/Linux内存-SLAB.png" alt="" /></p>
 
-<p>在运行时，salb向buddy“批发”一些内存，加工切块以后“散卖。随着大规模多处理器系统和NUMA系统的广泛应用，slab终于暴露出不足：</p>
+<p>在运行时，salb向buddy“批发”一些内存，加工切块以后“散卖”出去。随着大规模多处理器系统和NUMA系统的广泛应用，slab终于暴露出不足：</p>
 
 <ol>
   <li>复杂的队列管理</li>
