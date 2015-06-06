@@ -5,8 +5,8 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 04 Jun 2015 21:54:54 +0800</pubDate>
-    <lastBuildDate>Thu, 04 Jun 2015 21:54:54 +0800</lastBuildDate>
+    <pubDate>Sat, 06 Jun 2015 11:50:08 +0800</pubDate>
+    <lastBuildDate>Sat, 06 Jun 2015 11:50:08 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
@@ -554,7 +554,7 @@ public class Test {
 
 &lt;p&gt;在系统boot的时候会去探测内存的大小和情况，在建立复杂的结构之前，需要用一个简单的方式来管理这些内存，这就是&lt;strong&gt;bootmem&lt;/strong&gt;，简单来说就是位图，不过其中也有一些优化的思路。&lt;/p&gt;
 
-&lt;p&gt;bootmem再怎么优化，效率都不高，在要分配内存的时候毕竟是要去遍历，&lt;strong&gt;buddy&lt;/strong&gt;系统刚好能解决这个问题：在内部保存一些2的幂次大小的空闲内存片段，如果要分配3page，去4page的列表里面取一个，分配3个之后将生效的1个放回去，内存释放的过程刚好是一个逆过程。用一个图来表示：&lt;/p&gt;
+&lt;p&gt;bootmem再怎么优化，效率都不高，在要分配内存的时候毕竟是要去遍历，&lt;strong&gt;buddy&lt;/strong&gt;系统刚好能解决这个问题：在内部保存一些2的幂次大小的空闲内存片段，如果要分配3page，去4page的列表里面取一个，分配3个之后将剩下的1个放回去，内存释放的过程刚好是一个逆过程。用一个图来表示：&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Linux内存-伙伴系统.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
@@ -574,7 +574,7 @@ __find_buddy_index(unsigned long page_idx, unsigned int order)
 
 &lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Linux内存-SLAB.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;在运行时，salb向buddy“批发”一些内存，加工切块以后“散卖”出去。随着大规模多处理器系统和NUMA系统的广泛应用，slab终于暴露出不足：&lt;/p&gt;
+&lt;p&gt;在运行时，slab向buddy“批发”一些内存，加工切块以后“散卖”出去。随着大规模多处理器系统和NUMA系统的广泛应用，slab终于暴露出不足：&lt;/p&gt;
 
 &lt;ol&gt;
   &lt;li&gt;复杂的队列管理&lt;/li&gt;
@@ -584,6 +584,12 @@ __find_buddy_index(unsigned long page_idx, unsigned int order)
 &lt;/ol&gt;
 
 &lt;p&gt;为了解决这些高手们开发了&lt;strong&gt;slub&lt;/strong&gt;：改造page结构来削减slab管理结构的开销、每个CPU都有一个本地活动的slab(kmem_cache_cpu)等。对于小型的嵌入式系统存在一个slab模拟层&lt;strong&gt;slob&lt;/strong&gt;，在这种系统中它更有优势。&lt;/p&gt;
+
+&lt;p&gt;小内存的问题算是解决了，但还有一个大内存的问题：用伙伴系统分配10x4KB的数据时，回去16x4KB的空闲列表里面去找（这样得到的物理内存是连续的），但很有可能系统里面有内存，但是伙伴系统分配不出来，因为他们被分割成小的片段。那么，&lt;strong&gt;vmalloc&lt;/strong&gt;就是要用这些碎片来拼凑出一个大内存，相当于收集一些“边角料”，组装成一个成品后“出售”：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Linux内存-非连续内存.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;之前的内存都是直接映射的，第一次感觉到页式管理的存在:D&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Linux内存-ALL.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
