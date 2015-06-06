@@ -76,13 +76,22 @@ __find_buddy_index(unsigned long page_idx, unsigned int order)
 
 ![](http://7xiz10.com1.z0.glb.clouddn.com/Linux内存-非连续内存.png)
 
-之前的内存都是直接映射的，第一次感觉到页式管理的存在:D
+之前的内存都是直接映射的，第一次感觉到页式管理的存在:D 另外对于高端内存，提供了**kmap**方法为page分配一个线性地址（这就是高端内存）。
+
+进程由不同长度的段组成：代码段、动态库的代码、全局变量和动态产生数据的堆、栈等，在Linux中为每个进程管理了一套**虚拟地址空间**：
+
+![](http://7xiz10.com1.z0.glb.clouddn.com/Linux内存-进程虚拟内存.png)
+
+在我们写代码malloc完以后，并没有马上占用那么大的物理内存，而仅仅是维护上面的虚拟地址空间而已，只有在真正需要的时候才分配物理内存，这就是**COW**（COPY-ON-WRITE:写时复制）技术，而物理分配的过程就是最复杂的缺页异常处理环节了：
+
+## 缺页异常
 
 
 
 
 
-![](http://7xiz10.com1.z0.glb.clouddn.com/Linux内存-ALL.png)
+
+
 
 
 
