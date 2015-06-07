@@ -96,6 +96,12 @@ __find_buddy_index(unsigned long page_idx, unsigned int order)
 
 ![](http://7xiz10.com1.z0.glb.clouddn.com/Linux内存-缺页异常.png)
 
+发生缺页异常的时候，可能因为不常使用而被swap到磁盘上了，swap相关的命令如下：
+
+命令|作用
+-|-
+swapon|开启swap
+swapoff|关闭swap
 
 
 
