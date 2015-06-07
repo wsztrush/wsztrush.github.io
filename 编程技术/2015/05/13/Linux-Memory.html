@@ -23,7 +23,6 @@
   <li>地址映射</li>
   <li>内存管理的方式</li>
   <li>缺页异常</li>
-  <li>文件映射</li>
 </ol>
 
 <p>先来看一些基本的知识，在进程看来，内存分为内核态和用户态两部分，经典比例如下：</p>
@@ -138,6 +137,7 @@ __find_buddy_index(unsigned long page_idx, unsigned int order)
   </tbody>
 </table>
 
+<p>如果内存是mmap映射到内存中的，那么在读、写对应内存的时候一会产生缺页异常。</p>
 
 			<!-- 评论组件 -->
 			<div id="disqus_thread"/>
