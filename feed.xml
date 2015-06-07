@@ -5,23 +5,9 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 07 Jun 2015 22:33:12 +0800</pubDate>
-    <lastBuildDate>Sun, 07 Jun 2015 22:33:12 +0800</lastBuildDate>
+    <pubDate>Sun, 07 Jun 2015 22:35:11 +0800</pubDate>
+    <lastBuildDate>Sun, 07 Jun 2015 22:35:11 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
-    
-      <item>
-        <title>Top</title>
-        <description>&lt;p&gt;1、通过btreace打印所有的异常，无果。
-2、通过jstat -gcutil查看内存使用情况及gc日志，正常。&lt;/p&gt;
-</description>
-        <pubDate>Sat, 30 May 2015 00:00:00 +0800</pubDate>
-        <link>/%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5/2015/05/30/Top.html</link>
-        <guid isPermaLink="true">/%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5/2015/05/30/Top.html</guid>
-        
-        
-        <category>问题排查</category>
-        
-      </item>
     
       <item>
         <title>Guava</title>
@@ -720,53 +706,6 @@ p：SU(G(SU))。&lt;/p&gt;
       </item>
     
       <item>
-        <title>2015/5~2015/7</title>
-        <description>&lt;h2 id=&quot;section&quot;&gt;计划&lt;/h2&gt;
-
-&lt;h3 id=&quot;section-1&quot;&gt;工作&lt;/h3&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;拣选单执行情况实时计算完成&lt;/li&gt;
-  &lt;li&gt;大宝监控方案设计&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h3 id=&quot;section-2&quot;&gt;生活&lt;/h3&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;一周最少五天晨跑(2KM)&lt;/li&gt;
-  &lt;li&gt;五月份每周一次10KM晨跑，六月份每周一次半马(21KM)&lt;/li&gt;
-  &lt;li&gt;结婚&lt;/li&gt;
-  &lt;li&gt;找个避暑的地方玩一把&lt;/li&gt;
-  &lt;li&gt;放弃DOTA &amp;gt;_&amp;lt;&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h3 id=&quot;section-3&quot;&gt;读书&amp;amp;学习&lt;/h3&gt;
-
-&lt;p&gt;读一些开阔视野但是不需要深入思考的书：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://img5.douban.com/mpic/s1331728.jpg&quot; alt=&quot;费马大定理&quot; /&gt;
-&lt;img src=&quot;http://img3.douban.com/mpic/s3010562.jpg&quot; alt=&quot;哥德尔证明&quot; /&gt;
-&lt;img src=&quot;http://img3.douban.com/mpic/s10685385.jpg&quot; alt=&quot;自控力&quot; /&gt;
-&lt;img src=&quot;http://img3.douban.com/mpic/s1055134.jpg&quot; alt=&quot;晚清七十年&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;精读并实践进而转化成自己的技能的书：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://img5.douban.com/mpic/s7661036.jpg&quot; alt=&quot;编程语言实现模式&quot; /&gt;
-&lt;img src=&quot;http://img5.douban.com/mpic/s24436529.jpg&quot; alt=&quot;The Definitive ANTLR 4 Reference&quot; /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;section-4&quot;&gt;完成情况&lt;/h2&gt;
-
-</description>
-        <pubDate>Wed, 13 May 2015 00:00:00 +0800</pubDate>
-        <link>/%E9%87%8C%E7%A8%8B%E7%A2%91/2015/05/13/15-5-6.html</link>
-        <guid isPermaLink="true">/%E9%87%8C%E7%A8%8B%E7%A2%91/2015/05/13/15-5-6.html</guid>
-        
-        
-        <category>里程碑</category>
-        
-      </item>
-    
-      <item>
         <title>Java 解惑</title>
         <description>&lt;p&gt;&lt;img src=&quot;http://img5.douban.com/mpic/s1491187.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
@@ -923,6 +862,217 @@ public class Lazy {
         <pubDate>Mon, 11 May 2015 15:22:00 +0800</pubDate>
         <link>/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/2015/05/11/Java-Puzzlers.html</link>
         <guid isPermaLink="true">/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/2015/05/11/Java-Puzzlers.html</guid>
+        
+        
+        <category>读书笔记</category>
+        
+      </item>
+    
+      <item>
+        <title>CGlib</title>
+        <description>&lt;p&gt;在学习Spring的时候接触到CGlib，是一个强大的Code生成类库！可以在运行期扩展Java接口，其底层是ASM框架。当然可以直接使用ASM，不过门槛较高。&lt;/p&gt;
+
+&lt;h2 id=&quot;section&quot;&gt;代理&lt;/h2&gt;
+
+&lt;p&gt;首先来看JDK中原生的代理实现，首先实现&lt;strong&gt;InvocationHandler&lt;/strong&gt;接口，相当于目标方法的代理：&lt;/p&gt;
+&lt;pre class=&quot;prettyprint&quot;&gt;
+public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+	System.out.println(&quot;------------------before------------------&quot;);
+	Object result = method.invoke(target, args); // 调用方法
+	System.out.println(&quot;-------------------after------------------&quot;);
+	return result;
+}
+&lt;/pre&gt;
+
+&lt;p&gt;然后创建代理对象：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
+	target.getClass().getInterfaces(), // 要实现的接口
+	this); // InvocationHandler的实现
+&lt;/pre&gt;
+
+&lt;p&gt;JDK的代理最大的限制在于必须实现接口，而CGlib则并没有设置这个限制，而&lt;strong&gt;MethodInterceptor&lt;/strong&gt;的用法与InvocationHandler几乎相同：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+static class MyMethodInterceptor implements MethodInterceptor {
+	public Object intercept(Object targe, Method method, Object[] args, MethodProxy methodProxy) throws Throwable {
+		System.out.println(&quot;BEFORE&quot;);
+		Object result = methodProxy.invokeSuper(targe, args);
+		System.out.println(&quot;AFTER&quot;);
+		return result;
+	}
+	public Object createProxy() {
+		Enhancer enhancer = new Enhancer();
+		enhancer.setSuperclass(MyService.class);
+		enhancer.setCallback(this);
+		return enhancer.create();
+	}
+}
+&lt;/pre&gt;
+
+&lt;p&gt;当&lt;strong&gt;Enhancer.setCallbacks&lt;/strong&gt;设置了多个代理类怎么办呢？可以通过&lt;strong&gt;CallbackFilter&lt;/strong&gt;来指定其执行顺序：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+public interface CallbackFilter {
+	int accept(Method method);// 返回方法对应的下标
+}
+&lt;/pre&gt;
+
+&lt;p&gt;总感觉accept这个方法名起得太失败- -!再来看一个&lt;strong&gt;LazyLoader&lt;/strong&gt;的例子，不明觉厉啊：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+public class TestLazyLoader {
+	static class MyBean {
+	}
+	static class My {
+		MyBean myBean = (MyBean) Enhancer.create(MyBean.class, new MyLazy());
+	}
+	static class MyLazy implements LazyLoader {
+		public Object loadObject() throws Exception {
+			System.out.println(&quot;开始延迟加载!&quot;);
+			return new MyBean();
+		}
+	}
+	public static void main(String[] args) {
+		My my = new My();
+		System.out.println(my.myBean);// 如果没有这一句，就不会有任何输出
+	}
+}
+&lt;/pre&gt;
+
+&lt;p&gt;感觉有点不可思议，用什么方法才能拦截获取属性这个操作？再仔细想一下，应该不是这样！在System.out.println()执行的时候会调用对象的toString方法，而cglib做的仅仅是重写toString方法。赶紧用&lt;strong&gt;javap -verbose xxx&lt;/strong&gt;来看生成的字节码，发现：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+public final java.lang.String toString();
+  Code:
+   Stack=2, Locals=1, Args_size=1
+   0:   aload_0
+   1:   dup
+   2:   invokevirtual   #30; //Method CGLIB$LOAD_PRIVATE_0:()Ljava/lang/Object;
+   5:   invokevirtual   #38; //Method java/lang/Object.toString:()Ljava/lang/String;
+   8:   areturn
+&lt;/pre&gt;
+
+&lt;p&gt;果然如此:D。&lt;/p&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;多继承&lt;/h2&gt;
+
+&lt;p&gt;在Java中都是单继承的，当然CGlib也没办法打破这个限制，用多继承来描述&lt;strong&gt;Mixin&lt;/strong&gt;貌似并不合适，但现在也没想到其他更好的：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+public static void main(String[] args) {
+	Mixin mixin = Mixin.create(new Class[] { Inter1.class, Inter2.class },
+	new Object[] {
+		new Inter1() {
+			public void fun1(String arg0) {
+				System.out.println(&quot;Inter1 - &quot; + arg0);
+			}
+		},
+		new Inter2() {
+			public void fun1(String arg0) {
+				System.out.println(&quot;Inter2 - &quot; + arg0);
+			}
+			public void fun2(int arg0) {
+				System.out.println(&quot;Inter2 - &quot; + arg0);
+			}
+		},
+	});
+	Inter1 inter1 = (Inter1) mixin;
+	inter1.fun1(&quot;hello&quot;);// Inter1 - hello
+	Inter2 inter2 = (Inter2) mixin;
+	inter2.fun1(&quot;world&quot;);// Inter1 - world
+	inter2.fun2(999);// Inter2 - 999
+}
+&lt;/pre&gt;
+
+&lt;p&gt;在多个类中有多个相同的方法时，总是前面的覆盖后面的，在底层具体的实现中应该是循环多次继承来实现多重继承的效果。&lt;/p&gt;
+
+&lt;h2 id=&quot;section-2&quot;&gt;工具类&lt;/h2&gt;
+
+&lt;p&gt;在业务代码中总会涉及到各种DO、BO、DTO等等，并需要经常在他们之间转化，CGlib提供了BeanCopier用来自动完成相同属性名称的映射：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+static class A {
+	private int a = 1;
+	private int b = 2;
+	/** Setter And Getter */
+}
+static class B {
+	private int a = 3;
+	private int c = 4;
+	/** Setter And Getter */
+}
+public static void main(String[] args) {
+	BeanCopier beanCopier = BeanCopier.create(A.class, B.class, false);
+	A a = new A();
+	B b = new B();
+	beanCopier.copy(a, b, null);// 从a拷贝到b
+	System.out.println(a.a + &quot; &quot; + a.b); // 1 2
+	System.out.println(b.a + &quot; &quot; + b.c); // 1 4
+}
+&lt;/pre&gt;
+
+&lt;p&gt;当类型不匹配的时候需要用&lt;strong&gt;Converter&lt;/strong&gt;进行转换：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+public interface Converter {
+	/**
+	* @param value 源对象属性
+	* @param targetClass 目标对象属性类
+	* @param setterName 目标对象setter方法名
+	* @return 转换后的结果
+	*/
+	java.lang.Object convert(Object value, Class targetClass, Object setterName);
+}
+&lt;/pre&gt;
+
+&lt;p&gt;另外和Bean相关的还有其他几个类：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;strong&gt;BeanGenerator&lt;/strong&gt;：根据Map动态生成BeanClass。&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;BeanMap&lt;/strong&gt;：将Bean转换成一个Map。&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;BulkBean&lt;/strong&gt;：更方便地操作属性。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;CGlib提供了&lt;strong&gt;FastClass&lt;/strong&gt;来方便地进行反射操作。&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/wsztrush/cglib-demo&quot;&gt;这里&lt;/a&gt;有我写的一些测试DEMO。最后，其他操作字节码的工具还有：javassist，BCEL，ASM等。&lt;/p&gt;
+</description>
+        <pubDate>Mon, 11 May 2015 15:22:00 +0800</pubDate>
+        <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/05/11/Cglib.html</link>
+        <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/05/11/Cglib.html</guid>
+        
+        
+        <category>编程技术</category>
+        
+      </item>
+    
+      <item>
+        <title>REWORK</title>
+        <description>&lt;p&gt;&lt;img src=&quot;http://img3.douban.com/mpic/s4502451.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;第一次听说这本说是在看陈皓在公司做的一次演讲，里面提到：&lt;strong&gt;条件受限是好事&lt;/strong&gt;。工作的久了，很多事情早在这边书之前就有所感悟，下面是几个印象深刻的：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;哪里来的从错误中学习；&lt;/li&gt;
+  &lt;li&gt;工作狂；&lt;/li&gt;
+  &lt;li&gt;“没时间”不是借口；&lt;/li&gt;
+  &lt;li&gt;条件受限是好事；&lt;/li&gt;
+  &lt;li&gt;会议有毒；&lt;/li&gt;
+  &lt;li&gt;给竞争力做减法；&lt;/li&gt;
+  &lt;li&gt;养成对客户说“不”的习惯；&lt;/li&gt;
+  &lt;li&gt;普及知识，赢得竞争；&lt;/li&gt;
+  &lt;li&gt;主动掌控负面新闻；&lt;/li&gt;
+  &lt;li&gt;文化不是由谁创造的；&lt;/li&gt;
+  &lt;li&gt;灵感稍纵即逝；&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;在实际的工作中常常会有很多问题被忽略掉，而往往它们就是效率最大的敌人。要变得更好？那么将学到的东西慢慢地融入到平时的行为中！&lt;/p&gt;
+</description>
+        <pubDate>Fri, 08 May 2015 21:00:00 +0800</pubDate>
+        <link>/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/2015/05/08/Rework.html</link>
+        <guid isPermaLink="true">/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/2015/05/08/Rework.html</guid>
         
         
         <category>读书笔记</category>
