@@ -102,7 +102,7 @@ __find_buddy_index(unsigned long page_idx, unsigned int order)
 -|-
 swapon|开启swap
 swapoff|关闭swap
-
+/proc/sys/vm/swappiness|分值越大越积极使用swap，可以修改/etc/sysctl.conf中添加vm.swappiness=xx来修改
 
 
 
