@@ -11,7 +11,6 @@ categories: 编程技术
 1. 地址映射
 2. 内存管理的方式
 3. 缺页异常
-4. 文件映射
 
 先来看一些基本的知识，在进程看来，内存分为内核态和用户态两部分，经典比例如下：
 
@@ -104,24 +103,4 @@ swapon|开启swap
 swapoff|关闭swap
 /proc/sys/vm/swappiness|分值越大越积极使用swap，可以修改/etc/sysctl.conf中添加vm.swappiness=xx来修改
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+如果内存是mmap映射到内存中的，那么在读、写对应内存的时候一会产生缺页异常。
