@@ -5,8 +5,8 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 07 Jun 2015 22:35:11 +0800</pubDate>
-    <lastBuildDate>Sun, 07 Jun 2015 22:35:11 +0800</lastBuildDate>
+    <pubDate>Mon, 08 Jun 2015 22:13:33 +0800</pubDate>
+    <lastBuildDate>Mon, 08 Jun 2015 22:13:33 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
@@ -493,6 +493,126 @@ public class Test {
         <pubDate>Thu, 14 May 2015 00:00:00 +0800</pubDate>
         <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/05/14/Java-Generics.html</link>
         <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/05/14/Java-Generics.html</guid>
+        
+        
+        <category>编程技术</category>
+        
+      </item>
+    
+      <item>
+        <title>Spring</title>
+        <description>&lt;p&gt;如今作为一个Java程序员，如果没用过Spring的话基本上没法混了~ 这里就不再啰嗦如何如何从EJB走到了Spring，直接来看它带给我们的东西：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;IoC&lt;/li&gt;
+  &lt;li&gt;Aop&lt;/li&gt;
+  &lt;li&gt;SpringMVC&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;下面分几个部分很粗地描述一下Spring~&lt;/p&gt;
+
+&lt;h2 id=&quot;section&quot;&gt;控制反转&lt;/h2&gt;
+
+&lt;p&gt;要看控制反转，那么我们先看看没有反转的时候是什么样子的，当自己的服务依赖于别人的实现时，在其使用之前选择合适的服务实现对其进行初始化：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+public class MyService {
+	private XXService xxService;
+    public MyService(){
+    	this.xxService = new XXServiceImpl();/* 利用合适的实现进行初始化 */
+    }
+    // ...
+}
+&lt;/pre&gt;
+
+&lt;p&gt;程序可以正常运行，但是当你有几十个类中使用了XXService，而某一天发现XXServiceImpl是有BUG的，你想换个实现类，那就傻逼了~~&lt;/p&gt;
+
+&lt;p&gt;用IoC最原始的配置方式就可以将这个问题引刃而解：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+&amp;lt;bean id=&quot;myService&quot; class=&quot;com.test.MyService&quot;&amp;gt;
+	&amp;lt;property name=&quot;xxService&quot; ref=&quot;xxService&quot;/&amp;gt;
+&amp;lt;/bean&amp;gt;
+&amp;lt;bean id=&quot;xxService&quot; class=&quot;com.test.XXServiceImpl&quot;/&amp;gt;&amp;lt;!-- 改这里 --&amp;gt;
+&lt;/pre&gt;
+
+&lt;p&gt;在配置文件中搞定他们之间的依赖关系，在使用前，需要用&lt;strong&gt;BeanFactory&lt;/strong&gt;来构建其中的Bean，在需要时，调用&lt;strong&gt;getBean&lt;/strong&gt;取得实例，然后就可以继续后面的操作了：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+BeanFactory factory = new ClassPathXmlApplicationContext(&quot;applicationContext.xml&quot;);
+MyService myService = (MyService)factory.getBean(&quot;myService&quot;);
+&lt;/pre&gt;
+
+&lt;p&gt;可能“顽固派”会说：干嘛要怎么麻烦，把你要使用的类包装一下再交给MyService使用就可以了啊！确实可以解决问题，但是思路决定出路，这种解决方法确实解决了上面的问题，但是下面&lt;strong&gt;ApplicationContext&lt;/strong&gt;的登场，使得这种依赖管理变得异常简单：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+public class MyService {
+	@Resource /* 利用注解完成注入 */
+	private XXService xxService;
+    // ...
+}
+@Component(&quot;xxService&quot;) /* 声明一个Bean */
+public class XXServiceImpl{
+	// ...
+}
+&lt;/pre&gt;
+
+&lt;p&gt;一直感觉注解在Java中的作用就是将配置信息植入到代码文件里面，在依赖管理中注解再一次发挥了巨大的威力。到这里基本上满足大部分的需求了，但是Spring提供的功能可能远超过了你需要的：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;BeanFactoryAware：获取BeanFactory实例&lt;/li&gt;
+  &lt;li&gt;BeanPostProcessor：在afterPropertiesSet的方法前后执行&lt;/li&gt;
+  &lt;li&gt;InitializingBean：完成一些初始化动作&lt;/li&gt;
+  &lt;li&gt;BeanFactoryPostProcessor:处理Bean的定义，也就是BeanDefinition&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;还有很多其他的扩展点，下面重点看下Bean的生命周期：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Spring-Bean生命周期.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;另外IoC里面有很多的细节点，逐步整理中：&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;关键字&lt;/th&gt;
+      &lt;th&gt;作用&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;byType/byName&lt;/td&gt;
+      &lt;td&gt;根据类型/名字注入&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;scope(singleton/prototype)&lt;/td&gt;
+      &lt;td&gt;单例还是每次都生成一个新的Bean&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;factory-bean/FactoryBean&lt;/td&gt;
+      &lt;td&gt;工厂类型的Bean，getBean时会调用其getObject方法&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;@Resource&lt;/td&gt;
+      &lt;td&gt;默认byName，找不到的时候就byType(指定name就只能byName了)&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;@Autowire&lt;/td&gt;
+      &lt;td&gt;默认byType，可以配合@Qualifier变为byName&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;lazy-init&lt;/td&gt;
+      &lt;td&gt;只对singleton的Bean起作用，效果是在getBean的时候才初始化&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;面向切面编程&lt;/h2&gt;
+
+</description>
+        <pubDate>Wed, 13 May 2015 00:00:00 +0800</pubDate>
+        <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/05/13/Spring.html</link>
+        <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/05/13/Spring.html</guid>
         
         
         <category>编程技术</category>
@@ -1045,37 +1165,6 @@ public interface Converter {
         
         
         <category>编程技术</category>
-        
-      </item>
-    
-      <item>
-        <title>REWORK</title>
-        <description>&lt;p&gt;&lt;img src=&quot;http://img3.douban.com/mpic/s4502451.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;第一次听说这本说是在看陈皓在公司做的一次演讲，里面提到：&lt;strong&gt;条件受限是好事&lt;/strong&gt;。工作的久了，很多事情早在这边书之前就有所感悟，下面是几个印象深刻的：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;哪里来的从错误中学习；&lt;/li&gt;
-  &lt;li&gt;工作狂；&lt;/li&gt;
-  &lt;li&gt;“没时间”不是借口；&lt;/li&gt;
-  &lt;li&gt;条件受限是好事；&lt;/li&gt;
-  &lt;li&gt;会议有毒；&lt;/li&gt;
-  &lt;li&gt;给竞争力做减法；&lt;/li&gt;
-  &lt;li&gt;养成对客户说“不”的习惯；&lt;/li&gt;
-  &lt;li&gt;普及知识，赢得竞争；&lt;/li&gt;
-  &lt;li&gt;主动掌控负面新闻；&lt;/li&gt;
-  &lt;li&gt;文化不是由谁创造的；&lt;/li&gt;
-  &lt;li&gt;灵感稍纵即逝；&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;在实际的工作中常常会有很多问题被忽略掉，而往往它们就是效率最大的敌人。要变得更好？那么将学到的东西慢慢地融入到平时的行为中！&lt;/p&gt;
-</description>
-        <pubDate>Fri, 08 May 2015 21:00:00 +0800</pubDate>
-        <link>/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/2015/05/08/Rework.html</link>
-        <guid isPermaLink="true">/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/2015/05/08/Rework.html</guid>
-        
-        
-        <category>读书笔记</category>
         
       </item>
     
