@@ -5,13 +5,13 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 08 Jun 2015 22:21:14 +0800</pubDate>
-    <lastBuildDate>Mon, 08 Jun 2015 22:21:14 +0800</lastBuildDate>
+    <pubDate>Tue, 09 Jun 2015 21:44:20 +0800</pubDate>
+    <lastBuildDate>Tue, 09 Jun 2015 21:44:20 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
         <title>Spring</title>
-        <description>&lt;p&gt;如今作为一个Java程序员，如果没用过Spring的话基本上没法混了~ 这里就不再啰嗦如何如何从EJB走到了Spring，直接来看它带给我们的东西：&lt;/p&gt;
+        <description>&lt;p&gt;如今作为一个Java程序员，如果没用过Spring的话基本上没法混了~ 这里就不再啰嗦如何如何从EJB走到了Spring(毕竟咱也没经历过那些个艰难的时代)，直接来看它带给我们哪些东西：&lt;/p&gt;
 
 &lt;ol&gt;
   &lt;li&gt;IoC&lt;/li&gt;
@@ -27,9 +27,9 @@
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 public class MyService {
-	private XXService xxService;
+    private XXService xxService;
     public MyService(){
-    	this.xxService = new XXServiceImpl();/* 利用合适的实现进行初始化 */
+        this.xxService = new XXServiceImpl();/* 利用合适的实现进行初始化 */
     }
     // ...
 }
@@ -41,7 +41,7 @@ public class MyService {
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 &amp;lt;bean id=&quot;myService&quot; class=&quot;com.test.MyService&quot;&amp;gt;
-	&amp;lt;property name=&quot;xxService&quot; ref=&quot;xxService&quot;/&amp;gt;
+    &amp;lt;property name=&quot;xxService&quot; ref=&quot;xxService&quot;/&amp;gt;
 &amp;lt;/bean&amp;gt;
 &amp;lt;bean id=&quot;xxService&quot; class=&quot;com.test.XXServiceImpl&quot;/&amp;gt;&amp;lt;!-- 改这里 --&amp;gt;
 &lt;/pre&gt;
@@ -57,17 +57,17 @@ MyService myService = (MyService)factory.getBean(&quot;myService&quot;);
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 public class MyService {
-	@Resource /* 利用注解完成注入 */
-	private XXService xxService;
+    @Resource /* 利用注解完成注入 */
+    private XXService xxService;
     // ...
 }
 @Component(&quot;xxService&quot;) /* 声明一个Bean */
 public class XXServiceImpl{
-	// ...
+    // ...
 }
 &lt;/pre&gt;
 
-&lt;p&gt;一直感觉注解在Java中的作用就是将配置信息植入到代码文件里面，在依赖管理中注解再一次发挥了巨大的威力。到这里基本上满足大部分的需求了，但是Spring提供的功能可能远超过了你需要的：&lt;/p&gt;
+&lt;p&gt;一直感觉注解在Java中的作用就是将配置信息植入到代码文件里面，现在在依赖管理中注解再一次发挥了巨大的威力。到这里基本上满足大部分的需求了，但是Spring提供的功能可能远超过了你需要的：&lt;/p&gt;
 
 &lt;ol&gt;
   &lt;li&gt;BeanFactoryAware：获取BeanFactory实例&lt;/li&gt;
@@ -118,6 +118,81 @@ public class XXServiceImpl{
 &lt;/table&gt;
 
 &lt;h2 id=&quot;section-1&quot;&gt;面向切面编程&lt;/h2&gt;
+
+&lt;p&gt;面向切面编程(Aspect Oriented Programming)提供了另外一个角度来考虑程序结构，在介绍AOP的时候几乎都会介绍&lt;strong&gt;打日志&lt;/strong&gt;的需求，当然除此之外还有很多的场景，这里就不赘述。简单来说Spring的AOP提供了拦截一批方法的手段。&lt;/p&gt;
+
+&lt;p&gt;其实我们自己也可以利用&lt;strong&gt;BeanFactoryPostProcessor&lt;/strong&gt;来实现类似的功能，但在Spring中AOP强大的地方是提供了很多种方便的配置方式。第一种是用XML的配置方式：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+&amp;lt;aop:config&amp;gt;
+    &amp;lt;aop:aspect id=&quot;logaop&quot; ref=&quot;allLogAdvice&quot;&amp;gt;&amp;lt;!--处理类 --&amp;gt;
+        &amp;lt;aop:pointcut id=&quot;pointcut&quot; expression=&quot;execution(* com.test.MyService.*(..))&quot; /&amp;gt;&amp;lt;!-- 方法 --&amp;gt;
+        &amp;lt;aop:around method=&quot;aroundMethod&quot; pointcut-ref=&quot;pointcut&quot;/&amp;gt;&amp;lt;!-- 方式及调用方法 --&amp;gt;
+    &amp;lt;/aop:aspect&amp;gt;
+&amp;lt;/aop:config&amp;gt;
+&lt;/pre&gt;
+
+&lt;p&gt;另外一种个人感觉比较好用的就是&lt;strong&gt;@Aspect&lt;/strong&gt;方式，这种方式把方法和它要拦截的方法放在一个地方，比较自然一点：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+@Aspect
+public class MyAspect {
+    @Pointcut(&quot;execution(* com.test.MyService.*(..))&quot;)
+    private void aspectjMethod(){};
+
+    @Before(&quot;service()&quot;)
+    private void aroundMethod(){ /* code */ }
+}
+&lt;/pre&gt;
+
+&lt;p&gt;在使用前需要配置&lt;strong&gt;&lt;aop:aspectj-autoproxy&gt;&lt;/aop:aspectj-autoproxy&gt;&lt;/strong&gt;，第二种方式确实有一些进步，但是考虑注解之后，AOP的功能开始变得有点IMBA了：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+@Aspect
+public class LocalCacheAspect {
+    @Pointcut(&quot;@annotation(localCache)&quot;)
+    public void getLocalCacheAnnotation(LocalCache localCache) {}
+
+    @Around(&quot;getLocalCacheAnnotation(localCache)&quot;)
+    public Object handleCache(ProceedingJoinPoint joinPoint, LocalCache localCache) throws Throwable {
+        /* code */
+    }
+}
+&lt;/pre&gt;
+
+&lt;p&gt;这样当你在Spring的某个方法上加注解&lt;strong&gt;@LocalCache&lt;/strong&gt;后，就可以被handleCache拦截了，在这里需要注意一下大小写。在具体实现的时候AOP利用了两种技术：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;JDK动态代理&lt;/li&gt;
+  &lt;li&gt;CGLIB字节码生成&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;如果你想选择cglib需要配置文件中加上&lt;strong&gt;&lt;aop:aspectj-autoproxy proxy-target-class=&quot;true&quot;&gt;&lt;/aop:aspectj-autoproxy&gt;&lt;/strong&gt;。在AOP中涉及到的细节整理如下：&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;关键字&lt;/th&gt;
+      &lt;th&gt;作用&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Pointcut&lt;/td&gt;
+      &lt;td&gt;通常使用正则表达式来描述切入的点(拦截哪些方法)&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Advice&lt;/td&gt;
+      &lt;td&gt;在特定的Pointcut执行的动作：around、before、throws等&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Joinpoint&lt;/td&gt;
+      &lt;td&gt;具体运行时拦截到的信息&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h2 id=&quot;mvc&quot;&gt;MVC&lt;/h2&gt;
 
 </description>
         <pubDate>Mon, 08 Jun 2015 00:00:00 +0800</pubDate>
