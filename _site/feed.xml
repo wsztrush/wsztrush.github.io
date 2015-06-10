@@ -5,19 +5,29 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 10 Jun 2015 08:24:14 +0800</pubDate>
-    <lastBuildDate>Wed, 10 Jun 2015 08:24:14 +0800</lastBuildDate>
+    <pubDate>Wed, 10 Jun 2015 21:41:12 +0800</pubDate>
+    <lastBuildDate>Wed, 10 Jun 2015 21:41:12 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
         <title>VIM</title>
         <description>&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/VIM-LOGO.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;很早之前就认识到VIM的厉害之处，不过作为一个Java攻城狮，用起来实在是不方便，完全没有Eclipse或者IDEA写代码时的那种快感。最近对golang比较感兴趣，所以决心把这块捡起来。&lt;/p&gt;
+&lt;p&gt;很早之前就知道VIM很厉害，不过作为一个Java攻城狮，用起来实在是不方便，完全没有Eclipse或者IDEA写代码顺畅，比如代码提示等（怀疑自己配置有问题）。最近对golang非常感兴趣，然而默认的IDE实在是太丑了，所以决心把VIM捡起来。&lt;/p&gt;
 
 &lt;p&gt;周围用Emacs的同事越来越多，但是简单用了几次，总觉得不怎么顺手，也就不了了之。感觉还是带着vimrc走天下比较轻松一些。&lt;/p&gt;
 
 &lt;h2 id=&quot;section&quot;&gt;插件管理器&lt;/h2&gt;
+
+&lt;p&gt;相比现代编辑器，VIM缺乏默认的插件管理功能，之前在配置时不停地从网上收集插件，然后粘贴到对应的目录下。这个过程相当地考验耐心，以及人品。&lt;/p&gt;
+
+&lt;p&gt;最近无意间发现了一个插件管理工具：&lt;strong&gt;vundle&lt;/strong&gt;。玩了一下感觉还不错，首先从github上下载:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;然后修改&lt;strong&gt;vimrc&lt;/strong&gt;文件：&lt;/p&gt;
 </description>
         <pubDate>Wed, 10 Jun 2015 00:00:00 +0800</pubDate>
         <link>/%E5%B7%A5%E5%85%B7/2015/06/10/VIM.html</link>
