@@ -103,4 +103,4 @@ swapon|开启swap
 swapoff|关闭swap
 /proc/sys/vm/swappiness|分值越大越积极使用swap，可以修改/etc/sysctl.conf中添加vm.swappiness=xx来修改
 
-如果内存是mmap映射到内存中的，那么在读、写对应内存的时候一会产生缺页异常。
+如果内存是mmap映射到内存中的，那么在读、写对应内存的时候也会产生缺页异常。
