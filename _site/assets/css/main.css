@@ -47,8 +47,8 @@ blockquote  {
 	padding:1px 10px 1px 40px;
 	border-left-style:solid;
 	border-left-color:#555;
-	border-left-width:4px;
-	background-color:#333;
+	border-left-width:5px;
+	background-color:#ECECEC;
 }
 .post-container {
 	display:block;
