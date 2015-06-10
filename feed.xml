@@ -5,9 +5,43 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 09 Jun 2015 21:47:28 +0800</pubDate>
-    <lastBuildDate>Tue, 09 Jun 2015 21:47:28 +0800</lastBuildDate>
+    <pubDate>Wed, 10 Jun 2015 08:24:14 +0800</pubDate>
+    <lastBuildDate>Wed, 10 Jun 2015 08:24:14 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
+    
+      <item>
+        <title>VIM</title>
+        <description>&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/VIM-LOGO.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;很早之前就认识到VIM的厉害之处，不过作为一个Java攻城狮，用起来实在是不方便，完全没有Eclipse或者IDEA写代码时的那种快感。最近对golang比较感兴趣，所以决心把这块捡起来。&lt;/p&gt;
+
+&lt;p&gt;周围用Emacs的同事越来越多，但是简单用了几次，总觉得不怎么顺手，也就不了了之。感觉还是带着vimrc走天下比较轻松一些。&lt;/p&gt;
+
+&lt;h2 id=&quot;section&quot;&gt;插件管理器&lt;/h2&gt;
+</description>
+        <pubDate>Wed, 10 Jun 2015 00:00:00 +0800</pubDate>
+        <link>/%E5%B7%A5%E5%85%B7/2015/06/10/VIM.html</link>
+        <guid isPermaLink="true">/%E5%B7%A5%E5%85%B7/2015/06/10/VIM.html</guid>
+        
+        
+        <category>工具</category>
+        
+      </item>
+    
+      <item>
+        <title>Golang入门</title>
+        <description>&lt;h2 id=&quot;section&quot;&gt;环境搭建&lt;/h2&gt;
+
+&lt;p&gt;因为我仅仅打算在ubuntu上面进行golang的开发，所以其他的系统后面用过了再来补充！&lt;/p&gt;
+</description>
+        <pubDate>Tue, 09 Jun 2015 00:00:00 +0800</pubDate>
+        <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/06/09/Golang-Start.html</link>
+        <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/06/09/Golang-Start.html</guid>
+        
+        
+        <category>编程技术</category>
+        
+      </item>
     
       <item>
         <title>Spring</title>
@@ -898,349 +932,6 @@ p：SU(G(SU))。&lt;/p&gt;
         
         
         <category>数学</category>
-        
-      </item>
-    
-      <item>
-        <title>Java 解惑</title>
-        <description>&lt;p&gt;&lt;img src=&quot;http://img5.douban.com/mpic/s1491187.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;这本书给我们列举了很多Java编程中容易产生迷惑的地方，先看几个例子：&lt;/p&gt;
-
-&lt;p&gt;1、在刚开始学编程的时候都会遇到swap操作，开始作为一个新手老老实实地用另外一个变量tmp来存，偶然看到用异或来实现感觉好牛逼，不过这种方式在Java上行不通：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-int x = 1;
-int y = 2;
-x ^= y ^= x ^= y;
-System.out.println(&quot;x = &quot; + x + &quot; y = &quot; + y);
-&lt;/pre&gt;
-
-&lt;p&gt;出乎意料地是这段代码执行的结果是x = 0 y = 1，而不是希望的x = 2 y = 1，接下来从字节码（javap -c）中找答案：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-   0:   iconst_1
-   1:   istore_1
-   2:   iconst_2
-   3:   istore_2
-   4:   iload_1
-   5:   iload_2
-   6:   iload_1
-   7:   iload_2
-   8:   ixor
-   9:   dup
-   10:  istore_1
-   11:  ixor
-   12:  dup
-   13:  istore_2
-   14:  ixor
-   15:  istore_1
-&lt;/pre&gt;
-&lt;p&gt;原来执行过程竟然是这样的，为了更清晰给一个图来看栈帧的变化：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Java解惑-Stack.png&quot; alt=&quot;栈帧的变化&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;在Java语言规范描述中：操作符的操作数是从左到右求值的，对于x^=expr的表达式，x的值是在计算expr之前被提取的，那么因此也就有了上面这个结果。&lt;/p&gt;
-
-&lt;p&gt;2、在做ACM的时候经常会用到位操作，但是被下面这个代码还是惊了一下：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-int i = 0;
-while (-1 &amp;lt;&amp;lt; i != 0)
-    i++;
-System.out.println(i);// 没输出，死循环啦。
-&lt;/pre&gt;
-
-&lt;p&gt;对于-1直观的想法是在i=32的时候&lt;strong&gt;-1&amp;lt;&amp;lt;i==0&lt;/strong&gt;，因为左移了32位嘛，随便什么数都成0了。&lt;/p&gt;
-
-&lt;p&gt;原因很简单：对于太大的数位操作会取模，比如int来说移位数为&lt;strong&gt;i&amp;amp;31&lt;/strong&gt;，对于long来说移位数为&lt;strong&gt;i&amp;amp;63&lt;/strong&gt;。&lt;/p&gt;
-
-&lt;p&gt;3、对于初始化顺序大家应该都是知道的，但是当看到下面这段代码输出9900的时候还是得仔细看一下：&lt;/p&gt;
-&lt;pre class=&quot;prettyprint&quot;&gt;
-public class TestMain {
-    static {
-        initializeIfNecessary();
-    }
-    private static int sum;
-
-    public static int getSum() {
-        initializeIfNecessary();
-        return sum;
-    }
-
-    private static boolean initialized = false;// 这里会设置成false。
-
-    private static synchronized void initializeIfNecessary() {
-        if (!initialized) {
-            for (int i = 0; i &amp;lt; 100; i++)
-                sum += i;
-            initialized = true;
-        }
-    }
-
-    public static void main(String[] args) {
-        System.out.println(TestMain.getSum());
-    }
-}
-&lt;/pre&gt;
-&lt;p&gt;在加载的时候会先分配内存，然后依次执行static，而其顺序和申明的顺序一致，那么这个结果自然就明白了。&lt;/p&gt;
-
-&lt;p&gt;4、第一眼看去这段代码重写的equals，而且非常正确，但是输出却是&lt;strong&gt;false&lt;/strong&gt;。&lt;/p&gt;
-&lt;pre class=&quot;prettyprint&quot;&gt;
-public class Name {
-	private String first, last;
-	public Name(String first, String last) {
-		this.first = first;
-		this.last = last;
-	}
-	public boolean equals(Object o) {
-		if (!(o instanceof Name))
-			return false;
-		Name n = (Name)o;
-		return n.first.equals(first) &amp;amp;&amp;amp; n.last.equals(last);
-	}
-	public static void main(String[] args) {
-		Set s = new HashSet();
-		s.add(new Name(&quot;Mickey&quot;, &quot;Mouse&quot;));
-		System.out.println(
-		s.contains(new Name(&quot;Mickey&quot;, &quot;Mouse&quot;)));
-	}
-}
-&lt;/pre&gt;
-&lt;p&gt;这就是没有仔细思考的结果，想一下&lt;strong&gt;HashSet.contains()&lt;/strong&gt;的运行机制就会焕然大悟：肯定是先比较hashCode，相同的情况下才调用equals。所以：&lt;strong&gt;无论何时，只要你覆盖了equals方法，就同时必须覆盖hashCode方法&lt;/strong&gt;。&lt;/p&gt;
-
-&lt;p&gt;5、对于这段代码可能会直观的顺着代码写的顺序去执行，但是非常容易忽略掉一点&lt;strong&gt;static是类初始化的一部分&lt;/strong&gt;，当执行到t.join()的时候貌似主线程在等待t执行完成，但是此时主线程也在等待自己执行完成，所以&lt;strong&gt;死锁&lt;/strong&gt;了。。。&lt;/p&gt;
-&lt;pre class=&quot;prettyprint&quot;&gt;
-public class Lazy {
-	private static boolean initialized = false;
-	static {
-	Thread t = new Thread(new Runnable() {
-		public void run() {
-			initialized = true;
-		}
-	});
-	t.start();
-		try{
-			t.join();
-		}catch (InterruptedException e){
-			throw new AssertionError(e);
-		}
-	}
-	public static void main(String[] args){
-		System.out.println(initialized);
-	}
-}
-&lt;/pre&gt;
-
-&lt;p&gt;当然书中的例子并不只上面几个（一共有95个），总体来看有：&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;小心溢出以及浮点精度&lt;/li&gt;
-  &lt;li&gt;NaN是个奇葩&lt;/li&gt;
-  &lt;li&gt;继承中的各种陷阱，比如：
-    &lt;ul&gt;
-      &lt;li&gt;覆写：完全相同的方法。&lt;/li&gt;
-      &lt;li&gt;隐藏：完全相同，但是为private。&lt;/li&gt;
-      &lt;li&gt;重载：参数类型不同。&lt;/li&gt;
-      &lt;li&gt;遮蔽：外面相同名字的变量被里面的变量遮蔽。&lt;/li&gt;
-      &lt;li&gt;遮掩：用变量名和类名冲突。&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;泛型擦除术&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;section&quot;&gt;总结&lt;/h2&gt;
-
-&lt;p&gt;不可否认看完这本书的很多例子能帮助我们写出更高质量的代码（比如覆写equels不覆写hashCode），不过很多例子（尤其是继承）编写很多年的工程代码都不会遇到。&lt;/p&gt;
-
-&lt;p&gt;看完这本书最大的收获就是对Java有了更深的理解。另外，像位移这种反直觉的设计真的好吗？&lt;/p&gt;
-</description>
-        <pubDate>Mon, 11 May 2015 15:22:00 +0800</pubDate>
-        <link>/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/2015/05/11/Java-Puzzlers.html</link>
-        <guid isPermaLink="true">/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/2015/05/11/Java-Puzzlers.html</guid>
-        
-        
-        <category>读书笔记</category>
-        
-      </item>
-    
-      <item>
-        <title>CGlib</title>
-        <description>&lt;p&gt;在学习Spring的时候接触到CGlib，是一个强大的Code生成类库！可以在运行期扩展Java接口，其底层是ASM框架。当然可以直接使用ASM，不过门槛较高。&lt;/p&gt;
-
-&lt;h2 id=&quot;section&quot;&gt;代理&lt;/h2&gt;
-
-&lt;p&gt;首先来看JDK中原生的代理实现，首先实现&lt;strong&gt;InvocationHandler&lt;/strong&gt;接口，相当于目标方法的代理：&lt;/p&gt;
-&lt;pre class=&quot;prettyprint&quot;&gt;
-public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-	System.out.println(&quot;------------------before------------------&quot;);
-	Object result = method.invoke(target, args); // 调用方法
-	System.out.println(&quot;-------------------after------------------&quot;);
-	return result;
-}
-&lt;/pre&gt;
-
-&lt;p&gt;然后创建代理对象：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),
-	target.getClass().getInterfaces(), // 要实现的接口
-	this); // InvocationHandler的实现
-&lt;/pre&gt;
-
-&lt;p&gt;JDK的代理最大的限制在于必须实现接口，而CGlib则并没有设置这个限制，而&lt;strong&gt;MethodInterceptor&lt;/strong&gt;的用法与InvocationHandler几乎相同：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-static class MyMethodInterceptor implements MethodInterceptor {
-	public Object intercept(Object targe, Method method, Object[] args, MethodProxy methodProxy) throws Throwable {
-		System.out.println(&quot;BEFORE&quot;);
-		Object result = methodProxy.invokeSuper(targe, args);
-		System.out.println(&quot;AFTER&quot;);
-		return result;
-	}
-	public Object createProxy() {
-		Enhancer enhancer = new Enhancer();
-		enhancer.setSuperclass(MyService.class);
-		enhancer.setCallback(this);
-		return enhancer.create();
-	}
-}
-&lt;/pre&gt;
-
-&lt;p&gt;当&lt;strong&gt;Enhancer.setCallbacks&lt;/strong&gt;设置了多个代理类怎么办呢？可以通过&lt;strong&gt;CallbackFilter&lt;/strong&gt;来指定其执行顺序：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-public interface CallbackFilter {
-	int accept(Method method);// 返回方法对应的下标
-}
-&lt;/pre&gt;
-
-&lt;p&gt;总感觉accept这个方法名起得太失败- -!再来看一个&lt;strong&gt;LazyLoader&lt;/strong&gt;的例子，不明觉厉啊：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-public class TestLazyLoader {
-	static class MyBean {
-	}
-	static class My {
-		MyBean myBean = (MyBean) Enhancer.create(MyBean.class, new MyLazy());
-	}
-	static class MyLazy implements LazyLoader {
-		public Object loadObject() throws Exception {
-			System.out.println(&quot;开始延迟加载!&quot;);
-			return new MyBean();
-		}
-	}
-	public static void main(String[] args) {
-		My my = new My();
-		System.out.println(my.myBean);// 如果没有这一句，就不会有任何输出
-	}
-}
-&lt;/pre&gt;
-
-&lt;p&gt;感觉有点不可思议，用什么方法才能拦截获取属性这个操作？再仔细想一下，应该不是这样！在System.out.println()执行的时候会调用对象的toString方法，而cglib做的仅仅是重写toString方法。赶紧用&lt;strong&gt;javap -verbose xxx&lt;/strong&gt;来看生成的字节码，发现：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-public final java.lang.String toString();
-  Code:
-   Stack=2, Locals=1, Args_size=1
-   0:   aload_0
-   1:   dup
-   2:   invokevirtual   #30; //Method CGLIB$LOAD_PRIVATE_0:()Ljava/lang/Object;
-   5:   invokevirtual   #38; //Method java/lang/Object.toString:()Ljava/lang/String;
-   8:   areturn
-&lt;/pre&gt;
-
-&lt;p&gt;果然如此:D。&lt;/p&gt;
-
-&lt;h2 id=&quot;section-1&quot;&gt;多继承&lt;/h2&gt;
-
-&lt;p&gt;在Java中都是单继承的，当然CGlib也没办法打破这个限制，用多继承来描述&lt;strong&gt;Mixin&lt;/strong&gt;貌似并不合适，但现在也没想到其他更好的：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-public static void main(String[] args) {
-	Mixin mixin = Mixin.create(new Class[] { Inter1.class, Inter2.class },
-	new Object[] {
-		new Inter1() {
-			public void fun1(String arg0) {
-				System.out.println(&quot;Inter1 - &quot; + arg0);
-			}
-		},
-		new Inter2() {
-			public void fun1(String arg0) {
-				System.out.println(&quot;Inter2 - &quot; + arg0);
-			}
-			public void fun2(int arg0) {
-				System.out.println(&quot;Inter2 - &quot; + arg0);
-			}
-		},
-	});
-	Inter1 inter1 = (Inter1) mixin;
-	inter1.fun1(&quot;hello&quot;);// Inter1 - hello
-	Inter2 inter2 = (Inter2) mixin;
-	inter2.fun1(&quot;world&quot;);// Inter1 - world
-	inter2.fun2(999);// Inter2 - 999
-}
-&lt;/pre&gt;
-
-&lt;p&gt;在多个类中有多个相同的方法时，总是前面的覆盖后面的，在底层具体的实现中应该是循环多次继承来实现多重继承的效果。&lt;/p&gt;
-
-&lt;h2 id=&quot;section-2&quot;&gt;工具类&lt;/h2&gt;
-
-&lt;p&gt;在业务代码中总会涉及到各种DO、BO、DTO等等，并需要经常在他们之间转化，CGlib提供了BeanCopier用来自动完成相同属性名称的映射：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-static class A {
-	private int a = 1;
-	private int b = 2;
-	/** Setter And Getter */
-}
-static class B {
-	private int a = 3;
-	private int c = 4;
-	/** Setter And Getter */
-}
-public static void main(String[] args) {
-	BeanCopier beanCopier = BeanCopier.create(A.class, B.class, false);
-	A a = new A();
-	B b = new B();
-	beanCopier.copy(a, b, null);// 从a拷贝到b
-	System.out.println(a.a + &quot; &quot; + a.b); // 1 2
-	System.out.println(b.a + &quot; &quot; + b.c); // 1 4
-}
-&lt;/pre&gt;
-
-&lt;p&gt;当类型不匹配的时候需要用&lt;strong&gt;Converter&lt;/strong&gt;进行转换：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-public interface Converter {
-	/**
-	* @param value 源对象属性
-	* @param targetClass 目标对象属性类
-	* @param setterName 目标对象setter方法名
-	* @return 转换后的结果
-	*/
-	java.lang.Object convert(Object value, Class targetClass, Object setterName);
-}
-&lt;/pre&gt;
-
-&lt;p&gt;另外和Bean相关的还有其他几个类：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;&lt;strong&gt;BeanGenerator&lt;/strong&gt;：根据Map动态生成BeanClass。&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;BeanMap&lt;/strong&gt;：将Bean转换成一个Map。&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;BulkBean&lt;/strong&gt;：更方便地操作属性。&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;CGlib提供了&lt;strong&gt;FastClass&lt;/strong&gt;来方便地进行反射操作。&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://github.com/wsztrush/cglib-demo&quot;&gt;这里&lt;/a&gt;有我写的一些测试DEMO。最后，其他操作字节码的工具还有：javassist，BCEL，ASM等。&lt;/p&gt;
-</description>
-        <pubDate>Mon, 11 May 2015 15:22:00 +0800</pubDate>
-        <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/05/11/Cglib.html</link>
-        <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/05/11/Cglib.html</guid>
-        
-        
-        <category>编程技术</category>
         
       </item>
     
