@@ -5,8 +5,8 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 10 Jun 2015 22:35:31 +0800</pubDate>
-    <lastBuildDate>Wed, 10 Jun 2015 22:35:31 +0800</lastBuildDate>
+    <pubDate>Wed, 10 Jun 2015 22:40:09 +0800</pubDate>
+    <lastBuildDate>Wed, 10 Jun 2015 22:40:09 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
@@ -917,7 +917,7 @@ __find_buddy_index(unsigned long page_idx, unsigned int order)
   &lt;/tbody&gt;
 &lt;/table&gt;
 
-&lt;p&gt;如果内存是mmap映射到内存中的，那么在读、写对应内存的时候一会产生缺页异常。&lt;/p&gt;
+&lt;p&gt;如果内存是mmap映射到内存中的，那么在读、写对应内存的时候也会产生缺页异常。&lt;/p&gt;
 </description>
         <pubDate>Wed, 13 May 2015 00:00:00 +0800</pubDate>
         <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/05/13/Linux-Memory.html</link>
