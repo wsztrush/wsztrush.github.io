@@ -5,15 +5,15 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 10 Jun 2015 22:20:39 +0800</pubDate>
-    <lastBuildDate>Wed, 10 Jun 2015 22:20:39 +0800</lastBuildDate>
+    <pubDate>Wed, 10 Jun 2015 22:31:35 +0800</pubDate>
+    <lastBuildDate>Wed, 10 Jun 2015 22:31:35 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
         <title>VIM</title>
         <description>&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/VIM-LOGO.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;很早之前就知道VIM很厉害，不过作为一个Java攻城狮，用起来实在是不方便，完全没有Eclipse或者IDEA写代码顺畅，比如代码提示等（怀疑自己配置有问题）。最近对golang非常感兴趣，然而默认的IDE实在是太丑了，所以决心把VIM捡起来。&lt;/p&gt;
+&lt;p&gt;很早之前就知道VIM很厉害，不过作为一个Java攻城狮，用起来实在是不方便，完全没有Eclipse或者IDEA写代码顺畅，比如代码提示等（怀疑自己配置有问题-.-!）。最近对golang非常感兴趣，然而默认的IDE实在是太丑了，所以决心把VIM捡起来。&lt;/p&gt;
 
 &lt;p&gt;周围用Emacs的同事越来越多，但是简单用了几次，总觉得不怎么顺手，也就不了了之。&lt;/p&gt;
 
