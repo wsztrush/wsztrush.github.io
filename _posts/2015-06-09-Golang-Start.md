@@ -48,7 +48,51 @@ test|自动读取源码目录下面名为*_test.go的文件，生成并运行测
 tool|运行对应的工具类
 version|版本号
 
+码代码最基本的是变量和常量，在Go中的定义方法如下：
 
+> var a string = "initial"  /* 变量 */
+> const s string = "initial" /* 常量 */
 
+另外一些基本的控制结构也基本一致，简单来看就是省略了不少的括号：
+
+<pre class="prettyprint">
+// FOR
+for i &lt;= 3
+for i := 1; i &lt;= 3; i++
+for
+// IF
+if 8%4 == 0
+if num := 9; num &lt; 0
+// SWITCH
+switch time.Now().Weekday() {
+    case time.Saturday, time.Sunday:
+    default:
+}
+</pre>
+
+Go中的集合用起来感觉跟Python中的有点像：
+
+<pre class="prettyprint">
+// ARRAY:数组
+var a [5]int
+b := [5]int{1, 2, 3, 4, 5}
+var c [2][3]int
+
+// SLICES:跟数组很像，不过区间操作非常方便
+s := make([]string, 10)
+l := s[2:5]
+l := s[2:]
+l := s[:5]
+
+// RANGE:更方便地遍历，数组的话返回下标和值，MAP返回KEY、VALUE
+for _,num := nums {
+    sum += num;
+}
+
+// MAP:这个没什么好说的
+m := make(map[string]int)
+m["a"] = 1
+m["b"] = 2
+</pre>
 
 
