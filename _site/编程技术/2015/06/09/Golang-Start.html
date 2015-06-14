@@ -207,6 +207,85 @@ fmt.Println(person{"Bob", 20})
 fmt.Println(person{name: "Alice", age: 30})
 </pre>
 
+<p>在Go中比较吸引人的应该就是<strong>goroutines</strong>，面向并发的语言自然要最大程度的简化对应的代码才算合格。在Go中任意一个方法都可以使用<strong>go</strong>这个关键字来当做一个协程进行处理：</p>
+
+<blockquote>
+  <p>go func(“abc”)</p>
+</blockquote>
+
+<p>仅仅这样是不够的，在Go中又提供了<strong>channel</strong>用来做消息传递，这样：</p>
+
+<ol>
+  <li>消息传递</li>
+  <li>共享内存</li>
+</ol>
+
+<p>这两种方式在Go里面就凑齐了，另外<strong>select</strong>也大大简化了IO时候的操作，代码减了多少并不重要，关键是代码与其含义更加地贴近：</p>
+
+<pre class="preetyprint">
+messages := make(chan string)
+messages := make(chan string, 2)
+
+messages &lt;- "buffered" // 写入
+msg := &lt;-messages // 读取
+
+select {
+    case msg := &lt;-messages:
+        fmt.Println("received message", msg)
+    default:// 这样就不会阻塞了
+        fmt.Println("no message received")
+}
+</pre>
+
+<p>总是感觉select与switch很像，不仅仅是写法上面，另外连TimeOut的写法能很简单、粗暴地搞定：</p>
+
+<pre class="prettyprint">
+select {
+    case res := &lt;-c1:
+        fmt.Println(res)
+    case &lt;-time.After(time.Second * 1):
+        fmt.Println("timeout 1")
+    }
+</pre>
+
+<p>用这种方式能设置延迟，在需要重复的场景下可以用<strong>ticker := time.NewTicker(time.Millisecond * 500)</strong>来解决。</p>
+
+<p>在Go语言中不支持传统的try-catch-finally这种异常机制，因为Go的设计者认为可能程序员经常会滥用，所以在大部分的情况都通过返回多个值、其中一个为<strong>ERROR</strong>的办法来处理，只有在真正异常的情况下才使用Go的Exception机制：</p>
+
+<ol>
+  <li><strong>defer</strong>：为函数添加结束时执行的语句</li>
+  <li><strong>panic</strong>：非常严重的不可恢复的错误</li>
+  <li><strong>recover</strong>：从错误中恢复</li>
+</ol>
+
+<pre class="preetyprint">
+func f() (result int) {// 返回值为1，只有defer执行后才有效
+    defer func() {
+        result++
+    }()
+    return 0;
+}
+panic("problem");// 在这个地方程序就挂掉了
+
+func a(){
+    panic("a---error");
+}
+func b(){
+    panic("b---error");
+}
+func(){
+    def func(){
+        if r:= recover(); r != nil {
+            log.Printf("caught: %v", r);
+        }
+    }
+}
+</pre>
+
+<p>用recover的方法有点像缩水版的try-catch，简单把Go的语法过了一遍，总体的感觉就是简单、面向工程开发，没有很多的废话，也没有太多学术上很有用、工程上用的不多的细节。基本语法的例子都可以在<a href="https://gobyexample.com/">这里</a>找到。</p>
+
+<h2 id="section-2">工程开发</h2>
+
 
 			<!-- 评论组件 -->
 			<div id="disqus_thread"/>
