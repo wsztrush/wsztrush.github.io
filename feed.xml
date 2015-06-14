@@ -5,8 +5,8 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 14 Jun 2015 15:54:05 +0800</pubDate>
-    <lastBuildDate>Sun, 14 Jun 2015 15:54:05 +0800</lastBuildDate>
+    <pubDate>Sun, 14 Jun 2015 16:44:19 +0800</pubDate>
+    <lastBuildDate>Sun, 14 Jun 2015 16:44:19 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
@@ -189,10 +189,10 @@ func main(){
 
 &lt;p&gt;码代码最基本的是变量和常量，在Go中的定义方法如下：&lt;/p&gt;
 
-&lt;blockquote&gt;
-  &lt;p&gt;var a string = “initial”  /* 变量 &lt;em&gt;/
-const s string = “initial” /&lt;/em&gt; 常量 */&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;pre class=&quot;prettyprint&quot;&gt;
+var a string = &quot;initial&quot;  /* 变量 */
+const s string = &quot;initial&quot; /* 常量 */
+&lt;/pre&gt;
 
 &lt;p&gt;另外一些基本的控制结构也基本一致，简单来看就是省略了不少的括号：&lt;/p&gt;
 
@@ -234,6 +234,56 @@ for _,num := nums {
 m := make(map[string]int)
 m[&quot;a&quot;] = 1
 m[&quot;b&quot;] = 2
+&lt;/pre&gt;
+
+&lt;p&gt;在Go中定义方法也是比较奇葩的语法，用过的其他语言大部分把返回值写在前面，而它是写在后面，不过应该也没有谁优谁劣，而且在Go中方法可以返回多个值(尤其是在后面会用来返回错误)：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+func vals() (int, int) {// 普通函数：a, b := vals()
+    return 1, 2;
+}
+func sum(nums ...int) {// 可变参数：sum(1, 2)   sum(1, 2, 3)
+}
+func zeroptr(iptr *int) {// 参数类型为指针
+    *iptr = 0
+}
+func intSeq() func() int {// 闭包
+    i := 0
+    return func() int {
+        i += 1
+        return i
+    }
+}
+&lt;/pre&gt;
+
+&lt;p&gt;在Go中所有的面向对象就是&lt;strong&gt;struct&lt;/strong&gt;了，是不是感觉有点简单？或者有点low？另外在Go中定义了一个奇葩的&lt;strong&gt;interface&lt;/strong&gt;，感觉有点像是一个方法的集合：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+type method interface {
+    output();
+}
+
+type person struct {
+    name string
+    age  int
+}
+
+func (p *person) output(){// 定义方法，再次吐槽：是不是跟Python很像
+    fmt.Println(p.name, p.age);
+}
+
+func f(m method) { // 为不同对象定义相同的方法，用这个来实现泛型的话，额~~
+	fmt.Println(m);
+    m.output();
+}
+
+func f1(arg int) (int, error) {
+    return -1, errors.New(&quot;i can't work！&quot;); // 返回错误
+}
+
+// 调用方法
+fmt.Println(person{&quot;Bob&quot;, 20})
+fmt.Println(person{name: &quot;Alice&quot;, age: 30})
 &lt;/pre&gt;
 
 </description>
