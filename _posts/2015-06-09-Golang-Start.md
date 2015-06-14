@@ -192,6 +192,8 @@ select {
 2. **panic**：非常严重的不可恢复的错误
 3. **recover**：从错误中恢复
 
+来看简单的例子：
+
 <pre class="prettyprint">
 func f() (result int) {// 返回值为1，只有defer执行后才有效
     defer func() {
