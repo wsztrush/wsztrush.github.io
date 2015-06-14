@@ -5,8 +5,8 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 14 Jun 2015 15:03:21 +0800</pubDate>
-    <lastBuildDate>Sun, 14 Jun 2015 15:03:21 +0800</lastBuildDate>
+    <pubDate>Sun, 14 Jun 2015 15:53:11 +0800</pubDate>
+    <lastBuildDate>Sun, 14 Jun 2015 15:53:11 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
@@ -186,6 +186,55 @@ func main(){
     &lt;/tr&gt;
   &lt;/tbody&gt;
 &lt;/table&gt;
+
+&lt;p&gt;码代码最基本的是变量和常量，在Go中的定义方法如下：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;var a string = “initial”  /* 变量 &lt;em&gt;/
+const s string = “initial” /&lt;/em&gt; 常量 */&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;另外一些基本的控制结构也基本一致，简单来看就是省略了不少的括号：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+// FOR
+for i &amp;lt;= 3
+for i := 1; i &amp;lt;= 3; i++
+for
+// IF
+if 8%4 == 0
+if num := 9; num &amp;lt; 0
+// SWITCH
+switch time.Now().Weekday() {
+    case time.Saturday, time.Sunday:
+    default:
+}
+&lt;/pre&gt;
+
+&lt;p&gt;Go中的集合用起来感觉跟Python中的有点像：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+// ARRAY:数组
+var a [5]int
+b := [5]int{1, 2, 3, 4, 5}
+var c [2][3]int
+
+// SLICES:跟数组很像，不过区间操作非常方便
+s := make([]string, 10)
+l := s[2:5]
+l := s[2:]
+l := s[:5]
+
+// RANGE:更方便地遍历，数组的话返回下标和值，MAP返回KEY、VALUE
+for _,num := nums {
+    sum += num;
+}
+
+// MAP:这个没什么好说的
+m := make(map[string]int)
+m[&quot;a&quot;] = 1
+m[&quot;b&quot;] = 2
+&lt;/pre&gt;
 
 </description>
         <pubDate>Tue, 09 Jun 2015 00:00:00 +0800</pubDate>
