@@ -19,7 +19,95 @@
 			<h1>Golang入门</h1>
 			<h2 id="section">环境搭建</h2>
 
-<p>因为我仅仅打算在ubuntu上面进行golang的开发，所以其他的系统后面用过了再来补充！</p>
+<p>因为我仅仅打算在ubuntu上面进行golang的开发，所以其他的系统后面用过了再来补充！配置来说相当容易：</p>
+
+<ol>
+  <li>下载golang的包解压安装，如果官网上的访问不到就到<a href="http://www.golangtc.com/">golang中国</a>找个版本下载</li>
+  <li>在/etc/profile中配置<strong>PATH</strong>、<strong>GOROOT</strong>、<strong>GOPATH</strong></li>
+  <li>配置你的IDE</li>
+</ol>
+
+<p>下面就开始GOLANG的学习。</p>
+
+<h2 id="section-1">基础语法</h2>
+
+<p>按照惯例，来看Hello World代码：</p>
+
+<pre class="prettyprint">
+package main
+
+import "fmt"
+
+func main(){
+    fmt.Println("Hello World");
+}
+</pre>
+
+<p>使用<strong>go run hello.go</strong>即可执行，也可以使用<strong>go build hello.go</strong>打包完成之后在运行，所有的命令作用如下：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>命令</th>
+      <th>作用</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>build</td>
+      <td>用于测试编译</td>
+    </tr>
+    <tr>
+      <td>clean</td>
+      <td>移除当前源码包里面编译生成的文件</td>
+    </tr>
+    <tr>
+      <td>env</td>
+      <td>环境变量</td>
+    </tr>
+    <tr>
+      <td>fix</td>
+      <td>修复以前老版本的代码到新版本</td>
+    </tr>
+    <tr>
+      <td>fmt</td>
+      <td>代码格式化</td>
+    </tr>
+    <tr>
+      <td>generate</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>get</td>
+      <td>动态获取远程代码包的，目前支持的有BitBucket、GitHub、Google Code和Launchpad</td>
+    </tr>
+    <tr>
+      <td>install</td>
+      <td>生成结果文件(可执行文件或者.a包)，把编译好的结果移到$GOPATH/pkg或者$GOPATH/bin</td>
+    </tr>
+    <tr>
+      <td>list</td>
+      <td>列出当前全部安装的package</td>
+    </tr>
+    <tr>
+      <td>run</td>
+      <td>编译并运行Go程序</td>
+    </tr>
+    <tr>
+      <td>test</td>
+      <td>自动读取源码目录下面名为*_test.go的文件，生成并运行测试用的可执行文件</td>
+    </tr>
+    <tr>
+      <td>tool</td>
+      <td>运行对应的工具类</td>
+    </tr>
+    <tr>
+      <td>version</td>
+      <td>版本号</td>
+    </tr>
+  </tbody>
+</table>
+
 
 			<!-- 评论组件 -->
 			<div id="disqus_thread"/>
