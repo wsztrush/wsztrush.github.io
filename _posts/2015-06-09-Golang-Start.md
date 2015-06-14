@@ -50,8 +50,10 @@ version|版本号
 
 码代码最基本的是变量和常量，在Go中的定义方法如下：
 
-> var a string = "initial"  /* 变量 */
-> const s string = "initial" /* 常量 */
+<pre class="prettyprint">
+var a string = "initial"  /* 变量 */
+const s string = "initial" /* 常量 */
+</pre>
 
 另外一些基本的控制结构也基本一致，简单来看就是省略了不少的括号：
 
@@ -94,5 +96,74 @@ m := make(map[string]int)
 m["a"] = 1
 m["b"] = 2
 </pre>
+
+在Go中定义方法也是比较奇葩的语法，用过的其他语言大部分把返回值写在前面，而它是写在后面，不过应该也没有谁优谁劣，而且在Go中方法可以返回多个值(尤其是在后面会用来返回错误)：
+
+<pre class="prettyprint">
+func vals() (int, int) {// 普通函数：a, b := vals()
+    return 1, 2;
+}
+func sum(nums ...int) {// 可变参数：sum(1, 2)   sum(1, 2, 3)
+}
+func zeroptr(iptr *int) {// 参数类型为指针
+    *iptr = 0
+}
+func intSeq() func() int {// 闭包
+    i := 0
+    return func() int {
+        i += 1
+        return i
+    }
+}
+</pre>
+
+在Go中所有的面向对象就是**struct**了，是不是感觉有点简单？或者有点low？另外在Go中定义了一个奇葩的**interface**，感觉有点像是一个方法的集合：
+
+<pre class="prettyprint">
+type method interface {
+    output();
+}
+
+type person struct {
+    name string
+    age  int
+}
+
+func (p *person) output(){// 定义方法，再次吐槽：是不是跟Python很像
+    fmt.Println(p.name, p.age);
+}
+
+func f(m method) { // 为不同对象定义相同的方法，用这个来实现泛型的话，额~~
+	fmt.Println(m);
+    m.output();
+}
+
+func f1(arg int) (int, error) {
+    return -1, errors.New("i can't work！"); // 返回错误
+}
+
+// 调用方法
+fmt.Println(person{"Bob", 20})
+fmt.Println(person{name: "Alice", age: 30})
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
