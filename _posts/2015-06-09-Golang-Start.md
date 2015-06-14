@@ -158,7 +158,7 @@ fmt.Println(person{name: "Alice", age: 30})
 
 这两种方式在Go里面就凑齐了，另外**select**也大大简化了IO时候的操作，代码减了多少并不重要，关键是代码与其含义更加地贴近：
 
-<pre class="preetyprint">
+<pre class="prettyprint">
 messages := make(chan string)
 messages := make(chan string, 2)
 
@@ -192,7 +192,7 @@ select {
 2. **panic**：非常严重的不可恢复的错误
 3. **recover**：从错误中恢复
 
-<pre class="preetyprint">
+<pre class="prettyprint">
 func f() (result int) {// 返回值为1，只有defer执行后才有效
     defer func() {
         result++
@@ -219,6 +219,8 @@ func(){
 用recover的方法有点像缩水版的try-catch，简单把Go的语法过了一遍，总体的感觉就是简单、面向工程开发，没有很多的废话，也没有太多学术上很有用、工程上用的不多的细节。基本语法的例子都可以在[这里](https://gobyexample.com/)找到。
 
 ## 工程开发
+
+
 
 
 
