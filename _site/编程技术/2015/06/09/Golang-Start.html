@@ -222,7 +222,7 @@ fmt.Println(person{name: "Alice", age: 30})
 
 <p>这两种方式在Go里面就凑齐了，另外<strong>select</strong>也大大简化了IO时候的操作，代码减了多少并不重要，关键是代码与其含义更加地贴近：</p>
 
-<pre class="preetyprint">
+<pre class="prettyprint">
 messages := make(chan string)
 messages := make(chan string, 2)
 
@@ -258,7 +258,7 @@ select {
   <li><strong>recover</strong>：从错误中恢复</li>
 </ol>
 
-<pre class="preetyprint">
+<pre class="prettyprint">
 func f() (result int) {// 返回值为1，只有defer执行后才有效
     defer func() {
         result++
