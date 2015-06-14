@@ -147,6 +147,87 @@ fmt.Println(person{"Bob", 20})
 fmt.Println(person{name: "Alice", age: 30})
 </pre>
 
+在Go中比较吸引人的应该就是**goroutines**，面向并发的语言自然要最大程度的简化对应的代码才算合格。在Go中任意一个方法都可以使用**go**这个关键字来当做一个协程进行处理：
+
+> go func("abc")
+
+仅仅这样是不够的，在Go中又提供了**channel**用来做消息传递，这样：
+
+1. 消息传递
+2. 共享内存
+
+这两种方式在Go里面就凑齐了，另外**select**也大大简化了IO时候的操作，代码减了多少并不重要，关键是代码与其含义更加地贴近：
+
+<pre class="preetyprint">
+messages := make(chan string)
+messages := make(chan string, 2)
+
+messages &lt;- "buffered" // 写入
+msg := &lt;-messages // 读取
+
+select {
+    case msg := &lt;-messages:
+        fmt.Println("received message", msg)
+    default:// 这样就不会阻塞了
+        fmt.Println("no message received")
+}
+</pre>
+
+总是感觉select与switch很像，不仅仅是写法上面，另外连TimeOut的写法能很简单、粗暴地搞定：
+
+<pre class="prettyprint">
+select {
+    case res := &lt;-c1:
+        fmt.Println(res)
+    case &lt;-time.After(time.Second * 1):
+        fmt.Println("timeout 1")
+    }
+</pre>
+
+用这种方式能设置延迟，在需要重复的场景下可以用**ticker := time.NewTicker(time.Millisecond * 500)**来解决。
+
+在Go语言中不支持传统的try-catch-finally这种异常机制，因为Go的设计者认为可能程序员经常会滥用，所以在大部分的情况都通过返回多个值、其中一个为**ERROR**的办法来处理，只有在真正异常的情况下才使用Go的Exception机制：
+
+1. **defer**：为函数添加结束时执行的语句
+2. **panic**：非常严重的不可恢复的错误
+3. **recover**：从错误中恢复
+
+<pre class="preetyprint">
+func f() (result int) {// 返回值为1，只有defer执行后才有效
+    defer func() {
+        result++
+    }()
+    return 0;
+}
+panic("problem");// 在这个地方程序就挂掉了
+
+func a(){
+    panic("a---error");
+}
+func b(){
+    panic("b---error");
+}
+func(){
+    def func(){
+        if r:= recover(); r != nil {
+            log.Printf("caught: %v", r);
+        }
+    }
+}
+</pre>
+
+用recover的方法有点像缩水版的try-catch，简单把Go的语法过了一遍，总体的感觉就是简单、面向工程开发，没有很多的废话，也没有太多学术上很有用、工程上用的不多的细节。基本语法的例子都可以在[这里](https://gobyexample.com/)找到。
+
+## 工程开发
+
+
+
+
+
+
+
+
+
 
 
 
