@@ -17,7 +17,9 @@
 	<body onload="prettyPrint()">
 		<div class="post-container">
 			<h1>Golang入门</h1>
-			<h2 id="section">环境搭建</h2>
+			<p>虽然Go已经不算是一个很新的语言了，但是现在非常地火！一般来说语言本身没有什么好讲究的，能快速编程、少点坑就算是一门好的语言了。但是，如果语言火了之后，其周围的工具发展起来之后，能用它做的事情就太多了~</p>
+
+<h2 id="section">环境搭建</h2>
 
 <p>因为我仅仅打算在ubuntu上面进行golang的开发，所以其他的系统后面用过了再来补充！配置来说相当容易：</p>
 
@@ -258,6 +260,8 @@ select {
   <li><strong>recover</strong>：从错误中恢复</li>
 </ol>
 
+<p>来看简单的例子：</p>
+
 <pre class="prettyprint">
 func f() (result int) {// 返回值为1，只有defer执行后才有效
     defer func() {
@@ -282,7 +286,9 @@ func(){
 }
 </pre>
 
-<p>用recover的方法有点像缩水版的try-catch，简单把Go的语法过了一遍，总体的感觉就是简单、面向工程开发，没有很多的废话，也没有太多学术上很有用、工程上用的不多的细节。基本语法的例子都可以在<a href="https://gobyexample.com/">这里</a>找到。</p>
+<p>用recover的方法有点像缩水版的try-catch，最后，在Go中居然支持<strong>goto</strong>，虽然我觉得goto还是挺好用的。</p>
+
+<p>简单把Go的语法过了一遍，总体的感觉就是简单、面向工程开发，没有很多的废话，也没有太多学术上很有用、工程上用的不多的细节。基本语法的例子都可以在<a href="https://gobyexample.com/">这里</a>找到。</p>
 
 <h2 id="section-2">工程开发</h2>
 
