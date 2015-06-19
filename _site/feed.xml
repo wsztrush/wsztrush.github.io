@@ -5,9 +5,260 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 18 Jun 2015 01:20:24 +0800</pubDate>
-    <lastBuildDate>Thu, 18 Jun 2015 01:20:24 +0800</lastBuildDate>
+    <pubDate>Fri, 19 Jun 2015 21:02:14 +0800</pubDate>
+    <lastBuildDate>Fri, 19 Jun 2015 21:02:14 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
+    
+      <item>
+        <title>拣选单执行情况总结</title>
+        <description>&lt;p&gt;数据处理方案有：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;离线计算：Hadoop&lt;/li&gt;
+  &lt;li&gt;实时计算：Spark&lt;/li&gt;
+  &lt;li&gt;流计算：Storm&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;这离线计算有点是吞吐量大、逻辑简单，但时效太差，在仓库里面出现问题的时候一个小时（甚至一天）之后才汇报给管理员，估计没人会用了。&lt;/p&gt;
+
+&lt;p&gt;很多人都会讲实时计算和流计算放在一起，他们还是有区别的：Spark可以看成是内存版的Hadoop，把数据放到内存里面可以提高处理速度。另外&lt;strong&gt;ADS&lt;/strong&gt;（阿里云的一个产品）可能做的更优秀一些，在大量的数据上面做统计。而&lt;strong&gt;Storm&lt;/strong&gt;则是监听变化来统计&lt;strong&gt;结果&lt;/strong&gt;，处理的是增量的数据。&lt;/p&gt;
+
+&lt;p&gt;总体上根据读、写的比例，不同的方式各有优劣！&lt;/p&gt;
+
+&lt;h2 id=&quot;section&quot;&gt;项目背景&lt;/h2&gt;
+
+&lt;p&gt;本项目的目的是为仓库管理系统（WMS）做一个作业执行情况监控的功能，WMS里面的概念繁多，项目中核心包括：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;strong&gt;拣选单&lt;/strong&gt;：在拣选单上面有一些要去拣选的商品及数据，库工拿着它推着小车去拿东西&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;包裹&lt;/strong&gt;：一个拣选单对应多个包裹，弄完之后包裹会称重-&amp;gt;包装-&amp;gt;发货-&amp;gt;出库&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;然后希望通过下面两个维度来进行展示：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;统计拣选单上面各状态的包裹数&lt;/li&gt;
+  &lt;li&gt;统计各库区的未拣选完的拣选单数、包裹数、商品数及品种数&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;第一个维度用来看单个拣选单的执行情况，其实把所有拣选单都列出来之后也能够反映出整个仓库的执行情况。&lt;/p&gt;
+
+&lt;p&gt;第二个维度则用来看是否某个库区中的拣选工作量太大，比如为拣选完成的商品数太多就说明是这种情况，此时仓库管理员可以从其他不怎么忙的库区抽调一些人去帮忙。&lt;/p&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;技术方案&lt;/h2&gt;
+
+&lt;p&gt;前段时间看了一些JSTORM（一个类似STORM东西，用JAVA重写的）的东西，这次就用它来搞，总体上是这样的：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/拣选单-总结-架构.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;其中几个关键部分用到了公司的中间件：&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;中间件&lt;/th&gt;
+      &lt;th&gt;说明&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;DRC&lt;/td&gt;
+      &lt;td&gt;监听数据库的变化并存储下来，供各种应用进行消费，后发生的消息ID更大&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;OTS&lt;/td&gt;
+      &lt;td&gt;类似HBase，不过现在太挫了&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;现在系统中的机器上的缓存也是用DRC来实现了，每台机器都会消费DRC的消息，然后根据更新来对本地的缓存进行更新，但是：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;在流计算中，每个变更消息只需要被一台机器消费！&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;在公司内部貌似没有什么工具能做很灵活的路由，而恰巧JSTORM里面的&lt;strong&gt;fieldsGrouping&lt;/strong&gt;刚好可以轻松解决掉，可以在Spout根据指定的Field将Tuple发送给Bolt进行处理，这样只需要指定Field为拣选单ID就可以将相同的拣选单发送给同一个Task进行处理。&lt;/p&gt;
+
+&lt;p&gt;多台机器随机消费DRC消息的时候，如果同一个拣选单相关的消息落在不同的机器上面，此时对应的Task要更新拣选单状态时必须要通过分布式锁来保证状态的准确性！这个麻烦也被顺带着解决了！&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/FACE-E.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;即便是相同的拣选单都落在同一个机器上面，但是：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;消息到达的顺序可能是乱序的！&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;查看DRC文档之后发现在变更的消息中有字段ID，越晚的更新ID越大。接收到的消息虽然是乱序的，但是毕竟是在同一个Task中，那么解决办法就简单了：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;从OTS中取出单据状态&lt;/li&gt;
+  &lt;li&gt;比较记录的ID与变更消息的ID比较&lt;/li&gt;
+  &lt;li&gt;如果变更消息更小，则放弃&lt;/li&gt;
+  &lt;li&gt;如果变更消息更大，那么更新单据状态，然后将其放入OTS&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;在OTS中永远保存单据最新的状态不会有错！但是这又有什么意义？如果光是为了取正确的状态直接去数据库好了啊！要想通过SQL获取记录少量还可以，如果多了基本上铁定会超时（因为要联表）。在流计算中要想达到联表的效果很不容易：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;不同任务执行速度不同，如果直接联表可能出现当前数据与10分钟前另一份数据关联！&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;这问题解决起来比较容易，有两个任务同时消费拣选单、包裹的变更消息，每消费完成一分钟的数据，那么就将其保存一个版本，而在他们都完成某个时间点的变更之后，再将他们联表！&lt;/p&gt;
+
+&lt;p&gt;看似很美好，其实有个大问题：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;当一个任务半天没有接收到消息的时候，可能是把本分钟的消息消费完了，也有可能是消息还没来！&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;再次翻DRC的文档发现它有一个心跳消息，这种心跳消息和我们通常理解的完全不同！在收集binlog的时候就已经将它插入到持久化存储中。在拉取消息的时候，同时也会拉取到对应时间点的心跳记录。&lt;/p&gt;
+
+&lt;p&gt;那么此时要做的就是：如果没有拉取到消息，并且已经接收到下一分钟的心跳消息，那么本分钟的所有的消息都已经处理过了。但是：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;处理过了并不代表都处理成功了！&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;在Spout端emit给Bolt出里之后，如果成功就会ack，如果失败则fail。他们都会通过acker任务通知给Spout进行统计或者重试。那么我们可以利用这个规则来判断：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;在emit时all计数加一&lt;/li&gt;
+  &lt;li&gt;在ack时success数加一&lt;/li&gt;
+  &lt;li&gt;在fail时all加一并重新发送消息&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;这样在完成所有的消息消费时应该有&lt;strong&gt;all == success&lt;/strong&gt;，综合上面的判断就可以知道某分钟是否全部成功处理。&lt;/p&gt;
+
+&lt;p&gt;即便是能保证消息按照我们设计的数据一分钟一分钟地写入数据库，但是写入过程仍然是需要时间的（不可能一瞬间完成），那么：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;写入与读取同时进行的话，可能读取到的一部分是老版本、一部分是新版本！&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;简单来说仅仅将数据读出来展示倒是问题不大，但如果要再其上面做进一步的加工，那么就完蛋了！先不管用户看到的数据有多大影响，光让测试去验证系统的准确性都是一个非常头疼的问题了！&lt;/p&gt;
+
+&lt;p&gt;解决这种问题基本上都是用版本来搞，比如HBase中的&lt;strong&gt;timestamp&lt;/strong&gt;就可以轻松搞定，但是HBase这货查询起来太麻烦了。当然你可能想到用&lt;strong&gt;Phoenix&lt;/strong&gt;来搞，复杂性和效率先不说，关键是公司的PE已经不给HBase资源了，主推OTS！&lt;/p&gt;
+
+&lt;p&gt;无奈跑去问OTS的负责人，得到答复：&lt;strong&gt;支持SQL不在考虑之中&lt;/strong&gt;~~~&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/FACE-A.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;没办法只能放到MySQL里面了，如果每个版本记录都有一条记录，有两个问题：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;数据库中的记录会变成实际数据量的N倍&lt;/li&gt;
+  &lt;li&gt;查询复杂&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;有天睡觉醒来突然想到一个解决办法！如果将所有的版本都记录下来，其实起作用的最多只有两个版本，那么：&lt;strong&gt;对每条数据只记录两个版本的数据即可&lt;/strong&gt;。在更新某条数据时：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;从DB中取出所有版本（最多两条）&lt;/li&gt;
+  &lt;li&gt;如果有两条
+    &lt;ul&gt;
+      &lt;li&gt;取出版本较大的一条记录&lt;/li&gt;
+      &lt;li&gt;将较小的版本的ID给他&lt;/li&gt;
+      &lt;li&gt;更新数据库&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;如果有一条或者根本没有
+    &lt;ul&gt;
+      &lt;li&gt;创建新对象并插入数据库中&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;而在取数据的时候需要加上简单的版本限制：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+(_version &amp;lt;= #currVersion# AND (_max_version = _version OR _max_version &amp;gt;= #currVersion#))
+&lt;/pre&gt;
+
+&lt;p&gt;这种效率显然比联表查效率会高很多！&lt;/p&gt;
+
+&lt;p&gt;一般流数据只关心从现在开始发生的变化，但是：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;如何历史数据也很重要，需要更更实时的数据合并怎么办！！&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;仔细想一下，其实也是有办法的，在流计算运行之前做一次数据初始化即可！将所有的数据当前的状态当做的一个时间点变更的结果插入OTS中，然后让OTS来进行消费。在持久化DRC消息到OTS的任务中，设置DRC启动的时间点稍前一些，这样的话增量和全量直接就有覆盖，如果当前状态是4，那么覆盖的过程可能是：4-&amp;gt;1-&amp;gt;2-&amp;gt;3-&amp;gt;4-&amp;gt;···这样就构成了一个环，中间状态的累加并不会出错！&lt;/p&gt;
+
+&lt;p&gt;哎，饶了这么多的弯，就是为了能够给用户看到一份准确的数据！开始干活！！&lt;/p&gt;
+
+&lt;h2 id=&quot;section-2&quot;&gt;开发过程&lt;/h2&gt;
+
+&lt;p&gt;在开始写代码的时候，很多的事情还没有想清楚，但是如果一直因为没有想清楚不开工的话就太傻逼了！光想是没办法永远都想清楚的！&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Move Fast And Break Things.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;说干就干！刚开始看到包裹里面的有area_id的时候以为是库区ID，然后也没当回事，过了两天仔细一看完全不是那么回事，因为获取不到库区歇菜了？&lt;/p&gt;
+
+&lt;p&gt;请教同事之后发现包裹占用表上有pick_area_id，我只能说当初添加这个字段的哥们太聪明了！&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/FACE-E.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;看了一下线下的数据库，发现这个字段很多为空！心想应该是大家在日常数据滥用的结果，赶紧到线上看一下，发现这个字段在所有记录里面全部为空！！！&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/FACE-D.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;坑到了！但回头一想：肯定有个地方是有位置信息的，这时候看到了占用表中有货位的编码，样子大概是&lt;strong&gt;A0-B0-C0&lt;/strong&gt;，而第一个为A0则为库区编码，这时候仿佛看到了希望，赶紧找别人确认一下！我去，这种规则是仓库自己配的，他们想怎么配怎么配，完全不可靠!!&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/FACE-D.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;没办法，注意到占用表里面还有一个货位ID，货位必然属于某个库区，在系统中肯定有地方维护这个关系！请教对应同事之后果然如此，这个问题算是搞定了。&lt;/p&gt;
+
+&lt;p&gt;之前一直以为DRC中的心跳消息可以分割不同时间段的消息，比如收到10分钟的消息，那么它之前的就全部是十分钟之前的，它之后就全部是十分钟之后的，而这个项目也是建立在这个基础上的！但是突然有一天他们团队的人跑过来说并不是这样！&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/FACE-A.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;一个团队的人怎么能说话都不一致！在以为又被坑大了的时候，仔细思考：其实这个项目对心跳记录的要求并没有这么高，只需要保证在接收到消息之后，它之前的数据一定消费完了，而至于有没有消费它之后的数据则并没有那么大的关系！再次去跟他们确认，得到的答复确实是这样的！哈哈哈~~&lt;/p&gt;
+
+&lt;p&gt;开发到后期，商品品种数成了麻烦，因为是品种数所以不能简单的进行累加（不然就变成商品数了）！马上想到一个最简单的解决办法：在OTS中保存一个Map来记录！但是OTS中的值有大小限制，赶紧去问同事一个拣选单中商品数最多有多少个！结果是没有限制….&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/FACE-A.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;真的无解了么？仔细想了一番，想到一种解决方法：为每个itemId建一个key，value为其对应的包裹数！在有包裹创建的时候value++，而在包裹删除的时候value–。那么可以在从0变1的时候增加品种数，从1变0的时候减少品种数！&lt;/p&gt;
+
+&lt;p&gt;纠结了两个小时，感觉这种做法太复杂，而且效率也非常低！这时候想可能线上每个拣选单的商品品种数根本就很少！赶紧去线上捞了一把，果然如此！另外发现包裹删除是发生在拆包的情况，而此时仅仅是将包裹一拆为二，里面的品种数并没有发生变化！这样直接在OTS中保存一个itemId的SET即可！&lt;/p&gt;
+
+&lt;h2 id=&quot;section-3&quot;&gt;现存问题&lt;/h2&gt;
+
+&lt;p&gt;系统虽然上线了，但是还有一些问题：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;处理效率不高&lt;/li&gt;
+  &lt;li&gt;对OTS的依赖太大&lt;/li&gt;
+  &lt;li&gt;全量数据和增量数据合并还是可能导致结果出错，原因和解决办法都比较简单&lt;/li&gt;
+  &lt;li&gt;在Jstorm中获取数据是通过SQL来的，这样增加了DB的连接数&lt;/li&gt;
+  &lt;li&gt;对Jstorm依赖太重，而Jstorm有自身的缺陷&lt;/li&gt;
+  &lt;li&gt;每次开发需求都要做代码开发&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;另外，流计算本身就是监控（或者说是报表）的一部分，但是这应该把监控当做一个产品来考虑！最近也在想一些为来的计划：&lt;/p&gt;
+
+&lt;h2 id=&quot;section-4&quot;&gt;未来计划&lt;/h2&gt;
+
+&lt;p&gt;既然要做，就做到最屌！现在公司内部并没有一个面向&lt;strong&gt;用户的监控&lt;/strong&gt;系统，面向小二的倒是一大堆。另外，面向小二的也做的并不怎么完善，很多都没有当做一个产品来做，那么接下来要做的就是把监控、数据报表分块并一一解决掉：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;通知模块：维护用户、组的信息，可以向组、用户发送消息，支持推拉两种方式&lt;/li&gt;
+  &lt;li&gt;数据打通：打通数据计算模块和各个模块之间的数据访问&lt;/li&gt;
+  &lt;li&gt;其他&lt;/li&gt;
+&lt;/ol&gt;
+</description>
+        <pubDate>Fri, 19 Jun 2015 00:00:00 +0800</pubDate>
+        <link>/%E6%B5%81%E6%B0%B4%E8%B4%A6/2015/06/19/Pickbill-Monitor.html</link>
+        <guid isPermaLink="true">/%E6%B5%81%E6%B0%B4%E8%B4%A6/2015/06/19/Pickbill-Monitor.html</guid>
+        
+        
+        <category>流水账</category>
+        
+      </item>
     
       <item>
         <title>VIM</title>
@@ -1405,79 +1656,6 @@ __find_buddy_index(unsigned long page_idx, unsigned int order)
         
         
         <category>编程技术</category>
-        
-      </item>
-    
-      <item>
-        <title>歌德尔不完备定理</title>
-        <description>&lt;h2 id=&quot;section&quot;&gt;写在前面&lt;/h2&gt;
-
-&lt;p&gt;&lt;strong&gt;希尔伯特&lt;/strong&gt;是19世纪和20世纪初最具影响力的数学家之一，在严格化的大纷争中，他带领的形式主义派系技压群雄，得到许多当时有名望的数学家的支持。希尔伯特打算通过形式化的手段，将证明抽象成一堆符号的转换。令人惊奇的是这似乎真的可行！为此，希尔伯特希望能够证明：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;在任意一个无矛盾的形式系统中，对任意的陈述，都能判断出真伪。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;然而，这一企图被&lt;strong&gt;哥德尔&lt;/strong&gt;的博士论文《论数学原理及有关系统中不可判定命题》无情击碎，不完备性定理揭示：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;在任意一个无矛盾的形式系统中，存在命题，无法证明其真伪。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;这在当时的数学界掀起轩然大波，它不仅具有数学意义，还蕴含着深刻的哲学意义。&lt;/p&gt;
-
-&lt;h2 id=&quot;section-1&quot;&gt;证明&lt;/h2&gt;
-
-&lt;p&gt;不能判断出真伪，自然就想到古老的悖论：&lt;strong&gt;这句话是假的&lt;/strong&gt;（说它真也不行，说它假也不行！）。1905年法国数学家&lt;strong&gt;理查德&lt;/strong&gt;在数学系统中构造出来这样的悖论：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;用语言描述自然数的性质；&lt;/li&gt;
-  &lt;li&gt;将性质的描述语言映射到一个自然数；&lt;/li&gt;
-  &lt;li&gt;如果自然数不符合对应的性质，则称其具有理查兹性，该自然数称为理查德数；&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;理查兹性也是一个自然数的性质，对应的编号为N，那么N是理查德数吗？&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;理查德悖论&lt;/strong&gt;是有瑕疵的：自然数的性质应该是“能被2整除”、“大于100”等，而理查兹性质则把性质和描述性质的语言纠缠在一起了！&lt;/p&gt;
-
-&lt;p&gt;罗素和一些人认为如果把对象语言和讨论对象语言的&lt;strong&gt;元语言&lt;/strong&gt;区分开来就能避免这种问题。希尔伯特用精确的形式语言构建的形式公理系统，已经严格区分了数学和元数学，建立起隔离墙，堵住了这个漏洞。哥德尔要想把&lt;strong&gt;这个公式是不可证明的&lt;/strong&gt;放在系统里，必须绕过这堵墙，用数学语言来描述即证明：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;在任何相容的形式系统，只要蕴含皮亚诺算术公理，就可以在其中构造在体系中不能被证明的命题，因此通过推演不能得到所有的真命题（即体系是不完备的）。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;所谓&lt;strong&gt;相容&lt;/strong&gt;，就是不矛盾，所谓&lt;strong&gt;完备&lt;/strong&gt;，就是所有的真理都能被形式证明，所谓&lt;strong&gt;皮亚诺算术公理&lt;/strong&gt;是指意大利数学家&lt;strong&gt;皮亚诺&lt;/strong&gt;提出的关于自然数的五条公理系统：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;1是自然数&lt;/li&gt;
-  &lt;li&gt;每一个确定的自然数a都有一个确定的后继数a’&lt;/li&gt;
-  &lt;li&gt;当且仅当b’=c’时有b=c&lt;/li&gt;
-  &lt;li&gt;1不是任何自然数的后继数&lt;/li&gt;
-  &lt;li&gt;任意关于自然数的命题，如果证明1是对的，并且假设n对的情况下n’也是对的，那么所有的自然数都是对的（数学归纳法）&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;根据这五条公理系统可以建立起一阶算术系统。&lt;/p&gt;
-
-&lt;p&gt;我们来看哥德尔的证明，首先他将命题映射成自然数，现在搞计算机的一看可能觉得用Unicode不就完了？但是这个论文比计算机早了很多年，可以了解一下&lt;strong&gt;哥德尔编码&lt;/strong&gt;。&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;G(F)：命题F(x)的哥德尔数。
-P(x)：在系统中哥德尔数x对应的命题是可证明的。
-SU(z)：对于F(x)有z=G(F)，设y是命题F(G(F))的哥德尔数，则有~P(y)成立。
-p：SU(G(SU))。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;当问到p是否为真的时候，我们其实就是在问&lt;strong&gt;不可证这个特性本身是不可证的吗？&lt;/strong&gt;这样就造成了矛盾（这是Wikipedia上面给出的）。&lt;/p&gt;
-
-&lt;h2 id=&quot;section-2&quot;&gt;意义&lt;/h2&gt;
-
-</description>
-        <pubDate>Wed, 13 May 2015 00:00:00 +0800</pubDate>
-        <link>/%E6%95%B0%E5%AD%A6/2015/05/13/Incompleteness-Theorems.html</link>
-        <guid isPermaLink="true">/%E6%95%B0%E5%AD%A6/2015/05/13/Incompleteness-Theorems.html</guid>
-        
-        
-        <category>数学</category>
         
       </item>
     
