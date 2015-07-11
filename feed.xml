@@ -5,8 +5,8 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sat, 11 Jul 2015 19:07:01 +0800</pubDate>
-    <lastBuildDate>Sat, 11 Jul 2015 19:07:01 +0800</lastBuildDate>
+    <pubDate>Sat, 11 Jul 2015 19:10:11 +0800</pubDate>
+    <lastBuildDate>Sat, 11 Jul 2015 19:10:11 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
@@ -120,7 +120,7 @@ public void handle(HttpServletResponse response) throws Exception {
 }
 &lt;/pre&gt;
 
-&lt;p&gt;对于&lt;strong&gt;文件下载&lt;/strong&gt;的场景也是类似的，不同之处是要指定文件名等：&lt;/p&gt;
+&lt;p&gt;对于&lt;strong&gt;文件&lt;/strong&gt;下载的场景也是类似的，不同之处是要指定文件名等：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 @RequestMapping(value = &quot;/abc&quot;)
@@ -156,11 +156,19 @@ HttpServletRequest  request;
 &lt;pre class=&quot;prettyprint&quot;&gt;
 public interface HandlerInterceptor {
     // 在方法之前执行
-    boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception;
+    boolean preHandle(HttpServletRequest request,
+        HttpServletResponse response,
+        Object handler) throws Exception;
     // 在方法之后执行
-    void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception;
+    void postHandle(HttpServletRequest request,
+        HttpServletResponse response,
+        Object handler,
+        ModelAndView modelAndView) throws Exception;
     // 在请求处理完成的时候执行
-    void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception;
+    void afterCompletion(HttpServletRequest request,
+        HttpServletResponse response,
+        Object handler,
+        Exception ex) throws Exception;
 &lt;/pre&gt;
 
 &lt;p&gt;我们在preHandle的时候将Request、Response写入ThreadLocal，用FactoryBean来在注入的时候生成代理对象，在调用代理对象的时候先从ThreadLocal中获取对象，再反射调用对象的方法。&lt;/p&gt;
