@@ -61,7 +61,7 @@ public void handle(HttpServletResponse response) throws Exception {
 }
 </pre>
 
-对于**文件下载**的场景也是类似的，不同之处是要指定文件名等：
+对于**文件**下载的场景也是类似的，不同之处是要指定文件名等：
 
 <pre class="prettyprint">
 @RequestMapping(value = "/abc")
@@ -95,11 +95,19 @@ HttpServletRequest  request;
 <pre class="prettyprint">
 public interface HandlerInterceptor {
     // 在方法之前执行
-    boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception;
+    boolean preHandle(HttpServletRequest request,
+        HttpServletResponse response,
+        Object handler) throws Exception;
     // 在方法之后执行
-    void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception;
+    void postHandle(HttpServletRequest request,
+        HttpServletResponse response,
+        Object handler,
+        ModelAndView modelAndView) throws Exception;
     // 在请求处理完成的时候执行
-    void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception;
+    void afterCompletion(HttpServletRequest request,
+        HttpServletResponse response,
+        Object handler,
+        Exception ex) throws Exception;
 </pre>
 
 我们在preHandle的时候将Request、Response写入ThreadLocal，用FactoryBean来在注入的时候生成代理对象，在调用代理对象的时候先从ThreadLocal中获取对象，再反射调用对象的方法。
