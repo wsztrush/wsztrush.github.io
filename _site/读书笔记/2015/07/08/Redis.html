@@ -1,0 +1,124 @@
+<!DOCTYPEhtmlPUBLIC"-//W3C//DTDXHTML1.0Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html>
+	<!-- 引入CSS/JS -->
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="/assets/css/main.css"/>
+	<script type="text/javascript" src="/assets/javascripts/main.js"></script>
+
+	<!-- pygments代码高亮 -->
+	<!-- <link rel="stylesheet" type="text/css" href="/assets/css/pygments.css"/> -->
+	<!-- google代码高亮 -->
+	<script src="/assets/css/prettify.js"></script>
+	<link href="/assets/css/prettify.css" rel="stylesheet">
+	<title>《Redis设计与实现》</title>
+</head>
+
+	<body onload="prettyPrint()">
+		<div class="post-container">
+			<h1>《Redis设计与实现》</h1>
+			<p><img src="http://img4.douban.com/mpic/s27297117.jpg" alt="" /></p>
+
+<h2 id="section">写在前面</h2>
+
+<p>这本书主要是讲Redis底层的实现，总体上分为四部分：</p>
+
+<ol>
+  <li>数据结构与对象</li>
+  <li>单机数据库的实现</li>
+  <li>多机数据库的实现</li>
+  <li>独立功能的实现</li>
+</ol>
+
+<p>这个顺序和作者自己学习的顺序应该是一致的，但是感觉有一点不合理：在刚开始看的时候一直比较着急，因为是在对Redis整体上没有概念的情况下看细节。</p>
+
+<h2 id="section-1">学习笔记</h2>
+
+<p>在Redis中键为字符串、值为对象，底层处理用到的数据结构有：</p>
+
+<ol>
+  <li>动态字符串：使用预分配和惰性释放来减少内存操作次数</li>
+  <li>链表</li>
+  <li>字典：渐进式rehash防止卡住</li>
+  <li>跳跃表</li>
+  <li>整数集合：有序、不重复的整数集合，在必要的时候升级来节约内存</li>
+  <li>压缩列表：连续内存保存整数或字节的列表，通过压缩来节省内存</li>
+  <li>对象：在Redis中都是对象，实现基于上面的数据结构</li>
+</ol>
+
+<p>由于Redis是用C编写的，没有垃圾回收机制，因此在对象系统中构建了一个<strong>引用计数</strong>实现内存回收器，通过该机制，程序可以通过跟踪对象的引用计数信息，在适当的时候自动释放对象并进行内存回收。</p>
+
+<p>有了这些基础就可以开始看Redis作为一个服务器是如何工作的：</p>
+
+<pre>
+                  +-------------+                   
+                  | redisServer |                   
+                  +------+------+                   
+                         |                          
++-----------+     +------+------+      +-----------+
+|redisClient+-----+   redisDb   +--+---+    dict   |
++-----------+     +-------------+  |   +-----------+
+                  |   redisDb   |  |                
+                  +-------------+  |   +-----------+
+                  |   redisDb   |  +---+  expires  |
+                  +-------------+      +-----------+
+
+</pre>
+
+<p>其中：</p>
+
+<ol>
+  <li><strong>dict</strong>：键空间</li>
+  <li><strong>expires</strong>：键的过期时间</li>
+</ol>
+
+<p>还有另外一种做过期时间的方法是：对dict上的键做扩展，增加过期时间字段。和Redis的做法相比可能有几个缺点：浪费空间、遍历时浪费时间、结构不清晰。过期键的删除有三种策略：</p>
+
+<ol>
+  <li><strong>定时删除</strong>：在设置键的过期时间时创建Timer，当Timer运行时执行删除操作</li>
+  <li><strong>惰性删除</strong>：在取值时判断是否过期，如果过期则删除</li>
+  <li><strong>定期删除</strong>：每隔一段时间对数据库进行检查扫描，删除里面过期的键</li>
+</ol>
+
+<p>定时删除显然不靠谱，在Redis中同时使用了<strong>定期删除</strong>和<strong>惰性删除</strong>，当然在持久化程序中也需要考虑过期时间。</p>
+
+
+			<!-- 评论组件 -->
+			<div id="disqus_thread"/>
+		</div>
+		<div id="bar" class="category" style="left:-165px;">
+	<div class="icon"><a href="/about/"><img src="http://7xiz10.com1.z0.glb.clouddn.com/me.png"/></a></div>
+	<div class="icon"><a href="/categories.html"><img src="http://7xiz10.com1.z0.glb.clouddn.com/list.png"/></a></div>
+	<div class="icon"><a href="https://github.com/wsztrush"><img src="http://7xiz10.com1.z0.glb.clouddn.com/github.png"/></a></div>
+	<div class="icon"><a href="http://weibo.com/wsztrush"><img src="http://7xiz10.com1.z0.glb.clouddn.com/weibo.png"/></a></div>
+	<div class="icon"><img id="barClick" src="http://7xiz10.com1.z0.glb.clouddn.com/right.png"/></div>
+</div>
+
+	</body>
+</html>
+<!-- 评论组件 -->
+<script type="text/javascript">
+	var disqus_shortname = 'wsztrush';
+	(function() {
+		var dsq = document.createElement('script');
+		dsq.type = 'text/javascript';
+		dsq.async = true;
+		dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	})();
+</script>
+<!-- 百度访问统计 -->
+<script>
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?08a976e8d7e5a20acfcb566bd22a1db1";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+<script type="text/javascript">
+	document.getElementById("barClick").onclick = click;
+</script>
+

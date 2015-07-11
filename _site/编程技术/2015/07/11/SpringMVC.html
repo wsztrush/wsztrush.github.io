@@ -1,0 +1,278 @@
+<!DOCTYPEhtmlPUBLIC"-//W3C//DTDXHTML1.0Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html>
+	<!-- 引入CSS/JS -->
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="/assets/css/main.css"/>
+	<script type="text/javascript" src="/assets/javascripts/main.js"></script>
+
+	<!-- pygments代码高亮 -->
+	<!-- <link rel="stylesheet" type="text/css" href="/assets/css/pygments.css"/> -->
+	<!-- google代码高亮 -->
+	<script src="/assets/css/prettify.js"></script>
+	<link href="/assets/css/prettify.css" rel="stylesheet">
+	<title>SpringMVC</title>
+</head>
+
+	<body onload="prettyPrint()">
+		<div class="post-container">
+			<h1>SpringMVC</h1>
+			<h2 id="section">概念</h2>
+
+<p>在MVC中最基本的概念就是：</p>
+
+<ul>
+  <li>Model</li>
+  <li>View</li>
+  <li>Controller</li>
+</ul>
+
+<p>在SpringMVC中对这些结构进行了封装：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>名称</th>
+      <th>含义</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ModelAndView</td>
+      <td>在同一个地方可以同时操作Model和View</td>
+    </tr>
+    <tr>
+      <td>ModelMap</td>
+      <td>数据承载对象，用于到后面渲染View，在RequestMapping的时候很有用</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>当然对处理流程也进行了封装：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>名称</th>
+      <th>含义</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>DispatcherServlet</td>
+      <td>前置分发控制器，请求统一交给它处理</td>
+    </tr>
+    <tr>
+      <td>VelocityViewResolver</td>
+      <td>通过name查找View</td>
+    </tr>
+    <tr>
+      <td>HandlerInterceptor</td>
+      <td>拦截器</td>
+    </tr>
+    <tr>
+      <td>DefaultAnnotationHandlerMapping</td>
+      <td>类级别的@RequestMapping</td>
+    </tr>
+    <tr>
+      <td>AnnotationMethodHandlerAdapter</td>
+      <td>方法级别的@RequestMapping</td>
+    </tr>
+    <tr>
+      <td>HandlerMethodArgumentResolver</td>
+      <td>参数解析器</td>
+    </tr>
+    <tr>
+      <td>@RequestMapping</td>
+      <td>映射规则</td>
+    </tr>
+    <tr>
+      <td>@Controller</td>
+      <td>注入</td>
+    </tr>
+    <tr>
+      <td>@ModelAttribute</td>
+      <td>被注释的方法在Controller中处理请求的方法之前执行</td>
+    </tr>
+    <tr>
+      <td>@PathVariable</td>
+      <td>获取路径上的变量</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="section-1">处理请求</h2>
+
+<p>用的最多的情况就是用户输入URL你给他返回一个<strong>页面</strong>：</p>
+
+<pre class="prettyprint">
+@RequestMapping(value = "/abc")
+public ModelAndView handle() throws Exception {
+    ModelAndView mv = new ModelAndView("abc");
+    mv.addObject("key", "abc");
+    return mv;
+}
+</pre>
+
+<p>在很多请求的时候需要返回<strong>JSON</strong>数据，只需要将字符串写出即可：</p>
+
+<pre class="prettyprint">
+@RequestMapping(value = "/abc")
+public void handle(HttpServletResponse response) throws Exception {
+    Map map = Maps.newHashMap();
+    map.put("123", 123);
+    response.getOutputStream().write(JSON.toJSONString(map).getBytes());
+    response.getOutputStream().flush();
+}
+</pre>
+
+<p>对于<strong>文件下载</strong>的场景也是类似的，不同之处是要指定文件名等：</p>
+
+<pre class="prettyprint">
+@RequestMapping(value = "/abc")
+public void handle(HttpServletResponse response) throws Exception {
+    OutputStream os = response.getOutputStream();
+    response.reset();
+    response.setHeader("Content-Disposition", "attachment; filename=file.txt");
+    response.setContentType("application/octet-stream; charset=utf-8");
+    os.write("hello".getBytes());
+    os.flush();
+    os.close();
+}
+</pre>
+
+<p>从上面可以看到拿到<strong>HttpServletResponse</strong>之后就可以完全控制住返回值了，在SpringMVC中最简单、直接的获取方式是入参，<strong>HandlerMethodArgumentResolver</strong>会在解析参数的时候进行处理。在网上有看到用<strong>ModelAttribute</strong>的方式，这样貌似不是线程安全的吧~</p>
+
+<p>对于<strong>HttpServletRequest</strong>更简单一些，可以使用RequestContextListener或者RequestContextFilter来做，另外更简单的可以直接注入：</p>
+
+<pre class="prettyprint">
+@Resource
+HttpServletRequest  request;
+</pre>
+
+<p>看起来很诡异，这个是如何注入的？其实这里的request只是一个代理，真正的处理过程可以看：</p>
+
+<ol>
+  <li>ObjectFactoryDelegatingInvocationHandler</li>
+  <li>RequestObjectFactory</li>
+</ol>
+
+<p>但是找了一圈没找到Response有类似的方法，所以，这种方式对Response可能行不通。其实我们自己也可以实现类似的功能，比如用<strong>HandlerInterceptor</strong>来搞：</p>
+
+<pre class="prettyprint">
+public interface HandlerInterceptor {
+    // 在方法之前执行
+    boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception;
+    // 在方法之后执行
+    void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception;
+    // 在请求处理完成的时候执行
+    void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception;
+</pre>
+
+<p>我们在preHandle的时候将Request、Response写入ThreadLocal，用FactoryBean来在注入的时候生成代理对象，在调用代理对象的时候先从ThreadLocal中获取对象，再反射调用对象的方法。</p>
+
+<p>从URL到Controller中的方法的映射也是一个需要注意的地方：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>设置</th>
+      <th>匹配</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>@RequestMapping(value = “/abc”)</td>
+      <td>/abc、/abc.*、/abc/</td>
+    </tr>
+    <tr>
+      <td>@RequestParam(“id”)</td>
+      <td>限制参数中必须有id，并将其放到入参中</td>
+    </tr>
+    <tr>
+      <td>@RequestMapping(value = “/abc/{id}”)</td>
+      <td>REST风格，用@PathVariable(“id”)放到入参</td>
+    </tr>
+    <tr>
+      <td>@RequestMapping(value = “/{path:[0-9a-z-]+}”)</td>
+      <td>支持正则表达式</td>
+    </tr>
+    <tr>
+      <td>@RequestMapping(method = RequestMethod.GET)</td>
+      <td>方法过滤</td>
+    </tr>
+    <tr>
+      <td>@RequestMapping(params = “123”)</td>
+      <td>参数过滤</td>
+    </tr>
+    <tr>
+      <td>@RequestMapping(headers = “abc”)</td>
+      <td>头信息过滤</td>
+    </tr>
+    <tr>
+      <td>@RequestMapping(consumes = “application/json”)</td>
+      <td>处理请求的提交内容类型过滤</td>
+    </tr>
+    <tr>
+      <td>@RequestMapping(produces = “application/json”)</td>
+      <td>返回的内容类型过滤</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>在SpringMVC中整体的处理逻辑都在<strong>DispatcherServlet</strong>中完成，处理逻辑如下：</p>
+
+<ol>
+  <li>处理multipart类型的请求</li>
+  <li>获取处理链HandlerExecutionChain，其中封装了拦截器和处理器</li>
+  <li>执行拦截器的preHandle方法</li>
+  <li>执行处理器</li>
+  <li>设置View</li>
+  <li>执行拦截器的postHandle方法</li>
+  <li>渲染</li>
+  <li>执行拦截器的afterCompletion方法</li>
+</ol>
+
+<h2 id="section-2">总结</h2>
+
+<p>总体看下来比webx简单、好用一些。</p>
+
+			<!-- 评论组件 -->
+			<div id="disqus_thread"/>
+		</div>
+		<div id="bar" class="category" style="left:-165px;">
+	<div class="icon"><a href="/about/"><img src="http://7xiz10.com1.z0.glb.clouddn.com/me.png"/></a></div>
+	<div class="icon"><a href="/categories.html"><img src="http://7xiz10.com1.z0.glb.clouddn.com/list.png"/></a></div>
+	<div class="icon"><a href="https://github.com/wsztrush"><img src="http://7xiz10.com1.z0.glb.clouddn.com/github.png"/></a></div>
+	<div class="icon"><a href="http://weibo.com/wsztrush"><img src="http://7xiz10.com1.z0.glb.clouddn.com/weibo.png"/></a></div>
+	<div class="icon"><img id="barClick" src="http://7xiz10.com1.z0.glb.clouddn.com/right.png"/></div>
+</div>
+
+	</body>
+</html>
+<!-- 评论组件 -->
+<script type="text/javascript">
+	var disqus_shortname = 'wsztrush';
+	(function() {
+		var dsq = document.createElement('script');
+		dsq.type = 'text/javascript';
+		dsq.async = true;
+		dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	})();
+</script>
+<!-- 百度访问统计 -->
+<script>
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?08a976e8d7e5a20acfcb566bd22a1db1";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+<script type="text/javascript">
+	document.getElementById("barClick").onclick = click;
+</script>
+
