@@ -88,18 +88,34 @@ int func(){
 
 ## 动态编译Java源码
 
-### JavaFileManager
+除了用Groovy这种脚本的方式，还可以用Java代码来搞：
 
+<pre class="prettyprint">
+JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
+JavaFileObject fileObject = new SimpleJavaFileObject(
+    URI.create("string:///CalculatorTest" + JavaFileObject.Kind.SOURCE.extension),
+    JavaFileObject.Kind.SOURCE) {
+    @Override
+    public CharSequence getCharContent(boolean ignoreEncodingErrors) throws IOException {
+        return "class CalculatorTest {}";
+    }
+};
+JavaCompiler.CompilationTask task = compiler.getTask(null, fileManager, null, null, null, Arrays.asList(fileObject));
+task.call();// 编译
+</pre>
 
+在编译好Class文件之后，使用的时候加载进来，然后通过反射进行调用。
 
+## 总结
 
+在选择编程语言来实现某个功能时，会考虑：
 
+1. 学习成本
+2. 开发速度
+3. 性能
+4. 用的人多不多
 
+之前可能开口闭口都是性能，但是，感觉现在的开发语言越来越注重的是开发的速度以及语言本身是否简洁，简洁的语言更不容易写出BUG，另外如果让一个用惯了有GC的语言，再去尝试写C这种古老的语言肯定是一百个不习惯。
 
-
-
-
-
-
-
-
+最后为什么要考虑用的人多不多呢？因为在用的人多的情况下，大家会开发出各种各样优秀的工具，那么在实现某个功能的时候不用自己写代码了，直接“拿来主义”。
