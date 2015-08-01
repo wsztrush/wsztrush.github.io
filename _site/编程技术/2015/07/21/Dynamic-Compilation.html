@@ -1,0 +1,180 @@
+<!DOCTYPEhtmlPUBLIC"-//W3C//DTDXHTML1.0Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html>
+	<!-- 引入CSS/JS -->
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="/assets/css/main.css"/>
+	<script type="text/javascript" src="/assets/javascripts/main.js"></script>
+
+	<!-- pygments代码高亮 -->
+	<!-- <link rel="stylesheet" type="text/css" href="/assets/css/pygments.css"/> -->
+	<!-- google代码高亮 -->
+	<script src="/assets/css/prettify.js"></script>
+	<link href="/assets/css/prettify.css" rel="stylesheet">
+	<title>Java中的动态执行</title>
+</head>
+
+	<body onload="prettyPrint()">
+		<div class="post-container">
+			<h1>Java中的动态执行</h1>
+			<p>假如你在用Java的碰到这些问题：</p>
+
+<ol>
+  <li>灵活地配置规则</li>
+  <li>部署代码无需重启即时生效</li>
+</ol>
+
+<p>而恰恰你是个“low逼”或者“懒货”不想（更多的是不行）去定义自己的脚本、规则引擎，那么下面这些可能是个不错的选择。</p>
+
+<h2 id="groovy">Groovy的使用</h2>
+
+<p>Groovy是一种基于JVM的敏捷开发语言，可以无缝与Java整合：</p>
+
+<pre class="prettyprint">
+Binding binding = new Binding();
+binding.setProperty("foo", new Integer(2));
+GroovyShell shell = new GroovyShell(binding);
+shell.evaluate("println foo");
+</pre>
+
+<p>用<strong>GroovyShell</strong>看起来是非常简单的，但问题是每次在evaluate的时候都需要去解析、编译，速度肯定是上不去的，另外也会频繁地产生很多的Class，增加了内存回收的负担（甚至OOM），但是也看具体使用场景~~</p>
+
+<pre class="prettyprint">
+String[] roots = new String[] { "your groovy script path" };
+GroovyScriptEngine gse = new GroovyScriptEngine(roots);
+Binding binding = new Binding();
+binding.setProperty("foo", new Integer(2));
+gse.run("GroovyShellHellow.groovy", binding);
+</pre>
+
+<p>用<strong>GroovyScriptEngine</strong>的时候有了缓存，而且用起来也更加简单，用起来也很简单了，但是很多人开始诟病Groovy脚本的性能，确实是比较低，再来看一种处理方式：</p>
+
+<pre class="prettyprint">
+new GroovyClassLoader().parseClass("print 123");// 得到Class
+</pre>
+
+<p>在用<strong>GroovyClassLoader</strong>生成好Class之后通过反射调用对应的方法。有人可能觉得这种方法弱爆了，又难用又效率低，但是如果将生成的Class缓存起来呢？等等，应该怎么生成Class？</p>
+
+<pre class="prettyprint">
+CompilerConfiguration configuration = new CompilerConfiguration();
+configuration.setOutput(new PrintWriter(new FileWriter("D:\\a")));
+configuration.setTargetDirectory("D:\\");
+new GroovyClassLoader(
+    Thread.currentThread().getContextClassLoader(),
+        configuration)
+        .parseClass("print 123");
+</pre>
+
+<p>好了，讲差不多了，我们来重点看下GroovyClassLoader吧。可能在你看完GroovyScriptEngine之后会说：GroovyScriptEngine已经将GroovyClassLoader封装的挺不错的来，但是会有一个问题：</p>
+
+<blockquote>
+  <p>其中用的是同一个ClassLoader，在脚本发生变化的时候就生成新的Class，时间久了Perm就满了。</p>
+</blockquote>
+
+<p>现在可以对GroovyClassLoader根据业务具体的需求进行封装即可，在上面的代码中可以在指定的文件夹中就可以生成好Class。</p>
+
+<blockquote>
+  <p>既然GroovyClassLoader直接可以解析脚本，为什么还需要生成Class。</p>
+</blockquote>
+
+<p>如果做的平台用的人非常多，成千上万个脚本都是有可能的（虽然现在一个都没有），那么在系统启动的时候是不是要把所有的脚本拿下来编译一遍？这个可能会比较影响启动的速度，所以可以在保存Script的时候再保存一个Class文件，在系统启动的时候直接去Load即可。</p>
+
+<p>再来看Groovy的好处：</p>
+
+<pre class="prettyprint">
+@TypeChecked
+int func(){
+    def a = 123;
+    a = a + "";
+    return a;// 这里会报错
+}
+</pre>
+
+<p>在Groovy的2.0版本以后加入了静态类型检查器，可以在编写代码的时候看到类型错误。动态语言太灵活了，这样可以减少很多开发的成本，因为不用等到运行的时候才发现错误。</p>
+
+<pre class="prettyprint">
+@CompileStatic
+int func(){
+    123 + 123 + 123;
+}
+</pre>
+
+<p>使用<strong>@CompileStatic</strong>注释将会静态地编译代码，产生的字节码和Java运行得一样快，这样看来性能也将不再是问题。</p>
+
+<p>最后，现在很多规则的配置都用Groovy来解决，因为处理Map、新建类等非常方便，如果用原生的Java写的话，配置的时候不会真方便，当然，编译Java代码的方式也是要研究一下的。</p>
+
+<h2 id="java">动态编译Java源码</h2>
+
+<p>除了用Groovy这种脚本的方式，还可以用Java代码来搞：</p>
+
+<pre class="prettyprint">
+JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
+JavaFileObject fileObject = new SimpleJavaFileObject(
+    URI.create("string:///CalculatorTest" + JavaFileObject.Kind.SOURCE.extension),
+    JavaFileObject.Kind.SOURCE) {
+    @Override
+    public CharSequence getCharContent(boolean ignoreEncodingErrors) throws IOException {
+        return "class CalculatorTest {}";
+    }
+};
+JavaCompiler.CompilationTask task = compiler.getTask(null, fileManager, null, null, null, Arrays.asList(fileObject));
+task.call();// 编译
+</pre>
+
+<p>在编译好Class文件之后，使用的时候加载进来，然后通过反射进行调用。</p>
+
+<h2 id="section">总结</h2>
+
+<p>在选择编程语言来实现某个功能时，会考虑：</p>
+
+<ol>
+  <li>学习成本</li>
+  <li>开发速度</li>
+  <li>性能</li>
+  <li>用的人多不多</li>
+</ol>
+
+<p>之前可能开口闭口都是性能，但是，感觉现在的开发语言越来越注重的是开发的速度以及语言本身是否简洁，简洁的语言更不容易写出BUG，另外如果让一个用惯了有GC的语言，再去尝试写C这种古老的语言肯定是一百个不习惯。</p>
+
+<p>最后为什么要考虑用的人多不多呢？因为在用的人多的情况下，大家会开发出各种各样优秀的工具，那么在实现某个功能的时候不用自己写代码了，直接“拿来主义”。</p>
+
+			<!-- 评论组件 -->
+			<div id="disqus_thread"/>
+		</div>
+		<div id="bar" class="category" style="left:-165px;">
+	<div class="icon"><a href="/about/"><img src="http://7xiz10.com1.z0.glb.clouddn.com/me.png"/></a></div>
+	<div class="icon"><a href="/categories.html"><img src="http://7xiz10.com1.z0.glb.clouddn.com/list.png"/></a></div>
+	<div class="icon"><a href="https://github.com/wsztrush"><img src="http://7xiz10.com1.z0.glb.clouddn.com/github.png"/></a></div>
+	<div class="icon"><a href="http://weibo.com/wsztrush"><img src="http://7xiz10.com1.z0.glb.clouddn.com/weibo.png"/></a></div>
+	<div class="icon"><img id="barClick" src="http://7xiz10.com1.z0.glb.clouddn.com/right.png"/></div>
+</div>
+
+	</body>
+</html>
+<!-- 评论组件 -->
+<script type="text/javascript">
+	var disqus_shortname = 'wsztrush';
+	(function() {
+		var dsq = document.createElement('script');
+		dsq.type = 'text/javascript';
+		dsq.async = true;
+		dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	})();
+</script>
+<!-- 百度访问统计 -->
+<script>
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?08a976e8d7e5a20acfcb566bd22a1db1";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+<script type="text/javascript">
+	document.getElementById("barClick").onclick = click;
+</script>
+
