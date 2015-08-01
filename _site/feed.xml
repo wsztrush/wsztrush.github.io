@@ -5,9 +5,201 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sat, 01 Aug 2015 14:17:17 +0800</pubDate>
-    <lastBuildDate>Sat, 01 Aug 2015 14:17:17 +0800</lastBuildDate>
+    <pubDate>Sat, 01 Aug 2015 22:55:52 +0800</pubDate>
+    <lastBuildDate>Sat, 01 Aug 2015 22:55:52 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
+    
+      <item>
+        <title>龙书学习笔记</title>
+        <description>&lt;h2 id=&quot;section&quot;&gt;词法分析&lt;/h2&gt;
+
+&lt;p&gt;编译器的目的是根据源码生成可以执行的文件，想一步到位完全不靠谱，可以先进行分词处理，那么这就是词法分析要完成的工作了！&lt;/p&gt;
+
+&lt;p&gt;用正则表达是来描述词法规则是比较简单的，而用状态机进行匹配则是比较迅速的，那么比较重要的就是在他们之间的互相转换：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Compiler-1.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;这里有：&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;概念&lt;/th&gt;
+      &lt;th&gt;含义&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;NFA&lt;/td&gt;
+      &lt;td&gt;不确定自动机，从当前状态根据字符转移的时候，下一个状态是不确定的&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;DFA&lt;/td&gt;
+      &lt;td&gt;确定自动机，状态转移时下一个状态时确定的&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;table&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;来看一个NFA的例子，对于**(a&lt;/td&gt;
+      &lt;td&gt;b)*abb**这样的词，对应的NFA为：&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Compiler-2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;在遍历的过程中顺便更新状态就可以了，用代码来描述一下：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+S = &amp;epsilon;-closure(s0); // 注意：这里的S是个集合
+c = nextChar();
+while(c != eof){
+    S = &amp;epsilon;-closure(move(S,c));// 状态转移+空转移
+    c = nextChar();
+}
+if(S &amp;cap; F != &amp;empty;) return &quot;yes&quot;;
+eles return &quot;no&quot;;
+&lt;/pre&gt;
+
+&lt;p&gt;看起来NFA的模拟方式效率并不高，而且代码写起来也有点小复杂，而DFA则完全不一样：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+s = s0;
+c = nextChar();
+while(c != eof){
+    s = move(s, c);
+    c = nextChar();
+}
+if(s在F中) return &quot;yes&quot;;
+else return &quot;false&quot;;
+&lt;/pre&gt;
+
+&lt;p&gt;是不是简单了很多？但是也更显然，NFA与正则之间的关系更加直观，那么先来看从正则到NFA的转换：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Compiler-3.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;用这种方式从**(a&lt;/td&gt;
+      &lt;td&gt;b)*a**得到的NFA为：&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Compiler-4.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;既然DFA相对于NFA来说是有优势的，那么如果有一个方法能将NFA转换为DFA，那么可以一劳永逸。这里&lt;strong&gt;子集构造法&lt;/strong&gt;还是相当的直观的的：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+一开始，&amp;epsilon;-closure(s0)是Dstates中唯一状态，且它未加标记;
+while(在Dstates中一个未加标记状态T){
+    给T加上标记;
+    for(每个输入符号a){
+        U = &amp;epsilon;-closure(move(T,a));
+        if(U不在Dstates中)
+            将U加入到Dstates中，且不加标记;
+        Dtran[T,a] = U;
+    }
+}
+&lt;/pre&gt;
+
+&lt;p&gt;其中的：&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;操作&lt;/th&gt;
+      &lt;th&gt;描述&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;ε-closure(s)&lt;/td&gt;
+      &lt;td&gt;能够从NFA的状态s开始只通过ε转换到达的NFA状态集合&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;ε-closure(T)&lt;/td&gt;
+      &lt;td&gt;能够从T中某个NFA状态s开始只通过ε转换到达的NFA状态集合&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;move(T,a)&lt;/td&gt;
+      &lt;td&gt;能够从T中某个状态s出发通过标号a的转换到达的NFA状态的集合&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;那么现在就有一条路径了：&lt;strong&gt;正则-&amp;gt;NFA-&amp;gt;DFA&lt;/strong&gt;也太累了，有没有&lt;strong&gt;正则-&amp;gt;DFA&lt;/strong&gt;这样一条通路？答案是肯定的，首先根据正则构造出抽象语法树：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+初始化Dstates,使之只包含未标记的状态firstpos(n0),其中n0是r(#)的抽象语法树的根节点;
+while(Dstates中存在未标记的状态S){
+    标记S;
+    for(每个输入符号a){
+        令U为S中和a对应的所有位置p的followpos(p)的并集;
+        for(U不在Dstates中)
+            将U作为未标记的状态加入到Dstates中;
+        Dtran[S,a] = U;
+    }
+&lt;/pre&gt;
+
+&lt;p&gt;其中：&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;定义&lt;/th&gt;
+      &lt;th&gt;含义&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;nullable(n)&lt;/td&gt;
+      &lt;td&gt;节点n的子表达式的语言中包含ε&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;firstpos(n)&lt;/td&gt;
+      &lt;td&gt;以节点n为根的子表达式中第一个符号的位置的集合&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;lastpos(n)&lt;/td&gt;
+      &lt;td&gt;以节点n为根的子表达式中最后一个符号的位置的集合&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;followpos(p)&lt;/td&gt;
+      &lt;td&gt;可能出现在位置p后面的位置的集合&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;其实背后的底层原理与从NFA到DFA还是比较相似的，只不过是用不同的构造方式来做。DFA确实要比NFA好处理一些，但并不是说生成DFA之后就没事了，其中的状态数可以压缩：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;根据接收、非接收状态分为两组；&lt;/li&gt;
+  &lt;li&gt;遍历分组、字符，如果同一组内的状态根据该字符到达了不同的组，那么将继续将当前的分组进行分割；&lt;/li&gt;
+  &lt;li&gt;重复执行步骤2直到没有变化；&lt;/li&gt;
+  &lt;li&gt;每个分组中选择一个代表状态，重新构造DFA，最小化完成；&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;可以证明&lt;strong&gt;最小化状态&lt;/strong&gt;数的DFA唯一性，然而最小化的过程更加容易让我们去理解状态机的本质。来个最小化状态数的例子：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Compiler-5.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;语法分析&lt;/h2&gt;
+
+&lt;h2 id=&quot;section-2&quot;&gt;语法制导翻译&lt;/h2&gt;
+</description>
+        <pubDate>Sat, 01 Aug 2015 00:00:00 +0800</pubDate>
+        <link>/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/2015/08/01/Compiler-Theory.html</link>
+        <guid isPermaLink="true">/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/2015/08/01/Compiler-Theory.html</guid>
+        
+        
+        <category>编译原理</category>
+        
+      </item>
     
       <item>
         <title>Jstorm</title>
@@ -23,8 +215,8 @@
 &lt;p&gt;数据处理方面根据不同的场景大致可以分为下面两种场景：&lt;/p&gt;
 
 &lt;ol&gt;
-  &lt;li&gt;离线分析：特点是查询单一、数据加工过程也单一，用Hadoop来解决；&lt;/li&gt;
-  &lt;li&gt;在线分析：特点是查询随机，玩的就是索引，那么QPS必然不会很高，而且需要的都是好机器，可以用阿里云的ADS来解决；&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;离线分析&lt;/strong&gt;：特点是查询单一、数据加工过程也单一，用Hadoop来解决；&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;在线分析&lt;/strong&gt;：特点是查询随机，玩的就是索引，那么QPS必然不会很高，而且需要的都是好机器，可以用阿里云的ADS来解决；&lt;/li&gt;
 &lt;/ol&gt;
 
 &lt;p&gt;看是天下太平，但真正用的时候还是会有问题：&lt;/p&gt;
@@ -419,7 +611,7 @@ String result = client.execute(&quot;reach&quot;, &quot;http://twitter.com&quot;
       </item>
     
       <item>
-        <title>Java中的动态执行</title>
+        <title>如何动态地执行代码</title>
         <description>&lt;p&gt;假如你在用Java的碰到这些问题：&lt;/p&gt;
 
 &lt;ol&gt;
@@ -1342,410 +1534,6 @@ func(){
         <pubDate>Tue, 09 Jun 2015 00:00:00 +0800</pubDate>
         <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/06/09/Golang-Start.html</link>
         <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/06/09/Golang-Start.html</guid>
-        
-        
-        <category>编程技术</category>
-        
-      </item>
-    
-      <item>
-        <title>Spring</title>
-        <description>&lt;p&gt;如今作为一个Java程序员，如果没用过Spring的话基本上没法混了~ 这里就不再啰嗦如何如何从EJB走到了Spring(毕竟咱也没经历过那些个艰难的时代)，直接来看它带给我们哪些东西：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;IoC&lt;/li&gt;
-  &lt;li&gt;Aop&lt;/li&gt;
-  &lt;li&gt;SpringMVC&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;下面分几个部分很粗地描述一下Spring~&lt;/p&gt;
-
-&lt;h2 id=&quot;section&quot;&gt;控制反转&lt;/h2&gt;
-
-&lt;p&gt;要看控制反转，那么我们先看看没有反转的时候是什么样子的，当自己的服务依赖于别人的实现时，在其使用之前选择合适的服务实现对其进行初始化：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-public class MyService {
-    private XXService xxService;
-    public MyService(){
-        this.xxService = new XXServiceImpl();/* 利用合适的实现进行初始化 */
-    }
-    // ...
-}
-&lt;/pre&gt;
-
-&lt;p&gt;程序可以正常运行，但是当你有几十个类中使用了XXService，而某一天发现XXServiceImpl是有BUG的，你想换个实现类，那就傻逼了~~&lt;/p&gt;
-
-&lt;p&gt;用IoC最原始的配置方式就可以将这个问题引刃而解：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-&amp;lt;bean id=&quot;myService&quot; class=&quot;com.test.MyService&quot;&amp;gt;
-    &amp;lt;property name=&quot;xxService&quot; ref=&quot;xxService&quot;/&amp;gt;
-&amp;lt;/bean&amp;gt;
-&amp;lt;bean id=&quot;xxService&quot; class=&quot;com.test.XXServiceImpl&quot;/&amp;gt;&amp;lt;!-- 改这里 --&amp;gt;
-&lt;/pre&gt;
-
-&lt;p&gt;在配置文件中搞定他们之间的依赖关系，在使用前，需要用&lt;strong&gt;BeanFactory&lt;/strong&gt;来构建其中的Bean，在需要时，调用&lt;strong&gt;getBean&lt;/strong&gt;取得实例，然后就可以继续后面的操作了：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-BeanFactory factory = new ClassPathXmlApplicationContext(&quot;applicationContext.xml&quot;);
-MyService myService = (MyService)factory.getBean(&quot;myService&quot;);
-&lt;/pre&gt;
-
-&lt;p&gt;可能“顽固派”会说：干嘛要怎么麻烦，把你要使用的类包装一下再交给MyService使用就可以了啊！确实可以解决问题，但是思路决定出路，这种解决方法确实解决了上面的问题，但是下面&lt;strong&gt;ApplicationContext&lt;/strong&gt;的登场，使得这种依赖管理变得异常简单：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-public class MyService {
-    @Resource /* 利用注解完成注入 */
-    private XXService xxService;
-    // ...
-}
-@Component(&quot;xxService&quot;) /* 声明一个Bean */
-public class XXServiceImpl{
-    // ...
-}
-&lt;/pre&gt;
-
-&lt;p&gt;一直感觉注解在Java中的作用就是将配置信息植入到代码文件里面，现在在依赖管理中注解再一次发挥了巨大的威力。到这里基本上满足大部分的需求了，但是Spring提供的功能可能远超过了你需要的：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;BeanFactoryAware：获取BeanFactory实例&lt;/li&gt;
-  &lt;li&gt;BeanPostProcessor：在afterPropertiesSet的方法前后执行&lt;/li&gt;
-  &lt;li&gt;InitializingBean：完成一些初始化动作&lt;/li&gt;
-  &lt;li&gt;BeanFactoryPostProcessor:处理Bean的定义，也就是BeanDefinition&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;还有很多其他的扩展点，下面重点看下Bean的生命周期：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Spring-Bean生命周期.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;另外IoC里面有很多的细节点，逐步整理中：&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;关键字&lt;/th&gt;
-      &lt;th&gt;作用&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;byType/byName&lt;/td&gt;
-      &lt;td&gt;根据类型/名字注入&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;scope(singleton/prototype)&lt;/td&gt;
-      &lt;td&gt;单例还是每次都生成一个新的Bean&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;factory-bean/FactoryBean&lt;/td&gt;
-      &lt;td&gt;工厂类型的Bean，getBean时会调用其getObject方法&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;@Resource&lt;/td&gt;
-      &lt;td&gt;默认byName，找不到的时候就byType(指定name就只能byName了)&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;@Autowire&lt;/td&gt;
-      &lt;td&gt;默认byType，可以配合@Qualifier变为byName&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;lazy-init&lt;/td&gt;
-      &lt;td&gt;只对singleton的Bean起作用，效果是在getBean的时候才初始化&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;h2 id=&quot;section-1&quot;&gt;面向切面编程&lt;/h2&gt;
-
-&lt;p&gt;面向切面编程(Aspect Oriented Programming)提供了另外一个角度来考虑程序结构，在介绍AOP的时候几乎都会介绍&lt;strong&gt;打日志&lt;/strong&gt;的需求，当然除此之外还有很多的场景，这里就不赘述。简单来说Spring的AOP提供了拦截一批方法的手段。&lt;/p&gt;
-
-&lt;p&gt;其实我们自己也可以利用&lt;strong&gt;BeanFactoryPostProcessor&lt;/strong&gt;来实现类似的功能，但在Spring中AOP强大的地方是提供了很多种方便的配置方式。第一种是用XML的配置方式：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-&amp;lt;aop:config&amp;gt;
-    &amp;lt;aop:aspect id=&quot;logaop&quot; ref=&quot;allLogAdvice&quot;&amp;gt;&amp;lt;!--处理类 --&amp;gt;
-        &amp;lt;aop:pointcut id=&quot;pointcut&quot; expression=&quot;execution(* com.test.MyService.*(..))&quot; /&amp;gt;&amp;lt;!-- 方法 --&amp;gt;
-        &amp;lt;aop:around method=&quot;aroundMethod&quot; pointcut-ref=&quot;pointcut&quot;/&amp;gt;&amp;lt;!-- 方式及调用方法 --&amp;gt;
-    &amp;lt;/aop:aspect&amp;gt;
-&amp;lt;/aop:config&amp;gt;
-&lt;/pre&gt;
-
-&lt;p&gt;另外一种个人感觉比较好用的就是&lt;strong&gt;@Aspect&lt;/strong&gt;方式，这种方式把方法和它要拦截的方法放在一个地方，比较自然一点：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-@Aspect
-public class MyAspect {
-    @Pointcut(&quot;execution(* com.test.MyService.*(..))&quot;)
-    private void aspectjMethod(){};
-
-    @Before(&quot;service()&quot;)
-    private void aroundMethod(){ /* code */ }
-}
-&lt;/pre&gt;
-
-&lt;p&gt;在使用前需要配置&lt;strong&gt;&lt;aop:aspectj-autoproxy&gt;&lt;/aop:aspectj-autoproxy&gt;&lt;/strong&gt;，第二种方式确实有一些进步，但是考虑注解之后，AOP的功能开始变得有点IMBA了：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-@Aspect
-public class LocalCacheAspect {
-    @Pointcut(&quot;@annotation(localCache)&quot;)
-    public void getLocalCacheAnnotation(LocalCache localCache) {}
-
-    @Around(&quot;getLocalCacheAnnotation(localCache)&quot;)
-    public Object handleCache(ProceedingJoinPoint joinPoint, LocalCache localCache) throws Throwable {
-        /* code */
-    }
-}
-&lt;/pre&gt;
-
-&lt;p&gt;这样当你在Spring的某个方法上加注解&lt;strong&gt;@LocalCache&lt;/strong&gt;后，就可以被handleCache拦截了，在这里需要注意一下大小写。在具体实现的时候AOP利用了两种技术：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;JDK动态代理&lt;/li&gt;
-  &lt;li&gt;CGLIB字节码生成&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;如果你想选择cglib需要配置文件中加上&lt;strong&gt;&amp;lt;aop:aspectj-autoproxy proxy-target-class=”true”/&amp;gt;&lt;/strong&gt;。
-AOP中涉及到的细节整理如下(不断更新中)：&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;关键字&lt;/th&gt;
-      &lt;th&gt;作用&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;Pointcut&lt;/td&gt;
-      &lt;td&gt;通常使用正则表达式来描述切入的点(拦截哪些方法)&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;Advice&lt;/td&gt;
-      &lt;td&gt;在特定的Pointcut执行的动作：around、before、throws等&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;Joinpoint&lt;/td&gt;
-      &lt;td&gt;具体运行时拦截到的信息&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;h2 id=&quot;mvc&quot;&gt;MVC&lt;/h2&gt;
-
-&lt;p&gt;细想一下大部分的Java程序员应该都在直接或者间接的做页面开发，那么这里就涉及到分层的概念了，当然这里不会讲这些东西。在WEB应用作用，不能不提&lt;strong&gt;web.xml&lt;/strong&gt;,其中需要清楚&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;&lt;strong&gt;filter&lt;/strong&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;listener&lt;/strong&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;servlet&lt;/strong&gt;&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;它们的作用以及运行机制，在通过SpringMVC来开发Web应用前，需要配置：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-    &amp;lt;servlet&amp;gt;
-        &amp;lt;servlet-name&amp;gt;spring&amp;lt;/servlet-name&amp;gt;
-        &amp;lt;servlet-class&amp;gt;org.springframework.web.servlet.DispatcherServlet&amp;lt;/servlet-class&amp;gt;
-        &amp;lt;load-on-startup&amp;gt;2&amp;lt;/load-on-startup&amp;gt;
-    &amp;lt;/servlet&amp;gt;
-    &amp;lt;servlet-mapping&amp;gt;
-        &amp;lt;servlet-name&amp;gt;spring&amp;lt;/servlet-name&amp;gt;
-        &amp;lt;url-pattern&amp;gt;*.htm&amp;lt;/url-pattern&amp;gt;
-    &amp;lt;/servlet-mapping&amp;gt;
-&lt;/pre&gt;
-
-&lt;p&gt;这样就把所有以&lt;strong&gt;.htm&lt;/strong&gt;结尾的请求都交给&lt;strong&gt;DispatcherServlet&lt;/strong&gt;进行具体的处理并返回，过程如下：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;常用的&lt;strong&gt;handleMapping&lt;/strong&gt;的方式有：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;SimpleUrlHandlerMapping&lt;/li&gt;
-  &lt;li&gt;DefaultAnnotationHandlerMapping&lt;/li&gt;
-  &lt;li&gt;AnnotationMethodHandlerAdapter&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;用注解的方式更直观一些，在代码中直接就可以明白你正在处理什么样的请求，最简单的一个例子：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-@Controller
-@RequestMapping(&quot;/helloAnnoController.html&quot;)
-public class AnyTypeYouLikeController{
-    @RequestMapping(method={RequestMethod.GET,RequestMethod.POST})
-    public String processWebRequest(){
-        return &quot;anno/helloAnnController&quot;;
-    }
-}
-&lt;/pre&gt;
-
-&lt;p&gt;PS：现在各种WEB框架非常多，关键是了解它们运行机制，在遇到问题的时候可以DEBUG去找到解决办法，对某个框架有哪些“奇技淫巧”就不说了，细节太多了···&lt;/p&gt;
-
-&lt;h2 id=&quot;section-2&quot;&gt;数据访问&lt;/h2&gt;
-
-&lt;p&gt;首先想想要想是的访问数据更方便，Spring应该做什么事情？&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;统一的异常处理&lt;/li&gt;
-  &lt;li&gt;将相同（类似）操作进行封装&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;如果直接用JDBC来完成数据访问，大致如下：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-try{
-    Connection connection = getDataSource().getConnection();
-    Statement statement = connection.createStatement();
-    // TODO 执行数据库操作
-    statement.executeUpdate(&quot;sql...&quot;);
-    statement.close();
-}finally{
-    statement.close();
-    connection.close();
-}
-&lt;/pre&gt;
-
-&lt;p&gt;显然在使用JDBC API处理数据的时候会有大量相似的代码，不仅增加了代码量，而且使得业务
-逻辑不清晰、工程难维护。在Spring中用&lt;strong&gt;JdbcTemplate&lt;/strong&gt;通过模板方式来解决这些问题：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-public class JdbcTemplate {
-    public Object execute(StatementCallback action) throws DataAccessException
-    {
-       // 将连接数据库等操作抽取出来
-    }
-}
-&lt;/pre&gt;
-
-&lt;p&gt;在JdbcTemplate中定义了很多queryXXX和updateXXX的方法，其本质上还是&lt;strong&gt;Callback&lt;/strong&gt;的方
-式实现的，定义出来方便我们使用：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-JdbcTemplate jdbcTemplate = new JdbcTemplate();
-jdbcTemplate.setDataSource(ds);
-jdbcTemplate.execute(new StatementCallback(){
-    public Object doInStatement(Statement stmt) throws SQLException {
-        stmt.execute(&quot;your sql&quot;);
-        return ret;
-    }
-}
-&lt;/pre&gt;
-
-&lt;p&gt;这样编码起来方便了很多，但是接着会想如果我们把SQL写到单独的文件里面，这样剥离开应该
-会更好一下吧，这样就有了各种ORM，比如&lt;strong&gt;iBatis&lt;/strong&gt;和&lt;strong&gt;Hibernate&lt;/strong&gt;，在iBatis中用SqlMapClient
-来访问数据，通常访问的方式有三种：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-//1、基于SqlMapCLient的自动提交事务型简单数据访问
-Map parameters = new HashMap();
-parameters.put(&quot;param1&quot;, value);
-// ..
-Object ret = sqlMap.queryForObject(&quot;sql_id&quot;, parameters);
-// 2、基于SqlMapClient的非自动提交事务型数据访问
-try{
-    sqlMap.startTransaction();
-    sqlMap.update(&quot;....&quot;);
-    sqlMap.commitTransaction();
-} finally {
-    sqlMap.endTransaction();
-}
-// 3、基于SqlMapSession的数据访问
-SqlMapSession session = null;
-try{
-    session = sqlMap.openSession();
-    session.startTransaction();
-    session.update(&quot;...&quot;);
-    session.commitTransaction();
-} finally {
-    session.endTransaction();
-}
-&lt;/pre&gt;
-
-&lt;p&gt;因为Spring在集成iBatis的时候要考虑将事务控制也纳入进来，所以使用基于SqlMapSession
-的数据访问方式对iBatis进行集成，这种方式更灵活，可以将iBatis内部直接指定的数据源和事
-务管理器等转由外部提供（IoC），&lt;strong&gt;SqlMapClientTemplate&lt;/strong&gt;是Spring为iBatis的数据访问操
-作提供的模板方法类：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-public class SqlMapClientTemplate {
-    public Object execute(SqlMapClientCallback action) throws DataAccessException {
-        // ...
-    }
-}
-&lt;/pre&gt;
-
-&lt;p&gt;SqlMapClientCallback可以完成任何基于iBatis的数据访问操作，比如要向一个数据库批量提
-交更新数据：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-protected void batchInsert(final List beans) {
-    sqlMapClientTemplate.execute(new SqlMapClientCallback() {
-        public Object doInSqlMapClient(SqlMapExecutor executor) throws SQLException {
-            executor.startBatch();
-            Interator iter = beans.iterator();
-            while(iter.hasNext()) {
-                Bean bean = (Bean) iter.next();
-                executor.insert(&quot;insert_name&quot;, bean);
-            }
-            executor.executeBatch();
-            return null;
-        }
-    });
-}
-&lt;/pre&gt;
-
-&lt;p&gt;最后来看事务处理，局部事务的话用法如下：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-try{
-    transaction = session.beginTransaction();
-    // TODO 操作数据
-    session.flush();
-    transaction.commit();
-} catch (Exception e){
-    transaction.rollback(); // 回滚
-} finally {
-    session.close();
-}
-&lt;/pre&gt;
-
-&lt;p&gt;因为JDBC的局部事务控制是由同一个Connection来完成的，所以要保证两个DAO的数据访问
-方式处于一个事务中，我们就得保证他们使用的是同一个Connection，要做到这一点，通常采
-用称为connection-passing的方式，即为同一个事务中的各个DAO的数据访问传递当前事务对
-应的同一个Connection。&lt;/p&gt;
-
-&lt;p&gt;我们可以直接使用PlatformTransactionManager，如下：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-DefaultTransactionDefinition definition = new DefaultTransactionDefinition();
-definition.setXXX();
-definition.setXXX();
-TransactionStatus status = transactionManager.getTransaction(definition);
-try {
-    // TODO 业务逻辑
-} catch (Exception e) {
-    transactionManager.roolback(status);
-}
-transactionManager.commit(status);
-&lt;/pre&gt;
-
-&lt;p&gt;可以看到上面有很多重复的操作，接着用TransactionTemplate对事务的管理进行模板化。而
-基于申明式的事务有四种方式：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;ProxyFactory + TransactionInterceptor&lt;/li&gt;
-  &lt;li&gt;TransactionProxyFactoryBean&lt;/li&gt;
-  &lt;li&gt;BeanNameAutoProxyCreator&lt;/li&gt;
-  &lt;li&gt;Spring 2.x申明事务配置方式&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;当然也可以通过注解&lt;strong&gt;@Transactional&lt;/strong&gt;来申明事务。&lt;/p&gt;
-</description>
-        <pubDate>Mon, 08 Jun 2015 00:00:00 +0800</pubDate>
-        <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/06/08/Spring.html</link>
-        <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/06/08/Spring.html</guid>
         
         
         <category>编程技术</category>
