@@ -1,0 +1,276 @@
+<!DOCTYPEhtmlPUBLIC"-//W3C//DTDXHTML1.0Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html>
+	<!-- 引入CSS/JS -->
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="/assets/css/main.css"/>
+	<script type="text/javascript" src="/assets/javascripts/main.js"></script>
+
+	<!-- pygments代码高亮 -->
+	<!-- <link rel="stylesheet" type="text/css" href="/assets/css/pygments.css"/> -->
+	<!-- google代码高亮 -->
+	<script src="/assets/css/prettify.js"></script>
+	<link href="/assets/css/prettify.css" rel="stylesheet">
+	<title>Jstorm</title>
+</head>
+
+	<body onload="prettyPrint()">
+		<div class="post-container">
+			<h1>Jstorm</h1>
+			<p>实际上做过的大部分的系统很难算是分布式系统，处理的流程一般是：</p>
+
+<ol>
+  <li>将请求随机交给一台机器；</li>
+  <li>在这台机器上面进行处理，如果处理量比较大就开多线程；</li>
+</ol>
+
+<p>在一台机器上面去开多线程处理感觉又回到了古老的单机作战的时代，扩展和性能都是有上限的，那么能不能将一个任务交给不同的机器来协同完成？</p>
+
+<p>数据处理方面根据不同的场景大致可以分为下面两种场景：</p>
+
+<ol>
+  <li>离线分析：特点是查询单一、数据加工过程也单一，用Hadoop来解决；</li>
+  <li>在线分析：特点是查询随机，玩的就是索引，那么QPS必然不会很高，而且需要的都是好机器，可以用阿里云的ADS来解决；</li>
+</ol>
+
+<p>看是天下太平，但真正用的时候还是会有问题：</p>
+
+<blockquote>
+  <p>像ADS这样的产品，可以在一份静态的数据上面方便地进行各种查询，但是新增、更新操作特别频繁的情况下，索引的重构可能会存在瓶颈。</p>
+</blockquote>
+
+<p>实时性也是数据处理的一个目标，记得之前在压测的时候在Solr实时更新索引上死得很惨，所以需要考虑更加有效、低成本地解决方式。</p>
+
+<h2 id="section">基本概念</h2>
+
+<p>集群架构如下：</p>
+
+<p><img src="http://7xiz10.com1.z0.glb.clouddn.com/Jstorm-1.png" alt="" /></p>
+
+<p>以及：</p>
+
+<p><img src="http://7xiz10.com1.z0.glb.clouddn.com/Jstorm-3.png" alt="" /></p>
+
+<p>其中：</p>
+
+<ol>
+  <li><strong>nimbus</strong>：分发任务、任务、监控集群运行状态；</li>
+  <li><strong>supervisor</strong>：监听nimbus的指令，接受分发代码、任务并执行；</li>
+  <li><strong>worker</strong>：真正执行的进程；</li>
+  <li><strong>task</strong>：任务；</li>
+  <li><strong>executor</strong>：一个线程，用来轮询task中的接口；</li>
+</ol>
+
+<p>在jstorm中运行的程序就是一个<strong>topology</strong>，说白了就是一个jar包，可以在nimbus节点使用命名把jar包提交给集群，那么这个jar包中的程序的结构如下：</p>
+
+<p><img src="http://7xiz10.com1.z0.glb.clouddn.com/Jstorm-2.png" alt="" /></p>
+
+<p>其中：</p>
+
+<ol>
+  <li><strong>spout</strong>：源头；</li>
+  <li><strong>bolt</strong>：处理器；</li>
+  <li><strong>tuple</strong>：数据；</li>
+</ol>
+
+<p>注：任务分发、启动的流程可以看<a href="http://xumingming.sinaapp.com/647/twitter-storm-code-analysis-topology-execution/">这里</a>。</p>
+
+<p>在分布式系统中数据都准确性是最难的，通常在检查消息消费失败的时候重试。而在Jstorm里面中就更为复杂，一个消息从spout发给bolt，而一个bolt可能发给多个bolt，这样就构成了一棵树形结构，在jstorm中用<strong>acker</strong>机制来检测消息是否失败：</p>
+
+<p><img src="http://7xiz10.com1.z0.glb.clouddn.com/Jstorm-4.png" alt="" /></p>
+
+<p>显然这是一个随机算法，但是发生错误的概率非常小！但是，如果真的出错那就蛋疼了，做个开关或者接口让程序开发者来自己实现acker不好么？</p>
+
+<p>在并发编程中经常要碰到去处理资源竞争，处理的方式基本上两种：</p>
+
+<ol>
+  <li>锁</li>
+  <li>根据所需要的资源进行分组</li>
+</ol>
+
+<p>用第2种方式，将不同的任务分发给不同的节点来处理，这样就可以减少很多的竞争、简化处理的代码、容易提高性能，在jstorm提供了丰富<strong>grouping</strong>方式：</p>
+
+<ol>
+  <li>随机分组</li>
+  <li>根据某个字段分组</li>
+  <li>广播</li>
+  <li>直接分组</li>
+</ol>
+
+<p>说到消息分组，可能看起来是在<strong>emit</strong>的时候就直接发出去了，但事实上并不是这样：</p>
+
+<ol>
+  <li>创建tuple；</li>
+  <li>worker将目标taskId+tuple放到待发送队列；</li>
+  <li>由一个单独的线程来负责将消息发送给对应的任务处理；</li>
+</ol>
+
+<p>另外在jstorm中提供了一些更高级的抽象：</p>
+
+<ol>
+  <li>CoordinatedBolt</li>
+  <li>Transactional Topology</li>
+  <li>DRPC</li>
+  <li>Trident</li>
+</ol>
+
+<p>为了做到<strong>处理且仅处理一次</strong>的目的，并且不能牺牲掉并发性，那么Transactional Topology的做法是将一个batch的计算分为两个阶段来完成：</p>
+
+<ol>
+  <li><strong>processing</strong>：多个batch并行处理；</li>
+  <li><strong>commit</strong>：一个一个地提交，batch之间保持强有序；</li>
+</ol>
+
+<p>而Trident则是一个更方便、可靠的接口~</p>
+
+<p>附jstorm中常用参数设置：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>参数</th>
+      <th>含义</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>topology.message.timeout.secs</td>
+      <td>超时时间，如果超时则认为失败</td>
+    </tr>
+    <tr>
+      <td>topology.max.task.parallelism</td>
+      <td>最大并行度</td>
+    </tr>
+    <tr>
+      <td>topology.state.synchronization.timeout.secs</td>
+      <td>组件同步状态源的最大超时时间</td>
+    </tr>
+    <tr>
+      <td>topology.max.spout.pending</td>
+      <td>缓存spout发送的tuple数，超出会阻塞</td>
+    </tr>
+    <tr>
+      <td>topology.executor.receive.buffer.size</td>
+      <td>executor线程的接收队列大小</td>
+    </tr>
+    <tr>
+      <td>topology.executor.send.buffer.size</td>
+      <td>executor线程的发送队列大小</td>
+    </tr>
+    <tr>
+      <td>topology.receiver.buffer.size</td>
+      <td>worker接收线程缓存消息的大小</td>
+    </tr>
+    <tr>
+      <td>topology.transfer.buffer.size</td>
+      <td>worker进程中向外发送消息的缓存大小</td>
+    </tr>
+    <tr>
+      <td>storm.messaging.netty.max_wait_ms</td>
+      <td>最大等待时间</td>
+    </tr>
+    <tr>
+      <td>storm.messaging.netty.min_wait_ms</td>
+      <td>最小等待时间</td>
+    </tr>
+    <tr>
+      <td>topology.ackers</td>
+      <td>ackaer任务数</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="drpc">DRPC</h2>
+
+<p>互联网中用户的操作通常是轻量级的，插一下数据库、更新一下缓存就搞定了，但是对于仓库管理这种系统很多操作比较重，有些任务可能需要遍历数据库中的表才能完成，而Distributed RPC可能是提高性能、降低风险的一个途径。</p>
+
+<p>用Jstorm来搞DRPC的过程如下：</p>
+
+<pre class="prettyprint">
+DRPCClient client = new DRPCClient("drpc-host", 3772);
+String result = client.execute("reach", "http://twitter.com");
+</pre>
+
+<p>客户端给DRPC服务器发送要执行的方法名称以及参数，实现了这个函数的topology使用DRPCSpout从DRPC服务器接收函数调用流。每个函数调用被DRPC服务器标记了一个唯一的id。这个topology然后计算结果，在topology的最后一个叫做ReturnResults的bolt会将调用的结果发送给DRPC服务器。</p>
+
+<p>之前想过可能用一些更简单的方法来试下：</p>
+
+<ol>
+  <li>在spout的节点提供一个rpc服务；</li>
+  <li>在调用这个服务的时候发送消息给bolt，然后在bolt中完成任务的分发及处理；</li>
+  <li>在spout中统计是否所有的消息都成功消费；</li>
+  <li>返回数据；</li>
+</ol>
+
+<p>这样弄会有一些问题，但是感觉没有强依赖于jstorm，而仅仅是用它的消息分发机制就可以了。</p>
+
+<h2 id="section-1">数据流式处理</h2>
+
+<p>在流式处理的过程中，每次面对的都是单个的记录，而事实上统计都是有状态的，那么：</p>
+
+<ol>
+  <li>可以把状态保存在本地；</li>
+  <li>可以把状态保存在hbase、ldb等外部的存储；</li>
+</ol>
+
+<p>保存在本地的内存中速度会很快，也没有序列化等开销，而且通常流处理中时效性要求是比价强的，过去很久的数据基本上就不会再次处理。所以：流玩的好不好，就看本地缓存用的好不好了。</p>
+
+<h2 id="section-2">总结</h2>
+
+<p>很多语言从一开始就在考虑如何简单地去实现并发编程：</p>
+
+<ol>
+  <li>erlang</li>
+  <li>golang</li>
+  <li>…</li>
+</ol>
+
+<p>而我们这些作为老Java程序猿只能是自己去东拼西凑地搞出一个来简化分布式系统中的开发成本。现在考虑下来jstorm应该是个不错的选择：</p>
+
+<ol>
+  <li>运行一个固定结构的topology；</li>
+  <li>在topology上面可以动态地加载、编译我们要执行的脚本；</li>
+  <li>在spout、bolt中调用脚本中的方法；</li>
+</ol>
+
+<p>这样也许我们可以更低的成本来享受分布式带来的好处~~</p>
+
+			<!-- 评论组件 -->
+			<div id="disqus_thread"/>
+		</div>
+		<div id="bar" class="category" style="left:-165px;">
+	<div class="icon"><a href="/about/"><img src="http://7xiz10.com1.z0.glb.clouddn.com/me.png"/></a></div>
+	<div class="icon"><a href="/categories.html"><img src="http://7xiz10.com1.z0.glb.clouddn.com/list.png"/></a></div>
+	<div class="icon"><a href="https://github.com/wsztrush"><img src="http://7xiz10.com1.z0.glb.clouddn.com/github.png"/></a></div>
+	<div class="icon"><a href="http://weibo.com/wsztrush"><img src="http://7xiz10.com1.z0.glb.clouddn.com/weibo.png"/></a></div>
+	<div class="icon"><img id="barClick" src="http://7xiz10.com1.z0.glb.clouddn.com/right.png"/></div>
+</div>
+
+	</body>
+</html>
+<!-- 评论组件 -->
+<script type="text/javascript">
+	var disqus_shortname = 'wsztrush';
+	(function() {
+		var dsq = document.createElement('script');
+		dsq.type = 'text/javascript';
+		dsq.async = true;
+		dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	})();
+</script>
+<!-- 百度访问统计 -->
+<script>
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?08a976e8d7e5a20acfcb566bd22a1db1";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+<script type="text/javascript">
+	document.getElementById("barClick").onclick = click;
+</script>
+

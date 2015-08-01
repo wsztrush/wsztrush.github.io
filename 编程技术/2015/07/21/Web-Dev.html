@@ -11,29 +11,42 @@
 	<!-- google代码高亮 -->
 	<script src="/assets/css/prettify.js"></script>
 	<link href="/assets/css/prettify.css" rel="stylesheet">
-	<title>ABOUT</title>
+	<title>WEB开发笔记</title>
 </head>
 
 	<body onload="prettyPrint()">
 		<div class="post-container">
-			<h1>ABOUT</h1>
-			<p>从前，觉得人生应该是这样：</p>
+			<h1>WEB开发笔记</h1>
+			<h2 id="springbeanfilter">用SpringBean来配置Filter</h2>
 
-<blockquote>
-  <p>有志者，事竟成，破釜沉舟，百二秦关终属楚
-苦心人，天不负，卧薪尝胆，三千越甲可吞吴</p>
-</blockquote>
+<p>在web开发中通常会遇到多个环境的问题，比如开发和线上，那他们使用的配置信息也是不同的，Spring给出的解决这个问题的方法是变量替换：</p>
 
-<p>后来，经历的事情多一些，感觉人生应该是这样：</p>
+<pre class="prettyprint">
+&lt;bean class="my.class.path"&gt;
+    &lt;property name="env" value="${ENV}"/&gt;
+&lt;/bean&gt;
+</pre>
 
-<blockquote>
-  <p>把事情做到极致
-带领团队走向成功</p>
-</blockquote>
+<p>但是对于web.xml中的属性这样搞就行不通了，那简单的解决办法就是绕路了：用Spring中配置的Bean来作为Filter行不行？答案是肯定的：</p>
 
-<p>在这个博客中记录下一些思考！如果有帮到你并且你想感谢我，就请我喝一杯零度可乐（2.5￥）吧~</p>
+<pre class="prettyprint">
+&lt;filter&gt;
+    &lt;filter-name&gt;ssoFilter&lt;/filter-name&gt;
+    &lt;filter-class&gt;org.springframework.web.filter.DelegatingFilterProxy&lt;/filter-class&gt;
+    &lt;init-param&gt;
+        &lt;param-name&gt;targetBeanName&lt;/param-name&gt;
+        &lt;param-value&gt;myFilterBean&lt;/param-value&gt;
+    &lt;/init-param&gt;
+    &lt;init-param&gt;
+        &lt;param-name&gt;targetFilterLifecycle&lt;/param-name&gt;
+        &lt;param-value&gt;true&lt;/param-value&gt;
+    &lt;/init-param&gt;
+&lt;/filter&gt;
+</pre>
 
-<p><img src="http://7xiz10.com1.z0.glb.clouddn.com/ 微信收钱.jpg" alt="" /></p>
+<p>容器初始化的顺序为Listener-&gt;Filter-&gt;Servlet，这样上面这种玩法跑通就没有问题了~</p>
+
+<h2 id="todo">TODO</h2>
 
 
 			<!-- 评论组件 -->
