@@ -55,7 +55,7 @@ else return "false";
 
 ![](http://7xiz10.com1.z0.glb.clouddn.com/Compiler-3.png)
 
-用这种方式从**(a|b)\*a**得到的NFA为：
+用这种方式从**(a\|b)\*a**得到的NFA为：
 
 ![](http://7xiz10.com1.z0.glb.clouddn.com/Compiler-4.jpg)
 
