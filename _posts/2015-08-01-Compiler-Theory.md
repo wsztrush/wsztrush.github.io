@@ -1,8 +1,8 @@
 ---
 layout: post
-title: 龙书学习笔记
+title: 编译原理（一）
 date: 2015-08-01
-categories: 编译原理
+categories: DSL
 
 ---
 
@@ -117,6 +117,174 @@ followpos(p)|可能出现在位置p后面的位置的集合
 ![](http://7xiz10.com1.z0.glb.clouddn.com/Compiler-5.png)
 
 ## 语法分析
+
+语法分析器从词法分析器得到TOKEN流，**生成语法分析树**或者**抽象语法树**，方便进一步地处理。预发处理的规则通常是用**上下文无关文法**来描述：
+
+> E &rarr; E+T|T // 从E+T可以推导出E，也可以从T推导出E
+> T &rarr; T*F|F
+> F &rarr; (E)|id
+
+对于一个TOKEN流，语法分析器的目的是就是把这些规则“套”上去，从而知道输入的内容是什么样的结构，而输出可能是：
+
+![](http://7xiz10.com1.z0.glb.clouddn.com/Compiler-6.png)
+
+左边是分析语法树，右边是抽象语法树，比较而言抽象语法树更简单一些，而且便利起来更加容易。如果通过一个语法在推导某个式子的时候可以得到两个不同的语法树，那么说明这种语法是有二义性的，比如**if E1 then if E2 then S1 else S2**中的else就不知道应该对应哪个if，那么进行修改：
+
+![](http://7xiz10.com1.z0.glb.clouddn.com/Compiler-7.png)
+
+消除二义性好像没有什么万能的方法，但是消除左递归却是有的：
+
+<pre class="prettyprint">
+按照某个顺序将非终结符号排序为A1、A2....
+for(从1到n的每个i){
+    for(从1到i-1的每个j){
+        将每个形如Ai&rarr;Aj&upsih;的产生式替换为产生式组Ai&rarr;&delta;1&upsih;|&delta;2&upsih;|...
+        其中Aj&rarr;&delta;1|&delta;2|....是所有Aj的产生式
+    }
+    消除Aj产生式之间的立即左递归
+}
+</pre>
+
+是不是有点像拓扑排序？有了这些规则那么就需要写程序来按照其描述的逻辑进行处理，说白了就是用程序的结构去模拟预发的结构：
+
+<pre class="prettyprint">
+void A(){
+    选择A的一个产生式，A&rarr;X1X2X3...
+    for(i = 1 to k){
+        if(Xi是一个非终结符号)
+            调用过程Xi();
+        else if(Xi等于当前输入符号a)
+            读入下一个输入符号
+        else
+            /* 发现错误，需要回溯 */
+    }
+}
+</pre>
+
+典型的**自顶向下**分析的方法，用递归来实现很容易与语法规则对应起来，但是在出现错误的时候就退回重试显示效率低下的处理方式。在知道下一个TOKEN是什么的情况下就知道用那个产生式，那么就不需要那么多无谓的尝试了，这就是**LL(1)**的想法，需要两个集合：
+
+集合|含义
+-|-
+FIREST(α)|可以由α推导得到的串的终结符的集合
+FOLLOW(A)|在某些句型中紧跟在A右边的终结符号的集合
+
+那么之后在终结符号A处使用FOLLOW(A)中的产生式来进行处理即可，这时候非递归的写法也是非常简单的。其实构造FIRST和FOLLOW的过程还是挺简单的，不再赘述。
+
+下面接着来看**自底向上**的分析过程：
+
+![](http://7xiz10.com1.z0.glb.clouddn.com/Compiler-8.png)
+
+在这种方式中我们并不是从“根”出发的，而是在看到能处理的部分就把它处理掉，可以用栈来实现：
+
+![](http://7xiz10.com1.z0.glb.clouddn.com/Compiler-9.png)
+
+比较麻烦的是，我们不知道当前有哪些是可以处理的，按道理来说每次在需要的时候去遍历产生式并递归来做也是可以搞定的，但是不免会有很多的遍历是重复劳动，那么就需要预处理了。对于表达式**A&rarr;XYZ**，如果考虑位置的话有四种情况：
+
+1. A&rarr;.XYZ
+2. A&rarr;X.YZ
+3. A&rarr;XY.Z
+4. A&rarr;XYZ.
+
+我们将这些称为项，由一个语法的产生式对应的过个产生式中有一些是等价的，将他们放在同一个集合（项集）中，比如对于语法 ：
+
+> E'→E
+> E→E+T|T
+> T→T*F|F
+> F→(E)|id
+
+生成项集之后，在遇到一个TOKEN的情况下就知道下个项集是什么了，这样我们根据上面的语法就得到了一个状态图：
+
+![](http://7xiz10.com1.z0.glb.clouddn.com/Compiler-10.png)
+
+项集闭包的构造方法比较简单：
+
+<pre class="prettyprint">
+SetOfItems CLOSURE(I){
+    J = I;
+    repeat:
+        for(J中的每个项A→α.Bβ)
+            for(G的每个产生式B→γ)
+                if(项B→.γ不在J中)
+                    将B→.γ加入J中;
+    until 在某一轮中没有新项被加入到J中;
+    return J;
+}
+</pre>
+
+有了状态的定义，那么接下来需要定义状态之间的转换：**GOTO(I,X)**表示了形如A→α.Xβ所在的项集到A→αX.β的转换，构造方法如下：
+
+<pre class="prettyprint">
+void items(G'){
+    C = {CLOSURE([S'→.S])};
+    repeat
+        for(C中的每个项集I)
+            for(每个文法符号X)
+                if(GOTO(I,X)非空且不在C中)
+                    将GOTO(I,X)加入C中;
+    until 在某一轮中没有新的项集被加入到C中;
+}
+</pre>
+
+有了上面这些，我们可以开始构造一个**SLR(1)**语法分析表了：
+
+1. 如果[A→α.aβ]在Ii中并且GOTO(Ii,a)=Ij，那么将ACTION[i,a]设置为“**移入j**”;
+2. 如果[A→α.]在Ii中，那么对于FOLLOW(A)中所有的a，将ACTION[i,a]设置为规约“**规约A→α**”;
+3. 如果[S'→S.]在Ii中，那么将ACTION[i,$]设置为“**接受**”;
+
+在分析程序中用一个栈来记录当前看到的状态，然后根据ACTION来进行操作即可。
+
+在LR(0)中能规约的时候就规约，这样做很不科学，但是在有冲突的时候好像没有别的方法，只能“向前看”。**规范LR**充分地利用了向前看符号，利用一个很大的项集来工作，每个项的格式如下：
+
+> 形式为[A→α.Bβ,a]，前半部分不变，后半部分为向前看符号！
+
+构造方法如下：
+
+<pre class="prettypring">
+SetOfItems CLOSURE(I){
+    repeat
+        for(I中的每个项[A→α.Bβ,a])
+            for(FIRST(βa)中的每个终结符号b)
+                将[B→.γ,b]加入到集合I中
+    until 不能向I中加入更多的项
+    return I;
+}
+SetOfItems GOTO(I,X){
+    将J初始化为空集;
+    for(I中的每个项[A→α.Bβ,a])
+        将项[A→αB.β,a]加入到集合J中
+    return CLOSURE(J);
+}
+void items(G'){
+    将C初始化为{CLOSURE}({[S'→.S$]});
+    repeat
+        for(C中的每个项集I)
+            for(每个文法符号X)
+                if(GOTO(I,X)非空且不在C中)
+                    将GOTO(I,X)加入到C中;
+    until 不再有新的项集加入到C中;
+}
+</pre>
+
+对于文法：
+
+> S'→S
+> S→C C
+> C→c C | d
+
+得到的规范LR项集的状态图如下：
+
+![](http://7xiz10.com1.z0.glb.clouddn.com/Compiler-11.png)
+
+此时构造分析表的方法如下：
+
+1. 如果[A→α.aβ，b]在Ii中且GOTO(Ii,a)=Ij，那么将ACTION[i,a]设置为“移入j”;
+2. 如果[A→α.,a]在Ii中且A≠S'，那么将ACTION[i,a]设置为“规约A→α.”;
+3. 如果[S'→S,$]在Ii中，那么将ACTION[i,$]设置为“接受”;
+
+这种方式和SLR的运行方式类似，不再赘述！
+
+向前看LR(**LALR**)基于LR(0)项集族，和基于LR(1)项的典型语法分析器相比，状态要少很多，通过想LR(0)项中小心地引入向前看符号，我们使用LALR方法处理的文法比使用SLR处理的文法更多，同时构造得到的语法分析表并不比SLR语法分析表大，通常情况下LALR方法是最合适的选择。
+
 
 
 
