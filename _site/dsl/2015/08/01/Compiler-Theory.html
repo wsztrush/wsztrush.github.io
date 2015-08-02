@@ -1,0 +1,440 @@
+<!DOCTYPEhtmlPUBLIC"-//W3C//DTDXHTML1.0Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html>
+	<!-- 引入CSS/JS -->
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="/assets/css/main.css"/>
+	<script type="text/javascript" src="/assets/javascripts/main.js"></script>
+
+	<!-- pygments代码高亮 -->
+	<!-- <link rel="stylesheet" type="text/css" href="/assets/css/pygments.css"/> -->
+	<!-- google代码高亮 -->
+	<script src="/assets/css/prettify.js"></script>
+	<link href="/assets/css/prettify.css" rel="stylesheet">
+	<title>编译原理（一）</title>
+</head>
+
+	<body onload="prettyPrint()">
+		<div class="post-container">
+			<h1>编译原理（一）</h1>
+			<h2 id="section">词法分析</h2>
+
+<p>编译器的目的是根据源码生成可以执行的文件，想一步到位完全不靠谱，可以先进行分词处理，那么这就是词法分析要完成的工作了！</p>
+
+<p>用正则表达是来描述词法规则是比较简单的，而用状态机进行匹配则是比较迅速的，那么比较重要的就是在他们之间的互相转换：</p>
+
+<p><img src="http://7xiz10.com1.z0.glb.clouddn.com/Compiler-1.png" alt="" /></p>
+
+<p>这里有：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>概念</th>
+      <th>含义</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>NFA</td>
+      <td>不确定自动机，从当前状态根据字符转移的时候，下一个状态是不确定的</td>
+    </tr>
+    <tr>
+      <td>DFA</td>
+      <td>确定自动机，状态转移时下一个状态时确定的</td>
+    </tr>
+  </tbody>
+</table>
+
+<table>
+  <tbody>
+    <tr>
+      <td>来看一个NFA的例子，对于**(a</td>
+      <td>b)*abb**这样的词，对应的NFA为：</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="http://7xiz10.com1.z0.glb.clouddn.com/Compiler-2.png" alt="" /></p>
+
+<p>在遍历的过程中顺便更新状态就可以了，用代码来描述一下：</p>
+
+<pre class="prettyprint">
+S = &epsilon;-closure(s0); // 注意：这里的S是个集合
+c = nextChar();
+while(c != eof){
+    S = &epsilon;-closure(move(S,c));// 状态转移+空转移
+    c = nextChar();
+}
+if(S &cap; F != &empty;) return "yes";
+eles return "no";
+</pre>
+
+<p>看起来NFA的模拟方式效率并不高，而且代码写起来也有点小复杂，而DFA则完全不一样：</p>
+
+<pre class="prettyprint">
+s = s0;
+c = nextChar();
+while(c != eof){
+    s = move(s, c);
+    c = nextChar();
+}
+if(s在F中) return "yes";
+else return "false";
+</pre>
+
+<p>是不是简单了很多？但是也更显然，NFA与正则之间的关系更加直观，那么先来看从正则到NFA的转换：</p>
+
+<p><img src="http://7xiz10.com1.z0.glb.clouddn.com/Compiler-3.png" alt="" /></p>
+
+<p>用这种方式从<strong>(a|b)*a</strong>得到的NFA为：</p>
+
+<p><img src="http://7xiz10.com1.z0.glb.clouddn.com/Compiler-4.jpg" alt="" /></p>
+
+<p>既然DFA相对于NFA来说是有优势的，那么如果有一个方法能将NFA转换为DFA，那么可以一劳永逸。这里<strong>子集构造法</strong>还是相当的直观的的：</p>
+
+<pre class="prettyprint">
+一开始，&epsilon;-closure(s0)是Dstates中唯一状态，且它未加标记;
+while(在Dstates中一个未加标记状态T){
+    给T加上标记;
+    for(每个输入符号a){
+        U = &epsilon;-closure(move(T,a));
+        if(U不在Dstates中)
+            将U加入到Dstates中，且不加标记;
+        Dtran[T,a] = U;
+    }
+}
+</pre>
+
+<p>其中的：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>操作</th>
+      <th>描述</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ε-closure(s)</td>
+      <td>能够从NFA的状态s开始只通过ε转换到达的NFA状态集合</td>
+    </tr>
+    <tr>
+      <td>ε-closure(T)</td>
+      <td>能够从T中某个NFA状态s开始只通过ε转换到达的NFA状态集合</td>
+    </tr>
+    <tr>
+      <td>move(T,a)</td>
+      <td>能够从T中某个状态s出发通过标号a的转换到达的NFA状态的集合</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>那么现在就有一条路径了：<strong>正则-&gt;NFA-&gt;DFA</strong>也太累了，有没有<strong>正则-&gt;DFA</strong>这样一条通路？答案是肯定的，首先根据正则构造出抽象语法树：</p>
+
+<pre class="prettyprint">
+初始化Dstates,使之只包含未标记的状态firstpos(n0),其中n0是r(#)的抽象语法树的根节点;
+while(Dstates中存在未标记的状态S){
+    标记S;
+    for(每个输入符号a){
+        令U为S中和a对应的所有位置p的followpos(p)的并集;
+        for(U不在Dstates中)
+            将U作为未标记的状态加入到Dstates中;
+        Dtran[S,a] = U;
+    }
+</pre>
+
+<p>其中：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>定义</th>
+      <th>含义</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>nullable(n)</td>
+      <td>节点n的子表达式的语言中包含ε</td>
+    </tr>
+    <tr>
+      <td>firstpos(n)</td>
+      <td>以节点n为根的子表达式中第一个符号的位置的集合</td>
+    </tr>
+    <tr>
+      <td>lastpos(n)</td>
+      <td>以节点n为根的子表达式中最后一个符号的位置的集合</td>
+    </tr>
+    <tr>
+      <td>followpos(p)</td>
+      <td>可能出现在位置p后面的位置的集合</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>其实背后的底层原理与从NFA到DFA还是比较相似的，只不过是用不同的构造方式来做。DFA确实要比NFA好处理一些，但并不是说生成DFA之后就没事了，其中的状态数可以压缩：</p>
+
+<ol>
+  <li>根据接收、非接收状态分为两组；</li>
+  <li>遍历分组、字符，如果同一组内的状态根据该字符到达了不同的组，那么将继续将当前的分组进行分割；</li>
+  <li>重复执行步骤2直到没有变化；</li>
+  <li>每个分组中选择一个代表状态，重新构造DFA，最小化完成；</li>
+</ol>
+
+<p>可以证明<strong>最小化状态</strong>数的DFA唯一性，然而最小化的过程更加容易让我们去理解状态机的本质。来个最小化状态数的例子：</p>
+
+<p><img src="http://7xiz10.com1.z0.glb.clouddn.com/Compiler-5.png" alt="" /></p>
+
+<h2 id="section-1">语法分析</h2>
+
+<p>语法分析器从词法分析器得到TOKEN流，<strong>生成语法分析树</strong>或者<strong>抽象语法树</strong>，方便进一步地处理。预发处理的规则通常是用<strong>上下文无关文法</strong>来描述：</p>
+
+<blockquote>
+  <table>
+    <tbody>
+      <tr>
+        <td>E → E+T</td>
+        <td>T // 从E+T可以推导出E，也可以从T推导出E</td>
+      </tr>
+      <tr>
+        <td>T → T*F</td>
+        <td>F</td>
+      </tr>
+      <tr>
+        <td>F → (E)</td>
+        <td>id</td>
+      </tr>
+    </tbody>
+  </table>
+</blockquote>
+
+<p>对于一个TOKEN流，语法分析器的目的是就是把这些规则“套”上去，从而知道输入的内容是什么样的结构，而输出可能是：</p>
+
+<p><img src="http://7xiz10.com1.z0.glb.clouddn.com/Compiler-6.png" alt="" /></p>
+
+<p>左边是分析语法树，右边是抽象语法树，比较而言抽象语法树更简单一些，而且便利起来更加容易。如果通过一个语法在推导某个式子的时候可以得到两个不同的语法树，那么说明这种语法是有二义性的，比如<strong>if E1 then if E2 then S1 else S2</strong>中的else就不知道应该对应哪个if，那么进行修改：</p>
+
+<p><img src="http://7xiz10.com1.z0.glb.clouddn.com/Compiler-7.png" alt="" /></p>
+
+<p>消除二义性好像没有什么万能的方法，但是消除左递归却是有的：</p>
+
+<pre class="prettyprint">
+按照某个顺序将非终结符号排序为A1、A2....
+for(从1到n的每个i){
+    for(从1到i-1的每个j){
+        将每个形如Ai&rarr;Aj&upsih;的产生式替换为产生式组Ai&rarr;&delta;1&upsih;|&delta;2&upsih;|...
+        其中Aj&rarr;&delta;1|&delta;2|....是所有Aj的产生式
+    }
+    消除Aj产生式之间的立即左递归
+}
+</pre>
+
+<p>是不是有点像拓扑排序？有了这些规则那么就需要写程序来按照其描述的逻辑进行处理，说白了就是用程序的结构去模拟预发的结构：</p>
+
+<pre class="prettyprint">
+void A(){
+    选择A的一个产生式，A&rarr;X1X2X3...
+    for(i = 1 to k){
+        if(Xi是一个非终结符号)
+            调用过程Xi();
+        else if(Xi等于当前输入符号a)
+            读入下一个输入符号
+        else
+            /* 发现错误，需要回溯 */
+    }
+}
+</pre>
+
+<p>典型的<strong>自顶向下</strong>分析的方法，用递归来实现很容易与语法规则对应起来，但是在出现错误的时候就退回重试显示效率低下的处理方式。在知道下一个TOKEN是什么的情况下就知道用那个产生式，那么就不需要那么多无谓的尝试了，这就是<strong>LL(1)</strong>的想法，需要两个集合：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>集合</th>
+      <th>含义</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>FIREST(α)</td>
+      <td>可以由α推导得到的串的终结符的集合</td>
+    </tr>
+    <tr>
+      <td>FOLLOW(A)</td>
+      <td>在某些句型中紧跟在A右边的终结符号的集合</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>那么之后在终结符号A处使用FOLLOW(A)中的产生式来进行处理即可，这时候非递归的写法也是非常简单的。其实构造FIRST和FOLLOW的过程还是挺简单的，不再赘述。</p>
+
+<p>下面接着来看<strong>自底向上</strong>的分析过程：</p>
+
+<p><img src="http://7xiz10.com1.z0.glb.clouddn.com/Compiler-8.png" alt="" /></p>
+
+<p>在这种方式中我们并不是从“根”出发的，而是在看到能处理的部分就把它处理掉，可以用栈来实现：</p>
+
+<p><img src="http://7xiz10.com1.z0.glb.clouddn.com/Compiler-9.png" alt="" /></p>
+
+<p>比较麻烦的是，我们不知道当前有哪些是可以处理的，按道理来说每次在需要的时候去遍历产生式并递归来做也是可以搞定的，但是不免会有很多的遍历是重复劳动，那么就需要预处理了。对于表达式<strong>A→XYZ</strong>，如果考虑位置的话有四种情况：</p>
+
+<ol>
+  <li>A→.XYZ</li>
+  <li>A→X.YZ</li>
+  <li>A→XY.Z</li>
+  <li>A→XYZ.</li>
+</ol>
+
+<p>我们将这些称为项，由一个语法的产生式对应的过个产生式中有一些是等价的，将他们放在同一个集合（项集）中，比如对于语法 ：</p>
+
+<blockquote>
+  <p>E’→E
+E→E+T|T
+T→T*F|F
+F→(E)|id</p>
+</blockquote>
+
+<p>生成项集之后，在遇到一个TOKEN的情况下就知道下个项集是什么了，这样我们根据上面的语法就得到了一个状态图：</p>
+
+<p><img src="http://7xiz10.com1.z0.glb.clouddn.com/Compiler-10.png" alt="" /></p>
+
+<p>项集闭包的构造方法比较简单：</p>
+
+<pre class="prettyprint">
+SetOfItems CLOSURE(I){
+    J = I;
+    repeat:
+        for(J中的每个项A→α.Bβ)
+            for(G的每个产生式B→γ)
+                if(项B→.γ不在J中)
+                    将B→.γ加入J中;
+    until 在某一轮中没有新项被加入到J中;
+    return J;
+}
+</pre>
+
+<p>有了状态的定义，那么接下来需要定义状态之间的转换：<strong>GOTO(I,X)</strong>表示了形如A→α.Xβ所在的项集到A→αX.β的转换，构造方法如下：</p>
+
+<pre class="prettyprint">
+void items(G'){
+    C = {CLOSURE([S'→.S])};
+    repeat
+        for(C中的每个项集I)
+            for(每个文法符号X)
+                if(GOTO(I,X)非空且不在C中)
+                    将GOTO(I,X)加入C中;
+    until 在某一轮中没有新的项集被加入到C中;
+}
+</pre>
+
+<p>有了上面这些，我们可以开始构造一个<strong>SLR(1)</strong>语法分析表了：</p>
+
+<ol>
+  <li>如果[A→α.aβ]在Ii中并且GOTO(Ii,a)=Ij，那么将ACTION[i,a]设置为“<strong>移入j</strong>”;</li>
+  <li>如果[A→α.]在Ii中，那么对于FOLLOW(A)中所有的a，将ACTION[i,a]设置为规约“<strong>规约A→α</strong>”;</li>
+  <li>如果[S’→S.]在Ii中，那么将ACTION[i,$]设置为“<strong>接受</strong>”;</li>
+</ol>
+
+<p>在分析程序中用一个栈来记录当前看到的状态，然后根据ACTION来进行操作即可。</p>
+
+<p>在LR(0)中能规约的时候就规约，这样做很不科学，但是在有冲突的时候好像没有别的方法，只能“向前看”。<strong>规范LR</strong>充分地利用了向前看符号，利用一个很大的项集来工作，每个项的格式如下：</p>
+
+<blockquote>
+  <p>形式为[A→α.Bβ,a]，前半部分不变，后半部分为向前看符号！</p>
+</blockquote>
+
+<p>构造方法如下：</p>
+
+<pre class="prettypring">
+SetOfItems CLOSURE(I){
+    repeat
+        for(I中的每个项[A→α.Bβ,a])
+            for(FIRST(βa)中的每个终结符号b)
+                将[B→.γ,b]加入到集合I中
+    until 不能向I中加入更多的项
+    return I;
+}
+SetOfItems GOTO(I,X){
+    将J初始化为空集;
+    for(I中的每个项[A→α.Bβ,a])
+        将项[A→αB.β,a]加入到集合J中
+    return CLOSURE(J);
+}
+void items(G'){
+    将C初始化为{CLOSURE}({[S'→.S$]});
+    repeat
+        for(C中的每个项集I)
+            for(每个文法符号X)
+                if(GOTO(I,X)非空且不在C中)
+                    将GOTO(I,X)加入到C中;
+    until 不再有新的项集加入到C中;
+}
+</pre>
+
+<p>对于文法：</p>
+
+<blockquote>
+  <p>S’→S
+S→C C
+C→c C | d</p>
+</blockquote>
+
+<p>得到的规范LR项集的状态图如下：</p>
+
+<p><img src="http://7xiz10.com1.z0.glb.clouddn.com/Compiler-11.png" alt="" /></p>
+
+<p>此时构造分析表的方法如下：</p>
+
+<ol>
+  <li>如果[A→α.aβ，b]在Ii中且GOTO(Ii,a)=Ij，那么将ACTION[i,a]设置为“移入j”;</li>
+  <li>如果[A→α.,a]在Ii中且A≠S’，那么将ACTION[i,a]设置为“规约A→α.”;</li>
+  <li>如果[S’→S,$]在Ii中，那么将ACTION[i,$]设置为“接受”;</li>
+</ol>
+
+<p>这种方式和SLR的运行方式类似，不再赘述！</p>
+
+<p>向前看LR(<strong>LALR</strong>)基于LR(0)项集族，和基于LR(1)项的典型语法分析器相比，状态要少很多，通过想LR(0)项中小心地引入向前看符号，我们使用LALR方法处理的文法比使用SLR处理的文法更多，同时构造得到的语法分析表并不比SLR语法分析表大，通常情况下LALR方法是最合适的选择。</p>
+
+<h2 id="section-2">语法制导翻译</h2>
+
+			<!-- 评论组件 -->
+			<div id="disqus_thread"/>
+		</div>
+		<div id="bar" class="category" style="left:-165px;">
+	<div class="icon"><a href="/about/"><img src="http://7xiz10.com1.z0.glb.clouddn.com/me.png"/></a></div>
+	<div class="icon"><a href="/categories.html"><img src="http://7xiz10.com1.z0.glb.clouddn.com/list.png"/></a></div>
+	<div class="icon"><a href="https://github.com/wsztrush"><img src="http://7xiz10.com1.z0.glb.clouddn.com/github.png"/></a></div>
+	<div class="icon"><a href="http://weibo.com/wsztrush"><img src="http://7xiz10.com1.z0.glb.clouddn.com/weibo.png"/></a></div>
+	<div class="icon"><img id="barClick" src="http://7xiz10.com1.z0.glb.clouddn.com/right.png"/></div>
+</div>
+
+	</body>
+</html>
+<!-- 评论组件 -->
+<script type="text/javascript">
+	var disqus_shortname = 'wsztrush';
+	(function() {
+		var dsq = document.createElement('script');
+		dsq.type = 'text/javascript';
+		dsq.async = true;
+		dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	})();
+</script>
+<!-- 百度访问统计 -->
+<script>
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?08a976e8d7e5a20acfcb566bd22a1db1";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+<script type="text/javascript">
+	document.getElementById("barClick").onclick = click;
+</script>
+

@@ -5,12 +5,12 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sat, 01 Aug 2015 22:55:52 +0800</pubDate>
-    <lastBuildDate>Sat, 01 Aug 2015 22:55:52 +0800</lastBuildDate>
+    <pubDate>Sun, 02 Aug 2015 23:05:15 +0800</pubDate>
+    <lastBuildDate>Sun, 02 Aug 2015 23:05:15 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
-        <title>龙书学习笔记</title>
+        <title>编译原理（一）</title>
         <description>&lt;h2 id=&quot;section&quot;&gt;词法分析&lt;/h2&gt;
 
 &lt;p&gt;编译器的目的是根据源码生成可以执行的文件，想一步到位完全不靠谱，可以先进行分词处理，那么这就是词法分析要完成的工作了！&lt;/p&gt;
@@ -81,14 +81,7 @@ else return &quot;false&quot;;
 
 &lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Compiler-3.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
-&lt;table&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;用这种方式从**(a&lt;/td&gt;
-      &lt;td&gt;b)*a**得到的NFA为：&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
+&lt;p&gt;用这种方式从&lt;strong&gt;(a|b)*a&lt;/strong&gt;得到的NFA为：&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Compiler-4.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
@@ -190,14 +183,222 @@ while(Dstates中存在未标记的状态S){
 
 &lt;h2 id=&quot;section-1&quot;&gt;语法分析&lt;/h2&gt;
 
+&lt;p&gt;语法分析器从词法分析器得到TOKEN流，&lt;strong&gt;生成语法分析树&lt;/strong&gt;或者&lt;strong&gt;抽象语法树&lt;/strong&gt;，方便进一步地处理。预发处理的规则通常是用&lt;strong&gt;上下文无关文法&lt;/strong&gt;来描述：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;table&gt;
+    &lt;tbody&gt;
+      &lt;tr&gt;
+        &lt;td&gt;E → E+T&lt;/td&gt;
+        &lt;td&gt;T // 从E+T可以推导出E，也可以从T推导出E&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;td&gt;T → T*F&lt;/td&gt;
+        &lt;td&gt;F&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;td&gt;F → (E)&lt;/td&gt;
+        &lt;td&gt;id&lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/tbody&gt;
+  &lt;/table&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;对于一个TOKEN流，语法分析器的目的是就是把这些规则“套”上去，从而知道输入的内容是什么样的结构，而输出可能是：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Compiler-6.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;左边是分析语法树，右边是抽象语法树，比较而言抽象语法树更简单一些，而且便利起来更加容易。如果通过一个语法在推导某个式子的时候可以得到两个不同的语法树，那么说明这种语法是有二义性的，比如&lt;strong&gt;if E1 then if E2 then S1 else S2&lt;/strong&gt;中的else就不知道应该对应哪个if，那么进行修改：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Compiler-7.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;消除二义性好像没有什么万能的方法，但是消除左递归却是有的：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+按照某个顺序将非终结符号排序为A1、A2....
+for(从1到n的每个i){
+    for(从1到i-1的每个j){
+        将每个形如Ai&amp;rarr;Aj&amp;upsih;的产生式替换为产生式组Ai&amp;rarr;&amp;delta;1&amp;upsih;|&amp;delta;2&amp;upsih;|...
+        其中Aj&amp;rarr;&amp;delta;1|&amp;delta;2|....是所有Aj的产生式
+    }
+    消除Aj产生式之间的立即左递归
+}
+&lt;/pre&gt;
+
+&lt;p&gt;是不是有点像拓扑排序？有了这些规则那么就需要写程序来按照其描述的逻辑进行处理，说白了就是用程序的结构去模拟预发的结构：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+void A(){
+    选择A的一个产生式，A&amp;rarr;X1X2X3...
+    for(i = 1 to k){
+        if(Xi是一个非终结符号)
+            调用过程Xi();
+        else if(Xi等于当前输入符号a)
+            读入下一个输入符号
+        else
+            /* 发现错误，需要回溯 */
+    }
+}
+&lt;/pre&gt;
+
+&lt;p&gt;典型的&lt;strong&gt;自顶向下&lt;/strong&gt;分析的方法，用递归来实现很容易与语法规则对应起来，但是在出现错误的时候就退回重试显示效率低下的处理方式。在知道下一个TOKEN是什么的情况下就知道用那个产生式，那么就不需要那么多无谓的尝试了，这就是&lt;strong&gt;LL(1)&lt;/strong&gt;的想法，需要两个集合：&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;集合&lt;/th&gt;
+      &lt;th&gt;含义&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;FIREST(α)&lt;/td&gt;
+      &lt;td&gt;可以由α推导得到的串的终结符的集合&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;FOLLOW(A)&lt;/td&gt;
+      &lt;td&gt;在某些句型中紧跟在A右边的终结符号的集合&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;那么之后在终结符号A处使用FOLLOW(A)中的产生式来进行处理即可，这时候非递归的写法也是非常简单的。其实构造FIRST和FOLLOW的过程还是挺简单的，不再赘述。&lt;/p&gt;
+
+&lt;p&gt;下面接着来看&lt;strong&gt;自底向上&lt;/strong&gt;的分析过程：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Compiler-8.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;在这种方式中我们并不是从“根”出发的，而是在看到能处理的部分就把它处理掉，可以用栈来实现：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Compiler-9.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;比较麻烦的是，我们不知道当前有哪些是可以处理的，按道理来说每次在需要的时候去遍历产生式并递归来做也是可以搞定的，但是不免会有很多的遍历是重复劳动，那么就需要预处理了。对于表达式&lt;strong&gt;A→XYZ&lt;/strong&gt;，如果考虑位置的话有四种情况：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;A→.XYZ&lt;/li&gt;
+  &lt;li&gt;A→X.YZ&lt;/li&gt;
+  &lt;li&gt;A→XY.Z&lt;/li&gt;
+  &lt;li&gt;A→XYZ.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;我们将这些称为项，由一个语法的产生式对应的过个产生式中有一些是等价的，将他们放在同一个集合（项集）中，比如对于语法 ：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;E’→E
+E→E+T|T
+T→T*F|F
+F→(E)|id&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;生成项集之后，在遇到一个TOKEN的情况下就知道下个项集是什么了，这样我们根据上面的语法就得到了一个状态图：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Compiler-10.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;项集闭包的构造方法比较简单：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+SetOfItems CLOSURE(I){
+    J = I;
+    repeat:
+        for(J中的每个项A→α.Bβ)
+            for(G的每个产生式B→γ)
+                if(项B→.γ不在J中)
+                    将B→.γ加入J中;
+    until 在某一轮中没有新项被加入到J中;
+    return J;
+}
+&lt;/pre&gt;
+
+&lt;p&gt;有了状态的定义，那么接下来需要定义状态之间的转换：&lt;strong&gt;GOTO(I,X)&lt;/strong&gt;表示了形如A→α.Xβ所在的项集到A→αX.β的转换，构造方法如下：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+void items(G'){
+    C = {CLOSURE([S'→.S])};
+    repeat
+        for(C中的每个项集I)
+            for(每个文法符号X)
+                if(GOTO(I,X)非空且不在C中)
+                    将GOTO(I,X)加入C中;
+    until 在某一轮中没有新的项集被加入到C中;
+}
+&lt;/pre&gt;
+
+&lt;p&gt;有了上面这些，我们可以开始构造一个&lt;strong&gt;SLR(1)&lt;/strong&gt;语法分析表了：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;如果[A→α.aβ]在Ii中并且GOTO(Ii,a)=Ij，那么将ACTION[i,a]设置为“&lt;strong&gt;移入j&lt;/strong&gt;”;&lt;/li&gt;
+  &lt;li&gt;如果[A→α.]在Ii中，那么对于FOLLOW(A)中所有的a，将ACTION[i,a]设置为规约“&lt;strong&gt;规约A→α&lt;/strong&gt;”;&lt;/li&gt;
+  &lt;li&gt;如果[S’→S.]在Ii中，那么将ACTION[i,$]设置为“&lt;strong&gt;接受&lt;/strong&gt;”;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;在分析程序中用一个栈来记录当前看到的状态，然后根据ACTION来进行操作即可。&lt;/p&gt;
+
+&lt;p&gt;在LR(0)中能规约的时候就规约，这样做很不科学，但是在有冲突的时候好像没有别的方法，只能“向前看”。&lt;strong&gt;规范LR&lt;/strong&gt;充分地利用了向前看符号，利用一个很大的项集来工作，每个项的格式如下：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;形式为[A→α.Bβ,a]，前半部分不变，后半部分为向前看符号！&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;构造方法如下：&lt;/p&gt;
+
+&lt;pre class=&quot;prettypring&quot;&gt;
+SetOfItems CLOSURE(I){
+    repeat
+        for(I中的每个项[A→α.Bβ,a])
+            for(FIRST(βa)中的每个终结符号b)
+                将[B→.γ,b]加入到集合I中
+    until 不能向I中加入更多的项
+    return I;
+}
+SetOfItems GOTO(I,X){
+    将J初始化为空集;
+    for(I中的每个项[A→α.Bβ,a])
+        将项[A→αB.β,a]加入到集合J中
+    return CLOSURE(J);
+}
+void items(G'){
+    将C初始化为{CLOSURE}({[S'→.S$]});
+    repeat
+        for(C中的每个项集I)
+            for(每个文法符号X)
+                if(GOTO(I,X)非空且不在C中)
+                    将GOTO(I,X)加入到C中;
+    until 不再有新的项集加入到C中;
+}
+&lt;/pre&gt;
+
+&lt;p&gt;对于文法：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;S’→S
+S→C C
+C→c C | d&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;得到的规范LR项集的状态图如下：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Compiler-11.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;此时构造分析表的方法如下：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;如果[A→α.aβ，b]在Ii中且GOTO(Ii,a)=Ij，那么将ACTION[i,a]设置为“移入j”;&lt;/li&gt;
+  &lt;li&gt;如果[A→α.,a]在Ii中且A≠S’，那么将ACTION[i,a]设置为“规约A→α.”;&lt;/li&gt;
+  &lt;li&gt;如果[S’→S,$]在Ii中，那么将ACTION[i,$]设置为“接受”;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;这种方式和SLR的运行方式类似，不再赘述！&lt;/p&gt;
+
+&lt;p&gt;向前看LR(&lt;strong&gt;LALR&lt;/strong&gt;)基于LR(0)项集族，和基于LR(1)项的典型语法分析器相比，状态要少很多，通过想LR(0)项中小心地引入向前看符号，我们使用LALR方法处理的文法比使用SLR处理的文法更多，同时构造得到的语法分析表并不比SLR语法分析表大，通常情况下LALR方法是最合适的选择。&lt;/p&gt;
+
 &lt;h2 id=&quot;section-2&quot;&gt;语法制导翻译&lt;/h2&gt;
 </description>
         <pubDate>Sat, 01 Aug 2015 00:00:00 +0800</pubDate>
-        <link>/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/2015/08/01/Compiler-Theory.html</link>
-        <guid isPermaLink="true">/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/2015/08/01/Compiler-Theory.html</guid>
+        <link>/dsl/2015/08/01/Compiler-Theory.html</link>
+        <guid isPermaLink="true">/dsl/2015/08/01/Compiler-Theory.html</guid>
         
         
-        <category>编译原理</category>
+        <category>dsl</category>
         
       </item>
     
