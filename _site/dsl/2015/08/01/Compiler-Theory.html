@@ -192,22 +192,9 @@ while(Dstates中存在未标记的状态S){
 <p>语法分析器从词法分析器得到TOKEN流，<strong>生成语法分析树</strong>或者<strong>抽象语法树</strong>，方便进一步地处理。预发处理的规则通常是用<strong>上下文无关文法</strong>来描述：</p>
 
 <blockquote>
-  <table>
-    <tbody>
-      <tr>
-        <td>E → E+T</td>
-        <td>T // 从E+T可以推导出E，也可以从T推导出E</td>
-      </tr>
-      <tr>
-        <td>T → T*F</td>
-        <td>F</td>
-      </tr>
-      <tr>
-        <td>F → (E)</td>
-        <td>id</td>
-      </tr>
-    </tbody>
-  </table>
+  <p>E → E+T|T // 从E+T可以推导出E，也可以从T推导出E
+T → T*F|F
+F → (E)|id</p>
 </blockquote>
 
 <p>对于一个TOKEN流，语法分析器的目的是就是把这些规则“套”上去，从而知道输入的内容是什么样的结构，而输出可能是：</p>
@@ -289,12 +276,12 @@ void A(){
 
 <p>我们将这些称为项，由一个语法的产生式对应的过个产生式中有一些是等价的，将他们放在同一个集合（项集）中，比如对于语法 ：</p>
 
-<blockquote>
-  <p>E’→E
-E→E+T|T
-T→T*F|F
-F→(E)|id</p>
-</blockquote>
+<ul>
+  <li>E’→E</li>
+  <li>E→E+T|T</li>
+  <li>T→T*F|F</li>
+  <li>F→(E)|id</li>
+</ul>
 
 <p>生成项集之后，在遇到一个TOKEN的情况下就知道下个项集是什么了，这样我们根据上面的语法就得到了一个状态图：</p>
 
@@ -342,12 +329,12 @@ void items(G'){
 <p>在LR(0)中能规约的时候就规约，这样做很不科学，但是在有冲突的时候好像没有别的方法，只能“向前看”。<strong>规范LR</strong>充分地利用了向前看符号，利用一个很大的项集来工作，每个项的格式如下：</p>
 
 <blockquote>
-  <p>形式为[A→α.Bβ,a]，前半部分不变，后半部分为向前看符号！</p>
+  <p>形式为[A→α.Bβ,a]，前半部分不变，后半部分为向前看符号</p>
 </blockquote>
 
 <p>构造方法如下：</p>
 
-<pre class="prettypring">
+<pre class="prettyprint">
 SetOfItems CLOSURE(I){
     repeat
         for(I中的每个项[A→α.Bβ,a])
@@ -363,7 +350,7 @@ SetOfItems GOTO(I,X){
     return CLOSURE(J);
 }
 void items(G'){
-    将C初始化为{CLOSURE}({[S'→.S$]});
+    将C初始化为{CLOSURE}({[S'→.S,$]});
     repeat
         for(C中的每个项集I)
             for(每个文法符号X)
@@ -375,11 +362,20 @@ void items(G'){
 
 <p>对于文法：</p>
 
-<blockquote>
-  <p>S’→S
-S→C C
-C→c C | d</p>
-</blockquote>
+<ul>
+  <li>S’→S</li>
+  <li>S→C C</li>
+  <li>
+    <table>
+      <tbody>
+        <tr>
+          <td>C→c C</td>
+          <td>d</td>
+        </tr>
+      </tbody>
+    </table>
+  </li>
+</ul>
 
 <p>得到的规范LR项集的状态图如下：</p>
 
@@ -396,6 +392,18 @@ C→c C | d</p>
 <p>这种方式和SLR的运行方式类似，不再赘述！</p>
 
 <p>向前看LR(<strong>LALR</strong>)基于LR(0)项集族，和基于LR(1)项的典型语法分析器相比，状态要少很多，通过想LR(0)项中小心地引入向前看符号，我们使用LALR方法处理的文法比使用SLR处理的文法更多，同时构造得到的语法分析表并不比SLR语法分析表大，通常情况下LALR方法是最合适的选择。</p>
+
+<p>可以将LALR看做是将LR(1)中有相同核心项的项集合并，那么按照这种思路就可以从LR(1)构造得到LALR的分析表和GOTO，但是耗费空间巨大，</p>
+
+<pre class="prettyprint">
+for(K中的每个项A→α.β){
+    J:=CLOSURE({[A→α.β,#]});
+    if([B→ϒ.Xδ,a]在J中，并且a不等于#)
+        断定GOTO(I,X)中的项B→ϒ.Xδ的向前看符号a是自发生的
+    if([B→ϒ.Xδ,#]在J中)
+        断定向前看符号从I中的项A→α.β传播到了GOTO(I,X)中的项B→ϒX.δ上
+}
+</pre>
 
 <h2 id="section-2">语法制导翻译</h2>
 

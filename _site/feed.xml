@@ -5,9 +5,23 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 02 Aug 2015 23:05:15 +0800</pubDate>
-    <lastBuildDate>Sun, 02 Aug 2015 23:05:15 +0800</lastBuildDate>
+    <pubDate>Fri, 07 Aug 2015 21:34:29 +0800</pubDate>
+    <lastBuildDate>Fri, 07 Aug 2015 21:34:29 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
+    
+      <item>
+        <title>libsvm使用总结</title>
+        <description>&lt;p&gt;##&lt;/p&gt;
+
+</description>
+        <pubDate>Thu, 06 Aug 2015 00:00:00 +0800</pubDate>
+        <link>/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/2015/08/06/Libsvm.html</link>
+        <guid isPermaLink="true">/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/2015/08/06/Libsvm.html</guid>
+        
+        
+        <category>机器学习</category>
+        
+      </item>
     
       <item>
         <title>编译原理（一）</title>
@@ -186,22 +200,9 @@ while(Dstates中存在未标记的状态S){
 &lt;p&gt;语法分析器从词法分析器得到TOKEN流，&lt;strong&gt;生成语法分析树&lt;/strong&gt;或者&lt;strong&gt;抽象语法树&lt;/strong&gt;，方便进一步地处理。预发处理的规则通常是用&lt;strong&gt;上下文无关文法&lt;/strong&gt;来描述：&lt;/p&gt;
 
 &lt;blockquote&gt;
-  &lt;table&gt;
-    &lt;tbody&gt;
-      &lt;tr&gt;
-        &lt;td&gt;E → E+T&lt;/td&gt;
-        &lt;td&gt;T // 从E+T可以推导出E，也可以从T推导出E&lt;/td&gt;
-      &lt;/tr&gt;
-      &lt;tr&gt;
-        &lt;td&gt;T → T*F&lt;/td&gt;
-        &lt;td&gt;F&lt;/td&gt;
-      &lt;/tr&gt;
-      &lt;tr&gt;
-        &lt;td&gt;F → (E)&lt;/td&gt;
-        &lt;td&gt;id&lt;/td&gt;
-      &lt;/tr&gt;
-    &lt;/tbody&gt;
-  &lt;/table&gt;
+  &lt;p&gt;E → E+T|T // 从E+T可以推导出E，也可以从T推导出E
+T → T*F|F
+F → (E)|id&lt;/p&gt;
 &lt;/blockquote&gt;
 
 &lt;p&gt;对于一个TOKEN流，语法分析器的目的是就是把这些规则“套”上去，从而知道输入的内容是什么样的结构，而输出可能是：&lt;/p&gt;
@@ -283,12 +284,12 @@ void A(){
 
 &lt;p&gt;我们将这些称为项，由一个语法的产生式对应的过个产生式中有一些是等价的，将他们放在同一个集合（项集）中，比如对于语法 ：&lt;/p&gt;
 
-&lt;blockquote&gt;
-  &lt;p&gt;E’→E
-E→E+T|T
-T→T*F|F
-F→(E)|id&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;ul&gt;
+  &lt;li&gt;E’→E&lt;/li&gt;
+  &lt;li&gt;E→E+T|T&lt;/li&gt;
+  &lt;li&gt;T→T*F|F&lt;/li&gt;
+  &lt;li&gt;F→(E)|id&lt;/li&gt;
+&lt;/ul&gt;
 
 &lt;p&gt;生成项集之后，在遇到一个TOKEN的情况下就知道下个项集是什么了，这样我们根据上面的语法就得到了一个状态图：&lt;/p&gt;
 
@@ -336,12 +337,12 @@ void items(G'){
 &lt;p&gt;在LR(0)中能规约的时候就规约，这样做很不科学，但是在有冲突的时候好像没有别的方法，只能“向前看”。&lt;strong&gt;规范LR&lt;/strong&gt;充分地利用了向前看符号，利用一个很大的项集来工作，每个项的格式如下：&lt;/p&gt;
 
 &lt;blockquote&gt;
-  &lt;p&gt;形式为[A→α.Bβ,a]，前半部分不变，后半部分为向前看符号！&lt;/p&gt;
+  &lt;p&gt;形式为[A→α.Bβ,a]，前半部分不变，后半部分为向前看符号&lt;/p&gt;
 &lt;/blockquote&gt;
 
 &lt;p&gt;构造方法如下：&lt;/p&gt;
 
-&lt;pre class=&quot;prettypring&quot;&gt;
+&lt;pre class=&quot;prettyprint&quot;&gt;
 SetOfItems CLOSURE(I){
     repeat
         for(I中的每个项[A→α.Bβ,a])
@@ -357,7 +358,7 @@ SetOfItems GOTO(I,X){
     return CLOSURE(J);
 }
 void items(G'){
-    将C初始化为{CLOSURE}({[S'→.S$]});
+    将C初始化为{CLOSURE}({[S'→.S,$]});
     repeat
         for(C中的每个项集I)
             for(每个文法符号X)
@@ -369,11 +370,20 @@ void items(G'){
 
 &lt;p&gt;对于文法：&lt;/p&gt;
 
-&lt;blockquote&gt;
-  &lt;p&gt;S’→S
-S→C C
-C→c C | d&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;ul&gt;
+  &lt;li&gt;S’→S&lt;/li&gt;
+  &lt;li&gt;S→C C&lt;/li&gt;
+  &lt;li&gt;
+    &lt;table&gt;
+      &lt;tbody&gt;
+        &lt;tr&gt;
+          &lt;td&gt;C→c C&lt;/td&gt;
+          &lt;td&gt;d&lt;/td&gt;
+        &lt;/tr&gt;
+      &lt;/tbody&gt;
+    &lt;/table&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
 
 &lt;p&gt;得到的规范LR项集的状态图如下：&lt;/p&gt;
 
@@ -390,6 +400,18 @@ C→c C | d&lt;/p&gt;
 &lt;p&gt;这种方式和SLR的运行方式类似，不再赘述！&lt;/p&gt;
 
 &lt;p&gt;向前看LR(&lt;strong&gt;LALR&lt;/strong&gt;)基于LR(0)项集族，和基于LR(1)项的典型语法分析器相比，状态要少很多，通过想LR(0)项中小心地引入向前看符号，我们使用LALR方法处理的文法比使用SLR处理的文法更多，同时构造得到的语法分析表并不比SLR语法分析表大，通常情况下LALR方法是最合适的选择。&lt;/p&gt;
+
+&lt;p&gt;可以将LALR看做是将LR(1)中有相同核心项的项集合并，那么按照这种思路就可以从LR(1)构造得到LALR的分析表和GOTO，但是耗费空间巨大，&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+for(K中的每个项A→α.β){
+    J:=CLOSURE({[A→α.β,#]});
+    if([B→ϒ.Xδ,a]在J中，并且a不等于#)
+        断定GOTO(I,X)中的项B→ϒ.Xδ的向前看符号a是自发生的
+    if([B→ϒ.Xδ,#]在J中)
+        断定向前看符号从I中的项A→α.β传播到了GOTO(I,X)中的项B→ϒX.δ上
+}
+&lt;/pre&gt;
 
 &lt;h2 id=&quot;section-2&quot;&gt;语法制导翻译&lt;/h2&gt;
 </description>
@@ -1451,293 +1473,6 @@ filetype plugin indent on
         
         
         <category>工具</category>
-        
-      </item>
-    
-      <item>
-        <title>Golang入门</title>
-        <description>&lt;p&gt;虽然Go已经不算是一个很新的语言了，但是现在非常地火！一般来说语言本身没有什么好讲究的，能快速编程、少点坑就算是一门好的语言了。但是，如果语言火了之后，其周围的工具发展起来之后，能用它做的事情就太多了~&lt;/p&gt;
-
-&lt;h2 id=&quot;section&quot;&gt;环境搭建&lt;/h2&gt;
-
-&lt;p&gt;因为我仅仅打算在ubuntu上面进行golang的开发，所以其他的系统后面用过了再来补充！配置来说相当容易：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;下载golang的包解压安装，如果官网上的访问不到就到&lt;a href=&quot;http://www.golangtc.com/&quot;&gt;golang中国&lt;/a&gt;找个版本下载&lt;/li&gt;
-  &lt;li&gt;在/etc/profile中配置&lt;strong&gt;PATH&lt;/strong&gt;、&lt;strong&gt;GOROOT&lt;/strong&gt;、&lt;strong&gt;GOPATH&lt;/strong&gt;&lt;/li&gt;
-  &lt;li&gt;配置你的IDE&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;下面就开始GOLANG的学习。&lt;/p&gt;
-
-&lt;h2 id=&quot;section-1&quot;&gt;基础语法&lt;/h2&gt;
-
-&lt;p&gt;按照惯例，来看Hello World代码：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-package main
-
-import &quot;fmt&quot;
-
-func main(){
-    fmt.Println(&quot;Hello World&quot;);
-}
-&lt;/pre&gt;
-
-&lt;p&gt;使用&lt;strong&gt;go run hello.go&lt;/strong&gt;即可执行，也可以使用&lt;strong&gt;go build hello.go&lt;/strong&gt;打包完成之后在运行，所有的命令作用如下：&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;命令&lt;/th&gt;
-      &lt;th&gt;作用&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;build&lt;/td&gt;
-      &lt;td&gt;用于测试编译&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;clean&lt;/td&gt;
-      &lt;td&gt;移除当前源码包里面编译生成的文件&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;env&lt;/td&gt;
-      &lt;td&gt;环境变量&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;fix&lt;/td&gt;
-      &lt;td&gt;修复以前老版本的代码到新版本&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;fmt&lt;/td&gt;
-      &lt;td&gt;代码格式化&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;generate&lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;get&lt;/td&gt;
-      &lt;td&gt;动态获取远程代码包的，目前支持的有BitBucket、GitHub、Google Code和Launchpad&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;install&lt;/td&gt;
-      &lt;td&gt;生成结果文件(可执行文件或者.a包)，把编译好的结果移到$GOPATH/pkg或者$GOPATH/bin&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;list&lt;/td&gt;
-      &lt;td&gt;列出当前全部安装的package&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;run&lt;/td&gt;
-      &lt;td&gt;编译并运行Go程序&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;test&lt;/td&gt;
-      &lt;td&gt;自动读取源码目录下面名为*_test.go的文件，生成并运行测试用的可执行文件&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;tool&lt;/td&gt;
-      &lt;td&gt;运行对应的工具类&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;version&lt;/td&gt;
-      &lt;td&gt;版本号&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;码代码最基本的是变量和常量，在Go中的定义方法如下：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-var a string = &quot;initial&quot;  /* 变量 */
-const s string = &quot;initial&quot; /* 常量 */
-&lt;/pre&gt;
-
-&lt;p&gt;另外一些基本的控制结构也基本一致，简单来看就是省略了不少的括号：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-// FOR
-for i &amp;lt;= 3
-for i := 1; i &amp;lt;= 3; i++
-for
-// IF
-if 8%4 == 0
-if num := 9; num &amp;lt; 0
-// SWITCH
-switch time.Now().Weekday() {
-    case time.Saturday, time.Sunday:
-    default:
-}
-&lt;/pre&gt;
-
-&lt;p&gt;Go中的集合用起来感觉跟Python中的有点像：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-// ARRAY:数组
-var a [5]int
-b := [5]int{1, 2, 3, 4, 5}
-var c [2][3]int
-
-// SLICES:跟数组很像，不过区间操作非常方便
-s := make([]string, 10)
-l := s[2:5]
-l := s[2:]
-l := s[:5]
-
-// RANGE:更方便地遍历，数组的话返回下标和值，MAP返回KEY、VALUE
-for _,num := nums {
-    sum += num;
-}
-
-// MAP:这个没什么好说的
-m := make(map[string]int)
-m[&quot;a&quot;] = 1
-m[&quot;b&quot;] = 2
-&lt;/pre&gt;
-
-&lt;p&gt;在Go中定义方法也是比较奇葩的语法，用过的其他语言大部分把返回值写在前面，而它是写在后面，不过应该也没有谁优谁劣，而且在Go中方法可以返回多个值(尤其是在后面会用来返回错误)：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-func vals() (int, int) {// 普通函数：a, b := vals()
-    return 1, 2;
-}
-func sum(nums ...int) {// 可变参数：sum(1, 2)   sum(1, 2, 3)
-}
-func zeroptr(iptr *int) {// 参数类型为指针
-    *iptr = 0
-}
-func intSeq() func() int {// 闭包
-    i := 0
-    return func() int {
-        i += 1
-        return i
-    }
-}
-&lt;/pre&gt;
-
-&lt;p&gt;在Go中所有的面向对象就是&lt;strong&gt;struct&lt;/strong&gt;了，是不是感觉有点简单？或者有点low？另外在Go中定义了一个奇葩的&lt;strong&gt;interface&lt;/strong&gt;，感觉有点像是一个方法的集合：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-type method interface {
-    output();
-}
-
-type person struct {
-    name string
-    age  int
-}
-
-func (p *person) output(){// 定义方法，再次吐槽：是不是跟Python很像
-    fmt.Println(p.name, p.age);
-}
-
-func f(m method) { // 为不同对象定义相同的方法，用这个来实现泛型的话，额~~
-	fmt.Println(m);
-    m.output();
-}
-
-func f1(arg int) (int, error) {
-    return -1, errors.New(&quot;i can't work！&quot;); // 返回错误
-}
-
-// 调用方法
-fmt.Println(person{&quot;Bob&quot;, 20})
-fmt.Println(person{name: &quot;Alice&quot;, age: 30})
-&lt;/pre&gt;
-
-&lt;p&gt;在Go中比较吸引人的应该就是&lt;strong&gt;goroutines&lt;/strong&gt;，面向并发的语言自然要最大程度的简化对应的代码才算合格。在Go中任意一个方法都可以使用&lt;strong&gt;go&lt;/strong&gt;这个关键字来当做一个协程进行处理：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;go func(“abc”)&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;仅仅这样是不够的，在Go中又提供了&lt;strong&gt;channel&lt;/strong&gt;用来做消息传递，这样：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;消息传递&lt;/li&gt;
-  &lt;li&gt;共享内存&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;这两种方式在Go里面就凑齐了，另外&lt;strong&gt;select&lt;/strong&gt;也大大简化了IO时候的操作，代码减了多少并不重要，关键是代码与其含义更加地贴近：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-messages := make(chan string)
-messages := make(chan string, 2)
-
-messages &amp;lt;- &quot;buffered&quot; // 写入
-msg := &amp;lt;-messages // 读取
-
-select {
-    case msg := &amp;lt;-messages:
-        fmt.Println(&quot;received message&quot;, msg)
-    default:// 这样就不会阻塞了
-        fmt.Println(&quot;no message received&quot;)
-}
-&lt;/pre&gt;
-
-&lt;p&gt;总是感觉select与switch很像，不仅仅是写法上面，另外连TimeOut的写法能很简单、粗暴地搞定：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-select {
-    case res := &amp;lt;-c1:
-        fmt.Println(res)
-    case &amp;lt;-time.After(time.Second * 1):
-        fmt.Println(&quot;timeout 1&quot;)
-    }
-&lt;/pre&gt;
-
-&lt;p&gt;用这种方式能设置延迟，在需要重复的场景下可以用&lt;strong&gt;ticker := time.NewTicker(time.Millisecond * 500)&lt;/strong&gt;来解决。&lt;/p&gt;
-
-&lt;p&gt;在Go语言中不支持传统的try-catch-finally这种异常机制，因为Go的设计者认为可能程序员经常会滥用，所以在大部分的情况都通过返回多个值、其中一个为&lt;strong&gt;ERROR&lt;/strong&gt;的办法来处理，只有在真正异常的情况下才使用Go的Exception机制：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;&lt;strong&gt;defer&lt;/strong&gt;：为函数添加结束时执行的语句&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;panic&lt;/strong&gt;：非常严重的不可恢复的错误&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;recover&lt;/strong&gt;：从错误中恢复&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;来看简单的例子：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-func f() (result int) {// 返回值为1，只有defer执行后才有效
-    defer func() {
-        result++
-    }()
-    return 0;
-}
-panic(&quot;problem&quot;);// 在这个地方程序就挂掉了
-
-func a(){
-    panic(&quot;a---error&quot;);
-}
-func b(){
-    panic(&quot;b---error&quot;);
-}
-func(){
-    def func(){
-        if r:= recover(); r != nil {
-            log.Printf(&quot;caught: %v&quot;, r);
-        }
-    }
-}
-&lt;/pre&gt;
-
-&lt;p&gt;用recover的方法有点像缩水版的try-catch，最后，在Go中居然支持&lt;strong&gt;goto&lt;/strong&gt;，虽然我觉得goto还是挺好用的。&lt;/p&gt;
-
-&lt;p&gt;简单把Go的语法过了一遍，总体的感觉就是简单、面向工程开发，没有很多的废话，也没有太多学术上很有用、工程上用的不多的细节。基本语法的例子都可以在&lt;a href=&quot;https://gobyexample.com/&quot;&gt;这里&lt;/a&gt;找到。&lt;/p&gt;
-
-&lt;h2 id=&quot;section-2&quot;&gt;工程开发&lt;/h2&gt;
-
-</description>
-        <pubDate>Tue, 09 Jun 2015 00:00:00 +0800</pubDate>
-        <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/06/09/Golang-Start.html</link>
-        <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/06/09/Golang-Start.html</guid>
-        
-        
-        <category>编程技术</category>
         
       </item>
     
