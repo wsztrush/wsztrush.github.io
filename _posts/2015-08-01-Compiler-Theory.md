@@ -269,7 +269,7 @@ void items(G'){
 
 - S'→S
 - S→C C
-- C→c C | d
+- C→c C \| d
 
 得到的规范LR项集的状态图如下：
 
