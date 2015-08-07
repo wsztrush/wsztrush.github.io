@@ -21,7 +21,7 @@ categories: DSL
 NFA|不确定自动机，从当前状态根据字符转移的时候，下一个状态是不确定的
 DFA|确定自动机，状态转移时下一个状态时确定的
 
-来看一个NFA的例子，对于**(a|b)\*abb**这样的词，对应的NFA为：
+来看一个NFA的例子，对于**(a\|b)\*abb**这样的词，对应的NFA为：
 
 ![](http://7xiz10.com1.z0.glb.clouddn.com/Compiler-2.png)
 
