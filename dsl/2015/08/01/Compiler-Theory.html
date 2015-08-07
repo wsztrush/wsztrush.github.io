@@ -46,14 +46,7 @@
   </tbody>
 </table>
 
-<table>
-  <tbody>
-    <tr>
-      <td>来看一个NFA的例子，对于**(a</td>
-      <td>b)*abb**这样的词，对应的NFA为：</td>
-    </tr>
-  </tbody>
-</table>
+<p>来看一个NFA的例子，对于<strong>(a|b)*abb</strong>这样的词，对应的NFA为：</p>
 
 <p><img src="http://7xiz10.com1.z0.glb.clouddn.com/Compiler-2.png" alt="" /></p>
 
@@ -365,16 +358,7 @@ void items(G'){
 <ul>
   <li>S’→S</li>
   <li>S→C C</li>
-  <li>
-    <table>
-      <tbody>
-        <tr>
-          <td>C→c C</td>
-          <td>d</td>
-        </tr>
-      </tbody>
-    </table>
-  </li>
+  <li>C→c C | d</li>
 </ul>
 
 <p>得到的规范LR项集的状态图如下：</p>

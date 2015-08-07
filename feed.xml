@@ -5,8 +5,8 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 07 Aug 2015 21:34:29 +0800</pubDate>
-    <lastBuildDate>Fri, 07 Aug 2015 21:34:29 +0800</lastBuildDate>
+    <pubDate>Fri, 07 Aug 2015 21:41:03 +0800</pubDate>
+    <lastBuildDate>Fri, 07 Aug 2015 21:41:03 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
@@ -54,14 +54,7 @@
   &lt;/tbody&gt;
 &lt;/table&gt;
 
-&lt;table&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;来看一个NFA的例子，对于**(a&lt;/td&gt;
-      &lt;td&gt;b)*abb**这样的词，对应的NFA为：&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
+&lt;p&gt;来看一个NFA的例子，对于&lt;strong&gt;(a|b)*abb&lt;/strong&gt;这样的词，对应的NFA为：&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Compiler-2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
@@ -373,16 +366,7 @@ void items(G'){
 &lt;ul&gt;
   &lt;li&gt;S’→S&lt;/li&gt;
   &lt;li&gt;S→C C&lt;/li&gt;
-  &lt;li&gt;
-    &lt;table&gt;
-      &lt;tbody&gt;
-        &lt;tr&gt;
-          &lt;td&gt;C→c C&lt;/td&gt;
-          &lt;td&gt;d&lt;/td&gt;
-        &lt;/tr&gt;
-      &lt;/tbody&gt;
-    &lt;/table&gt;
-  &lt;/li&gt;
+  &lt;li&gt;C→c C | d&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;得到的规范LR项集的状态图如下：&lt;/p&gt;
