@@ -94,6 +94,7 @@ while(Dstates中存在未标记的状态S){
             将U作为未标记的状态加入到Dstates中;
         Dtran[S,a] = U;
     }
+}
 </pre>
 
 其中：
