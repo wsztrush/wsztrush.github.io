@@ -1,0 +1,338 @@
+<!DOCTYPEhtmlPUBLIC"-//W3C//DTDXHTML1.0Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html>
+	<!-- 引入CSS/JS -->
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="/assets/css/main.css"/>
+	<script type="text/javascript" src="/assets/javascripts/main.js"></script>
+
+	<!-- pygments代码高亮 -->
+	<!-- <link rel="stylesheet" type="text/css" href="/assets/css/pygments.css"/> -->
+	<!-- google代码高亮 -->
+	<script src="/assets/css/prettify.js"></script>
+	<link href="/assets/css/prettify.css" rel="stylesheet">
+	<title>Java并发编程实战</title>
+</head>
+
+	<body onload="prettyPrint()">
+		<div class="post-container">
+			<h1>Java并发编程实战</h1>
+			<p>看完之后感觉Doug Lea写的书都是精品，不过有些地方翻译的确实不怎么样…</p>
+
+<h2 id="section">线程</h2>
+
+<p>线程比进程更轻，更易于共享数据，关于Java中的线程要了解：</p>
+
+<ol>
+  <li>线程安全</li>
+  <li>可见性</li>
+  <li>中断</li>
+  <li>关闭钩子</li>
+  <li>守护线程</li>
+  <li>ThreadLocal</li>
+  <li>线程的开销</li>
+</ol>
+
+<p>很长一段时间对线程安全的定义比较迷糊，下面这个定义感觉是比较准确的：</p>
+
+<blockquote>
+  <p>当多个线程访问某个类时，不管运行时环境采用何种调度方式，该类都能表现出正确的行为，那么就称这个类是线程安全的。</p>
+</blockquote>
+
+<p>或者更简单地描述：</p>
+
+<blockquote>
+  <p>结果与调度的方式无关。</p>
+</blockquote>
+
+<p>看似简单但坑却不少，比如多线程中可见性这种反直觉的东西：</p>
+
+<pre class="prettyprint">
+private static boolean ready;
+private static int number;
+static class ReaderThread extends Thread {
+	public void run() {
+    	while(!ready){
+        	Thread.yield();
+        }
+        System.out.println(number);
+    }
+}
+public static void main(String[] args){
+	new ReaderThread().start();
+    number = 42;
+    ready = true;
+}
+</pre>
+
+<p>这里程序可能持续运行下去，因为ReaderThread可能永远看不到ready的值；程序也可能输出0，因为ReadyThread可能只看到写入ready的值：</p>
+
+<blockquote>
+  <p>在没有同步的情况下编译器、处理器以及运行时等都可能对操作的执行顺序进行一些意想不到的调整。</p>
+</blockquote>
+
+<p>开启线程只需要一个start，而想让它停下来就没那么简单了，因为stop已经不建议再使用，原因是：</p>
+
+<ol>
+  <li>在任意位置抛出ThreadDeath</li>
+  <li>释放锁</li>
+  <li>关闭时需要同步，如果run是同步的那就永远都无法关闭</li>
+</ol>
+
+<p>取而代之的是中断，但是中断并不代表停止，而是：</p>
+
+<blockquote>
+  <p>调用interrupt并不意味着立即停止目标线程的执行，而只是传递请求中断的消息。</p>
+</blockquote>
+
+<p>但是比较靠谱的是在很多库中已经对中断做了处理：</p>
+
+<ol>
+  <li>在调用join、sleep、wai等阻塞返回后会抛出异常并擦除中断状态</li>
+  <li>在IO操作上阻塞时也会抛出异常并关闭流</li>
+  <li>在java.nio.channel.Selector上等待时也会立即返回</li>
+</ol>
+
+<p>如果没有上面这些情况的话，调用中断不会对线程的执行造成半毛钱影响，如果你需要你的线程去响应中断，需要在合适的地方增加代码去判断并处理。</p>
+
+<p>想让线程按照我们的意愿停止已经很麻烦了，但是如果它运行的时候还抛出莫名其妙的异常就更加恼火了，不过幸好还有：</p>
+
+<pre class="prettyprint">
+public interface UncaughtExceptionHandler {
+	void uncaughtException(Thread t, Throwable e);
+}
+</pre>
+
+<p>有时候我们需要在程序运行完成的时候做一些扫尾的工作，可以用关闭钩子来实现：</p>
+
+<pre class="prettyprint">
+Runtime.getRuntime().addShutdownHook(new Thread(){
+	public void run(){
+    	// your code
+    }
+})
+</pre>
+
+<p>只有JVM是正常结束的时候才会运行钩子，被暴力kill掉的时候就没机会执行了。既然讲到JVM的退出刚好可以看下Daemon和正常线程的区别：</p>
+
+<blockquote>
+  <p>当线程退出时，JVM会检查其他正在运行的线程，如果这些线程都是守护线程，那么JVM将退出。</p>
+</blockquote>
+
+<p>类似垃圾回收这些线程就得设置成守护线程，不能让他们影响了JVM的正常退出。在开启多线程的时候ThreadLocal真是一个神器，可以让很多信息的传递变得非常简单，具体可以看<a href="http://wsztrush.github.io/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/05/14/Java-ThreadLocal.html">这里</a>。</p>
+
+<p>最后，线程不仅在效率还是体验方面都带来了巨大的提升，单并非多多益善，增加线程也同时会增加一些开销：</p>
+
+<ol>
+  <li>上下文切换</li>
+  <li>内存同步（这个影响很小）</li>
+  <li>阻塞（竞争的同步可能需要操作系统的介入）</li>
+</ol>
+
+<p>现在大家已经很少new Thread().start();这么玩了，大部分都会用线程池来管理，下面接着看：</p>
+
+<h2 id="section-1">线程池</h2>
+
+<p>创建新线程也是有开销了，所以可以将线程缓存下来重复利用，在使用线程池时需要注意：</p>
+
+<ol>
+  <li>阀值</li>
+  <li>饱和策略</li>
+  <li>ThreadFactory</li>
+</ol>
+
+<p>平时用到的大部分线程池的底层都是ThreadPoolExecutor，在初始化时有几个关键的阀值需要注意：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>阀值</th>
+      <th>作用</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>corePoolSize</td>
+      <td>在execute时如果当先线程数小于该值则直接创建新线程来运行</td>
+    </tr>
+    <tr>
+      <td>maximumPoolSize</td>
+      <td>最大线程数</td>
+    </tr>
+    <tr>
+      <td>keepAliveTime</td>
+      <td>Worker取任务的等待时长，超时后Worker就退出了</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>如果在execute的时候线程池已经满了，同时任务队列也满了，那么此时任务怎么办？这时候就饱和策略就要上场了：</p>
+
+<pre class="prettyprint">
+public interface RejectedExecutionHandler {
+    void rejectedExecution(Runnable r, ThreadPoolExecutor executor);
+}
+</pre>
+
+<p>同时提供四种实现：</p>
+
+<ol>
+  <li>AbortPolicy：抛异常</li>
+  <li>CallerRunsPolicy：退回到调用者线程处理任务</li>
+  <li>DiscardOldestPolicy：抛弃最老任务</li>
+  <li>DiscardPolicy：抛弃</li>
+</ol>
+
+<p>最后可以通过ThreadFactory来设置线程池中线程的属性：</p>
+
+<pre class="prettyprint">
+public interfact ThreadFactory{
+    Thread newThread(Runnable r);
+}
+</pre>
+
+<p>在execute时如果需要创建新的线程就会调用该方法。</p>
+
+<h2 id="section-2">锁</h2>
+
+<p>多个线程同时跑为了保证结果的准确锁是少不了的：</p>
+
+<ol>
+  <li>锁的实现</li>
+  <li>死锁</li>
+  <li>活锁</li>
+  <li>减少锁竞争</li>
+</ol>
+
+<p>常用的锁有两种实现：</p>
+
+<ol>
+  <li>synchronized</li>
+  <li>concurrent</li>
+</ol>
+
+<p>在之前concurrent要比synchronized快很多，但这个已经是很久之前的事情了，在synchronized的实现中通过偏向锁、轻量级锁优化了性能，而concurrent则是Doug Lea的作品。</p>
+
+<p>相比较来说各有优劣：</p>
+
+<blockquote>
+  <p>synchronized缺点是不够灵活，但是你不需要费心释放锁；而concurrent使用很灵活，可以分别在不同的地方加锁、解锁，但是如果忘记解锁就悲剧了，一般用try-finally来做。</p>
+</blockquote>
+
+<p>另外concurrent中实现了各种策略的锁：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>锁</th>
+      <th>作用</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>ReentrantLock</td>
+      <td>可重入独占锁</td>
+    </tr>
+    <tr>
+      <td>ReentrantReadWriteLock</td>
+      <td>可重入读写锁</td>
+    </tr>
+    <tr>
+      <td>Condition</td>
+      <td>条件</td>
+    </tr>
+    <tr>
+      <td>CountDownLatch</td>
+      <td>向下递减，到0时线程被唤醒</td>
+    </tr>
+    <tr>
+      <td>CyclicBarrier</td>
+      <td>有指定书目的线程await之后，一起开始执行</td>
+    </tr>
+    <tr>
+      <td>FutureTask</td>
+      <td>先提交任务，在get时阻塞</td>
+    </tr>
+    <tr>
+      <td>Semaphore</td>
+      <td>信号量</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>其实concurrent中核心是AQS框架，它将等待队列等操作都进行了封装，你只需要实现下面四个方法即可实现需要的锁：</p>
+
+<ol>
+  <li>tryAcquire</li>
+  <li>tryAcquireShared</li>
+  <li>tryRelease</li>
+  <li>tryReleaseShared</li>
+</ol>
+
+<p>锁用的比较多的时候就容易产生死锁，一般原因分为下面几类：</p>
+
+<ol>
+  <li>锁顺序死锁</li>
+  <li>资源死锁</li>
+  <li>线程饥饿死锁：在同一个线程池中执行有互相依赖的任务时需要注意</li>
+</ol>
+
+<p>可以用<strong>jstack –l pid</strong>来检测死锁。既然看到到了死锁，那就顺便看一下活锁：</p>
+
+<blockquote>
+  <p>不停地取出第一个任务，但是每次都会失败。</p>
+</blockquote>
+
+<p>其实活锁看起来就是代码写的太挫了…用锁的时候除了导致程序的活跃性问题，还可能导致性能问题，减少锁开销的一般方法为：</p>
+
+<ol>
+  <li>缩小同步的范围，快进快出</li>
+  <li>减少锁的粒度</li>
+  <li>锁分段</li>
+</ol>
+
+<p>用锁一定要慎重。</p>
+
+<h2 id="section-3">总结</h2>
+
+<p>多线程编程中还需要看看<strong>非阻塞算法</strong>、<strong>Java内存模型</strong>，而真正在写代码的时候能写好确实是一件非常不容易的事情，通常需要通过很多代码的磨练总结在使用各个工具时候的一些基本原则，才能慢慢顺手一些。</p>
+
+			<!-- 评论组件 -->
+			<div id="disqus_thread"/>
+		</div>
+		<div id="bar" class="category" style="left:-165px;">
+	<div class="icon"><a href="/about/"><img src="http://7xiz10.com1.z0.glb.clouddn.com/me.png"/></a></div>
+	<div class="icon"><a href="/categories.html"><img src="http://7xiz10.com1.z0.glb.clouddn.com/list.png"/></a></div>
+	<div class="icon"><a href="https://github.com/wsztrush"><img src="http://7xiz10.com1.z0.glb.clouddn.com/github.png"/></a></div>
+	<div class="icon"><a href="http://weibo.com/wsztrush"><img src="http://7xiz10.com1.z0.glb.clouddn.com/weibo.png"/></a></div>
+	<div class="icon"><img id="barClick" src="http://7xiz10.com1.z0.glb.clouddn.com/right.png"/></div>
+</div>
+
+	</body>
+</html>
+<!-- 评论组件 -->
+<script type="text/javascript">
+	var disqus_shortname = 'wsztrush';
+	(function() {
+		var dsq = document.createElement('script');
+		dsq.type = 'text/javascript';
+		dsq.async = true;
+		dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	})();
+</script>
+<!-- 百度访问统计 -->
+<script>
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?08a976e8d7e5a20acfcb566bd22a1db1";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+<script type="text/javascript">
+	document.getElementById("barClick").onclick = click;
+</script>
+
