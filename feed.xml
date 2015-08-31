@@ -5,8 +5,8 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 31 Aug 2015 22:18:47 +0800</pubDate>
-    <lastBuildDate>Mon, 31 Aug 2015 22:18:47 +0800</lastBuildDate>
+    <pubDate>Mon, 31 Aug 2015 22:59:25 +0800</pubDate>
+    <lastBuildDate>Mon, 31 Aug 2015 22:59:25 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
@@ -42,7 +42,7 @@
 
 &lt;h2 id=&quot;section&quot;&gt;布局&lt;/h2&gt;
 
-&lt;p&gt;经典的布局解决方案是栅格系统（bootstrap）：&lt;/p&gt;
+&lt;p&gt;经典的布局解决方案是栅格系统（bootstrap），其中的角色包括：&lt;/p&gt;
 
 &lt;ol&gt;
   &lt;li&gt;container&lt;/li&gt;
@@ -90,7 +90,7 @@
   &lt;li&gt;组件之间交互&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;p&gt;用户的响应比较简单，对于不同的空间可以实现不同的事件，在有事件发生的时候执行对应的操作代码：&lt;/p&gt;
+&lt;p&gt;用户的响应还比较简单，对于不同的控件可以预先实现不同的事件，在事件发生时触发对应的代码：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 @CompA
@@ -130,7 +130,7 @@
   &lt;li&gt;在业务系统中提供一个页面专门用来做预览&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;p&gt;用JSONP的主要缺点就是只能用GET方式，也就说是GET的限制JSONP全都有。第二种方法则有点像开个后门，直接看到的效果和在应用中看到的效果已经是一致的。&lt;/p&gt;
+&lt;p&gt;用JSONP的主要缺点就是只能用GET方式，也就是说：&lt;strong&gt;GET的限制JSONP全都有&lt;/strong&gt;。第二种方法则有点像开个后门，直接看到的效果和在应用中看到的效果已经是一致的。&lt;/p&gt;
 
 &lt;h2 id=&quot;section-4&quot;&gt;业务应用接入&lt;/h2&gt;
 
@@ -145,11 +145,11 @@
 
 &lt;ol&gt;
   &lt;li&gt;开发写个页面将CODE设置进去&lt;/li&gt;
-  &lt;li&gt;渲染页面，根据CODE去获取页面展示需要的数据&lt;/li&gt;
-  &lt;li&gt;取回数据之后根据数据渲染页面&lt;/li&gt;
+  &lt;li&gt;渲染HTML页面，然后运行JS根据CODE去获取展示所需的数据&lt;/li&gt;
+  &lt;li&gt;渲染页面&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;p&gt;这里有个小问题：在根据CODE获取页面时页面会出现空白。用第二种方式将生成的JS引入对应的页面即可，具体页面长什么样子都在该JS文件中保存。这样做的好处是：&lt;/p&gt;
+&lt;p&gt;该方式有个小小的问题：&lt;strong&gt;在根据CODE获取页面时页面会出现空白&lt;/strong&gt;。用第二种方式将生成的JS引入对应的页面即可，具体页面长什么样子都在该JS文件中保存。这样做的好处是：&lt;/p&gt;
 
 &lt;ol&gt;
   &lt;li&gt;可以在JS文件中定义更加复杂的操作&lt;/li&gt;
