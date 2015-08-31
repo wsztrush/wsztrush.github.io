@@ -1,0 +1,209 @@
+<!DOCTYPEhtmlPUBLIC"-//W3C//DTDXHTML1.0Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html>
+	<!-- 引入CSS/JS -->
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="/assets/css/main.css"/>
+	<script type="text/javascript" src="/assets/javascripts/main.js"></script>
+
+	<!-- pygments代码高亮 -->
+	<!-- <link rel="stylesheet" type="text/css" href="/assets/css/pygments.css"/> -->
+	<!-- google代码高亮 -->
+	<script src="/assets/css/prettify.js"></script>
+	<link href="/assets/css/prettify.css" rel="stylesheet">
+	<title>页面配置</title>
+</head>
+
+	<body onload="prettyPrint()">
+		<div class="post-container">
+			<h1>页面配置</h1>
+			<p>用MVC框架来开发WEB页面已经是非常成熟的一个事情，那为什么还需要用配置的方式来做页面？</p>
+
+<ol>
+  <li>不需要应用发布、重启即可生效</li>
+  <li>可以跨应用重复使用模块</li>
+</ol>
+
+<p>在做的比较完善的情况下，产品跟你说一个需求，可能等他回到座位上的时候你已经做好了。当然并不是所有的页面都可以用配置来做，不然配置的方式会巨复杂无比：</p>
+
+<ol>
+  <li>页面布局足够简单</li>
+  <li>组件足够通用，能够重复利用</li>
+  <li>数量足够多</li>
+</ol>
+
+<p>报表是一个非常典型的场景，大家可能对<a href="http://www.umeng.com/apps/4100008dd65107258db11ef4/reports/realtime_summary">报表</a>这样的页面见到不是特别多，其实在运营后台、仓库管理系统页面非常非常非常多，如果配置能做够灵活，那么这部分的工作量就都可以省下来了。</p>
+
+<p>那么，要实现一个页面配置需要解决哪些问题？</p>
+
+<ol>
+  <li>布局</li>
+  <li>组件重复使用</li>
+  <li>交互</li>
+  <li>预览</li>
+  <li>业务应用接入</li>
+</ol>
+
+<p>下面依次来看：</p>
+
+<h2 id="section">布局</h2>
+
+<p>经典的布局解决方案是栅格系统（bootstrap）：</p>
+
+<ol>
+  <li>container</li>
+  <li>row</li>
+  <li>cloumn</li>
+</ol>
+
+<p>比较牛逼的是可以嵌套，用到的技巧可以看<a href="http://segmentfault.com/a/1190000000743553">这里</a>，这样我们用这种方式实现比较复杂的表头的时候还是比较容易的! 让开发去写一大堆的class、div来做页面现在比较头大，那么现在的办法是：</p>
+
+<blockquote>
+  <p>用简洁的语法把页面需要展示的东西表达清楚，然后将其翻译成HTML+JS。</p>
+</blockquote>
+
+<p>自己YY的一个语法如下：</p>
+
+<pre class="prettyprint">
+@layout
+    @layout
+        @CompA // 条件
+        @CompB // 条件
+    @CompC // 查询
+    @CompD // 导出
+@CompE // 列表展示
+@CompF // 分页
+</pre>
+
+<p>通过缩进来控制层次（或者归属）关系，通过@layout来统一控制一组组件的排列展示。</p>
+
+<h2 id="section-1">组件的重复利用</h2>
+
+<p>能够复用的组件可以是：展示+数据，在重复利用时只需要将其引入那么基本上什么都不用管了：</p>
+
+<pre class="prettyprint">
+@import:easydt/warehouse_list // 引入仓库列表组件
+</pre>
+
+<p>引入之后展示就没有问题了，只需要考虑该组件如何与页面上其他的组件互动。</p>
+
+<h2 id="section-2">交互</h2>
+
+<p>我们要做的是一个动态的页面，静态页面的解决方案现在已经很多了，相比较动态页面要复杂很多：</p>
+
+<ol>
+  <li>响应用户操作</li>
+  <li>组件之间交互</li>
+</ol>
+
+<p>用户的响应比较简单，对于不同的空间可以实现不同的事件，在有事件发生的时候执行对应的操作代码：</p>
+
+<pre class="prettyprint">
+@CompA
+    @on(click)
+        alert("用户点击了按钮")
+</pre>
+
+<p>组件之间的交互有两种实现方式：</p>
+
+<ol>
+  <li>暴露接口供其他组件调用</li>
+  <li>事件驱动</li>
+</ol>
+
+<p>第一种方式在MFC、Swing等编写的时候基本上都属于这种，感觉写起来太消耗脑细胞! 而且HTML的页面上各部分的交互数据居多，那么可以参考Actor模型来设计：</p>
+
+<pre class="prettyprint">
+@channel(param)
+
+@CompA(to = "param")
+@CompB(to = "param")
+@CompC(to = "param")
+
+@CompD(from = "param")
+    @on(click) // 响应点击事件
+        // do sth.
+</pre>
+
+<p>在查询条件A、B、C发生变化时将结果发送消息给D，然后在D本地将其保存起来方便后面使用（比如发送请求）。</p>
+
+<h2 id="section-3">预览</h2>
+
+<p>在一个独立的页面配置应用上配置完成之后预览时，需要的数据要到业务应用中获取，用ajax的话就遇到了跨域问题。两种解决办法：</p>
+
+<ol>
+  <li>所有的接口使用JSONP格式</li>
+  <li>在业务系统中提供一个页面专门用来做预览</li>
+</ol>
+
+<p>用JSONP的主要缺点就是只能用GET方式，也就说是GET的限制JSONP全都有。第二种方法则有点像开个后门，直接看到的效果和在应用中看到的效果已经是一致的。</p>
+
+<h2 id="section-4">业务应用接入</h2>
+
+<p>接入的方式是由配置的产出的结果有关系的，现在有两种产出的方式：</p>
+
+<ol>
+  <li>提供JSON接口来输出展示需要的数据</li>
+  <li>根据配置动态生成JS文件</li>
+</ol>
+
+<p>第一种方式比较直观，做起来也很简单，业务方执行的流程如下：</p>
+
+<ol>
+  <li>开发写个页面将CODE设置进去</li>
+  <li>渲染页面，根据CODE去获取页面展示需要的数据</li>
+  <li>取回数据之后根据数据渲染页面</li>
+</ol>
+
+<p>这里有个小问题：在根据CODE获取页面时页面会出现空白。用第二种方式将生成的JS引入对应的页面即可，具体页面长什么样子都在该JS文件中保存。这样做的好处是：</p>
+
+<ol>
+  <li>可以在JS文件中定义更加复杂的操作</li>
+  <li>JS代码在浏览器做缓存，从第二次操作开始就不需要请求页面展示的数据</li>
+</ol>
+
+<p>另外在产出JS时基本上就没有搞不定的事情了。</p>
+
+<h2 id="section-5">总结</h2>
+
+<p>其实这个还没开始做，想法也在UPDATING，做完再来总结:)</p>
+
+			<!-- 评论组件 -->
+			<div id="disqus_thread"/>
+		</div>
+		<div id="bar" class="category" style="left:-165px;">
+	<div class="icon"><a href="/about/"><img src="http://7xiz10.com1.z0.glb.clouddn.com/me.png"/></a></div>
+	<div class="icon"><a href="/categories.html"><img src="http://7xiz10.com1.z0.glb.clouddn.com/list.png"/></a></div>
+	<div class="icon"><a href="https://github.com/wsztrush"><img src="http://7xiz10.com1.z0.glb.clouddn.com/github.png"/></a></div>
+	<div class="icon"><a href="http://weibo.com/wsztrush"><img src="http://7xiz10.com1.z0.glb.clouddn.com/weibo.png"/></a></div>
+	<div class="icon"><img id="barClick" src="http://7xiz10.com1.z0.glb.clouddn.com/right.png"/></div>
+</div>
+
+	</body>
+</html>
+<!-- 评论组件 -->
+<script type="text/javascript">
+	var disqus_shortname = 'wsztrush';
+	(function() {
+		var dsq = document.createElement('script');
+		dsq.type = 'text/javascript';
+		dsq.async = true;
+		dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	})();
+</script>
+<!-- 百度访问统计 -->
+<script>
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?08a976e8d7e5a20acfcb566bd22a1db1";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+<script type="text/javascript">
+	document.getElementById("barClick").onclick = click;
+</script>
+
