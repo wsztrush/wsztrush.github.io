@@ -1,7 +1,7 @@
 body {
 	margin:0px;
 	bottom:0px;
-	font-family: STFangSong, Helvetica, Arial, Vernada, Tahoma, STXihei, "Microsoft YaHei", "Songti SC", SimSun, Heiti, sans-serif;
+	font-family: »ªÎÄ¿¬Ìå, STFangSong, Helvetica, Arial, Vernada, Tahoma, STXihei, "Microsoft YaHei", "Songti SC", SimSun, Heiti, sans-serif;
 	font-size: 18px;
 	line-height: 1.42857143;
 }
@@ -66,12 +66,12 @@ blockquote  {
 }
 
 .post-container h2 {
-	background-color: #444;
+	background-color: #000;
 	color: #FFF;
 	padding: 8px;
-	border-left-width: 10px;
+	border-left-width: 12px;
 	border-left-style: solid;
-	border-left-color: #0DD;	
+	border-left-color: #D00;	
 }
 
 .post-container img {
