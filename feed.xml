@@ -5,8 +5,8 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 01 Sep 2015 21:00:44 +0800</pubDate>
-    <lastBuildDate>Tue, 01 Sep 2015 21:00:44 +0800</lastBuildDate>
+    <pubDate>Tue, 01 Sep 2015 22:27:38 +0800</pubDate>
+    <lastBuildDate>Tue, 01 Sep 2015 22:27:38 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
@@ -1057,16 +1057,22 @@ void items(G'){
   &lt;p&gt;将LR(1)中相同核心项集合并，在新的项集族上计算GOTO，进而生成分析表。&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;补充一下：在合并中可能有&lt;strong&gt;规约-规约&lt;/strong&gt;冲突，但是不会出现&lt;strong&gt;规约-移入&lt;/strong&gt;冲突（不然合并前的语法中也是有冲突的）。&lt;/p&gt;
+&lt;p&gt;总共有三种冲突：&lt;/p&gt;
 
-&lt;p&gt;从LR(1)合并得到LALR(1)需要较大的内存，另一种高效的思路是从LR(0)添加向前看符号，添加途径有两种：&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;规约-规约&lt;/li&gt;
+  &lt;li&gt;规约-移入（不可能出现）&lt;/li&gt;
+  &lt;li&gt;移入-移入&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;然后跟上面一样在合并完的结果上构造语法分析表，如果出现冲突则说明该文法不是LALR(1)的。从LR(1)合并得到LALR(1)需要较大的内存，另一种高效的思路是从LR(0)添加向前看符号，添加途径有两种：&lt;/p&gt;
 
 &lt;ol&gt;
   &lt;li&gt;自发&lt;/li&gt;
   &lt;li&gt;传播&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;p&gt;有一个简单办法检测向前看符号是哪种方式生成的：令#为一个不在当前文法中的符号，对于LR(0)项集I的内核K以及一个文法符号X，判断方法如下：&lt;/p&gt;
+&lt;p&gt;第二种方式会将源头所有的向前看符号都“传播”给目标，这里有一个简单的办法来区分自发和传播：令#为一个不在当前文法中的符号，对于LR(0)项集I的内核K以及一个文法符号X：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 for(K中的每个项A→α.β){
@@ -1078,14 +1084,27 @@ for(K中的每个项A→α.β){
 }
 &lt;/pre&gt;
 
-&lt;p&gt;有很多方法可以实现传播过程，从某种意义上说，所有这些方法都跟踪已经传播到某个项但尚未传播出去的“新”的向前看符号，下面是一种方法（输入增广文法G）：&lt;/p&gt;
+&lt;p&gt;下面来看构造LALR(1)项集族内核的计算方法(输入增广文法G)：&lt;/p&gt;
 
 &lt;ol&gt;
   &lt;li&gt;构造G的LR(0)项集族的内核&lt;/li&gt;
-  &lt;li&gt;将上面的检测算法应用于每个LR(0)项集的内核和每个文法符号X，确定GOTO(I,X)中各内核项的哪些向前看符号号是自发生成的，并确定向前看符号从I中的哪个项被传播到GOTO(I,X)中的内核项上&lt;/li&gt;
-  &lt;li&gt;初始化一个表格，表中给出每个项集中每个内核项相关的向前看符号。最初，每个项的向前看符号只包括那些步骤(2)中确定为自发生成的符号&lt;/li&gt;
-  &lt;li&gt;不断扫描所有项集的内核项，当访问项i时，使用步骤(2)中得到的、表格的信息，确定i将它的向前看符号传播到了哪些内核项中。项i的向前看符号集合被加到和这些被传播的内核项相关联的向前看符号集合中。我们继续扫描内核项知道么有心的向前看符号被传播为止&lt;/li&gt;
+  &lt;li&gt;对每个内核和文法符号通过上面方法计算自发、传播&lt;/li&gt;
+  &lt;li&gt;初始化表格，表中给出每个内核项的向前看符(最初每个项的向前看符只有自发产生的符号)&lt;/li&gt;
+  &lt;li&gt;在扫描中根据传播的关系，从源头复制向前看符集合到目标项，不停地扫描知道没有新的向前看符号被传播为止&lt;/li&gt;
 &lt;/ol&gt;
+
+&lt;p&gt;对于下面文法：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;S’→S
+S→L=R|R
+L→*R|id
+R→L&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;得到的向前看符号传播和向前看符号的计算结果如下：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://http://7xiz10.com1.z0.glb.clouddn.com/Compiler-12.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;h2 id=&quot;section-2&quot;&gt;语法制导翻译&lt;/h2&gt;
 </description>
