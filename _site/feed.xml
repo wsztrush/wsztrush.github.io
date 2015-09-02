@@ -5,9 +5,69 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 01 Sep 2015 22:27:38 +0800</pubDate>
-    <lastBuildDate>Tue, 01 Sep 2015 22:27:38 +0800</lastBuildDate>
+    <pubDate>Wed, 02 Sep 2015 22:30:32 +0800</pubDate>
+    <lastBuildDate>Wed, 02 Sep 2015 22:30:32 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
+    
+      <item>
+        <title>junit</title>
+        <description>&lt;p&gt;打算定期看一个开源代码，听之前同事的建议于是从junit开始：&lt;/p&gt;
+
+&lt;p&gt;TestRunner加载和运行测试，入口类。
+TestDecorator对Test进行包装。
+TestSetup对Test进行包装，增加初始化、清理接口。&lt;/p&gt;
+
+&lt;p&gt;TestListener监听器，在发生对应的动作的时候进行调用：&lt;/p&gt;
+&lt;pre class=&quot;prettyprint&quot;&gt;
+public interface TestListener {
+    public void addError(Test test, Throwable t);
+    public void addFailure(Test test, AssertionFailedError t);
+    public void endTest(Test test);
+    public void startTest(Test test);
+}
+&lt;/pre&gt;
+
+&lt;p&gt;TestSuite是TestCase的组合：
+ActiveTestSuite创建一个新的线程来执行：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+public class TestSuite {
+    private Vector&lt;test&gt; fTests = new Vector&lt;test&gt;(10);
+}
+
+
+
+TestResult
+&lt;pre class=&quot;prettyprint&quot;&gt;
+public class TestResult{
+    protected List&lt;testfailure&gt; fFailures;
+    protected List&lt;testfailure&gt; fErrors;
+    protected List&lt;testlistener&gt; fListeners;
+}
+
+
+
+TestCase
+&lt;pre class=&quot;prettyprint&quot;&gt;
+public void runBare() throws Throwable {
+    setUp(); // 初始化
+    try {
+        runTest(); // 通过反射调用方法
+    } finally {
+        tearDown(); // 清理
+    }
+}
+&lt;/pre&gt;
+&lt;/testlistener&gt;&lt;/testfailure&gt;&lt;/testfailure&gt;&lt;/pre&gt;&lt;/test&gt;&lt;/test&gt;&lt;/pre&gt;
+</description>
+        <pubDate>Wed, 02 Sep 2015 00:00:00 +0800</pubDate>
+        <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/09/02/Junit.html</link>
+        <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/09/02/Junit.html</guid>
+        
+        
+        <category>编程技术</category>
+        
+      </item>
     
       <item>
         <title>页面配置</title>
@@ -1104,9 +1164,16 @@ R→L&lt;/p&gt;
 
 &lt;p&gt;得到的向前看符号传播和向前看符号的计算结果如下：&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://http://7xiz10.com1.z0.glb.clouddn.com/Compiler-12.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Compiler-12.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;到目前为止我们总是在构建ACTION出现冲突的时候说：这不是XXX文法。但是反过来想一下其实二义文法在描述的时候还是非常简单的，我们可以通过一些额外的手段来消除二义（在ANTLR中非常明显）。&lt;/p&gt;
 
 &lt;h2 id=&quot;section-2&quot;&gt;语法制导翻译&lt;/h2&gt;
+
+&lt;p&gt;依赖图：&lt;/p&gt;
+
+&lt;h2 id=&quot;section-3&quot;&gt;中间代码生成&lt;/h2&gt;
+
 </description>
         <pubDate>Sat, 01 Aug 2015 00:00:00 +0800</pubDate>
         <link>/dsl/2015/08/01/Compiler-Theory.html</link>
@@ -1516,245 +1583,6 @@ task.call();// 编译
         <pubDate>Tue, 21 Jul 2015 00:00:00 +0800</pubDate>
         <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/07/21/Dynamic-Compilation.html</link>
         <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/07/21/Dynamic-Compilation.html</guid>
-        
-        
-        <category>编程技术</category>
-        
-      </item>
-    
-      <item>
-        <title>SpringMVC</title>
-        <description>&lt;h2 id=&quot;section&quot;&gt;概念&lt;/h2&gt;
-
-&lt;p&gt;在MVC中最基本的概念就是：&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Model&lt;/li&gt;
-  &lt;li&gt;View&lt;/li&gt;
-  &lt;li&gt;Controller&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;在SpringMVC中对这些结构进行了封装：&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;名称&lt;/th&gt;
-      &lt;th&gt;含义&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;ModelAndView&lt;/td&gt;
-      &lt;td&gt;在同一个地方可以同时操作Model和View&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;ModelMap&lt;/td&gt;
-      &lt;td&gt;数据承载对象，用于到后面渲染View，在RequestMapping的时候很有用&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;当然对处理流程也进行了封装：&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;名称&lt;/th&gt;
-      &lt;th&gt;含义&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;DispatcherServlet&lt;/td&gt;
-      &lt;td&gt;前置分发控制器，请求统一交给它处理&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;VelocityViewResolver&lt;/td&gt;
-      &lt;td&gt;通过name查找View&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;HandlerInterceptor&lt;/td&gt;
-      &lt;td&gt;拦截器&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;DefaultAnnotationHandlerMapping&lt;/td&gt;
-      &lt;td&gt;类级别的@RequestMapping&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;AnnotationMethodHandlerAdapter&lt;/td&gt;
-      &lt;td&gt;方法级别的@RequestMapping&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;HandlerMethodArgumentResolver&lt;/td&gt;
-      &lt;td&gt;参数解析器&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;@RequestMapping&lt;/td&gt;
-      &lt;td&gt;映射规则&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;@Controller&lt;/td&gt;
-      &lt;td&gt;注入&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;@ModelAttribute&lt;/td&gt;
-      &lt;td&gt;被注释的方法在Controller中处理请求的方法之前执行&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;@PathVariable&lt;/td&gt;
-      &lt;td&gt;获取路径上的变量&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;h2 id=&quot;section-1&quot;&gt;处理请求&lt;/h2&gt;
-
-&lt;p&gt;用的最多的情况就是用户输入URL你给他返回一个&lt;strong&gt;页面&lt;/strong&gt;：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-@RequestMapping(value = &quot;/abc&quot;)
-public ModelAndView handle() throws Exception {
-    ModelAndView mv = new ModelAndView(&quot;abc&quot;);
-    mv.addObject(&quot;key&quot;, &quot;abc&quot;);
-    return mv;
-}
-&lt;/pre&gt;
-
-&lt;p&gt;在很多请求的时候需要返回&lt;strong&gt;JSON&lt;/strong&gt;数据，只需要将字符串写出即可：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-@RequestMapping(value = &quot;/abc&quot;)
-public void handle(HttpServletResponse response) throws Exception {
-    Map map = Maps.newHashMap();
-    map.put(&quot;123&quot;, 123);
-    response.getOutputStream().write(JSON.toJSONString(map).getBytes());
-    response.getOutputStream().flush();
-}
-&lt;/pre&gt;
-
-&lt;p&gt;对于&lt;strong&gt;文件&lt;/strong&gt;下载的场景也是类似的，不同之处是要指定文件名等：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-@RequestMapping(value = &quot;/abc&quot;)
-public void handle(HttpServletResponse response) throws Exception {
-    OutputStream os = response.getOutputStream();
-    response.reset();
-    response.setHeader(&quot;Content-Disposition&quot;, &quot;attachment; filename=file.txt&quot;);
-    response.setContentType(&quot;application/octet-stream; charset=utf-8&quot;);
-    os.write(&quot;hello&quot;.getBytes());
-    os.flush();
-    os.close();
-}
-&lt;/pre&gt;
-
-&lt;p&gt;从上面可以看到拿到&lt;strong&gt;HttpServletResponse&lt;/strong&gt;之后就可以完全控制住返回值了，在SpringMVC中最简单、直接的获取方式是入参，&lt;strong&gt;HandlerMethodArgumentResolver&lt;/strong&gt;会在解析参数的时候进行处理。在网上有看到用&lt;strong&gt;ModelAttribute&lt;/strong&gt;的方式，这样貌似不是线程安全的吧~&lt;/p&gt;
-
-&lt;p&gt;对于&lt;strong&gt;HttpServletRequest&lt;/strong&gt;更简单一些，可以使用RequestContextListener或者RequestContextFilter来做，另外更简单的可以直接注入：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-@Resource
-HttpServletRequest  request;
-&lt;/pre&gt;
-
-&lt;p&gt;看起来很诡异，这个是如何注入的？其实这里的request只是一个代理，真正的处理过程可以看：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;ObjectFactoryDelegatingInvocationHandler&lt;/li&gt;
-  &lt;li&gt;RequestObjectFactory&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;但是找了一圈没找到Response有类似的方法，所以，这种方式对Response可能行不通。其实我们自己也可以实现类似的功能，比如用&lt;strong&gt;HandlerInterceptor&lt;/strong&gt;来搞：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-public interface HandlerInterceptor {
-    // 在方法之前执行
-    boolean preHandle(HttpServletRequest request,
-        HttpServletResponse response,
-        Object handler) throws Exception;
-    // 在方法之后执行
-    void postHandle(HttpServletRequest request,
-        HttpServletResponse response,
-        Object handler,
-        ModelAndView modelAndView) throws Exception;
-    // 在请求处理完成的时候执行
-    void afterCompletion(HttpServletRequest request,
-        HttpServletResponse response,
-        Object handler,
-        Exception ex) throws Exception;
-&lt;/pre&gt;
-
-&lt;p&gt;我们在preHandle的时候将Request、Response写入ThreadLocal，用FactoryBean来在注入的时候生成代理对象，在调用代理对象的时候先从ThreadLocal中获取对象，再反射调用对象的方法。&lt;/p&gt;
-
-&lt;p&gt;从URL到Controller中的方法的映射也是一个需要注意的地方：&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;设置&lt;/th&gt;
-      &lt;th&gt;匹配&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;@RequestMapping(value = “/abc”)&lt;/td&gt;
-      &lt;td&gt;/abc、/abc.*、/abc/&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;@RequestParam(“id”)&lt;/td&gt;
-      &lt;td&gt;限制参数中必须有id，并将其放到入参中&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;@RequestMapping(value = “/abc/{id}”)&lt;/td&gt;
-      &lt;td&gt;REST风格，用@PathVariable(“id”)放到入参&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;@RequestMapping(value = “/{path:[0-9a-z-]+}”)&lt;/td&gt;
-      &lt;td&gt;支持正则表达式&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;@RequestMapping(method = RequestMethod.GET)&lt;/td&gt;
-      &lt;td&gt;方法过滤&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;@RequestMapping(params = “123”)&lt;/td&gt;
-      &lt;td&gt;参数过滤&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;@RequestMapping(headers = “abc”)&lt;/td&gt;
-      &lt;td&gt;头信息过滤&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;@RequestMapping(consumes = “application/json”)&lt;/td&gt;
-      &lt;td&gt;处理请求的提交内容类型过滤&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;@RequestMapping(produces = “application/json”)&lt;/td&gt;
-      &lt;td&gt;返回的内容类型过滤&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;在SpringMVC中整体的处理逻辑都在&lt;strong&gt;DispatcherServlet&lt;/strong&gt;中完成，处理逻辑如下：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;处理multipart类型的请求&lt;/li&gt;
-  &lt;li&gt;获取处理链HandlerExecutionChain，其中封装了拦截器和处理器&lt;/li&gt;
-  &lt;li&gt;执行拦截器的preHandle方法&lt;/li&gt;
-  &lt;li&gt;执行处理器&lt;/li&gt;
-  &lt;li&gt;设置View&lt;/li&gt;
-  &lt;li&gt;执行拦截器的postHandle方法&lt;/li&gt;
-  &lt;li&gt;渲染&lt;/li&gt;
-  &lt;li&gt;执行拦截器的afterCompletion方法&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h2 id=&quot;section-2&quot;&gt;总结&lt;/h2&gt;
-
-&lt;p&gt;总体看下来比webx简单、好用一些。&lt;/p&gt;
-</description>
-        <pubDate>Sat, 11 Jul 2015 00:00:00 +0800</pubDate>
-        <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/07/11/SpringMVC.html</link>
-        <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/07/11/SpringMVC.html</guid>
         
         
         <category>编程技术</category>
