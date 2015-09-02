@@ -329,7 +329,13 @@ for(K中的每个项A→α.β){
 
 得到的向前看符号传播和向前看符号的计算结果如下：
 
-![](http://http://7xiz10.com1.z0.glb.clouddn.com/Compiler-12.png)
+![](http://7xiz10.com1.z0.glb.clouddn.com/Compiler-12.png)
 
+到目前为止我们总是在构建ACTION出现冲突的时候说：这不是XXX文法。但是反过来想一下其实二义文法在描述的时候还是非常简单的，我们可以通过一些额外的手段来消除二义（在ANTLR中非常明显）。
 
 ## 语法制导翻译
+
+
+## 中间代码生成
+
+
