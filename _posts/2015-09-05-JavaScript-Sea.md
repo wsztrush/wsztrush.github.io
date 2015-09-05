@@ -22,9 +22,7 @@ categories: 编程技术
 2. JS文件变大影响加载速度
 3. 结构混乱
 
-但是比较悲剧：在JavaScript中并没有提供类、模块等封装的方法，那么就需要我们想办法利用现有的东西来做模块化。
-
-2009年Ryan Dahl创建了node.js项目，将javascript用于服务器端编程，这标志"Javascript模块化编程"正式诞生。
+但是比较悲剧：在JavaScript中并没有提供类、模块等封装的方法，那么就需要我们想办法利用现有的东西来做模块化。2009年Ryan Dahl创建了**node.js**项目，将javascript用于服务器端编程，这标志"Javascript模块化编程"正式诞生。
 
 ## HOW
 
