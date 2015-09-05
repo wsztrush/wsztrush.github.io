@@ -1,0 +1,163 @@
+<!DOCTYPEhtmlPUBLIC"-//W3C//DTDXHTML1.0Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html>
+	<!-- 引入CSS/JS -->
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="/assets/css/main.css"/>
+	<script type="text/javascript" src="/assets/javascripts/main.js"></script>
+
+	<!-- pygments代码高亮 -->
+	<!-- <link rel="stylesheet" type="text/css" href="/assets/css/pygments.css"/> -->
+	<!-- google代码高亮 -->
+	<script src="/assets/css/prettify.js"></script>
+	<link href="/assets/css/prettify.css" rel="stylesheet">
+	<title>JavaScript模块化及SEA.JS的使用</title>
+</head>
+
+	<body onload="prettyPrint()">
+		<div class="post-container">
+			<h1>JavaScript模块化及SEA.JS的使用</h1>
+			<p>最近因为缺前端，不得已要自学一下，囧~ 偶然在看到阮一峰很久之前关于模块化的文章：</p>
+
+<ol>
+  <li><a href="http://www.ruanyifeng.com/blog/2012/10/javascript_module.html">模块的写法</a></li>
+  <li><a href="http://www.ruanyifeng.com/blog/2012/10/asynchronous_module_definition.html">AMD规范</a></li>
+  <li><a href="http://www.ruanyifeng.com/blog/2012/11/require_js.html">require.js的用法</a></li>
+</ol>
+
+<p>看完之后用来下玉伯的sea.js，感觉比较给力。</p>
+
+<h2 id="why">WHY</h2>
+
+<p>工程中前端开发的代码量早已与后端代码量差不了太多，如果将所有代码放到单个文件中是个头疼的问题：</p>
+
+<ol>
+  <li>全局变量互相影响</li>
+  <li>JS文件变大影响加载速度</li>
+  <li>结构混乱</li>
+</ol>
+
+<p>但是比较悲剧：在JavaScript中并没有提供类、模块等封装的方法，那么就需要我们想办法利用现有的东西来做模块化。</p>
+
+<p>2009年Ryan Dahl创建了node.js项目，将javascript用于服务器端编程，这标志”Javascript模块化编程”正式诞生。</p>
+
+<h2 id="how">HOW</h2>
+
+<p>为了避免上面的缺点以及为了不暴露私有成员，通常用<a href="http://blog.csdn.net/qq838419230/article/details/8030078">立即执行函数</a>来搞定模块化的定义模块：</p>
+
+<pre class="prettyprint">
+var module1 = (function(){
+    var _count = 0;
+    var m1 = function(){
+        //...
+    };
+    var m2 = function(){
+        //...
+    };
+    return {
+        m1 : m1, m2 : m2
+    };
+})();
+</pre>
+
+<p>大家定义出来的模块可能五花八门，如果都用统一的形式来定义那就可以很方便的引用了。目前常用规范有两种：<strong>CommonJS</strong>和<strong>AMD</strong>，node.js的模块系统就是参照CommonJS来实现的：</p>
+
+<pre class="prettyprint">
+var math = require('math');// 全局的require方法用来加载模块
+math.add(2,3);
+</pre>
+
+<p>其中math.add(2,3)要等到require完成之后才能执行，也就是说这是一个<strong>同步</strong>的过程，在网络不好的环境中浏览器就会进入假死状态，体验极差，为了解决这个问题我们来看<strong>异步</strong>的AMD规范(require.js)：</p>
+
+<pre class="prettyprint">
+require(['math'], function (math) {// require([module], callback);
+    math.add(2, 3);
+});
+</pre>
+
+<p>参数module是要加载模块的列表，callback则是加载成功之后回调函数。AMD规范中模块的写法如下：</p>
+
+<pre class="prettyprint">
+// math.js
+define(function (){
+    var add = function (x,y){
+        return x+y;
+    };
+    return { add: add };
+});
+</pre>
+
+<p>另外可以用require.js来加载非规范AMD模块、文本、图片等，感觉略强大。</p>
+
+<h2 id="seajs">SEA.JS</h2>
+
+<p>CMD是sea.js使用的规范(所以这个术语貌似只有国人知道)，模块定义如下：</p>
+
+<pre class="prettyprint">
+define(function(require, exports, module) {
+    var a = require('./a');
+    a.doSomething();
+    var b = require('./b');
+    b.doSomething();
+});
+</pre>
+
+<p>是不是和AMD很像？通过<strong>require</strong>在需要的时候引入依赖，通过<strong>exports</strong>来暴露接口。AMD和CMD的区别可以看<a href="http://www.zhihu.com/question/20351507/answer/14859415">这里</a>，还有<a href="http://blog.chinaunix.net/uid-26672038-id-4112229.html">这里</a>。sea.js中常用的API有：</p>
+
+<ol>
+  <li><a href="https://github.com/seajs/seajs/issues/262">seajs.config</a>：配制</li>
+  <li><a href="https://github.com/seajs/seajs/issues/260">seajs.use</a>：在页面上加载模块</li>
+  <li><a href="https://github.com/seajs/seajs/issues/242">define</a>：定义模块</li>
+  <li><a href="https://github.com/seajs/seajs/issues/259">require</a>：获取指定模块</li>
+  <li><a href="https://github.com/seajs/seajs/issues/242">require.async</a>：在模块内部异步加载一个或多个模块</li>
+  <li><a href="https://github.com/seajs/seajs/issues/242">exports</a>：在模块内部对外提供接口</li>
+  <li><a href="https://github.com/seajs/seajs/issues/242">module.exports</a>：在模块内部对外提供接口</li>
+</ol>
+
+<p>这些API已经定义的足够简单，因此，例子就忽略了（你可以看<a href="http://">这里</a>）。。。</p>
+
+<h2 id="section">总结</h2>
+
+<p>简单看下来，感觉很受用！不过…模块化的趋势貌似是<a href="http://es6.ruanyifeng.com/#docs/intro">ECMAScript 6</a>，ES6的目标是让JavaScript可以用来编写大型、复杂的应用程序，成为企业级开发语言！</p>
+
+<p>不过…<a href="http://kangax.github.io/compat-table/es6/">浏览器的支持程度</a>比较堪忧。。。</p>
+
+			<!-- 评论组件 -->
+			<div id="disqus_thread"/>
+		</div>
+		<div id="bar" class="category" style="left:-165px;">
+	<div class="icon"><a href="/about/"><img src="http://7xiz10.com1.z0.glb.clouddn.com/me.png"/></a></div>
+	<div class="icon"><a href="/categories.html"><img src="http://7xiz10.com1.z0.glb.clouddn.com/list.png"/></a></div>
+	<div class="icon"><a href="https://github.com/wsztrush"><img src="http://7xiz10.com1.z0.glb.clouddn.com/github.png"/></a></div>
+	<div class="icon"><a href="http://weibo.com/wsztrush"><img src="http://7xiz10.com1.z0.glb.clouddn.com/weibo.png"/></a></div>
+	<div class="icon"><img id="barClick" src="http://7xiz10.com1.z0.glb.clouddn.com/right.png"/></div>
+</div>
+
+	</body>
+</html>
+<!-- 评论组件 -->
+<script type="text/javascript">
+	var disqus_shortname = 'wsztrush';
+	(function() {
+		var dsq = document.createElement('script');
+		dsq.type = 'text/javascript';
+		dsq.async = true;
+		dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	})();
+</script>
+<!-- 百度访问统计 -->
+<script>
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?08a976e8d7e5a20acfcb566bd22a1db1";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+<script type="text/javascript">
+	document.getElementById("barClick").onclick = click;
+</script>
+

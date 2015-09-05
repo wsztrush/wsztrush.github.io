@@ -5,9 +5,125 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 02 Sep 2015 22:30:32 +0800</pubDate>
-    <lastBuildDate>Wed, 02 Sep 2015 22:30:32 +0800</lastBuildDate>
+    <pubDate>Sat, 05 Sep 2015 21:27:33 +0800</pubDate>
+    <lastBuildDate>Sat, 05 Sep 2015 21:27:33 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
+    
+      <item>
+        <title>JavaScript模块化及SEA.JS的使用</title>
+        <description>&lt;p&gt;最近因为缺前端，不得已要自学一下，囧~ 偶然在看到阮一峰很久之前关于模块化的文章：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.ruanyifeng.com/blog/2012/10/javascript_module.html&quot;&gt;模块的写法&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.ruanyifeng.com/blog/2012/10/asynchronous_module_definition.html&quot;&gt;AMD规范&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.ruanyifeng.com/blog/2012/11/require_js.html&quot;&gt;require.js的用法&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;看完之后用来下玉伯的sea.js，感觉比较给力。&lt;/p&gt;
+
+&lt;h2 id=&quot;why&quot;&gt;WHY&lt;/h2&gt;
+
+&lt;p&gt;工程中前端开发的代码量早已与后端代码量差不了太多，如果将所有代码放到单个文件中是个头疼的问题：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;全局变量互相影响&lt;/li&gt;
+  &lt;li&gt;JS文件变大影响加载速度&lt;/li&gt;
+  &lt;li&gt;结构混乱&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;但是比较悲剧：在JavaScript中并没有提供类、模块等封装的方法，那么就需要我们想办法利用现有的东西来做模块化。&lt;/p&gt;
+
+&lt;p&gt;2009年Ryan Dahl创建了node.js项目，将javascript用于服务器端编程，这标志”Javascript模块化编程”正式诞生。&lt;/p&gt;
+
+&lt;h2 id=&quot;how&quot;&gt;HOW&lt;/h2&gt;
+
+&lt;p&gt;为了避免上面的缺点以及为了不暴露私有成员，通常用&lt;a href=&quot;http://blog.csdn.net/qq838419230/article/details/8030078&quot;&gt;立即执行函数&lt;/a&gt;来搞定模块化的定义模块：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+var module1 = (function(){
+    var _count = 0;
+    var m1 = function(){
+        //...
+    };
+    var m2 = function(){
+        //...
+    };
+    return {
+        m1 : m1, m2 : m2
+    };
+})();
+&lt;/pre&gt;
+
+&lt;p&gt;大家定义出来的模块可能五花八门，如果都用统一的形式来定义那就可以很方便的引用了。目前常用规范有两种：&lt;strong&gt;CommonJS&lt;/strong&gt;和&lt;strong&gt;AMD&lt;/strong&gt;，node.js的模块系统就是参照CommonJS来实现的：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+var math = require('math');// 全局的require方法用来加载模块
+math.add(2,3);
+&lt;/pre&gt;
+
+&lt;p&gt;其中math.add(2,3)要等到require完成之后才能执行，也就是说这是一个&lt;strong&gt;同步&lt;/strong&gt;的过程，在网络不好的环境中浏览器就会进入假死状态，体验极差，为了解决这个问题我们来看&lt;strong&gt;异步&lt;/strong&gt;的AMD规范(require.js)：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+require(['math'], function (math) {// require([module], callback);
+    math.add(2, 3);
+});
+&lt;/pre&gt;
+
+&lt;p&gt;参数module是要加载模块的列表，callback则是加载成功之后回调函数。AMD规范中模块的写法如下：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+// math.js
+define(function (){
+    var add = function (x,y){
+        return x+y;
+    };
+    return { add: add };
+});
+&lt;/pre&gt;
+
+&lt;p&gt;另外可以用require.js来加载非规范AMD模块、文本、图片等，感觉略强大。&lt;/p&gt;
+
+&lt;h2 id=&quot;seajs&quot;&gt;SEA.JS&lt;/h2&gt;
+
+&lt;p&gt;CMD是sea.js使用的规范(所以这个术语貌似只有国人知道)，模块定义如下：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+define(function(require, exports, module) {
+    var a = require('./a');
+    a.doSomething();
+    var b = require('./b');
+    b.doSomething();
+});
+&lt;/pre&gt;
+
+&lt;p&gt;是不是和AMD很像？通过&lt;strong&gt;require&lt;/strong&gt;在需要的时候引入依赖，通过&lt;strong&gt;exports&lt;/strong&gt;来暴露接口。AMD和CMD的区别可以看&lt;a href=&quot;http://www.zhihu.com/question/20351507/answer/14859415&quot;&gt;这里&lt;/a&gt;，还有&lt;a href=&quot;http://blog.chinaunix.net/uid-26672038-id-4112229.html&quot;&gt;这里&lt;/a&gt;。sea.js中常用的API有：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/seajs/seajs/issues/262&quot;&gt;seajs.config&lt;/a&gt;：配制&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/seajs/seajs/issues/260&quot;&gt;seajs.use&lt;/a&gt;：在页面上加载模块&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/seajs/seajs/issues/242&quot;&gt;define&lt;/a&gt;：定义模块&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/seajs/seajs/issues/259&quot;&gt;require&lt;/a&gt;：获取指定模块&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/seajs/seajs/issues/242&quot;&gt;require.async&lt;/a&gt;：在模块内部异步加载一个或多个模块&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/seajs/seajs/issues/242&quot;&gt;exports&lt;/a&gt;：在模块内部对外提供接口&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/seajs/seajs/issues/242&quot;&gt;module.exports&lt;/a&gt;：在模块内部对外提供接口&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;这些API已经定义的足够简单，因此，例子就忽略了（你可以看&lt;a href=&quot;http://&quot;&gt;这里&lt;/a&gt;）。。。&lt;/p&gt;
+
+&lt;h2 id=&quot;section&quot;&gt;总结&lt;/h2&gt;
+
+&lt;p&gt;简单看下来，感觉很受用！不过…模块化的趋势貌似是&lt;a href=&quot;http://es6.ruanyifeng.com/#docs/intro&quot;&gt;ECMAScript 6&lt;/a&gt;，ES6的目标是让JavaScript可以用来编写大型、复杂的应用程序，成为企业级开发语言！&lt;/p&gt;
+
+&lt;p&gt;不过…&lt;a href=&quot;http://kangax.github.io/compat-table/es6/&quot;&gt;浏览器的支持程度&lt;/a&gt;比较堪忧。。。&lt;/p&gt;
+</description>
+        <pubDate>Sat, 05 Sep 2015 00:00:00 +0800</pubDate>
+        <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/09/05/JavaScript-Sea.html</link>
+        <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/09/05/JavaScript-Sea.html</guid>
+        
+        
+        <category>编程技术</category>
+        
+      </item>
     
       <item>
         <title>junit</title>
@@ -750,7 +866,9 @@ public interfact ThreadFactory{
     
       <item>
         <title>编译原理（一）</title>
-        <description>&lt;h2 id=&quot;section&quot;&gt;词法分析&lt;/h2&gt;
+        <description>&lt;p&gt;&lt;img src=&quot;http://img3.douban.com/mpic/s3392161.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;section&quot;&gt;词法分析&lt;/h2&gt;
 
 &lt;p&gt;编译器的目的是根据源码生成可以执行的文件，想一步到位完全不靠谱，可以先进行分词处理，那么这就是词法分析要完成的工作了！&lt;/p&gt;
 
@@ -1170,8 +1288,6 @@ R→L&lt;/p&gt;
 
 &lt;h2 id=&quot;section-2&quot;&gt;语法制导翻译&lt;/h2&gt;
 
-&lt;p&gt;依赖图：&lt;/p&gt;
-
 &lt;h2 id=&quot;section-3&quot;&gt;中间代码生成&lt;/h2&gt;
 
 </description>
@@ -1450,139 +1566,6 @@ String result = client.execute(&quot;reach&quot;, &quot;http://twitter.com&quot;
         <pubDate>Tue, 21 Jul 2015 00:00:00 +0800</pubDate>
         <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/07/21/Web-Dev.html</link>
         <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/07/21/Web-Dev.html</guid>
-        
-        
-        <category>编程技术</category>
-        
-      </item>
-    
-      <item>
-        <title>如何动态地执行代码</title>
-        <description>&lt;p&gt;假如你在用Java的碰到这些问题：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;灵活地配置规则&lt;/li&gt;
-  &lt;li&gt;部署代码无需重启即时生效&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;而恰恰你是个“low逼”或者“懒货”不想（更多的是不行）去定义自己的脚本、规则引擎，那么下面这些可能是个不错的选择。&lt;/p&gt;
-
-&lt;h2 id=&quot;groovy&quot;&gt;Groovy的使用&lt;/h2&gt;
-
-&lt;p&gt;Groovy是一种基于JVM的敏捷开发语言，可以无缝与Java整合：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-Binding binding = new Binding();
-binding.setProperty(&quot;foo&quot;, new Integer(2));
-GroovyShell shell = new GroovyShell(binding);
-shell.evaluate(&quot;println foo&quot;);
-&lt;/pre&gt;
-
-&lt;p&gt;用&lt;strong&gt;GroovyShell&lt;/strong&gt;看起来是非常简单的，但问题是每次在evaluate的时候都需要去解析、编译，速度肯定是上不去的，另外也会频繁地产生很多的Class，增加了内存回收的负担（甚至OOM），但是也看具体使用场景~~&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-String[] roots = new String[] { &quot;your groovy script path&quot; };
-GroovyScriptEngine gse = new GroovyScriptEngine(roots);
-Binding binding = new Binding();
-binding.setProperty(&quot;foo&quot;, new Integer(2));
-gse.run(&quot;GroovyShellHellow.groovy&quot;, binding);
-&lt;/pre&gt;
-
-&lt;p&gt;用&lt;strong&gt;GroovyScriptEngine&lt;/strong&gt;的时候有了缓存，而且用起来也更加简单，用起来也很简单了，但是很多人开始诟病Groovy脚本的性能，确实是比较低，再来看一种处理方式：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-new GroovyClassLoader().parseClass(&quot;print 123&quot;);// 得到Class
-&lt;/pre&gt;
-
-&lt;p&gt;在用&lt;strong&gt;GroovyClassLoader&lt;/strong&gt;生成好Class之后通过反射调用对应的方法。有人可能觉得这种方法弱爆了，又难用又效率低，但是如果将生成的Class缓存起来呢？等等，应该怎么生成Class？&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-CompilerConfiguration configuration = new CompilerConfiguration();
-configuration.setOutput(new PrintWriter(new FileWriter(&quot;D:\\a&quot;)));
-configuration.setTargetDirectory(&quot;D:\\&quot;);
-new GroovyClassLoader(
-    Thread.currentThread().getContextClassLoader(),
-        configuration)
-        .parseClass(&quot;print 123&quot;);
-&lt;/pre&gt;
-
-&lt;p&gt;好了，讲差不多了，我们来重点看下GroovyClassLoader吧。可能在你看完GroovyScriptEngine之后会说：GroovyScriptEngine已经将GroovyClassLoader封装的挺不错的来，但是会有一个问题：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;其中用的是同一个ClassLoader，在脚本发生变化的时候就生成新的Class，时间久了Perm就满了。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;现在可以对GroovyClassLoader根据业务具体的需求进行封装即可，在上面的代码中可以在指定的文件夹中就可以生成好Class。&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;既然GroovyClassLoader直接可以解析脚本，为什么还需要生成Class。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;如果做的平台用的人非常多，成千上万个脚本都是有可能的（虽然现在一个都没有），那么在系统启动的时候是不是要把所有的脚本拿下来编译一遍？这个可能会比较影响启动的速度，所以可以在保存Script的时候再保存一个Class文件，在系统启动的时候直接去Load即可。&lt;/p&gt;
-
-&lt;p&gt;再来看Groovy的好处：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-@TypeChecked
-int func(){
-    def a = 123;
-    a = a + &quot;&quot;;
-    return a;// 这里会报错
-}
-&lt;/pre&gt;
-
-&lt;p&gt;在Groovy的2.0版本以后加入了静态类型检查器，可以在编写代码的时候看到类型错误。动态语言太灵活了，这样可以减少很多开发的成本，因为不用等到运行的时候才发现错误。&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-@CompileStatic
-int func(){
-    123 + 123 + 123;
-}
-&lt;/pre&gt;
-
-&lt;p&gt;使用&lt;strong&gt;@CompileStatic&lt;/strong&gt;注释将会静态地编译代码，产生的字节码和Java运行得一样快，这样看来性能也将不再是问题。&lt;/p&gt;
-
-&lt;p&gt;最后，现在很多规则的配置都用Groovy来解决，因为处理Map、新建类等非常方便，如果用原生的Java写的话，配置的时候不会真方便，当然，编译Java代码的方式也是要研究一下的。&lt;/p&gt;
-
-&lt;h2 id=&quot;java&quot;&gt;动态编译Java源码&lt;/h2&gt;
-
-&lt;p&gt;除了用Groovy这种脚本的方式，还可以用Java代码来搞：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
-JavaFileObject fileObject = new SimpleJavaFileObject(
-    URI.create(&quot;string:///CalculatorTest&quot; + JavaFileObject.Kind.SOURCE.extension),
-    JavaFileObject.Kind.SOURCE) {
-    @Override
-    public CharSequence getCharContent(boolean ignoreEncodingErrors) throws IOException {
-        return &quot;class CalculatorTest {}&quot;;
-    }
-};
-JavaCompiler.CompilationTask task = compiler.getTask(null, fileManager, null, null, null, Arrays.asList(fileObject));
-task.call();// 编译
-&lt;/pre&gt;
-
-&lt;p&gt;在编译好Class文件之后，使用的时候加载进来，然后通过反射进行调用。&lt;/p&gt;
-
-&lt;h2 id=&quot;section&quot;&gt;总结&lt;/h2&gt;
-
-&lt;p&gt;在选择编程语言来实现某个功能时，会考虑：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;学习成本&lt;/li&gt;
-  &lt;li&gt;开发速度&lt;/li&gt;
-  &lt;li&gt;性能&lt;/li&gt;
-  &lt;li&gt;用的人多不多&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;之前可能开口闭口都是性能，但是，感觉现在的开发语言越来越注重的是开发的速度以及语言本身是否简洁，简洁的语言更不容易写出BUG，另外如果让一个用惯了有GC的语言，再去尝试写C这种古老的语言肯定是一百个不习惯。&lt;/p&gt;
-
-&lt;p&gt;最后为什么要考虑用的人多不多呢？因为在用的人多的情况下，大家会开发出各种各样优秀的工具，那么在实现某个功能的时候不用自己写代码了，直接“拿来主义”。&lt;/p&gt;
-</description>
-        <pubDate>Tue, 21 Jul 2015 00:00:00 +0800</pubDate>
-        <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/07/21/Dynamic-Compilation.html</link>
-        <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/07/21/Dynamic-Compilation.html</guid>
         
         
         <category>编程技术</category>
