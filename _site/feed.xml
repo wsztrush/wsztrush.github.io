@@ -5,8 +5,8 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sat, 05 Sep 2015 21:27:33 +0800</pubDate>
-    <lastBuildDate>Sat, 05 Sep 2015 21:27:33 +0800</lastBuildDate>
+    <pubDate>Sat, 05 Sep 2015 21:34:28 +0800</pubDate>
+    <lastBuildDate>Sat, 05 Sep 2015 21:34:28 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
@@ -31,9 +31,7 @@
   &lt;li&gt;结构混乱&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;p&gt;但是比较悲剧：在JavaScript中并没有提供类、模块等封装的方法，那么就需要我们想办法利用现有的东西来做模块化。&lt;/p&gt;
-
-&lt;p&gt;2009年Ryan Dahl创建了node.js项目，将javascript用于服务器端编程，这标志”Javascript模块化编程”正式诞生。&lt;/p&gt;
+&lt;p&gt;但是比较悲剧：在JavaScript中并没有提供类、模块等封装的方法，那么就需要我们想办法利用现有的东西来做模块化。2009年Ryan Dahl创建了&lt;strong&gt;node.js&lt;/strong&gt;项目，将javascript用于服务器端编程，这标志”Javascript模块化编程”正式诞生。&lt;/p&gt;
 
 &lt;h2 id=&quot;how&quot;&gt;HOW&lt;/h2&gt;
 
