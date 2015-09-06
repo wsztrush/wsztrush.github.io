@@ -188,9 +188,11 @@ while(Dstates中存在未标记的状态S){
 <p>语法分析器从词法分析器得到TOKEN流，<strong>生成语法分析树</strong>或者<strong>抽象语法树</strong>，方便进一步地处理。预发处理的规则通常是用<strong>上下文无关文法</strong>来描述：</p>
 
 <blockquote>
-  <p>E → E+T|T // 从E+T可以推导出E，也可以从T推导出E
-T → T*F|F
-F → (E)|id</p>
+  <ul>
+    <li>E → E+T|T // 从E+T可以推导出E，也可以从T推导出E</li>
+    <li>T → T*F|F</li>
+    <li>F → (E)|id</li>
+  </ul>
 </blockquote>
 
 <p>对于一个TOKEN流，语法分析器的目的是就是把这些规则“套”上去，从而知道输入的内容是什么样的结构，而输出可能是：</p>
@@ -425,10 +427,12 @@ for(K中的每个项A→α.β){
 <p>对于下面文法：</p>
 
 <blockquote>
-  <p>S’→S
-S→L=R|R
-L→*R|id
-R→L</p>
+  <ul>
+    <li>S’→S</li>
+    <li>S→L=R|R</li>
+    <li>L→*R|id</li>
+    <li>R→L</li>
+  </ul>
 </blockquote>
 
 <p>得到的向前看符号传播和向前看符号的计算结果如下：</p>
