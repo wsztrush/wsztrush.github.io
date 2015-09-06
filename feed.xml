@@ -5,9 +5,37 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 06 Sep 2015 23:38:08 +0800</pubDate>
-    <lastBuildDate>Sun, 06 Sep 2015 23:38:08 +0800</lastBuildDate>
+    <pubDate>Mon, 07 Sep 2015 00:49:44 +0800</pubDate>
+    <lastBuildDate>Mon, 07 Sep 2015 00:49:44 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
+    
+      <item>
+        <title>编程语言实现模式</title>
+        <description>&lt;p&gt;&lt;img src=&quot;http://img4.douban.com/mpic/s7661036.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;很久之前已经把这本书看过一遍了，但是一直没有实践过!于是，拿出来再复习一遍，顺便记录笔记。关于这本书有几点：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;ANTLR贯穿全书：作者是&lt;strong&gt;Terence Parr&lt;/strong&gt;，这点也就不奇怪了&lt;/li&gt;
+  &lt;li&gt;ANTLR生成的代码是LL(K)的&lt;/li&gt;
+  &lt;li&gt;偏重实践，原理很少，想看原理要去看&lt;a href=&quot;http://img3.douban.com/mpic/s3392161.jpg&quot;&gt;龙书&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;另外，你应该知道一个编译的过程大概分成哪几部分以及为什么这样划分!废话少说，来看这本书的内容。&lt;/p&gt;
+
+&lt;h2 id=&quot;section&quot;&gt;解析模式&lt;/h2&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;分析输入&lt;/h2&gt;
+
+</description>
+        <pubDate>Sun, 06 Sep 2015 00:00:00 +0800</pubDate>
+        <link>/dsl/2015/09/06/Language-Implementation-Patterns.html</link>
+        <guid isPermaLink="true">/dsl/2015/09/06/Language-Implementation-Patterns.html</guid>
+        
+        
+        <category>dsl</category>
+        
+      </item>
     
       <item>
         <title>JavaScript模块化及SEA.JS的使用</title>
@@ -1284,10 +1312,9 @@ R→L&lt;/p&gt;
 
 &lt;p&gt;到目前为止我们总是在构建ACTION出现冲突的时候说：这不是XXX文法。但是反过来想一下其实二义文法在描述的时候还是非常简单的，我们可以通过一些额外的手段来消除二义（在ANTLR中非常明显）。&lt;/p&gt;
 
-&lt;h2 id=&quot;section-2&quot;&gt;语法制导翻译&lt;/h2&gt;
+&lt;h2 id=&quot;section-2&quot;&gt;总结&lt;/h2&gt;
 
-&lt;h2 id=&quot;section-3&quot;&gt;中间代码生成&lt;/h2&gt;
-
+&lt;p&gt;到这里基本上可以随意搞Lexer和Parser了，可以看&lt;a href=&quot;http://book.douban.com/subject/10482195/&quot;&gt;编程语言实现模式来&lt;/a&gt;来熟悉一下实际的代码是什么样的（可惜这本书只有LL的）!&lt;/p&gt;
 </description>
         <pubDate>Sat, 01 Aug 2015 00:00:00 +0800</pubDate>
         <link>/dsl/2015/08/01/Compiler-Theory.html</link>
@@ -1521,49 +1548,6 @@ String result = client.execute(&quot;reach&quot;, &quot;http://twitter.com&quot;
         <pubDate>Fri, 31 Jul 2015 00:00:00 +0800</pubDate>
         <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/07/31/Jstorm.html</link>
         <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/07/31/Jstorm.html</guid>
-        
-        
-        <category>编程技术</category>
-        
-      </item>
-    
-      <item>
-        <title>WEB开发笔记</title>
-        <description>&lt;h2 id=&quot;springbeanfilter&quot;&gt;用SpringBean来配置Filter&lt;/h2&gt;
-
-&lt;p&gt;在web开发中通常会遇到多个环境的问题，比如开发和线上，那他们使用的配置信息也是不同的，Spring给出的解决这个问题的方法是变量替换：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-&amp;lt;bean class=&quot;my.class.path&quot;&amp;gt;
-    &amp;lt;property name=&quot;env&quot; value=&quot;${ENV}&quot;/&amp;gt;
-&amp;lt;/bean&amp;gt;
-&lt;/pre&gt;
-
-&lt;p&gt;但是对于web.xml中的属性这样搞就行不通了，那简单的解决办法就是绕路了：用Spring中配置的Bean来作为Filter行不行？答案是肯定的：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-&amp;lt;filter&amp;gt;
-    &amp;lt;filter-name&amp;gt;ssoFilter&amp;lt;/filter-name&amp;gt;
-    &amp;lt;filter-class&amp;gt;org.springframework.web.filter.DelegatingFilterProxy&amp;lt;/filter-class&amp;gt;
-    &amp;lt;init-param&amp;gt;
-        &amp;lt;param-name&amp;gt;targetBeanName&amp;lt;/param-name&amp;gt;
-        &amp;lt;param-value&amp;gt;myFilterBean&amp;lt;/param-value&amp;gt;
-    &amp;lt;/init-param&amp;gt;
-    &amp;lt;init-param&amp;gt;
-        &amp;lt;param-name&amp;gt;targetFilterLifecycle&amp;lt;/param-name&amp;gt;
-        &amp;lt;param-value&amp;gt;true&amp;lt;/param-value&amp;gt;
-    &amp;lt;/init-param&amp;gt;
-&amp;lt;/filter&amp;gt;
-&lt;/pre&gt;
-
-&lt;p&gt;容器初始化的顺序为Listener-&amp;gt;Filter-&amp;gt;Servlet，这样上面这种玩法跑通就没有问题了~&lt;/p&gt;
-
-&lt;h2 id=&quot;todo&quot;&gt;TODO&lt;/h2&gt;
-
-</description>
-        <pubDate>Tue, 21 Jul 2015 00:00:00 +0800</pubDate>
-        <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/07/21/Web-Dev.html</link>
-        <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/07/21/Web-Dev.html</guid>
         
         
         <category>编程技术</category>
