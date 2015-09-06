@@ -81,7 +81,7 @@ public Token nextToken(){
 
 > - list : '[' elements ']';
 > - elements : element (',' element);
-> - element : NAME | list;
+> - element : NAME \| list;
 
 生成的Paser如下：
 
