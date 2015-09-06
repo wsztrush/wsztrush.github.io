@@ -98,16 +98,7 @@ public Token nextToken(){
   <ul>
     <li>list : ‘[’ elements ‘]’;</li>
     <li>elements : element (‘,’ element);</li>
-    <li>
-      <table>
-        <tbody>
-          <tr>
-            <td>element : NAME</td>
-            <td>list;</td>
-          </tr>
-        </tbody>
-      </table>
-    </li>
+    <li>element : NAME | list;</li>
   </ul>
 </blockquote>
 
