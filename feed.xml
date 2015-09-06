@@ -5,8 +5,8 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 07 Sep 2015 00:49:44 +0800</pubDate>
-    <lastBuildDate>Mon, 07 Sep 2015 00:49:44 +0800</lastBuildDate>
+    <pubDate>Mon, 07 Sep 2015 00:53:55 +0800</pubDate>
+    <lastBuildDate>Mon, 07 Sep 2015 00:53:55 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
@@ -24,6 +24,135 @@
 &lt;p&gt;另外，你应该知道一个编译的过程大概分成哪几部分以及为什么这样划分!废话少说，来看这本书的内容。&lt;/p&gt;
 
 &lt;h2 id=&quot;section&quot;&gt;解析模式&lt;/h2&gt;
+
+&lt;p&gt;词法分析和语法分析很多地方都是相同的，生成的对应的解析器结构为：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+public class G extends Parser {
+    // 类型定义
+    // 合适的构造函数
+    // 规则对应的方法
+}
+&lt;/pre&gt;
+
+&lt;p&gt;在一个规则中包含很多子规则时，根据向前看符号来决定使用哪个的代码可以用if-else来实现：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+if(向前看到alt1){
+    // 匹配alt1
+} else if(向前看到alt2){
+    // 匹配alt1
+}....
+&lt;/pre&gt;
+
+&lt;p&gt;这里当然也可以用switch来实现。通常规则上都有一些操作符来增强规则，比如：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;(T)?：T可有可无&lt;/li&gt;
+  &lt;li&gt;(T)+：多个T&lt;/li&gt;
+  &lt;li&gt;(T)*：零个或多个T&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;它们的代码描述如下：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+// (T)?
+if(向前看到T){ match(T);}
+// (T)+
+do{
+    match(T);
+} while(向前看到T)
+// (T)*
+while(向前看到T){
+    match(T);
+}
+&lt;/pre&gt;
+
+&lt;p&gt;通常来将利用好上面三个操作大部分的规则都可以搞定!词法分析相对语法分析了来说简单很多，Lexer会提供&lt;strong&gt;nextToken()&lt;/strong&gt;来供Parser使用来不断地获取TOKEN：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+public Token nextToken(){
+    while(lookahead-char != EOF) {
+        switch(lookahead-char){
+            case 空白字符: { consume(); continue; }
+            case 字符后面可能是T1: return T1();
+            case 字符后面可能是T2: return T2();
+			// ...
+            default:
+                出错;
+        }
+    }
+    return EOF;
+}
+&lt;/pre&gt;
+
+&lt;p&gt;直观上来看用switch进行预测，也可以说是构造了一个状态机吧，其中&lt;strong&gt;consume()&lt;/strong&gt;方法自增下标并将下一个字符当做向前看字符（消费字符）。&lt;/p&gt;
+
+&lt;p&gt;在仅使用一个向前看符来进行语法分析时，也就是LL(1)，对于下面语法：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;list : ‘[’ elements ‘]’;
+elements : element (‘,’ element);
+element : NAME | list;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;生成的Paser如下：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+public class ListParser extends Parser {
+    public void list(){
+        match(ListLexer.LBRACK); // 匹配并消耗词法单元
+        elements();
+        match(ListLexer.RBRACK);
+    }
+    public void elements(){
+        element();
+        while(lookahead.type == ListLexer.COMMA) {
+            match(ListLexer.COMMA);
+            element();
+        }
+    }
+    public void element(){
+        if(lookahead.type == ListLexer.NAME) match(ListLexer.NAME);
+        else if(lookahead.type == ListLexer.LBRACK) list();
+        else throw new Error(&quot;语法错误&quot;);
+    }
+}
+&lt;/pre&gt;
+
+&lt;p&gt;很简单的语法用LL(1)是没有问题的，对于稍微复杂一点的其预测能力差就暴露出来了，怎么办？当然是多拿几个进行预测!可以构造环形缓冲区来存放用来预测的TOKEN，另外增加两个方法：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;strong&gt;LA&lt;/strong&gt;：返回第k个向前看词法单元的类型&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;LT&lt;/strong&gt;：返回第k个词法单元&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;那么文法：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;element : NAME ‘=’ NAME
+        : NAME
+        : list
+        ;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;对应的程序描述就变为：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+public void element(){
+    if(LA(1) == LookaheadLexer.NAME &amp;amp;&amp;amp; LA(2) == LookaheadLexer.EQUALS) {
+        match(LookaheadLexer.NAME);
+        match(LookaheadLexer.EQUALS);
+        match(LookaheadLexer.NAME);
+    } else if(LA(1) == LookaheadLexer.NAME) {
+        match(LookaheadLexer.NAME);
+    } else if(LA(1) == LookaheadLexer.LBACK) {
+        list();
+    } else {
+        throw new Error(&quot;语法错误!&quot;);
+    }
+}
+&lt;/pre&gt;
 
 &lt;h2 id=&quot;section-1&quot;&gt;分析输入&lt;/h2&gt;
 
