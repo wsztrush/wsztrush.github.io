@@ -215,6 +215,77 @@ while(对循环的alt进行向前看符号判断 && 谓词判断) {
 
 ## 分析输入
 
+将源码结构化时一般用到两种方式：**语法分析树**和**抽象语法树**，从三个方面来看：
+
+1. 紧凑：不含无用节点
+2. 易用：很容易遍历
+3. 显意：突出操作符、操作对象，以及它们互相间的关系，不再拘泥于文法
+
+抽象语法树都要更优秀一些！程序实现时，我们在Parser匹配的过程中向方法中插入一些代码即可得到想要的树形结构：
+
+<pre class="prettyprint">
+public void rule(){
+    RuleNode r = new RuleNode("规则名");
+    if(root == null) root = r;
+    else currentNode.addChild(r);
+    ParseTree _save = currentNode;
+    // 原始的规则代码
+    currentNode = _save;
+}
+</pre>
+
+要比想象的简单很多，因为在LL的解析中：
+
+> 解析过程就可以看做是在语法分析树上做DFS，任意当前树节点的父亲必然是前面遍历过的某个节点！
+
+不同实现节点的方式后续树的遍历等都是有影响的，有如下方式：
+
+类型|含义
+-|-
+同型AST|只有一种节点类型AST，要依据TOKEN来区分不同类型
+规范异型AST|从基类AST派生不同的节点类型，子节点列表统一
+不规范异型AST|可以添加不同的子节点属性，能够让代码的可读性更高
+
+好不容易拿到树形结构了，遍历它也不是一个轻松的活。回想大学用Java写二叉树遍历的时候通常是这样：
+
+<pre class="prettyprint">
+public class Node {
+    Node left, right;
+    void visit(){
+        left.visit();
+        right.visit();
+    }
+}
+</pre>
+
+把遍历操作嵌入节点内部最明显的缺点是：**逻辑散落在各节点中操作起来很麻烦**，可以将遍历操作统一放到一个地方：
+
+<pre class="prettyprint">
+public abstract class VecMathNode extends HeteroAST {
+    public abstract void visit(VecMathVisitor visitor);
+}
+public interface VecMathVisitor {
+    void visit(AssignNode n);
+    void visit(PrintNode n);
+    void visit(StatListNode n);
+    void visit(VarNode n);
+    // ...
+}
+</pre>
+
+在实现的时候在Visitor中将**this**传递就可以达到遍历的目的了：
+
+<pre class="prettyprint">
+public class PrintVisitor implements VecMathVisitor {
+    public void visit(AssignNode n){
+        n.id.visit(this);// 看这里
+        System.out.print("=");
+        n.value.visit(this);
+    }
+}
+</pre>
+
+提到外面代码量并没有减少，但是这种代码很有规律，ANTLR可以大幅度地减少你的工作量！当然还有其他的方式来实现相同的目的，这里就不啰嗦了。
 
 
 
