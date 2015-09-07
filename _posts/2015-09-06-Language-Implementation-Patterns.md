@@ -16,7 +16,7 @@ categories: DSL
 
 另外，你应该先知道编译的过程大概分成哪几步骤以及为什么这样划分！废话少说，来看这本书的内容。
 
-## 解析模式
+## 解析输入
 
 词法分析和语法分析很多地方都是相同的，解析器结构如下：
 
@@ -134,7 +134,84 @@ public void element(){
 }
 </pre>
 
+但是LL(K)也不是万能的，如果向前看k个解决不了问题，那么向前无限个总应该可以搞定了吧？回溯解析中使用递归尝试不同的规则，在发现无法匹配时把消费掉的TOKEN吐出来：
 
+<pre class="prettyprint">
+public void rule() {
+    if(speculate_alt1()){
+        // 匹配alt1
+    } else if(speculate_alt2()){
+        // 匹配alt2
+    } else { throw new Error("语法错误！"); }
+}
+public boolean speculate_alt1() {
+    boolean success = true;
+    mark();// 标记当前位置，供release使用
+    try{
+        // 匹配alt1
+    } catch(Exception e){ success = false; }
+    release();// 将消费掉的TOKEN重新放回去
+    return success;
+}
+</pre>
+
+回溯解析最大的缺陷就是性能低，而其中一个原因则是做了不少重复工作，对于语法：
+
+> s : expr ':' \| expr ';';
+
+在尝试第一个子规则失败时会去尝试第二个，那么expr就会被匹配两次！如果能把之前匹配过的结果记住就好了（参考[记忆化搜索](http://www.cnblogs.com/kedebug/archive/2013/04/07/3006493.html)），此时仅需要做一些很小的修改：
+
+<pre class="prettyprint">
+// 每个规则有一个Map来保存结果
+Map&lt;Integer, Integer&gt; list_memo = new HashMap&lt;Integer, Integer&gt;;
+public void list(){
+    boolean failed = false;
+    int startTokenIndex = index();
+    if(isSpeculating() && aleadyParsedRule(list_memo)) return;
+	try{_list();}
+    catch(Exception e) {failed = true; throw e; }
+    finally{
+         if(isSpeculating())
+             memoize(list_memo, startTokenIndex, failed);
+    }
+}
+public void _list(){
+    match(XXX);
+    elements();
+    match(XXX);
+}
+</pre>
+
+简单说明下上面用到的几个方法：
+
+1. **aleadyParsedRule**：使用缓存的结果：成功返回TRUE、失败抛异常、未处理过返回FALSE
+2. **memoize**：回溯时将结果记录到缓存
+
+另外需要清楚一个细节：
+
+> 推演时没有通过的try-catch逻辑在非推演时更不可能走到！
+
+最后，在遇到上下文相关的语法时使用谓词是个不错的选择，用代码描述就是增加条件：
+
+<pre class="prettyprint">
+public void rule(){
+    if(向前看符号测试alt1 && 谓词1) {
+        // 匹配alt1
+    } else if(向前看符号测试alt2 && 谓词2) {
+        // 匹配alt2
+    } ...
+}
+while(对循环的alt进行向前看符号判断 && 谓词判断) {
+    子规则的代码用来匹配alt
+}
+</pre>
+
+到这里解析输入的逻辑基本上就看完了，简单来说：
+
+1. Lexer产出Token流
+2. Parser产出方法执行流
+
+接下来我们就需要在Parser产出的方法执行流上面来进行分析。
 
 ## 分析输入
 
