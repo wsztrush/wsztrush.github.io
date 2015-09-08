@@ -5,9 +5,156 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 08 Sep 2015 00:03:54 +0800</pubDate>
-    <lastBuildDate>Tue, 08 Sep 2015 00:03:54 +0800</lastBuildDate>
+    <pubDate>Tue, 08 Sep 2015 23:43:26 +0800</pubDate>
+    <lastBuildDate>Tue, 08 Sep 2015 23:43:26 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
+    
+      <item>
+        <title>解决运行Groovy脚本中的问题</title>
+        <description>&lt;p&gt;在需要灵活配置时Groovy通常时一个不错的选择，但是问题比较多：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;效率&lt;/li&gt;
+  &lt;li&gt;垃圾回收&lt;/li&gt;
+  &lt;li&gt;死循环&lt;/li&gt;
+  &lt;li&gt;调用System.exit()等不安全的方法&lt;/li&gt;
+  &lt;li&gt;拼命申请内存导致OOM：现在没有想到方案&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;第一、二中已经有比较成熟的方案，但是后面的两个问题就不那么好解决了。&lt;/p&gt;
+
+&lt;h2 id=&quot;section&quot;&gt;死循环&lt;/h2&gt;
+
+&lt;p&gt;执行Groovy脚本的时候我用的是下面的方法：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+Class clazz = new GroovyClassLoader().parseClass(&quot;your code&quot;);
+Method method = clazz.getMethod(&quot;xxxx&quot;);
+method.invoke(null);
+&lt;/pre&gt;
+
+&lt;p&gt;如果用户编写的脚本是（能用技术解决的东西最好不要用价值观来保证）：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+while(true){
+	// do nothing.
+}
+&lt;/pre&gt;
+
+&lt;p&gt;机器的CPU马上会飚的很高，可能你会想到用&lt;strong&gt;Thread.stop()&lt;/strong&gt;来终止这个罪恶的脚本，但是对于这个脚本：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+while(true){
+	try{/* your code */}
+    catch(Exception e){ }
+}
+&lt;/pre&gt;
+
+&lt;p&gt;只能说根本停不下来。因为：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Thread.stop()仅仅是在线程的任意位置抛出ThreadDeath异常。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;况且Thread.stop很早就不建议使用了，而是用&lt;strong&gt;Thread.interrupt()&lt;/strong&gt;，但是简单来说中断仅仅是去通知一下目标线程，而不是真的去停掉它。&lt;/p&gt;
+
+&lt;p&gt;那么，现在的目标就是如何将中断检查的代码插入到用户编写的脚本中：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+public static void checkInterrupted() {
+    if (Thread.currentThread().isInterrupted()) {
+        throw new RuntimeException(&quot;task is interrupted!&quot;);
+    }
+}
+&lt;/pre&gt;
+
+&lt;p&gt;将输入的脚本作为字符串来处理，估计会累到吐血！接着自然想到先将源码结构化，那么自然想到在编译的过程中对语法树进行操作即可达到目的：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+public static class SafeGroovyClassLoader extends GroovyClassLoader {
+    protected CompilationUnit createCompilationUnit(CompilerConfiguration config, CodeSource source) {
+    CompilationUnit compilationUnit = super.createCompilationUnit(config, source);
+    compilationUnit.addPhaseOperation(new CompilationUnit.SourceUnitOperation() {
+        public void call(SourceUnit source) throws CompilationFailedException {
+            ModuleNode ast = source.getAST();
+            // 自定义visitor来操作
+        }
+    }
+}
+&lt;/pre&gt;
+
+&lt;p&gt;遍历时我们需要处理的节点包括：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;FOR&lt;/li&gt;
+  &lt;li&gt;WHILE&lt;/li&gt;
+  &lt;li&gt;DOWHILE&lt;/li&gt;
+  &lt;li&gt;CATCH&lt;/li&gt;
+  &lt;li&gt;FINALLY&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;在这些块的开始位置插入&lt;strong&gt;checkInterrupted&lt;/strong&gt;方法的调用：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+private BlockStatement createCheckBlock(Statement statement) {
+    if (statement instanceof BlockStatement) {
+        BlockStatement blockStatement = (BlockStatement) statement;
+        blockStatement.getStatements().add(0, checkInterruptedStatement);
+        return blockStatement;
+    } else if (statement instanceof EmptyStatement) {
+        BlockStatement blockStatement = new BlockStatement();
+        blockStatement.getStatements().add(checkInterruptedStatement);
+        return blockStatement;
+    } else {
+        BlockStatement blockStatement = new BlockStatement();
+        blockStatement.getStatements().add(checkInterruptedStatement);
+        blockStatement.getStatements().add(statement);
+        return blockStatement;
+    }
+}
+
+public void visitCatchStatement(CatchStatement catchStatement) {
+    catchStatement.getCode().visit(this);
+    catchStatement.setCode(createCheckBlock(catchStatement.getCode()));
+}
+&lt;/pre&gt;
+
+&lt;p&gt;你想的话可以在checkInterrupted中加入循环次数统计。现在线程可以中断，貌似问题已经解决了，但是谁来中断他？有三种方案：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;用线程池来运行脚本，在外面用Future.get来等待（超时中断）&lt;/li&gt;
+  &lt;li&gt;创建一个线程来join当前线程（超时中断）&lt;/li&gt;
+  &lt;li&gt;执行任务前将当前线程插入到map中，然后用一个定时任务来扫描并将超时的中断&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;第一、二种方案每个请求都会创建多余一个线程（不划算），那就来看看第三种方案的实现方式：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+// 保存线程开始时间
+Map&amp;lt;Thread, Long&amp;gt; threadCache = Maps.newHashMap();
+// 执行前将线程插入
+threadCache.put(Thread.currentThread(), System.currentTimeMillis());
+// 遍历threadCache根据时间判断是否中断
+&lt;/pre&gt;
+
+&lt;p&gt;这种方案实现起来要好好考虑一下同步的问题！&lt;/p&gt;
+
+&lt;h2 id=&quot;systemexit&quot;&gt;System.exit&lt;/h2&gt;
+
+&lt;p&gt;在不做限制的情况下，执行上面方法系统直接就停止了，怎么办？办法很简单（当然不是靠价值观）：建立黑名单，在遍历语法树时是否调用了黑名单中的方法。&lt;/p&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;总结&lt;/h2&gt;
+
+&lt;p&gt;应用这么多，可能大家都需要用到一些脚本的功能，但是能也没有比较把这些都再各个系统里面去实现一把（没啥意义），如果有这么一个打通脚本与应用、数据的平台也不错！&lt;/p&gt;
+</description>
+        <pubDate>Tue, 08 Sep 2015 00:00:00 +0800</pubDate>
+        <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/09/08/Groovy.html</link>
+        <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/09/08/Groovy.html</guid>
+        
+        
+        <category>编程技术</category>
+        
+      </item>
     
       <item>
         <title>编程语言实现模式</title>
@@ -332,6 +479,90 @@ public class PrintVisitor implements VecMathVisitor {
 &lt;/pre&gt;
 
 &lt;p&gt;提到外面代码量并没有减少，但是这种代码很有规律，ANTLR可以大幅度地减少你的工作量！当然还有其他的方式来实现相同的目的，这里就不啰嗦了。&lt;/p&gt;
+
+&lt;p&gt;遍历过程中要和两个东西打交道：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;操作&lt;/li&gt;
+  &lt;li&gt;符号&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;在抽象语法树上操作很简单，把子节点收集起来进行计算、处理就行了，但是符号就没那么随意，这里的关键就是&lt;strong&gt;作用域&lt;/strong&gt;：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+// 1
+int x;
+void f(){ // 2
+    int y;
+    { int i; } // 3
+    { int j; } // 4
+}
+void g(){ // 5
+    int i;
+}
+&lt;/pre&gt;
+
+&lt;p&gt;嵌套的作用域更加容易理解，嵌套关系可以用树形结构来表示（这种作用域的特点是只有一个父节点），上面这段代码生成的作用域如下：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Language-Implementation-Patterns-1.PNG&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;在遍历树的时候用一个栈来保存能访问到的作用域：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Language-Implementation-Patterns-2.PNG&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;在这个过程中用到的操作有：&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;操作&lt;/th&gt;
+      &lt;th&gt;作用&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;push&lt;/td&gt;
+      &lt;td&gt;向栈中压入作用域&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;pop&lt;/td&gt;
+      &lt;td&gt;作用域结束后，要将当前的作用域弹出栈&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;def&lt;/td&gt;
+      &lt;td&gt;在当前作用域中定义符号&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;resolve&lt;/td&gt;
+      &lt;td&gt;解析符号&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;面向过程的变成语言很简单，这些已经够了，但是在面向对象编程的时候就不行了：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+// 1 全局
+class A {// 2
+public :
+    int x;
+    void foo()// 3
+    { ; } // 4
+}
+class B : public A {// 5
+    int y;
+    void foo()// 6
+    {// 7
+        int z =  x + y;
+    }
+}
+&lt;/pre&gt;
+
+&lt;p&gt;由于继承关系的存在，在查找符号的时候不仅是要在当前类中找，而且要去父类中找，也就是说此时的父节点就不止一个了：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Language-Implementation-Patterns-3.PNG&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;对于像&lt;strong&gt;a.x = 3&lt;/strong&gt;这种利用&lt;/p&gt;
 
 </description>
         <pubDate>Sun, 06 Sep 2015 00:00:00 +0800</pubDate>
@@ -1632,235 +1863,6 @@ for(K中的每个项A→α.β){
         
         
         <category>dsl</category>
-        
-      </item>
-    
-      <item>
-        <title>Jstorm</title>
-        <description>&lt;p&gt;实际上做过的大部分的系统很难算是分布式系统，处理的流程一般是：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;将请求随机交给一台机器；&lt;/li&gt;
-  &lt;li&gt;在这台机器上面进行处理，如果处理量比较大就开多线程；&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;在一台机器上面去开多线程处理感觉又回到了古老的单机作战的时代，扩展和性能都是有上限的，那么能不能将一个任务交给不同的机器来协同完成？&lt;/p&gt;
-
-&lt;p&gt;数据处理方面根据不同的场景大致可以分为下面两种场景：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;&lt;strong&gt;离线分析&lt;/strong&gt;：特点是查询单一、数据加工过程也单一，用Hadoop来解决；&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;在线分析&lt;/strong&gt;：特点是查询随机，玩的就是索引，那么QPS必然不会很高，而且需要的都是好机器，可以用阿里云的ADS来解决；&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;看是天下太平，但真正用的时候还是会有问题：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;像ADS这样的产品，可以在一份静态的数据上面方便地进行各种查询，但是新增、更新操作特别频繁的情况下，索引的重构可能会存在瓶颈。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;实时性也是数据处理的一个目标，记得之前在压测的时候在Solr实时更新索引上死得很惨，所以需要考虑更加有效、低成本地解决方式。&lt;/p&gt;
-
-&lt;h2 id=&quot;section&quot;&gt;基本概念&lt;/h2&gt;
-
-&lt;p&gt;集群架构如下：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Jstorm-1.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;以及：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Jstorm-3.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;其中：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;&lt;strong&gt;nimbus&lt;/strong&gt;：分发任务、任务、监控集群运行状态；&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;supervisor&lt;/strong&gt;：监听nimbus的指令，接受分发代码、任务并执行；&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;worker&lt;/strong&gt;：真正执行的进程；&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;task&lt;/strong&gt;：任务；&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;executor&lt;/strong&gt;：一个线程，用来轮询task中的接口；&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;在jstorm中运行的程序就是一个&lt;strong&gt;topology&lt;/strong&gt;，说白了就是一个jar包，可以在nimbus节点使用命名把jar包提交给集群，那么这个jar包中的程序的结构如下：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Jstorm-2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;其中：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;&lt;strong&gt;spout&lt;/strong&gt;：源头；&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;bolt&lt;/strong&gt;：处理器；&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;tuple&lt;/strong&gt;：数据；&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;注：任务分发、启动的流程可以看&lt;a href=&quot;http://xumingming.sinaapp.com/647/twitter-storm-code-analysis-topology-execution/&quot;&gt;这里&lt;/a&gt;。&lt;/p&gt;
-
-&lt;p&gt;在分布式系统中数据都准确性是最难的，通常在检查消息消费失败的时候重试。而在Jstorm里面中就更为复杂，一个消息从spout发给bolt，而一个bolt可能发给多个bolt，这样就构成了一棵树形结构，在jstorm中用&lt;strong&gt;acker&lt;/strong&gt;机制来检测消息是否失败：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Jstorm-4.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;显然这是一个随机算法，但是发生错误的概率非常小！但是，如果真的出错那就蛋疼了，做个开关或者接口让程序开发者来自己实现acker不好么？&lt;/p&gt;
-
-&lt;p&gt;在并发编程中经常要碰到去处理资源竞争，处理的方式基本上两种：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;锁&lt;/li&gt;
-  &lt;li&gt;根据所需要的资源进行分组&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;用第2种方式，将不同的任务分发给不同的节点来处理，这样就可以减少很多的竞争、简化处理的代码、容易提高性能，在jstorm提供了丰富&lt;strong&gt;grouping&lt;/strong&gt;方式：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;随机分组&lt;/li&gt;
-  &lt;li&gt;根据某个字段分组&lt;/li&gt;
-  &lt;li&gt;广播&lt;/li&gt;
-  &lt;li&gt;直接分组&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;说到消息分组，可能看起来是在&lt;strong&gt;emit&lt;/strong&gt;的时候就直接发出去了，但事实上并不是这样：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;创建tuple；&lt;/li&gt;
-  &lt;li&gt;worker将目标taskId+tuple放到待发送队列；&lt;/li&gt;
-  &lt;li&gt;由一个单独的线程来负责将消息发送给对应的任务处理；&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;另外在jstorm中提供了一些更高级的抽象：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;CoordinatedBolt&lt;/li&gt;
-  &lt;li&gt;Transactional Topology&lt;/li&gt;
-  &lt;li&gt;DRPC&lt;/li&gt;
-  &lt;li&gt;Trident&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;为了做到&lt;strong&gt;处理且仅处理一次&lt;/strong&gt;的目的，并且不能牺牲掉并发性，那么Transactional Topology的做法是将一个batch的计算分为两个阶段来完成：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;&lt;strong&gt;processing&lt;/strong&gt;：多个batch并行处理；&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;commit&lt;/strong&gt;：一个一个地提交，batch之间保持强有序；&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;而Trident则是一个更方便、可靠的接口~&lt;/p&gt;
-
-&lt;p&gt;附jstorm中常用参数设置：&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;参数&lt;/th&gt;
-      &lt;th&gt;含义&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;topology.message.timeout.secs&lt;/td&gt;
-      &lt;td&gt;超时时间，如果超时则认为失败&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;topology.max.task.parallelism&lt;/td&gt;
-      &lt;td&gt;最大并行度&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;topology.state.synchronization.timeout.secs&lt;/td&gt;
-      &lt;td&gt;组件同步状态源的最大超时时间&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;topology.max.spout.pending&lt;/td&gt;
-      &lt;td&gt;缓存spout发送的tuple数，超出会阻塞&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;topology.executor.receive.buffer.size&lt;/td&gt;
-      &lt;td&gt;executor线程的接收队列大小&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;topology.executor.send.buffer.size&lt;/td&gt;
-      &lt;td&gt;executor线程的发送队列大小&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;topology.receiver.buffer.size&lt;/td&gt;
-      &lt;td&gt;worker接收线程缓存消息的大小&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;topology.transfer.buffer.size&lt;/td&gt;
-      &lt;td&gt;worker进程中向外发送消息的缓存大小&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;storm.messaging.netty.max_wait_ms&lt;/td&gt;
-      &lt;td&gt;最大等待时间&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;storm.messaging.netty.min_wait_ms&lt;/td&gt;
-      &lt;td&gt;最小等待时间&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;topology.ackers&lt;/td&gt;
-      &lt;td&gt;ackaer任务数&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;h2 id=&quot;drpc&quot;&gt;DRPC&lt;/h2&gt;
-
-&lt;p&gt;互联网中用户的操作通常是轻量级的，插一下数据库、更新一下缓存就搞定了，但是对于仓库管理这种系统很多操作比较重，有些任务可能需要遍历数据库中的表才能完成，而Distributed RPC可能是提高性能、降低风险的一个途径。&lt;/p&gt;
-
-&lt;p&gt;用Jstorm来搞DRPC的过程如下：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-DRPCClient client = new DRPCClient(&quot;drpc-host&quot;, 3772);
-String result = client.execute(&quot;reach&quot;, &quot;http://twitter.com&quot;);
-&lt;/pre&gt;
-
-&lt;p&gt;客户端给DRPC服务器发送要执行的方法名称以及参数，实现了这个函数的topology使用DRPCSpout从DRPC服务器接收函数调用流。每个函数调用被DRPC服务器标记了一个唯一的id。这个topology然后计算结果，在topology的最后一个叫做ReturnResults的bolt会将调用的结果发送给DRPC服务器。&lt;/p&gt;
-
-&lt;p&gt;之前想过可能用一些更简单的方法来试下：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;在spout的节点提供一个rpc服务；&lt;/li&gt;
-  &lt;li&gt;在调用这个服务的时候发送消息给bolt，然后在bolt中完成任务的分发及处理；&lt;/li&gt;
-  &lt;li&gt;在spout中统计是否所有的消息都成功消费；&lt;/li&gt;
-  &lt;li&gt;返回数据；&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;这样弄会有一些问题，但是感觉没有强依赖于jstorm，而仅仅是用它的消息分发机制就可以了。&lt;/p&gt;
-
-&lt;h2 id=&quot;section-1&quot;&gt;数据流式处理&lt;/h2&gt;
-
-&lt;p&gt;在流式处理的过程中，每次面对的都是单个的记录，而事实上统计都是有状态的，那么：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;可以把状态保存在本地；&lt;/li&gt;
-  &lt;li&gt;可以把状态保存在hbase、ldb等外部的存储；&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;保存在本地的内存中速度会很快，也没有序列化等开销，而且通常流处理中时效性要求是比价强的，过去很久的数据基本上就不会再次处理。所以：流玩的好不好，就看本地缓存用的好不好了。&lt;/p&gt;
-
-&lt;h2 id=&quot;section-2&quot;&gt;总结&lt;/h2&gt;
-
-&lt;p&gt;很多语言从一开始就在考虑如何简单地去实现并发编程：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;erlang&lt;/li&gt;
-  &lt;li&gt;golang&lt;/li&gt;
-  &lt;li&gt;…&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;而我们这些作为老Java程序猿只能是自己去东拼西凑地搞出一个来简化分布式系统中的开发成本。现在考虑下来jstorm应该是个不错的选择：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;运行一个固定结构的topology；&lt;/li&gt;
-  &lt;li&gt;在topology上面可以动态地加载、编译我们要执行的脚本；&lt;/li&gt;
-  &lt;li&gt;在spout、bolt中调用脚本中的方法；&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;这样也许我们可以更低的成本来享受分布式带来的好处~~&lt;/p&gt;
-</description>
-        <pubDate>Fri, 31 Jul 2015 00:00:00 +0800</pubDate>
-        <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/07/31/Jstorm.html</link>
-        <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/07/31/Jstorm.html</guid>
-        
-        
-        <category>编程技术</category>
         
       </item>
     

@@ -1,0 +1,194 @@
+<!DOCTYPEhtmlPUBLIC"-//W3C//DTDXHTML1.0Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html>
+	<!-- 引入CSS/JS -->
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="/assets/css/main.css"/>
+	<script type="text/javascript" src="/assets/javascripts/main.js"></script>
+
+	<!-- pygments代码高亮 -->
+	<!-- <link rel="stylesheet" type="text/css" href="/assets/css/pygments.css"/> -->
+	<!-- google代码高亮 -->
+	<script src="/assets/css/prettify.js"></script>
+	<link href="/assets/css/prettify.css" rel="stylesheet">
+	<title>解决运行Groovy脚本中的问题</title>
+</head>
+
+	<body onload="prettyPrint()">
+		<div class="post-container">
+			<h1>解决运行Groovy脚本中的问题</h1>
+			<p>在需要灵活配置时Groovy通常时一个不错的选择，但是问题比较多：</p>
+
+<ol>
+  <li>效率</li>
+  <li>垃圾回收</li>
+  <li>死循环</li>
+  <li>调用System.exit()等不安全的方法</li>
+  <li>拼命申请内存导致OOM：现在没有想到方案</li>
+</ol>
+
+<p>第一、二中已经有比较成熟的方案，但是后面的两个问题就不那么好解决了。</p>
+
+<h2 id="section">死循环</h2>
+
+<p>执行Groovy脚本的时候我用的是下面的方法：</p>
+
+<pre class="prettyprint">
+Class clazz = new GroovyClassLoader().parseClass("your code");
+Method method = clazz.getMethod("xxxx");
+method.invoke(null);
+</pre>
+
+<p>如果用户编写的脚本是（能用技术解决的东西最好不要用价值观来保证）：</p>
+
+<pre class="prettyprint">
+while(true){
+	// do nothing.
+}
+</pre>
+
+<p>机器的CPU马上会飚的很高，可能你会想到用<strong>Thread.stop()</strong>来终止这个罪恶的脚本，但是对于这个脚本：</p>
+
+<pre class="prettyprint">
+while(true){
+	try{/* your code */}
+    catch(Exception e){ }
+}
+</pre>
+
+<p>只能说根本停不下来。因为：</p>
+
+<blockquote>
+  <p>Thread.stop()仅仅是在线程的任意位置抛出ThreadDeath异常。</p>
+</blockquote>
+
+<p>况且Thread.stop很早就不建议使用了，而是用<strong>Thread.interrupt()</strong>，但是简单来说中断仅仅是去通知一下目标线程，而不是真的去停掉它。</p>
+
+<p>那么，现在的目标就是如何将中断检查的代码插入到用户编写的脚本中：</p>
+
+<pre class="prettyprint">
+public static void checkInterrupted() {
+    if (Thread.currentThread().isInterrupted()) {
+        throw new RuntimeException("task is interrupted!");
+    }
+}
+</pre>
+
+<p>将输入的脚本作为字符串来处理，估计会累到吐血！接着自然想到先将源码结构化，那么自然想到在编译的过程中对语法树进行操作即可达到目的：</p>
+
+<pre class="prettyprint">
+public static class SafeGroovyClassLoader extends GroovyClassLoader {
+    protected CompilationUnit createCompilationUnit(CompilerConfiguration config, CodeSource source) {
+    CompilationUnit compilationUnit = super.createCompilationUnit(config, source);
+    compilationUnit.addPhaseOperation(new CompilationUnit.SourceUnitOperation() {
+        public void call(SourceUnit source) throws CompilationFailedException {
+            ModuleNode ast = source.getAST();
+            // 自定义visitor来操作
+        }
+    }
+}
+</pre>
+
+<p>遍历时我们需要处理的节点包括：</p>
+
+<ol>
+  <li>FOR</li>
+  <li>WHILE</li>
+  <li>DOWHILE</li>
+  <li>CATCH</li>
+  <li>FINALLY</li>
+</ol>
+
+<p>在这些块的开始位置插入<strong>checkInterrupted</strong>方法的调用：</p>
+
+<pre class="prettyprint">
+private BlockStatement createCheckBlock(Statement statement) {
+    if (statement instanceof BlockStatement) {
+        BlockStatement blockStatement = (BlockStatement) statement;
+        blockStatement.getStatements().add(0, checkInterruptedStatement);
+        return blockStatement;
+    } else if (statement instanceof EmptyStatement) {
+        BlockStatement blockStatement = new BlockStatement();
+        blockStatement.getStatements().add(checkInterruptedStatement);
+        return blockStatement;
+    } else {
+        BlockStatement blockStatement = new BlockStatement();
+        blockStatement.getStatements().add(checkInterruptedStatement);
+        blockStatement.getStatements().add(statement);
+        return blockStatement;
+    }
+}
+
+public void visitCatchStatement(CatchStatement catchStatement) {
+    catchStatement.getCode().visit(this);
+    catchStatement.setCode(createCheckBlock(catchStatement.getCode()));
+}
+</pre>
+
+<p>你想的话可以在checkInterrupted中加入循环次数统计。现在线程可以中断，貌似问题已经解决了，但是谁来中断他？有三种方案：</p>
+
+<ol>
+  <li>用线程池来运行脚本，在外面用Future.get来等待（超时中断）</li>
+  <li>创建一个线程来join当前线程（超时中断）</li>
+  <li>执行任务前将当前线程插入到map中，然后用一个定时任务来扫描并将超时的中断</li>
+</ol>
+
+<p>第一、二种方案每个请求都会创建多余一个线程（不划算），那就来看看第三种方案的实现方式：</p>
+
+<pre class="prettyprint">
+// 保存线程开始时间
+Map&lt;Thread, Long&gt; threadCache = Maps.newHashMap();
+// 执行前将线程插入
+threadCache.put(Thread.currentThread(), System.currentTimeMillis());
+// 遍历threadCache根据时间判断是否中断
+</pre>
+
+<p>这种方案实现起来要好好考虑一下同步的问题！</p>
+
+<h2 id="systemexit">System.exit</h2>
+
+<p>在不做限制的情况下，执行上面方法系统直接就停止了，怎么办？办法很简单（当然不是靠价值观）：建立黑名单，在遍历语法树时是否调用了黑名单中的方法。</p>
+
+<h2 id="section-1">总结</h2>
+
+<p>应用这么多，可能大家都需要用到一些脚本的功能，但是能也没有比较把这些都再各个系统里面去实现一把（没啥意义），如果有这么一个打通脚本与应用、数据的平台也不错！</p>
+
+			<!-- 评论组件 -->
+			<div id="disqus_thread"/>
+		</div>
+		<div id="bar" class="category" style="left:-165px;">
+	<div class="icon"><a href="/about/"><img src="http://7xiz10.com1.z0.glb.clouddn.com/me.png"/></a></div>
+	<div class="icon"><a href="/categories.html"><img src="http://7xiz10.com1.z0.glb.clouddn.com/list.png"/></a></div>
+	<div class="icon"><a href="https://github.com/wsztrush"><img src="http://7xiz10.com1.z0.glb.clouddn.com/github.png"/></a></div>
+	<div class="icon"><a href="http://weibo.com/wsztrush"><img src="http://7xiz10.com1.z0.glb.clouddn.com/weibo.png"/></a></div>
+	<div class="icon"><img id="barClick" src="http://7xiz10.com1.z0.glb.clouddn.com/right.png"/></div>
+</div>
+
+	</body>
+</html>
+<!-- 评论组件 -->
+<script type="text/javascript">
+	var disqus_shortname = 'wsztrush';
+	(function() {
+		var dsq = document.createElement('script');
+		dsq.type = 'text/javascript';
+		dsq.async = true;
+		dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	})();
+</script>
+<!-- 百度访问统计 -->
+<script>
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?08a976e8d7e5a20acfcb566bd22a1db1";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+<script type="text/javascript">
+	document.getElementById("barClick").onclick = click;
+</script>
+
