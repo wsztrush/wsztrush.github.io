@@ -287,6 +287,71 @@ public class PrintVisitor implements VecMathVisitor {
 
 提到外面代码量并没有减少，但是这种代码很有规律，ANTLR可以大幅度地减少你的工作量！当然还有其他的方式来实现相同的目的，这里就不啰嗦了。
 
+遍历过程中要和两个东西打交道：
+
+1. 操作
+2. 符号
+
+在抽象语法树上操作很简单，把子节点收集起来进行计算、处理就行了，但是符号就没那么随意，这里的关键就是**作用域**：
+
+<pre class="prettyprint">
+// 1
+int x;
+void f(){ // 2
+    int y;
+    { int i; } // 3
+    { int j; } // 4
+}
+void g(){ // 5
+    int i;
+}
+</pre>
+
+嵌套的作用域更加容易理解，嵌套关系可以用树形结构来表示（这种作用域的特点是只有一个父节点），上面这段代码生成的作用域如下：
+
+![](http://7xiz10.com1.z0.glb.clouddn.com/Language-Implementation-Patterns-1.PNG)
+
+在遍历树的时候用一个栈来保存能访问到的作用域：
+
+![](http://7xiz10.com1.z0.glb.clouddn.com/Language-Implementation-Patterns-2.PNG)
+
+在这个过程中用到的操作有：
+
+操作|作用
+-|-
+push|向栈中压入作用域
+pop|作用域结束后，要将当前的作用域弹出栈
+def|在当前作用域中定义符号
+resolve|解析符号
+
+面向过程的变成语言很简单，这些已经够了，但是在面向对象编程的时候就不行了：
+
+<pre class="prettyprint">
+// 1 全局
+class A {// 2
+public :
+    int x;
+    void foo()// 3
+    { ; } // 4
+}
+class B : public A {// 5
+    int y;
+    void foo()// 6
+    {// 7
+        int z =  x + y;
+    }
+}
+</pre>
+
+由于继承关系的存在，在查找符号的时候不仅是要在当前类中找，而且要去父类中找，也就是说此时的父节点就不止一个了：
+
+![](http://7xiz10.com1.z0.glb.clouddn.com/Language-Implementation-Patterns-3.PNG)
+
+对于像**a.x = 3**这种利用
+
+
+
+
 
 
 
