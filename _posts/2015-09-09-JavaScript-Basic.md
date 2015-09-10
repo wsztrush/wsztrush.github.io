@@ -22,7 +22,7 @@ number|整数、浮点数、NaN
 string|字符串
 object|数据、对象的集合，是所有对象的基础
 
-操作符也是将弱类型表现的淋漓尽致，比如**"123" == 123**的结果居然是true，而使用**"123" === 123**的时候才会比较类型。另外常用的引用类型有：
+接着来体会一下弱类型的方便之处：**"123" == 123**的结果居然是true，而**"123" === 123**才是预期中的false，此时会比较类型。常用的引用类型有：
 
 1. Array
 2. Date
@@ -34,7 +34,7 @@ object|数据、对象的集合，是所有对象的基础
 8. Global：全局对象(不属于任何其他对象的属性和方法都是它的)
 9. Math
 
-结构控制中比较特别是加了with语句：
+结构控制语句中比较特别是加了**with**：
 
 <pre class="prettyprint">
 with(location){
@@ -47,7 +47,7 @@ with(location){
 
 > 既不需要定义返回值，也不需要定义入参！
 
-其实它是把参数放到数组arguments里面了，处理方式和Python有点像。函数可以作为参数传来传去很容易让人头晕，再加上匿名函数和闭包就更烦了：
+其实它是把参数放到数组**arguments**里面了，处理方式和Python有点像。函数可以作为参数传来传去很容易让人头晕，再加上匿名函数和闭包就更烦了：
 
 > 闭包是指有权访问另一个函数作用域中变量的函数，也就是在一个函数内部创建的函数。
 
@@ -77,11 +77,11 @@ function createFunctions(){
 }
 </pre>
 
-更复杂度是：this的原始含义为：
+更复杂度是：**this**的原始含义为：
 
 > 当方法被某个对象调用时，this就等于那个对象。
 
-**记住**：要时刻小心是是谁在调用方法。那在来看一段代码：
+**记住**：要时刻小心是是谁在调用方法，再来看一段代码：
 
 <pre class="prettyprint">
 var name = "the window";
@@ -207,31 +207,126 @@ var instance2 = new SubType();
 alert(instance2.colors);// [1,2,3]
 </pre>
 
-在SubType通过**call/apply**来执行SuperType方法，相当于是在当前的实例中产生了SuperType的备份，个人觉得把这种也算作继承有点牵强。
-
-错误处理（try-catch-finally）和Java里面几乎一样，常见的错误类型有：
+在SubType通过**call/apply**来执行SuperType方法，相当于是在当前的实例中产生了SuperType的备份，个人觉得把这种也算作继承有点牵强。最后，错误处理（try-catch-finally）和Java里面几乎一样，常见的错误类型有：
 
 1. 类型转换错误
 2. 数据类型错误
 3. 通信错误
 
-在写代码的时候要注意这些问题不要把程序搞挂了~ 语法上与Java等不同的地方基本就这些，下面来看JavaScript在实际前端开发中的应用。
+在写代码的时候要注意不要因为这些问题把程序搞挂了~
 
-## DOM
+## DOM与BOM
 
+**BOM**(浏览器对象模型)中提供了对象用来访问浏览器的功能：
 
+对象|功能
+-|-
+window|提供浏览器大小、位置以及很多基础方法
+localtion|加载文档的信息
+navigator|用来识别浏览器、检测插件、注册处理程序
+screen|显示器像素
+history|浏览器历史
+
+浏览器就是JavaScript的运行环境，不同的浏览器实现的不同到时运行会有意想不到的结果，在做兼容性时需要写逻辑代码来测试浏览器对需要的功能是否支持！
+
+**DOM**(文档对象模型)是针对HTML和XML文档的一个API，将它们描绘成一个由多层节点构成的结构，节点的类型包括：
+
+类型|含义
+-|-
+Node|基类，统一维护了节点的层次结构
+Document|文档，提供读、写元素的操作，在JavaScript操作文档时经常用到
+Element|元素
+Text|文本
+Comment|注释
+CDATASection|XML中的CDATA(这个就不用多说了)
+DocumentType|文档类型，能够影响到浏览器渲染时的行为(一个热乎的坑)
+Attr|元素的特性
+
+写JavaScript比较爽的就是随时运行随时生效，具体操作DOM的API还是很简单的，打开**console**尝试一下吧:)
 
 ## 事件
 
+JavaScript与HTML之间的交互是通过事件来实现的，而事件则是文档或者浏览器窗口中发生的一些特定的**交互瞬间**。事件流的方式有两种：
 
+1. **事件冒泡**：由最具体的元素接收，然后逐级上传
+2. **事件捕获**：上层节点更早接收到事件，而最具体的节点最后收到
 
+第一种监听事件的方式为直接绑定属性：
 
+<pre class="prettyprint">
+var btn = document.getElementById("myBtn");
+btn.onclick = function(){
+    alert("Clicked");
+}
+</pre>
+
+另一种方法为增加监听器，用这种方法可以为同一个时间添加多个监听器（虽然没啥用）
+
+<pre class="prettyprint">
+var btn = document.getElementById("myBtn");
+btn.addEventListener("click", function(){
+    alert(this.id);
+}, false);
+</pre>
+
+不同浏览器的API有所不同，可以统一封装掉提供一个EventUtil来操作事件监听，在事件对象（event）中包含了相关的信息，细节就不讲了，常见的事件类型有下面几种：
+
+1. UI事件
+2. 焦点事件
+3. 鼠标与滚轮事件
+4. 键盘与文本事件
+5. 复合事件
+6. 变动事件
+7. HTML5事件
+8. 设备事件
+9. 触摸与手势事件
+10. 拖放事件
+
+事件也是要消耗内存的，使用需谨慎！
+
+## 通信
+
+既然是浏览器脚本语言，和服务器通信自然是少不了的：
+
+<pre class="prettyprint">
+var xhr = new XMLHttpRequest();
+xhr.onreadystatechange = function(){ // 监听状态发生变化
+    if(xhr.readyState == 4){// 完成
+        if((xhr.status &gt;= 200 && xhr.status &lt; 300) || xhr.status == 304){
+            alert(xhr.responseText);
+        } else{
+            alert(xhr.status);
+        }
+    }
+}
+xhr.open("get", "xxx.xxx.com", true);
+xhr.send(null);
+</pre>
+
+现代Web应用中频繁使用的一项功能就是表单数据序列化，XMLHttpRequest2级为此定义了**FormData**类型。使用Ajax进行跨域是比较常见的需求，之前都是利用一些浏览器允许跨域的请求来做：
+
+1. 图像Ping
+2. JSONP
+3. Comet
+4. 服务器发送事件（SSE）
+5. Web Scokets
+
+既然大家这么需要跨域，而且浏览器禁止不住，那干脆就提供一套好用的协议出来，于是有了CORS（跨域资源共享）：
+
+> 发请求时将请求页面的源信息设置到Origin中，服务器根据Origin来判断是否允许访问，如果运行返回的头中设置Access-Control-Allow-Origin:源信息。
+
+如果没有这个头部或者不匹配，浏览器就会驳回请求。多种浏览器在实现时都会做些限制：
+
+1. cookie不会随请求发送，也不会随响应返回
+2. 不能访问响应的头部信息
+3. 限制对头部信息的设置
+
+和上面的方案相比都是跨域，但是区别还是挺大的。
 
 ## 其他
 
+操作JSON、XML等数据，这里就记了，都是API~
 
 ## 总结
 
-
-
-
+前端需要学的东西太多了，虽然这两天花把JavaScript的基础过了一遍，但是要想在实际中真正的用起来，还是有很多规范、工具要去学的，加油！！！
