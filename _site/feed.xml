@@ -5,9 +5,451 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 08 Sep 2015 23:43:26 +0800</pubDate>
-    <lastBuildDate>Tue, 08 Sep 2015 23:43:26 +0800</lastBuildDate>
+    <pubDate>Fri, 11 Sep 2015 07:21:44 +0800</pubDate>
+    <lastBuildDate>Fri, 11 Sep 2015 07:21:44 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
+    
+      <item>
+        <title>JavaScript基础知识</title>
+        <description>&lt;p&gt;&lt;img src=&quot;http://img3.douban.com/mpic/s8958650.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;最近被逼着学习JavaScript，这篇也算是记得一些笔记，如果你对其他的语法（Java等）比较熟悉，那么看完这篇文章并实践一下，也差不多算入门了:)&lt;/p&gt;
+
+&lt;h2 id=&quot;section&quot;&gt;基本语法&lt;/h2&gt;
+
+&lt;p&gt;JavaScript中包括六种基本类型：&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;类型&lt;/th&gt;
+      &lt;th&gt;含义&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;undefined/null&lt;/td&gt;
+      &lt;td&gt;区别看&lt;a href=&quot;http://www.ruanyifeng.com/blog/2014/03/undefined-vs-null.html&quot;&gt;这里&lt;/a&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;boolean&lt;/td&gt;
+      &lt;td&gt;需要注意从其他类型转换到Boolean的规则&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;number&lt;/td&gt;
+      &lt;td&gt;整数、浮点数、NaN&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;string&lt;/td&gt;
+      &lt;td&gt;字符串&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;object&lt;/td&gt;
+      &lt;td&gt;数据、对象的集合，是所有对象的基础&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;接着来体会一下弱类型的方便之处：&lt;strong&gt;“123” == 123&lt;/strong&gt;的结果居然是true，而&lt;strong&gt;“123” === 123&lt;/strong&gt;才是预期中的false，此时会比较类型。常用的引用类型有：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Array&lt;/li&gt;
+  &lt;li&gt;Date&lt;/li&gt;
+  &lt;li&gt;RegExp&lt;/li&gt;
+  &lt;li&gt;Function&lt;/li&gt;
+  &lt;li&gt;Boolean&lt;/li&gt;
+  &lt;li&gt;Number&lt;/li&gt;
+  &lt;li&gt;String&lt;/li&gt;
+  &lt;li&gt;Global：全局对象(不属于任何其他对象的属性和方法都是它的)&lt;/li&gt;
+  &lt;li&gt;Math&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;结构控制语句中比较特别是加了&lt;strong&gt;with&lt;/strong&gt;：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+with(location){
+    var a = search.substring(1); // var a = location.search.substring(1)
+    var b = hostname;// var b = location.hostname
+}
+&lt;/pre&gt;
+
+&lt;p&gt;可以看做是一个作用域操作符！另一个能控制作用域的就只有函数了，没有块作用域也算比较奇葩~ 函数的定义非常灵活：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;既不需要定义返回值，也不需要定义入参！&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;其实它是把参数放到数组&lt;strong&gt;arguments&lt;/strong&gt;里面了，处理方式和Python有点像。函数可以作为参数传来传去很容易让人头晕，再加上匿名函数和闭包就更烦了：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;闭包是指有权访问另一个函数作用域中变量的函数，也就是在一个函数内部创建的函数。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;来看看段代码理解一下闭包：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+function createFunctions(){
+    var result = new Array();
+    for(var i = 0; i &amp;lt; 10; i++){
+        result[i] = function(){
+            return i;
+        };
+    }
+}
+&lt;/pre&gt;
+
+&lt;p&gt;返回的方法数组每个的返回结果都是相同的，是不是和预期的不一样？要达到预期的效果需要：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+function createFunctions(){
+    var result = new Array();
+    for(var i = 0; i &amp;lt; 10; i++){
+        result[i] = function(num){
+            return num;
+        }(i);
+    }
+}
+&lt;/pre&gt;
+
+&lt;p&gt;更复杂度是：&lt;strong&gt;this&lt;/strong&gt;的原始含义为：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;当方法被某个对象调用时，this就等于那个对象。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;strong&gt;记住&lt;/strong&gt;：要时刻小心是是谁在调用方法，再来看一段代码：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+var name = &quot;the window&quot;;
+vra obj = {
+    var name = &quot;my object&quot;;
+    getNameFunc : function(){
+        return function(){
+            return this.name;
+        }
+    }
+}
+alert(obj.getNameFunc()());// the window
+&lt;/pre&gt;
+
+&lt;p&gt;是不是隐隐感觉到了&lt;strong&gt;闭包+this&lt;/strong&gt;组合的强大威力？虽然很多程序猿没有对象，但面向对象编程是一个永恒的话题：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;对象是无序属性的集合，其属性可以包含基本值、对象或者函数。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;有一些属性只给引擎内部使用，在我们自己写的JavaScript中是无法访问的，常用的有：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;configurable&lt;/li&gt;
+  &lt;li&gt;enumerable：能否通过for-in循环，默认为true&lt;/li&gt;
+  &lt;li&gt;writable：能否修改属性的值&lt;/li&gt;
+  &lt;li&gt;value：值&lt;/li&gt;
+  &lt;li&gt;get：在读取属性时调用的函数&lt;/li&gt;
+  &lt;li&gt;set：在设置属性时调用的函数&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;创建对象除了用&lt;strong&gt;new Object&lt;/strong&gt;之外还可以用构造函数&lt;strong&gt;new Person&lt;/strong&gt;：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+function Person(name, age, job){
+    this.name = name;
+    this.job = job;
+    this.age = age;
+}
+var person = new Person();
+&lt;/pre&gt;
+
+&lt;p&gt;其背后处理的逻辑如下：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;创建一个新对象&lt;/li&gt;
+  &lt;li&gt;将构造函数函数的作用域赋给新对象（因此this指向了新对象）&lt;/li&gt;
+  &lt;li&gt;执行构造函数中的代码&lt;/li&gt;
+  &lt;li&gt;返回新对象&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;创建自定义的构造函数意味着将它的实例标志为一种特定的类型，这也是其优势所在：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+alert(person instanceof Person); // true
+&lt;/pre&gt;
+
+&lt;p&gt;而最大的劣势在于：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;每个方法都要在每个实例上创建一遍。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;上面是将方法当成属性来使用，其实还有一种将方法当成方法来用的方法:)&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+function Person(){
+}
+Person.prototype = {
+    name : &quot;a&quot;;
+    sayName : function(){
+        alert(this.name);
+    }
+}
+&lt;/pre&gt;
+
+&lt;p&gt;在方法的&lt;strong&gt;prototype&lt;/strong&gt;中指定的属性（原型），对其所有的实例可用，这样方法的用法就和Java一致，而属性就像是类的静态属性，而且可以方便地用来模仿继承：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+function SubType(){
+    this.sayHello = function(){
+        alert(&quot;hello&quot;);
+    }
+}
+function SuperType(){
+}
+SubType.prototype = SuperType;
+new SubType().sayHello();// hello
+&lt;/pre&gt;
+
+&lt;p&gt;总的来说继承更像是提供了一个默认的parent指针，在查找属性、方法的时候可以递归向上查找，但是用不好的时候会出现一些莫名其妙的问题：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+function Super(){
+    this.key = [1, 2, 3];
+}
+function A(){}
+function B(){}
+
+A.prototype = new Super();
+
+var a1 = new A();
+a1.key.push(4);
+alert(a1.key);// [1, 2, 3, 4]
+
+var a2 = new A();
+alert(a2.key);// [1, 2, 3, 4]
+
+// 用一个公共的方法来包装对象，这样就可以直接在对象上&quot;继承&quot;了
+function object(o){
+    function F(){}
+    F.prototype = o;
+    return new F();
+}
+&lt;/pre&gt;
+
+&lt;p&gt;在ECMAScript 5中新增了方法&lt;strong&gt;Object.create()&lt;/strong&gt;规范了原型继承（类似object方法）。把SuperType中的属性共享给SubType的每个实例可能不能满足需求，那么可以试试下面这种方法：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+function SuperType(){
+    this.colors = [1, 2, 3];
+}
+function SubType(){
+    SuperType.call(this); // apply也可以
+}
+var instance1 = new SubType();
+instance1.colors.push(4);
+alert(instance1.colors);// [1,2,3,4]
+
+var instance2 = new SubType();
+alert(instance2.colors);// [1,2,3]
+&lt;/pre&gt;
+
+&lt;p&gt;在SubType通过&lt;strong&gt;call/apply&lt;/strong&gt;来执行SuperType方法，相当于是在当前的实例中产生了SuperType的备份，个人觉得把这种也算作继承有点牵强。最后，错误处理（try-catch-finally）和Java里面几乎一样，常见的错误类型有：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;类型转换错误&lt;/li&gt;
+  &lt;li&gt;数据类型错误&lt;/li&gt;
+  &lt;li&gt;通信错误&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;在写代码的时候要注意不要因为这些问题把程序搞挂了~&lt;/p&gt;
+
+&lt;h2 id=&quot;dombom&quot;&gt;DOM与BOM&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;BOM&lt;/strong&gt;(浏览器对象模型)中提供了对象用来访问浏览器的功能：&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;对象&lt;/th&gt;
+      &lt;th&gt;功能&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;window&lt;/td&gt;
+      &lt;td&gt;提供浏览器大小、位置以及很多基础方法&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;localtion&lt;/td&gt;
+      &lt;td&gt;加载文档的信息&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;navigator&lt;/td&gt;
+      &lt;td&gt;用来识别浏览器、检测插件、注册处理程序&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;screen&lt;/td&gt;
+      &lt;td&gt;显示器像素&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;history&lt;/td&gt;
+      &lt;td&gt;浏览器历史&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;浏览器就是JavaScript的运行环境，不同的浏览器实现的不同到时运行会有意想不到的结果，在做兼容性时需要写逻辑代码来测试浏览器对需要的功能是否支持！&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;DOM&lt;/strong&gt;(文档对象模型)是针对HTML和XML文档的一个API，将它们描绘成一个由多层节点构成的结构，节点的类型包括：&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;类型&lt;/th&gt;
+      &lt;th&gt;含义&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Node&lt;/td&gt;
+      &lt;td&gt;基类，统一维护了节点的层次结构&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Document&lt;/td&gt;
+      &lt;td&gt;文档，提供读、写元素的操作，在JavaScript操作文档时经常用到&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Element&lt;/td&gt;
+      &lt;td&gt;元素&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Text&lt;/td&gt;
+      &lt;td&gt;文本&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Comment&lt;/td&gt;
+      &lt;td&gt;注释&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;CDATASection&lt;/td&gt;
+      &lt;td&gt;XML中的CDATA(这个就不用多说了)&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;DocumentType&lt;/td&gt;
+      &lt;td&gt;文档类型，能够影响到浏览器渲染时的行为(一个热乎的坑)&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Attr&lt;/td&gt;
+      &lt;td&gt;元素的特性&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;写JavaScript比较爽的就是随时运行随时生效，具体操作DOM的API还是很简单的，打开&lt;strong&gt;console&lt;/strong&gt;尝试一下吧:)&lt;/p&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;事件&lt;/h2&gt;
+
+&lt;p&gt;JavaScript与HTML之间的交互是通过事件来实现的，而事件则是文档或者浏览器窗口中发生的一些特定的&lt;strong&gt;交互瞬间&lt;/strong&gt;。事件流的方式有两种：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;strong&gt;事件冒泡&lt;/strong&gt;：由最具体的元素接收，然后逐级上传&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;事件捕获&lt;/strong&gt;：上层节点更早接收到事件，而最具体的节点最后收到&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;第一种监听事件的方式为直接绑定属性：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+var btn = document.getElementById(&quot;myBtn&quot;);
+btn.onclick = function(){
+    alert(&quot;Clicked&quot;);
+}
+&lt;/pre&gt;
+
+&lt;p&gt;另一种方法为增加监听器，用这种方法可以为同一个时间添加多个监听器（虽然没啥用）&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+var btn = document.getElementById(&quot;myBtn&quot;);
+btn.addEventListener(&quot;click&quot;, function(){
+    alert(this.id);
+}, false);
+&lt;/pre&gt;
+
+&lt;p&gt;不同浏览器的API有所不同，可以统一封装掉提供一个EventUtil来操作事件监听，在事件对象（event）中包含了相关的信息，细节就不讲了，常见的事件类型有下面几种：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;UI事件&lt;/li&gt;
+  &lt;li&gt;焦点事件&lt;/li&gt;
+  &lt;li&gt;鼠标与滚轮事件&lt;/li&gt;
+  &lt;li&gt;键盘与文本事件&lt;/li&gt;
+  &lt;li&gt;复合事件&lt;/li&gt;
+  &lt;li&gt;变动事件&lt;/li&gt;
+  &lt;li&gt;HTML5事件&lt;/li&gt;
+  &lt;li&gt;设备事件&lt;/li&gt;
+  &lt;li&gt;触摸与手势事件&lt;/li&gt;
+  &lt;li&gt;拖放事件&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;事件也是要消耗内存的，使用需谨慎！&lt;/p&gt;
+
+&lt;h2 id=&quot;section-2&quot;&gt;通信&lt;/h2&gt;
+
+&lt;p&gt;既然是浏览器脚本语言，和服务器通信自然是少不了的：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+var xhr = new XMLHttpRequest();
+xhr.onreadystatechange = function(){ // 监听状态发生变化
+    if(xhr.readyState == 4){// 完成
+        if((xhr.status &amp;gt;= 200 &amp;amp;&amp;amp; xhr.status &amp;lt; 300) || xhr.status == 304){
+            alert(xhr.responseText);
+        } else{
+            alert(xhr.status);
+        }
+    }
+}
+xhr.open(&quot;get&quot;, &quot;xxx.xxx.com&quot;, true);
+xhr.send(null);
+&lt;/pre&gt;
+
+&lt;p&gt;现代Web应用中频繁使用的一项功能就是表单数据序列化，XMLHttpRequest2级为此定义了&lt;strong&gt;FormData&lt;/strong&gt;类型。使用Ajax进行跨域是比较常见的需求，之前都是利用一些浏览器允许跨域的请求来做：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;图像Ping&lt;/li&gt;
+  &lt;li&gt;JSONP&lt;/li&gt;
+  &lt;li&gt;Comet&lt;/li&gt;
+  &lt;li&gt;服务器发送事件（SSE）&lt;/li&gt;
+  &lt;li&gt;Web Scokets&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;既然大家这么需要跨域，而且浏览器禁止不住，那干脆就提供一套好用的协议出来，于是有了CORS（跨域资源共享）：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;发请求时将请求页面的源信息设置到Origin中，服务器根据Origin来判断是否允许访问，如果运行返回的头中设置Access-Control-Allow-Origin:*。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;如果没有这个头部或者不匹配，浏览器就会驳回请求。多种浏览器在实现时都会做些限制：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;cookie不会随请求发送，也不会随响应返回&lt;/li&gt;
+  &lt;li&gt;不能访问响应的头部信息&lt;/li&gt;
+  &lt;li&gt;限制对头部信息的设置&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;和上面的方案相比都是跨域，但是区别还是挺大的。&lt;/p&gt;
+
+&lt;h2 id=&quot;section-3&quot;&gt;其他&lt;/h2&gt;
+
+&lt;p&gt;操作JSON、XML等数据，这里就记了，都是API~&lt;/p&gt;
+
+&lt;h2 id=&quot;section-4&quot;&gt;总结&lt;/h2&gt;
+
+&lt;p&gt;前端需要学的东西太多了，虽然这两天花把JavaScript的基础过了一遍，但是要想在实际中真正的用起来，还是有很多规范、工具要去学的，加油！！！&lt;/p&gt;
+</description>
+        <pubDate>Wed, 09 Sep 2015 00:00:00 +0800</pubDate>
+        <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/09/09/JavaScript-Basic.html</link>
+        <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/09/09/JavaScript-Basic.html</guid>
+        
+        
+        <category>编程技术</category>
+        
+      </item>
     
       <item>
         <title>解决运行Groovy脚本中的问题</title>
@@ -480,14 +922,14 @@ public class PrintVisitor implements VecMathVisitor {
 
 &lt;p&gt;提到外面代码量并没有减少，但是这种代码很有规律，ANTLR可以大幅度地减少你的工作量！当然还有其他的方式来实现相同的目的，这里就不啰嗦了。&lt;/p&gt;
 
-&lt;p&gt;遍历过程中要和两个东西打交道：&lt;/p&gt;
+&lt;p&gt;遍历语法树的过程中要和两个东西打交道：&lt;/p&gt;
 
 &lt;ol&gt;
   &lt;li&gt;操作&lt;/li&gt;
   &lt;li&gt;符号&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;p&gt;在抽象语法树上操作很简单，把子节点收集起来进行计算、处理就行了，但是符号就没那么随意，这里的关键就是&lt;strong&gt;作用域&lt;/strong&gt;：&lt;/p&gt;
+&lt;p&gt;操作很简单，把子节点收集起来进行计算、处理就行了，但是符号就没那么随意，关键就是&lt;strong&gt;作用域&lt;/strong&gt;：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 // 1
@@ -562,7 +1004,30 @@ class B : public A {// 5
 
 &lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Language-Implementation-Patterns-3.PNG&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;对于像&lt;strong&gt;a.x = 3&lt;/strong&gt;这种利用&lt;/p&gt;
+&lt;p&gt;对于像&lt;strong&gt;a.x = 3&lt;/strong&gt;这种访问对象属性的行为就不能按照上面套路来了，需要增加一个操作：&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;操作&lt;/th&gt;
+      &lt;th&gt;作用&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;resolveMemeber&lt;/td&gt;
+      &lt;td&gt;解析成员，只会根据superClass递归查找&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;到这里还没完，Java中的Class的定义可以在使用之前，那么在上面的处理属性引用时发现还没定义！直观的解决方法：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;预先遍历一次来定义类型。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;这里要小心处理好符号和作用域的关系。&lt;/p&gt;
 
 </description>
         <pubDate>Sun, 06 Sep 2015 00:00:00 +0800</pubDate>
@@ -1424,445 +1889,6 @@ public interfact ThreadFactory{
         
         
         <category>机器学习</category>
-        
-      </item>
-    
-      <item>
-        <title>编译原理（一）</title>
-        <description>&lt;p&gt;&lt;img src=&quot;http://img3.douban.com/mpic/s3392161.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;section&quot;&gt;词法分析&lt;/h2&gt;
-
-&lt;p&gt;编译器的目的是根据源码生成可以执行的文件，想一步到位完全不靠谱，可以先进行分词处理，那么这就是词法分析要完成的工作了！&lt;/p&gt;
-
-&lt;p&gt;用正则表达是来描述词法规则是比较简单的，而用状态机进行匹配则是比较迅速的，那么比较重要的就是在他们之间的互相转换：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Compiler-1.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;这里有：&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;概念&lt;/th&gt;
-      &lt;th&gt;含义&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;NFA&lt;/td&gt;
-      &lt;td&gt;不确定自动机，从当前状态根据字符转移的时候，下一个状态是不确定的&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;DFA&lt;/td&gt;
-      &lt;td&gt;确定自动机，状态转移时下一个状态时确定的&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;来看一个NFA的例子，对于&lt;strong&gt;(a|b)*abb&lt;/strong&gt;这样的词，对应的NFA为：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Compiler-2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;在遍历的过程中顺便更新状态就可以了，用代码来描述一下：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-S = &amp;epsilon;-closure(s0); // 注意：这里的S是个集合
-c = nextChar();
-while(c != eof){
-    S = &amp;epsilon;-closure(move(S,c));// 状态转移+空转移
-    c = nextChar();
-}
-if(S &amp;cap; F != &amp;empty;) return &quot;yes&quot;;
-eles return &quot;no&quot;;
-&lt;/pre&gt;
-
-&lt;p&gt;看起来NFA的模拟方式效率并不高，而且代码写起来也有点小复杂，而DFA则完全不一样：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-s = s0;
-c = nextChar();
-while(c != eof){
-    s = move(s, c);
-    c = nextChar();
-}
-if(s在F中) return &quot;yes&quot;;
-else return &quot;false&quot;;
-&lt;/pre&gt;
-
-&lt;p&gt;是不是简单了很多？但是也更显然，NFA与正则之间的关系更加直观，那么先来看从正则到NFA的转换：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Compiler-3.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;用这种方式从&lt;strong&gt;(a|b)*a&lt;/strong&gt;得到的NFA为：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Compiler-4.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;既然DFA相对于NFA来说是有优势的，那么如果有一个方法能将NFA转换为DFA，那么可以一劳永逸。这里&lt;strong&gt;子集构造法&lt;/strong&gt;还是相当的直观的的：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-一开始，&amp;epsilon;-closure(s0)是Dstates中唯一状态，且它未加标记;
-while(在Dstates中一个未加标记状态T){
-    给T加上标记;
-    for(每个输入符号a){
-        U = &amp;epsilon;-closure(move(T,a));
-        if(U不在Dstates中)
-            将U加入到Dstates中，且不加标记;
-        Dtran[T,a] = U;
-    }
-}
-&lt;/pre&gt;
-
-&lt;p&gt;其中的：&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;操作&lt;/th&gt;
-      &lt;th&gt;描述&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;ε-closure(s)&lt;/td&gt;
-      &lt;td&gt;能够从NFA的状态s开始只通过ε转换到达的NFA状态集合&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;ε-closure(T)&lt;/td&gt;
-      &lt;td&gt;能够从T中某个NFA状态s开始只通过ε转换到达的NFA状态集合&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;move(T,a)&lt;/td&gt;
-      &lt;td&gt;能够从T中某个状态s出发通过标号a的转换到达的NFA状态的集合&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;那么现在就有一条路径了：&lt;strong&gt;正则-&amp;gt;NFA-&amp;gt;DFA&lt;/strong&gt;也太累了，有没有&lt;strong&gt;正则-&amp;gt;DFA&lt;/strong&gt;这样一条通路？答案是肯定的，首先根据正则构造出抽象语法树：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-初始化Dstates,使之只包含未标记的状态firstpos(n0),其中n0是r(#)的抽象语法树的根节点;
-while(Dstates中存在未标记的状态S){
-    标记S;
-    for(每个输入符号a){
-        令U为S中和a对应的所有位置p的followpos(p)的并集;
-        for(U不在Dstates中)
-            将U作为未标记的状态加入到Dstates中;
-        Dtran[S,a] = U;
-    }
-}
-&lt;/pre&gt;
-
-&lt;p&gt;其中：&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;定义&lt;/th&gt;
-      &lt;th&gt;含义&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;nullable(n)&lt;/td&gt;
-      &lt;td&gt;节点n的子表达式的语言中包含ε&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;firstpos(n)&lt;/td&gt;
-      &lt;td&gt;以节点n为根的子表达式中第一个符号的位置的集合&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;lastpos(n)&lt;/td&gt;
-      &lt;td&gt;以节点n为根的子表达式中最后一个符号的位置的集合&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;followpos(p)&lt;/td&gt;
-      &lt;td&gt;可能出现在位置p后面的位置的集合&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;其实背后的底层原理与从NFA到DFA还是比较相似的，只不过是用不同的构造方式来做。DFA确实要比NFA好处理一些，但并不是说生成DFA之后就没事了，其中的状态数可以压缩：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;根据接收、非接收状态分为两组；&lt;/li&gt;
-  &lt;li&gt;遍历分组、字符，如果同一组内的状态根据该字符到达了不同的组，那么将继续将当前的分组进行分割；&lt;/li&gt;
-  &lt;li&gt;重复执行步骤2直到没有变化；&lt;/li&gt;
-  &lt;li&gt;每个分组中选择一个代表状态，重新构造DFA，最小化完成；&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;可以证明&lt;strong&gt;最小化状态&lt;/strong&gt;数的DFA唯一性，然而最小化的过程更加容易让我们去理解状态机的本质。来个最小化状态数的例子：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Compiler-5.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;section-1&quot;&gt;语法分析&lt;/h2&gt;
-
-&lt;p&gt;语法分析器从词法分析器得到TOKEN流，&lt;strong&gt;生成语法分析树&lt;/strong&gt;或者&lt;strong&gt;抽象语法树&lt;/strong&gt;，方便进一步地处理。预发处理的规则通常是用&lt;strong&gt;上下文无关文法&lt;/strong&gt;来描述：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;ul&gt;
-    &lt;li&gt;E → E+T|T // 从E+T可以推导出E，也可以从T推导出E&lt;/li&gt;
-    &lt;li&gt;T → T*F|F&lt;/li&gt;
-    &lt;li&gt;F → (E)|id&lt;/li&gt;
-  &lt;/ul&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;对于一个TOKEN流，语法分析器的目的是就是把这些规则“套”上去，从而知道输入的内容是什么样的结构，而输出可能是：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Compiler-6.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;左边是分析语法树，右边是抽象语法树，比较而言抽象语法树更简单一些，而且便利起来更加容易。如果通过一个语法在推导某个式子的时候可以得到两个不同的语法树，那么说明这种语法是有二义性的，比如&lt;strong&gt;if E1 then if E2 then S1 else S2&lt;/strong&gt;中的else就不知道应该对应哪个if，那么进行修改：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Compiler-7.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;消除二义性好像没有什么万能的方法，但是消除左递归却是有的：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-按照某个顺序将非终结符号排序为A1、A2....
-for(从1到n的每个i){
-    for(从1到i-1的每个j){
-        将每个形如Ai&amp;rarr;Aj&amp;upsih;的产生式替换为产生式组Ai&amp;rarr;&amp;delta;1&amp;upsih;|&amp;delta;2&amp;upsih;|...
-        其中Aj&amp;rarr;&amp;delta;1|&amp;delta;2|....是所有Aj的产生式
-    }
-    消除Aj产生式之间的立即左递归
-}
-&lt;/pre&gt;
-
-&lt;p&gt;是不是有点像拓扑排序？有了这些规则那么就需要写程序来按照其描述的逻辑进行处理，说白了就是用程序的结构去模拟预发的结构：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-void A(){
-    选择A的一个产生式，A&amp;rarr;X1X2X3...
-    for(i = 1 to k){
-        if(Xi是一个非终结符号)
-            调用过程Xi();
-        else if(Xi等于当前输入符号a)
-            读入下一个输入符号
-        else
-            /* 发现错误，需要回溯 */
-    }
-}
-&lt;/pre&gt;
-
-&lt;p&gt;典型的&lt;strong&gt;自顶向下&lt;/strong&gt;分析的方法，用递归来实现很容易与语法规则对应起来，但是在出现错误的时候就退回重试显示效率低下的处理方式。在知道下一个TOKEN是什么的情况下就知道用那个产生式，那么就不需要那么多无谓的尝试了，这就是&lt;strong&gt;LL(1)&lt;/strong&gt;的想法，需要两个集合：&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;集合&lt;/th&gt;
-      &lt;th&gt;含义&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;FIREST(α)&lt;/td&gt;
-      &lt;td&gt;可以由α推导得到的串的终结符的集合&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;FOLLOW(A)&lt;/td&gt;
-      &lt;td&gt;在某些句型中紧跟在A右边的终结符号的集合&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;那么之后在终结符号A处使用FOLLOW(A)中的产生式来进行处理即可，这时候非递归的写法也是非常简单的。其实构造FIRST和FOLLOW的过程还是挺简单的，不再赘述。&lt;/p&gt;
-
-&lt;p&gt;下面接着来看&lt;strong&gt;自底向上&lt;/strong&gt;的分析过程：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Compiler-8.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;在这种方式中我们并不是从“根”出发的，而是在看到能处理的部分就把它处理掉，可以用栈来实现：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Compiler-9.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;比较麻烦的是，我们不知道当前有哪些是可以处理的，按道理来说每次在需要的时候去遍历产生式并递归来做也是可以搞定的，但是不免会有很多的遍历是重复劳动，那么就需要预处理了。对于表达式&lt;strong&gt;A→XYZ&lt;/strong&gt;，如果考虑位置的话有四种情况：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;A→.XYZ&lt;/li&gt;
-  &lt;li&gt;A→X.YZ&lt;/li&gt;
-  &lt;li&gt;A→XY.Z&lt;/li&gt;
-  &lt;li&gt;A→XYZ.&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;我们将这些称为项，由一个语法的产生式对应的过个产生式中有一些是等价的，将他们放在同一个集合（项集）中，比如对于语法 ：&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;E’→E&lt;/li&gt;
-  &lt;li&gt;E→E+T|T&lt;/li&gt;
-  &lt;li&gt;T→T*F|F&lt;/li&gt;
-  &lt;li&gt;F→(E)|id&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;生成项集之后，在遇到一个TOKEN的情况下就知道下个项集是什么了，这样我们根据上面的语法就得到了一个状态图：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Compiler-10.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;项集闭包的构造方法比较简单：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-SetOfItems CLOSURE(I){
-    J = I;
-    repeat:
-        for(J中的每个项A→α.Bβ)
-            for(G的每个产生式B→γ)
-                if(项B→.γ不在J中)
-                    将B→.γ加入J中;
-    until 在某一轮中没有新项被加入到J中;
-    return J;
-}
-&lt;/pre&gt;
-
-&lt;p&gt;有了状态的定义，那么接下来需要定义状态之间的转换：&lt;strong&gt;GOTO(I,X)&lt;/strong&gt;表示了形如A→α.Xβ所在的项集到A→αX.β的转换，构造方法如下：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-void items(G'){
-    C = {CLOSURE([S'→.S])};
-    repeat
-        for(C中的每个项集I)
-            for(每个文法符号X)
-                if(GOTO(I,X)非空且不在C中)
-                    将GOTO(I,X)加入C中;
-    until 在某一轮中没有新的项集被加入到C中;
-}
-&lt;/pre&gt;
-
-&lt;p&gt;有了上面这些，我们可以开始构造一个&lt;strong&gt;SLR(1)&lt;/strong&gt;语法分析表了：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;如果[A→α.aβ]在Ii中并且GOTO(Ii,a)=Ij，那么将ACTION[i,a]设置为“&lt;strong&gt;移入j&lt;/strong&gt;”;&lt;/li&gt;
-  &lt;li&gt;如果[A→α.]在Ii中，那么对于FOLLOW(A)中所有的a，将ACTION[i,a]设置为规约“&lt;strong&gt;规约A→α&lt;/strong&gt;”;&lt;/li&gt;
-  &lt;li&gt;如果[S’→S.]在Ii中，那么将ACTION[i,$]设置为“&lt;strong&gt;接受&lt;/strong&gt;”;&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;在分析程序中用一个栈来记录当前看到的状态，然后根据ACTION来进行操作即可。&lt;/p&gt;
-
-&lt;p&gt;在LR(0)中能规约的时候就规约，这样做很不科学，但是在有冲突的时候好像没有别的方法，只能“向前看”。&lt;strong&gt;规范LR&lt;/strong&gt;充分地利用了向前看符号，利用一个很大的项集来工作，每个项的格式如下：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;形式为[A→α.Bβ,a]，前半部分不变，后半部分为向前看符号&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;构造方法如下：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-SetOfItems CLOSURE(I){
-    repeat
-        for(I中的每个项[A→α.Bβ,a])
-            for(FIRST(βa)中的每个终结符号b)
-                将[B→.γ,b]加入到集合I中
-    until 不能向I中加入更多的项
-    return I;
-}
-SetOfItems GOTO(I,X){
-    将J初始化为空集;
-    for(I中的每个项[A→α.Xβ,a])
-        将项[A→αX.β,a]加入到集合J中
-    return CLOSURE(J);
-}
-void items(G'){
-    将C初始化为{CLOSURE}({[S'→.S,$]});
-    repeat
-        for(C中的每个项集I)
-            for(每个文法符号X)
-                if(GOTO(I,X)非空且不在C中)
-                    将GOTO(I,X)加入到C中;
-    until 不再有新的项集加入到C中;
-}
-&lt;/pre&gt;
-
-&lt;p&gt;对于文法：&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;S’→S&lt;/li&gt;
-  &lt;li&gt;S→C C&lt;/li&gt;
-  &lt;li&gt;C→c C | d&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;得到的规范LR项集的状态图如下：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Compiler-11.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;此时构造分析表的方法如下：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;如果[A→α.aβ，b]在Ii中且GOTO(Ii,a)=Ij，那么将ACTION[i,a]设置为“移入j”;&lt;/li&gt;
-  &lt;li&gt;如果[A→α.,a]在Ii中且A≠S’，那么将ACTION[i,a]设置为“规约A→α.”;&lt;/li&gt;
-  &lt;li&gt;如果[S’→S,$]在Ii中，那么将ACTION[i,$]设置为“接受”;&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;这种方式和SLR的运行方式类似，不再赘述！&lt;/p&gt;
-
-&lt;p&gt;向前看LR(&lt;strong&gt;LALR&lt;/strong&gt;)基于LR(0)项集族，和基于LR(1)项的典型语法分析器相比，状态要少很多，通过想LR(0)项中小心地引入向前看符号，我们使用LALR方法处理的文法比使用SLR处理的文法更多，同时构造得到的语法分析表并不比SLR语法分析表大，通常情况下LALR方法是最合适的选择。&lt;/p&gt;
-
-&lt;p&gt;可以将LALR看做是将LR(1)中有相同核心项的项集合并，那么按照这种思路就可以从LR(1)构造得到LALR的分析表和GOTO，但是耗费空间巨大，基本思想为：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;将LR(1)中相同核心项集合并，在新的项集族上计算GOTO，进而生成分析表。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;总共有三种冲突：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;规约-规约&lt;/li&gt;
-  &lt;li&gt;规约-移入（不可能出现）&lt;/li&gt;
-  &lt;li&gt;移入-移入&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;然后跟上面一样在合并完的结果上构造语法分析表，如果出现冲突则说明该文法不是LALR(1)的。从LR(1)合并得到LALR(1)需要较大的内存，另一种高效的思路是从LR(0)添加向前看符号，添加途径有两种：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;自发&lt;/li&gt;
-  &lt;li&gt;传播&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;第二种方式会将源头所有的向前看符号都“传播”给目标，这里有一个简单的办法来区分自发和传播：令#为一个不在当前文法中的符号，对于LR(0)项集I的内核K以及一个文法符号X：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-for(K中的每个项A→α.β){
-    J:=CLOSURE({[A→α.β,#]});
-    if([B→ϒ.Xδ,a]在J中，并且a不等于#)
-        断定GOTO(I,X)中的项B→ϒ.Xδ的向前看符号a是自发生的
-    if([B→ϒ.Xδ,#]在J中)
-        断定向前看符号从I中的项A→α.β传播到了GOTO(I,X)中的项B→ϒX.δ上
-}
-&lt;/pre&gt;
-
-&lt;p&gt;下面来看构造LALR(1)项集族内核的计算方法(输入增广文法G)：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;构造G的LR(0)项集族的内核&lt;/li&gt;
-  &lt;li&gt;对每个内核和文法符号通过上面方法计算自发、传播&lt;/li&gt;
-  &lt;li&gt;初始化表格，表中给出每个内核项的向前看符(最初每个项的向前看符只有自发产生的符号)&lt;/li&gt;
-  &lt;li&gt;在扫描中根据传播的关系，从源头复制向前看符集合到目标项，不停地扫描知道没有新的向前看符号被传播为止&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;对于下面文法：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;ul&gt;
-    &lt;li&gt;S’→S&lt;/li&gt;
-    &lt;li&gt;S→L=R|R&lt;/li&gt;
-    &lt;li&gt;L→*R|id&lt;/li&gt;
-    &lt;li&gt;R→L&lt;/li&gt;
-  &lt;/ul&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;得到的向前看符号传播和向前看符号的计算结果如下：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Compiler-12.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;到目前为止我们总是在构建ACTION出现冲突的时候说：这不是XXX文法。但是反过来想一下其实二义文法在描述的时候还是非常简单的，我们可以通过一些额外的手段来消除二义（在ANTLR中非常明显）。&lt;/p&gt;
-
-&lt;h2 id=&quot;section-2&quot;&gt;总结&lt;/h2&gt;
-
-&lt;p&gt;到这里基本上可以随意搞Lexer和Parser了，可以看&lt;a href=&quot;http://book.douban.com/subject/10482195/&quot;&gt;编程语言实现模式来&lt;/a&gt;来熟悉一下实际的代码是什么样的（可惜这本书只有LL的）!&lt;/p&gt;
-</description>
-        <pubDate>Sat, 01 Aug 2015 00:00:00 +0800</pubDate>
-        <link>/dsl/2015/08/01/Compiler-Theory.html</link>
-        <guid isPermaLink="true">/dsl/2015/08/01/Compiler-Theory.html</guid>
-        
-        
-        <category>dsl</category>
         
       </item>
     
