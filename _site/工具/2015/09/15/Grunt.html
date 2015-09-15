@@ -11,43 +11,61 @@
 	<!-- google代码高亮 -->
 	<script src="/assets/css/prettify.js"></script>
 	<link href="/assets/css/prettify.css" rel="stylesheet">
-	<title>WEB开发笔记</title>
+	<title>Grunt</title>
 </head>
 
 	<body onload="prettyPrint()">
 		<div class="post-container">
-			<h1>WEB开发笔记</h1>
-			<h2 id="springbeanfilter">用SpringBean来配置Filter</h2>
+			<h1>Grunt</h1>
+			<p><img src="http://www.gruntjs.net/img/grunt-logo.png" alt="" /></p>
 
-<p>在web开发中通常会遇到多个环境的问题，比如开发和线上，那他们使用的配置信息也是不同的，Spring给出的解决这个问题的方法是变量替换：</p>
+<h2 id="why">WHY</h2>
+
+<p>在用Java写完源码之后需要编译成Class才能执行，其实前端也是类似的，需要压缩等操作才是真正的成品，况且现在前端的工具越来越多：</p>
+
+<ol>
+  <li>LESS</li>
+  <li>CoffeeScript</li>
+  <li>其他</li>
+</ol>
+
+<p>这些都需要预处理成最终的CSS、JS才能被使用，而GRUNT则将这些过程管理起来，你只需要开开心心写代码就好了~</p>
+
+<h2 id="how">HOW</h2>
+
+<p>当然首先需要node.js，然后<strong>npm install -g grunt-cli</strong>安装命令行工具，在工程下面配置两个文件：</p>
+
+<ol>
+  <li><strong>package.json</strong>：被npm用于存储项目元数据，以便将此项目发布为npm模块，可以在这里列出项目依赖的Grunt和Grunt插件。</li>
+  <li><strong>Gruntfile.js</strong>：用来配置或定义任务并加载Grunt插件。</li>
+</ol>
+
+<p>执行<strong>npm install</strong>安装项目依赖的库，然后执行<strong>grunt</strong>即可，package.json配置文件如下：</p>
 
 <pre class="prettyprint">
-&lt;bean class="my.class.path"&gt;
-    &lt;property name="env" value="${ENV}"/&gt;
-&lt;/bean&gt;
+{
+    "name": "my-project-name",
+    "version": "0.1.0",
+    "devDependencies": {
+        "grunt": "~0.4.5",
+        "grunt-contrib-jshint": "~0.10.0",
+        "grunt-contrib-nodeunit": "~0.4.1",
+        "grunt-contrib-uglify": "~0.5.0"
+    }
+}
 </pre>
 
-<p>但是对于web.xml中的属性这样搞就行不通了，那简单的解决办法就是绕路了：用Spring中配置的Bean来作为Filter行不行？答案是肯定的：</p>
+<p>可以通过命令<strong>npm install &lt;module&gt; –save-dev</strong>安装插件的同时向文件中的devDependencies字段添加，<a href="http://www.gruntjs.net/plugins">这里</a>有插件列表。</p>
 
-<pre class="prettyprint">
-&lt;filter&gt;
-    &lt;filter-name&gt;ssoFilter&lt;/filter-name&gt;
-    &lt;filter-class&gt;org.springframework.web.filter.DelegatingFilterProxy&lt;/filter-class&gt;
-    &lt;init-param&gt;
-        &lt;param-name&gt;targetBeanName&lt;/param-name&gt;
-        &lt;param-value&gt;myFilterBean&lt;/param-value&gt;
-    &lt;/init-param&gt;
-    &lt;init-param&gt;
-        &lt;param-name&gt;targetFilterLifecycle&lt;/param-name&gt;
-        &lt;param-value&gt;true&lt;/param-value&gt;
-    &lt;/init-param&gt;
-&lt;/filter&gt;
-</pre>
+<p>文件Gruntfile.js由三部分组成：</p>
 
-<p>容器初始化的顺序为Listener-&gt;Filter-&gt;Servlet，这样上面这种玩法跑通就没有问题了~</p>
+<ol>
+  <li>配置任务：grunt.initConfig</li>
+  <li>加载插件：grunt.loadNpmTasks</li>
+  <li>定义任务：grunt.registerTask</li>
+</ol>
 
-<h2 id="cache-control">Cache-Control的使用</h2>
-
+<p>基本上配置好之后就可以跑起来了，更多看<a href="http://www.gruntjs.ne">官网</a>。</p>
 
 			<!-- 评论组件 -->
 			<div id="disqus_thread"/>

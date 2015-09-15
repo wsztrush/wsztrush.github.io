@@ -5,9 +5,197 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 11 Sep 2015 07:21:44 +0800</pubDate>
-    <lastBuildDate>Fri, 11 Sep 2015 07:21:44 +0800</lastBuildDate>
+    <pubDate>Tue, 15 Sep 2015 23:56:16 +0800</pubDate>
+    <lastBuildDate>Tue, 15 Sep 2015 23:56:16 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
+    
+      <item>
+        <title>Grunt</title>
+        <description>&lt;p&gt;&lt;img src=&quot;http://www.gruntjs.net/img/grunt-logo.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;why&quot;&gt;WHY&lt;/h2&gt;
+
+&lt;p&gt;在用Java写完源码之后需要编译成Class才能执行，其实前端也是类似的，需要压缩等操作才是真正的成品，况且现在前端的工具越来越多：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;LESS&lt;/li&gt;
+  &lt;li&gt;CoffeeScript&lt;/li&gt;
+  &lt;li&gt;其他&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;这些都需要预处理成最终的CSS、JS才能被使用，而GRUNT则将这些过程管理起来，你只需要开开心心写代码就好了~&lt;/p&gt;
+
+&lt;h2 id=&quot;how&quot;&gt;HOW&lt;/h2&gt;
+
+&lt;p&gt;当然首先需要node.js，然后&lt;strong&gt;npm install -g grunt-cli&lt;/strong&gt;安装命令行工具，在工程下面配置两个文件：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;strong&gt;package.json&lt;/strong&gt;：被npm用于存储项目元数据，以便将此项目发布为npm模块，可以在这里列出项目依赖的Grunt和Grunt插件。&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Gruntfile.js&lt;/strong&gt;：用来配置或定义任务并加载Grunt插件。&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;执行&lt;strong&gt;npm install&lt;/strong&gt;安装项目依赖的库，然后执行&lt;strong&gt;grunt&lt;/strong&gt;即可，package.json配置文件如下：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+{
+    &quot;name&quot;: &quot;my-project-name&quot;,
+    &quot;version&quot;: &quot;0.1.0&quot;,
+    &quot;devDependencies&quot;: {
+        &quot;grunt&quot;: &quot;~0.4.5&quot;,
+        &quot;grunt-contrib-jshint&quot;: &quot;~0.10.0&quot;,
+        &quot;grunt-contrib-nodeunit&quot;: &quot;~0.4.1&quot;,
+        &quot;grunt-contrib-uglify&quot;: &quot;~0.5.0&quot;
+    }
+}
+&lt;/pre&gt;
+
+&lt;p&gt;可以通过命令&lt;strong&gt;npm install &amp;lt;module&amp;gt; –save-dev&lt;/strong&gt;安装插件的同时向文件中的devDependencies字段添加，&lt;a href=&quot;http://www.gruntjs.net/plugins&quot;&gt;这里&lt;/a&gt;有插件列表。&lt;/p&gt;
+
+&lt;p&gt;文件Gruntfile.js由三部分组成：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;配置任务：grunt.initConfig&lt;/li&gt;
+  &lt;li&gt;加载插件：grunt.loadNpmTasks&lt;/li&gt;
+  &lt;li&gt;定义任务：grunt.registerTask&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;基本上配置好之后就可以跑起来了，更多看&lt;a href=&quot;http://www.gruntjs.ne&quot;&gt;官网&lt;/a&gt;。&lt;/p&gt;
+</description>
+        <pubDate>Tue, 15 Sep 2015 00:00:00 +0800</pubDate>
+        <link>/%E5%B7%A5%E5%85%B7/2015/09/15/Grunt.html</link>
+        <guid isPermaLink="true">/%E5%B7%A5%E5%85%B7/2015/09/15/Grunt.html</guid>
+        
+        
+        <category>工具</category>
+        
+      </item>
+    
+      <item>
+        <title>CSS基础和LESS入门</title>
+        <description>&lt;p&gt;&lt;img src=&quot;http://img3.douban.com/mpic/s2921314.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;看《CSS权威指南》的时候简单的整理了一些&lt;a href=&quot;http://naotu.baidu.com/file/ed1f91b9f4ba914a4d97e404acd71ee3?token=33581ba44ab41688&quot;&gt;笔记&lt;/a&gt;，有些东西比之前有了更深的理解，但是用这么厚的一本书来学CSS多少有些头大，只需要把一些关键的东西理解透彻，具体的设置查&lt;a href=&quot;http://www.w3chtml.com/css3/&quot;&gt;手册&lt;/a&gt;更快！&lt;/p&gt;
+
+&lt;h2 id=&quot;section&quot;&gt;布局和定位&lt;/h2&gt;
+
+&lt;p&gt;原生的HTML中元素分为两种：&lt;strong&gt;块级元素&lt;/strong&gt;和&lt;strong&gt;行内元素&lt;/strong&gt;，而CSS中用display来影响元素的展示：&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;值&lt;/th&gt;
+      &lt;th&gt;含义&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;none&lt;/td&gt;
+      &lt;td&gt;隐藏对象并且不会保留物理空间&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;inline&lt;/td&gt;
+      &lt;td&gt;行内元素&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;block&lt;/td&gt;
+      &lt;td&gt;块级元素&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;inline-block&lt;/td&gt;
+      &lt;td&gt;行内块元素，也就是说横着排列的同时可以指定宽高&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;box&lt;/td&gt;
+      &lt;td&gt;弹性盒子模型&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;inline-box&lt;/td&gt;
+      &lt;td&gt;行内弹性盒子，和inline-block有点类似&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;直接使用top、right等是不会起作用的，想要起作用得用position来配合：&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;值&lt;/th&gt;
+      &lt;th&gt;含义&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;static&lt;/td&gt;
+      &lt;td&gt;不使用定位&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;relative&lt;/td&gt;
+      &lt;td&gt;相对于父节点的位置&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;absolute&lt;/td&gt;
+      &lt;td&gt;绝对定位，会跟滚动条滚动&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;fixed&lt;/td&gt;
+      &lt;td&gt;固定定位，不会跟随滚动&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;当用relative有问题的时候可能是你的HTML结构错了导致父节点判断错误导致的:)用display+position可以把一个元素放到你想要的位置，但是一个块也不是简单的长方形，也有其结构：&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;属性&lt;/th&gt;
+      &lt;th&gt;含义&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;margin&lt;/td&gt;
+      &lt;td&gt;外补白&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;padding&lt;/td&gt;
+      &lt;td&gt;内补白&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;border&lt;/td&gt;
+      &lt;td&gt;边框&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;外补白比较特殊一点：取的双方的是max而不是sum，在chrome控制台玩一下就能很好地理解这三个的用法：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Css-Less.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;直观上背景图片是用来做背景的，但是感觉现在都被大家玩坏了，比如经常把很多的图标放到一个图片上然后用&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+.x {
+    background-image:url(img-url);
+    background-position:-100px 100px;
+}
+&lt;/pre&gt;
+
+&lt;p&gt;就可以在对应的DIV中展示出局部图片，这个局部就可能是某个ICON，感觉这完全是在当图片使用额~&lt;/p&gt;
+
+&lt;h2 id=&quot;less&quot;&gt;LESS&lt;/h2&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;总结&lt;/h2&gt;
+</description>
+        <pubDate>Fri, 11 Sep 2015 00:00:00 +0800</pubDate>
+        <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/09/11/Css-Less.html</link>
+        <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/09/11/Css-Less.html</guid>
+        
+        
+        <category>编程技术</category>
+        
+      </item>
     
       <item>
         <title>JavaScript基础知识</title>
@@ -1676,219 +1864,6 @@ public interfact ThreadFactory{
         
         
         <category>读书笔记</category>
-        
-      </item>
-    
-      <item>
-        <title>通用设计法则</title>
-        <description>&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;法则&lt;/th&gt;
-      &lt;th&gt;含义&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;80/20法则&lt;/td&gt;
-      &lt;td&gt;集中精力在关键功能上（用户80%的时间在20%的功能上）&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;无障碍操作&lt;/td&gt;
-      &lt;td&gt;易读性、易操作性、简易性、包容性&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;引导手册&lt;/td&gt;
-      &lt;td&gt;说明型和比较型&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;美即适用效应&lt;/td&gt;
-      &lt;td&gt;美的设计能促进人们形成正面积极的态度&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;功能可见性&lt;/td&gt;
-      &lt;td&gt;门把手的例子&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;对齐&lt;/td&gt;
-      &lt;td&gt;统一性、整体性和相关性&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;拟人形&lt;/td&gt;
-      &lt;td&gt;吸引注意力和建立感情联结&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;原型&lt;/td&gt;
-      &lt;td&gt;原型可以影响人们无意识的认知和根本的喜好&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;面积对齐&lt;/td&gt;
-      &lt;td&gt;相当于是重心对齐&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;魅力偏见&lt;/td&gt;
-      &lt;td&gt;人们认为有魅力的人更聪明、能干&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;娃娃脸偏见&lt;/td&gt;
-      &lt;td&gt;天真无邪、诚实无助&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;亲近生命效应&lt;/td&gt;
-      &lt;td&gt;减轻压力、提高专注度&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;大教堂效应&lt;/td&gt;
-      &lt;td&gt;高屋有助想象，低屋有助细节&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;意元集组&lt;/td&gt;
-      &lt;td&gt;信息分模块以便于吸收&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;条件反射&lt;/td&gt;
-      &lt;td&gt;把刺激物跟身体或情感的无意识反应联结起来&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;意向整合&lt;/td&gt;
-      &lt;td&gt;把一组各自独立的元素视为一个整体图案&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;认知失调&lt;/td&gt;
-      &lt;td&gt;在态度、思想、信念中寻找一致性（创造失调来进行引导）&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;颜色&lt;/td&gt;
-      &lt;td&gt;数量、组合、饱和度、特征&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;共同命运&lt;/td&gt;
-      &lt;td&gt;往同一个方向移动的元素会让人感觉他们之间的关联性更强&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;比较&lt;/td&gt;
-      &lt;td&gt;苹果与苹果比、单一背景比较、基准比较&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;确认&lt;/td&gt;
-      &lt;td&gt;重要或无法返回的操作&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;一致性&lt;/td&gt;
-      &lt;td&gt;系统相似的部分用一致性的方法表现&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;恒常性&lt;/td&gt;
-      &lt;td&gt;相同的东西从不同角度看起来可能是一样的&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;约束&lt;/td&gt;
-      &lt;td&gt;实体约束和心理约束，约束减少错误&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;曲线偏见&lt;/td&gt;
-      &lt;td&gt;棱角有助吸引注意力和创新，曲线有助于正面情绪和美学印象&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;控制&lt;/td&gt;
-      &lt;td&gt;控制程度应该和熟练程度相关&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;整合&lt;/td&gt;
-      &lt;td&gt;能够提供与大环境最接近的效果往往最佳，也最容易取得成功&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;成本效益&lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;防卫空间&lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;深度处理&lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;集体式设计&lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;偏好路径&lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;开发周期&lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;入口&lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;错误&lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;预期效应&lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;曝光效应&lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;面子主义比例&lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;安全系数&lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;反馈循环&lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;斐波拉契数列&lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;正负形关系&lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;费茨定律&lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;五帽架&lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-</description>
-        <pubDate>Sun, 09 Aug 2015 00:00:00 +0800</pubDate>
-        <link>/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/2015/08/09/Universal-Principles-Of-Design.html</link>
-        <guid isPermaLink="true">/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/2015/08/09/Universal-Principles-Of-Design.html</guid>
-        
-        
-        <category>读书笔记</category>
-        
-      </item>
-    
-      <item>
-        <title>libsvm使用总结</title>
-        <description>&lt;p&gt;##&lt;/p&gt;
-
-</description>
-        <pubDate>Thu, 06 Aug 2015 00:00:00 +0800</pubDate>
-        <link>/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/2015/08/06/Libsvm.html</link>
-        <guid isPermaLink="true">/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/2015/08/06/Libsvm.html</guid>
-        
-        
-        <category>机器学习</category>
         
       </item>
     
