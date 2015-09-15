@@ -1,0 +1,174 @@
+<!DOCTYPEhtmlPUBLIC"-//W3C//DTDXHTML1.0Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html>
+	<!-- 引入CSS/JS -->
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="/assets/css/main.css"/>
+	<script type="text/javascript" src="/assets/javascripts/main.js"></script>
+
+	<!-- pygments代码高亮 -->
+	<!-- <link rel="stylesheet" type="text/css" href="/assets/css/pygments.css"/> -->
+	<!-- google代码高亮 -->
+	<script src="/assets/css/prettify.js"></script>
+	<link href="/assets/css/prettify.css" rel="stylesheet">
+	<title>CSS基础和LESS入门</title>
+</head>
+
+	<body onload="prettyPrint()">
+		<div class="post-container">
+			<h1>CSS基础和LESS入门</h1>
+			<p><img src="http://img3.douban.com/mpic/s2921314.jpg" alt="" /></p>
+
+<p>看《CSS权威指南》的时候简单的整理了一些<a href="http://naotu.baidu.com/file/ed1f91b9f4ba914a4d97e404acd71ee3?token=33581ba44ab41688">笔记</a>，有些东西比之前有了更深的理解，但是用这么厚的一本书来学CSS多少有些头大，只需要把一些关键的东西理解透彻，具体的设置查<a href="http://www.w3chtml.com/css3/">手册</a>更快！</p>
+
+<h2 id="section">布局和定位</h2>
+
+<p>原生的HTML中元素分为两种：<strong>块级元素</strong>和<strong>行内元素</strong>，而CSS中用display来影响元素的展示：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>值</th>
+      <th>含义</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>none</td>
+      <td>隐藏对象并且不会保留物理空间</td>
+    </tr>
+    <tr>
+      <td>inline</td>
+      <td>行内元素</td>
+    </tr>
+    <tr>
+      <td>block</td>
+      <td>块级元素</td>
+    </tr>
+    <tr>
+      <td>inline-block</td>
+      <td>行内块元素，也就是说横着排列的同时可以指定宽高</td>
+    </tr>
+    <tr>
+      <td>box</td>
+      <td>弹性盒子模型</td>
+    </tr>
+    <tr>
+      <td>inline-box</td>
+      <td>行内弹性盒子，和inline-block有点类似</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>直接使用top、right等是不会起作用的，想要起作用得用position来配合：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>值</th>
+      <th>含义</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>static</td>
+      <td>不使用定位</td>
+    </tr>
+    <tr>
+      <td>relative</td>
+      <td>相对于父节点的位置</td>
+    </tr>
+    <tr>
+      <td>absolute</td>
+      <td>绝对定位，会跟滚动条滚动</td>
+    </tr>
+    <tr>
+      <td>fixed</td>
+      <td>固定定位，不会跟随滚动</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>当用relative有问题的时候可能是你的HTML结构错了导致父节点判断错误导致的:)用display+position可以把一个元素放到你想要的位置，但是一个块也不是简单的长方形，也有其结构：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>属性</th>
+      <th>含义</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>margin</td>
+      <td>外补白</td>
+    </tr>
+    <tr>
+      <td>padding</td>
+      <td>内补白</td>
+    </tr>
+    <tr>
+      <td>border</td>
+      <td>边框</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>外补白比较特殊一点：取的双方的是max而不是sum，在chrome控制台玩一下就能很好地理解这三个的用法：</p>
+
+<p><img src="http://7xiz10.com1.z0.glb.clouddn.com/Css-Less.png" alt="" /></p>
+
+<p>直观上背景图片是用来做背景的，但是感觉现在都被大家玩坏了，比如经常把很多的图标放到一个图片上然后用</p>
+
+<pre class="prettyprint">
+.x {
+    background-image:url(img-url);
+    background-position:-100px 100px;
+}
+</pre>
+
+<p>就可以在对应的DIV中展示出局部图片，这个局部就可能是某个ICON，感觉这完全是在当图片使用额~</p>
+
+<h2 id="less">LESS</h2>
+
+<h2 id="section-1">总结</h2>
+
+			<!-- 评论组件 -->
+			<div id="disqus_thread"/>
+		</div>
+		<div id="bar" class="category" style="left:-165px;">
+	<div class="icon"><a href="/about/"><img src="http://7xiz10.com1.z0.glb.clouddn.com/me.png"/></a></div>
+	<div class="icon"><a href="/categories.html"><img src="http://7xiz10.com1.z0.glb.clouddn.com/list.png"/></a></div>
+	<div class="icon"><a href="https://github.com/wsztrush"><img src="http://7xiz10.com1.z0.glb.clouddn.com/github.png"/></a></div>
+	<div class="icon"><a href="http://weibo.com/wsztrush"><img src="http://7xiz10.com1.z0.glb.clouddn.com/weibo.png"/></a></div>
+	<div class="icon"><img id="barClick" src="http://7xiz10.com1.z0.glb.clouddn.com/right.png"/></div>
+</div>
+
+	</body>
+</html>
+<!-- 评论组件 -->
+<script type="text/javascript">
+	var disqus_shortname = 'wsztrush';
+	(function() {
+		var dsq = document.createElement('script');
+		dsq.type = 'text/javascript';
+		dsq.async = true;
+		dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	})();
+</script>
+<!-- 百度访问统计 -->
+<script>
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?08a976e8d7e5a20acfcb566bd22a1db1";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+<script type="text/javascript">
+	document.getElementById("barClick").onclick = click;
+</script>
+
