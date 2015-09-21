@@ -5,9 +5,457 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 15 Sep 2015 23:56:16 +0800</pubDate>
-    <lastBuildDate>Tue, 15 Sep 2015 23:56:16 +0800</lastBuildDate>
+    <pubDate>Mon, 21 Sep 2015 23:12:09 +0800</pubDate>
+    <lastBuildDate>Mon, 21 Sep 2015 23:12:09 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
+    
+      <item>
+        <title>JQUERY</title>
+        <description>&lt;p&gt;&lt;img src=&quot;http://img4.douban.com/mpic/s10170467.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;jquery&quot;&gt;为什么学习jQuery&lt;/h2&gt;
+
+&lt;p&gt;原生JavaScript写代码很不方便而且容易出错（一直感觉写getElementById非常地烦），再加上浏览器之间差异处理起来就更烦躁了，jQuery刚好能解决这些问题，而且：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;轻量级&lt;/li&gt;
+  &lt;li&gt;链式编程&lt;/li&gt;
+  &lt;li&gt;隐式迭代&lt;/li&gt;
+  &lt;li&gt;丰富的插件支持&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;那么，赶紧开始jQuery之旅！&lt;/p&gt;
+
+&lt;h2 id=&quot;section&quot;&gt;元素选择及操作&lt;/h2&gt;
+
+&lt;p&gt;用jQuery在选择元素时和用CSS选择非常像且代码量很少，因此上手很容易：&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;选择器&lt;/th&gt;
+      &lt;th&gt;用法&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;基本选择器&lt;/td&gt;
+      &lt;td&gt;$(‘div’)&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;层次选择器&lt;/td&gt;
+      &lt;td&gt;$(‘.a &amp;gt; div’)&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;基本过滤选择器&lt;/td&gt;
+      &lt;td&gt;$(‘div:first’)、$(‘input:even’)、$(‘header’)&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;内容过滤选择器&lt;/td&gt;
+      &lt;td&gt;$(‘div:contains(di)’)&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;可见性过滤选择器&lt;/td&gt;
+      &lt;td&gt;$(‘div:visible’)、$(‘div:hidden’)&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;属性过滤选择器&lt;/td&gt;
+      &lt;td&gt;$(‘div[title]’)、$(‘div[id][title*=es]’)&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;子元素过滤选择器&lt;/td&gt;
+      &lt;td&gt;$(‘div.one :nth-child(2)’)、$(‘div.one :first-child’)&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;表单对象属性过滤选择器&lt;/td&gt;
+      &lt;td&gt;$(‘#form1 input:enable’)、$(‘input:checked’)&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;表单选择器&lt;/td&gt;
+      &lt;td&gt;$(‘#form1 :input’)、$(‘#form1 :password’)&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;遇到特殊字符时需要转义，比如对&lt;strong&gt;&amp;lt;div id=”id#b”&amp;gt;bb&amp;lt;/div&amp;gt;&lt;/strong&gt;需要用&lt;strong&gt;$(‘#id\#b’)&lt;/strong&gt;来选取，编写时尤其需要注意空格，挨着和不挨着的区别太大了：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;$(‘.test :hidden’)&lt;/li&gt;
+  &lt;li&gt;$(‘.test:hidden’)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;除了可以使用jQuery，还有其他的方式支持CSS选择器，这里就省略了~ 用选择器拿到的是jQuery对象（对dom对象做了封装），可用$cr[0]拿到对应的dom对象~&lt;/p&gt;
+
+&lt;p&gt;另外jQuery对DOM操作的封装有：&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;操作&lt;/th&gt;
+      &lt;th&gt;用法&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;创建&lt;/td&gt;
+      &lt;td&gt;$(‘&amp;lt;li&amp;gt;abc&amp;lt;/li&amp;gt;’)&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;插入&lt;/td&gt;
+      &lt;td&gt;$(“p”).prepend($(‘&amp;lt;li&amp;gt;abc&amp;lt;/li&amp;gt;’))&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;删除&lt;/td&gt;
+      &lt;td&gt;remove&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;复制&lt;/td&gt;
+      &lt;td&gt;$(this).clone(true)没有参数时复制生成的对象不具有任何行为&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;替换&lt;/td&gt;
+      &lt;td&gt;$(“p”).replaceWith(“&amp;lt;strong&amp;gt;abc&amp;lt;strong&amp;gt;”)&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;包裹&lt;/td&gt;
+      &lt;td&gt;$(“strong”).warp(“&amp;lt;b&amp;gt;&amp;lt;/b&amp;gt;”)&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;设置/获取属性&lt;/td&gt;
+      &lt;td&gt;获取：$para.attr(“title”)，设置：$para.attr(“title”, “new title”)&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;样式&lt;/td&gt;
+      &lt;td&gt;addClass、removeClass、toggleClass、hasClass、css&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;文本&lt;/td&gt;
+      &lt;td&gt;获取：$para.html()，设置：$para.html(“&amp;lt;strong&amp;gt;abc&amp;lt;strong&amp;gt;”)，text()/val()&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;子元素&lt;/td&gt;
+      &lt;td&gt;children&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;兄弟元素&lt;/td&gt;
+      &lt;td&gt;next、pre、sibling&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;事件与动画&lt;/h2&gt;
+
+&lt;p&gt;以前经常在代码中看到：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+$(function(){
+    // DOM就绪时执行的方法
+});
+&lt;/pre&gt;
+
+&lt;p&gt;作用像是绑定了对ready的响应，而对于普通的事件（鼠标点击等）可以用&lt;strong&gt;on&lt;/strong&gt;来统一搞定：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;on(events, [, selector] [, data], handler)
+on( eventsMap [, selector ] [, data ] )&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;参数的含义如下：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;strong&gt;events&lt;/strong&gt;：一个或多个用空格分隔的事件类型和可选的命名空间&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;eventsMap&lt;/strong&gt;：属性对应事件类型和可选的命名空间，属性值对应绑定的事件处理函数&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;selector&lt;/strong&gt;：指定哪些后代元素可以触发绑定的事件&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;data&lt;/strong&gt;：触发事件时，需要通过event.data传递给事件处理函数的任意数据&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;handler&lt;/strong&gt;：事件处理函数&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;strong&gt;注&lt;/strong&gt;：在jQuery1.8之后bind、delegate、live都不建议使用，所以干脆就都用on好了！&lt;/p&gt;
+
+&lt;p&gt;另外并不是每个事件都只有一个处理函数，在jQuery中有两个合成事件：&lt;strong&gt;hover&lt;/strong&gt;和&lt;strong&gt;toggle&lt;/strong&gt;，其中hover的使用方法如下：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;hover(enter, lever)&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;分别用两个函数来响应移入和移出，相比较toggle就更加暴力了：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;toggle(f1, f2, …., fn)&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;在第一次点击时调用f1、第二次调用f2、依次类推，n个方法循环调用（没想到需要用到什么地方- -!），jQuery对事件对象进行了封装，提供如下方法：&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;方法&lt;/th&gt;
+      &lt;th&gt;作用&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;type()&lt;/td&gt;
+      &lt;td&gt;类型&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;stopPropagation()&lt;/td&gt;
+      &lt;td&gt;停止事件冒泡&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;preventDefault()&lt;/td&gt;
+      &lt;td&gt;阻止默认的行为，比如可以阻止点击&amp;lt;a&amp;gt;标签打开新页面的行为&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;target()&lt;/td&gt;
+      &lt;td&gt;触发事件的元素&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;relatedTarget()&lt;/td&gt;
+      &lt;td&gt;获取相关元素，在mouseover和mouseout的时候经常用到&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;which()&lt;/td&gt;
+      &lt;td&gt;鼠标点击或者键盘点击事件中，获取具体的按键&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;既然能绑定就应该能解除：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;jQueryObject.off( [ events [, selector ] [, handler ] ] )
+jQueryObject.off( eventsMap [, selector ] )&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;strong&gt;注&lt;/strong&gt;：可以用&lt;strong&gt;trigger&lt;/strong&gt;来模拟事件，用来实现一些功能（比如快捷键）还是非常方便的！在jQuery中对DOM元素上的动画做了一些封装（不用再蛋疼地使用setTimeout）：&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;操作&lt;/th&gt;
+      &lt;th&gt;效果&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;show/hide&lt;/td&gt;
+      &lt;td&gt;显示、隐藏元素，可通过参数控制速度&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;fadeIn/fadeOut&lt;/td&gt;
+      &lt;td&gt;改变元素不透明度&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;slideUp/slideDown&lt;/td&gt;
+      &lt;td&gt;改变元素高度&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;animate&lt;/td&gt;
+      &lt;td&gt;自定义动画，上面的功能用该方法都很容易搞定&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;toggle&lt;/td&gt;
+      &lt;td&gt;两种状态切换，用在按钮的效果上面非常合适&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;slideToggle&lt;/td&gt;
+      &lt;td&gt;通过高度变化来切换元素的可见性&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;fadeTo&lt;/td&gt;
+      &lt;td&gt;以渐进的方式修改不透明度&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;其中&lt;strong&gt;animate&lt;/strong&gt;的定义如下：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;animate(params, speed, callback)&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;参数含义如下：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;strong&gt;params&lt;/strong&gt;：包含样式属性及值的映射，用来控制动画的行为&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;speed&lt;/strong&gt;：速度&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;callback&lt;/strong&gt;：结束时的回调函数&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;下面来看几个实际的例子感受下：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+$(this).animate({left:&quot;500px&quot;}, 3000);// 使left从原来的值变为500
+$(this).animate({left:&quot;+=500px&quot;}, 3000);// 使left从原来的值增加500
+$(this).animate({left:&quot;+=500px&quot;,height:&quot;+=600px&quot;}, 3000);// 多重动画
+$(this).animate({left:&quot;+=500px&quot;}, 3000)
+       .animate({height:&quot;+=500px&quot;}, 3000);// 两个动画效果链式写法
+&lt;/pre&gt;
+
+&lt;p&gt;延迟总是会带来问题，比如为元素的移入、移出设计了动画，但是在鼠标快速移动的时候动画的效果可能就与实际鼠标的位置不一致了，这时候需要&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;stop([cleanQueue] [, gotoEnd])&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;其中：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;cleanQueue：是否清空未执行完成的动画&lt;/li&gt;
+  &lt;li&gt;gotoEnd：是否将正在执行的动画跳转到末状态&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;另外可以使用&lt;strong&gt;$(this).is(“:animated”)&lt;/strong&gt;判断元素是否处于动画状态！&lt;/p&gt;
+
+&lt;h2 id=&quot;ajax&quot;&gt;Ajax&lt;/h2&gt;
+
+&lt;p&gt;全称为&lt;strong&gt;Asynchronous JavaScript and XML&lt;/strong&gt;，并不是指一种单一的技术，而是有机地利用一系列交互式网页应用相关的技术所形成的结合体，优势：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;不需要插件支持&lt;/li&gt;
+  &lt;li&gt;优秀的用户体验&lt;/li&gt;
+  &lt;li&gt;提高Web程序的性能&lt;/li&gt;
+  &lt;li&gt;减轻服务器和带宽的负担&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;不足：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;浏览器对XMLHttpRequest对象的支持度不足&lt;/li&gt;
+  &lt;li&gt;破坏浏览器前进、后退按钮的正常功能&lt;/li&gt;
+  &lt;li&gt;对搜索引擎的支持不足&lt;/li&gt;
+  &lt;li&gt;开发和调试工具的缺乏&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;关于JavaScript原生的写法可以看&lt;a href=&quot;http://wsztrush.github.io/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/09/09/JavaScript-Basic.html&quot;&gt;这里&lt;/a&gt;，在jQuery中的封装如下：&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;方法&lt;/th&gt;
+      &lt;th&gt;作用&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;load(url [,data] [, callback])&lt;/td&gt;
+      &lt;td&gt;加载HTML文档并插入DOM中&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;get(url [,data] [, callback] [, type])&lt;/td&gt;
+      &lt;td&gt;使用GET方式异步请求&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;post(url [,data] [, callback] [, type])&lt;/td&gt;
+      &lt;td&gt;使用POST方式异步请求&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;getScript()&lt;/td&gt;
+      &lt;td&gt;加载脚本文件&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;getJson()&lt;/td&gt;
+      &lt;td&gt;加载JSON文件&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;ajax()&lt;/td&gt;
+      &lt;td&gt;最底层的实现，是其他方法的基础&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;方法ajax()的参数如下：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;strong&gt;url&lt;/strong&gt;：发送请求的地址&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;type&lt;/strong&gt;：请求方式（GET or POST）&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;timeout&lt;/strong&gt;：请求超时时间（毫秒）&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;data&lt;/strong&gt;：发送到服务端的数据&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;dataType&lt;/strong&gt;：预期服务器返回的数据类型&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;beforeSend&lt;/strong&gt;：发送请求前执行的函数&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;complete&lt;/strong&gt;：请求完成后的回调函数&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;success&lt;/strong&gt;：请求成功后的回调函数&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;error&lt;/strong&gt;：请求失败时的回调函数&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;global&lt;/strong&gt;：是否触发全局Ajax事件&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;对于巨大的表单在提交的时候获取参数是非常繁琐的，在jQuery做了简单的封装serialize()、serializeArray()、param()。在用上面的方法发送请求的过程中会触发事件：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;ajaxStart&lt;/li&gt;
+  &lt;li&gt;ajaxSend&lt;/li&gt;
+  &lt;li&gt;ajaxSuccess&lt;/li&gt;
+  &lt;li&gt;ajaxComplete[](http://)&lt;/li&gt;
+  &lt;li&gt;ajaxError&lt;/li&gt;
+  &lt;li&gt;ajaxStop&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;利用这些事件我们可以很容易为请求的各个环节封装相同的响应！&lt;/p&gt;
+
+&lt;h2 id=&quot;section-2&quot;&gt;插件&lt;/h2&gt;
+
+&lt;p&gt;jQuery的插件非常多，再很多地方（比如&lt;a href=&quot;http://www.htmleaf.com/&quot;&gt;这里&lt;/a&gt;）可以搜索，这里主要来看下自己如何造插件，涉及到的方法有：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;jQuery.extend( target [, object1 ] [, objectN… ] )
+jQuery.extend( [ deep ], target , object1 [, objectN… ] )&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;该方法用来将一个或者多个对象的成员属性和方法复制到指定的对象上，参数的含义为：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;strong&gt;deep&lt;/strong&gt;：是否深度合并对象&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;target&lt;/strong&gt;：目标对象，其他对象的成员属性将被复制到该对象上&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;object1&lt;/strong&gt;：第一个被合并的对象&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;objectN&lt;/strong&gt;：第N个被合并的对象&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;还有一个用来扩展jQuery对象方法：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;jQuery.fn.extend( object )&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;现在可以编写插件了：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+;(function($){
+    // 封装jQuery对象方法
+	$.fn.extend({
+        &quot;color&quot; : function(value){/* 插件代码 */}
+    })
+    // 直接对jQuery对象进行扩展
+    $.extend({
+        ltrim : function(text) {
+            return (text || &quot;&quot;)
+        }
+    })
+})(jQuery);
+&lt;/pre&gt;
+
+&lt;p&gt;编写一些插件写法需要对jQuery本身的运行的机制由一定的了解~&lt;/p&gt;
+
+&lt;h2 id=&quot;section-3&quot;&gt;总结&lt;/h2&gt;
+
+&lt;p&gt;jQuery主要是用来简化开发，对JavaScript做了一些封装，不需要再考虑很多兼容性的东西，而且代码也更加简洁，列出一些参考资料：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://jquery.cuishifeng.cn/index.html&quot;&gt;api&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.365mini.com/doc&quot;&gt;codeplayer&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.htmleaf.com/&quot;&gt;jquery之家&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.ruanyifeng.com/blog/2011/08/jquery_best_practices.html&quot;&gt;jquery最佳实践&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.ruanyifeng.com/blog/2011/07/jquery_fundamentals.html&quot;&gt;jquery设计思想&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Wed, 16 Sep 2015 00:00:00 +0800</pubDate>
+        <link>/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/2015/09/16/Jquery.html</link>
+        <guid isPermaLink="true">/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/2015/09/16/Jquery.html</guid>
+        
+        
+        <category>读书笔记</category>
+        
+      </item>
     
       <item>
         <title>Grunt</title>
@@ -182,11 +630,35 @@
 }
 &lt;/pre&gt;
 
-&lt;p&gt;就可以在对应的DIV中展示出局部图片，这个局部就可能是某个ICON，感觉这完全是在当图片使用额~&lt;/p&gt;
+&lt;p&gt;就可以在对应的DIV中展示出局部图片，这个局部就可能是某个ICON，感觉这完全是在当图片使用额~ 当内容超过限制的时候可以使用&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;overflow&lt;/li&gt;
+  &lt;li&gt;overflow-x&lt;/li&gt;
+  &lt;li&gt;overflow-y&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;来进行控制，但是滚动条的默认样式实在是太丑了，在&lt;a href=&quot;http://www.webhek.com/scrollbar&quot;&gt;这里&lt;/a&gt;找到一种修改的方法，对于&lt;strong&gt;-webkit-&lt;/strong&gt;核的浏览器来说很简单，但是要去兼容IE+FX比较麻烦，可以考虑用&lt;a href=&quot;http://www.jqcool.net/demo/201404/jquery-jscrollpane/&quot;&gt;jQuery插件&lt;/a&gt;。&lt;/p&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;变换和动画&lt;/h2&gt;
 
 &lt;h2 id=&quot;less&quot;&gt;LESS&lt;/h2&gt;
 
-&lt;h2 id=&quot;section-1&quot;&gt;总结&lt;/h2&gt;
+&lt;p&gt;&lt;img src=&quot;http://www.1024i.com/demo/less/images/logo.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;虽然它的口号是&lt;strong&gt;LESS IS MORE, THAN CSS&lt;/strong&gt;，但是确实感觉LESS是在CSS的基础上增加了一些扩展&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;变量&lt;/li&gt;
+  &lt;li&gt;继承&lt;/li&gt;
+  &lt;li&gt;嵌套&lt;/li&gt;
+  &lt;li&gt;运算&lt;/li&gt;
+  &lt;li&gt;函数&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;另外LESS实际兼容CSS的（也就是说你可以在里面直接写CSS代码），实际使用时可以在后端将其打包（比如Grunt）成CSS文件之后再提供给前端，具体用法可以看&lt;a href=&quot;http://www.1024i.com/demo/less/index.html&quot;&gt;这里&lt;/a&gt;的中文文档。&lt;/p&gt;
+
+&lt;h2 id=&quot;section-2&quot;&gt;总结&lt;/h2&gt;
 </description>
         <pubDate>Fri, 11 Sep 2015 00:00:00 +0800</pubDate>
         <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/09/11/Css-Less.html</link>
@@ -1848,19 +2320,6 @@ public interfact ThreadFactory{
         <pubDate>Wed, 19 Aug 2015 00:00:00 +0800</pubDate>
         <link>/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/2015/08/19/Java-Concurrency-In-Practice.html</link>
         <guid isPermaLink="true">/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/2015/08/19/Java-Concurrency-In-Practice.html</guid>
-        
-        
-        <category>读书笔记</category>
-        
-      </item>
-    
-      <item>
-        <title>代码简洁之道</title>
-        <description>
-</description>
-        <pubDate>Wed, 19 Aug 2015 00:00:00 +0800</pubDate>
-        <link>/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/2015/08/19/Clean-Code.html</link>
-        <guid isPermaLink="true">/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/2015/08/19/Clean-Code.html</guid>
         
         
         <category>读书笔记</category>
