@@ -127,11 +127,35 @@
 }
 </pre>
 
-<p>就可以在对应的DIV中展示出局部图片，这个局部就可能是某个ICON，感觉这完全是在当图片使用额~</p>
+<p>就可以在对应的DIV中展示出局部图片，这个局部就可能是某个ICON，感觉这完全是在当图片使用额~ 当内容超过限制的时候可以使用</p>
+
+<ol>
+  <li>overflow</li>
+  <li>overflow-x</li>
+  <li>overflow-y</li>
+</ol>
+
+<p>来进行控制，但是滚动条的默认样式实在是太丑了，在<a href="http://www.webhek.com/scrollbar">这里</a>找到一种修改的方法，对于<strong>-webkit-</strong>核的浏览器来说很简单，但是要去兼容IE+FX比较麻烦，可以考虑用<a href="http://www.jqcool.net/demo/201404/jquery-jscrollpane/">jQuery插件</a>。</p>
+
+<h2 id="section-1">变换和动画</h2>
 
 <h2 id="less">LESS</h2>
 
-<h2 id="section-1">总结</h2>
+<p><img src="http://www.1024i.com/demo/less/images/logo.png" alt="" /></p>
+
+<p>虽然它的口号是<strong>LESS IS MORE, THAN CSS</strong>，但是确实感觉LESS是在CSS的基础上增加了一些扩展</p>
+
+<ol>
+  <li>变量</li>
+  <li>继承</li>
+  <li>嵌套</li>
+  <li>运算</li>
+  <li>函数</li>
+</ol>
+
+<p>另外LESS实际兼容CSS的（也就是说你可以在里面直接写CSS代码），实际使用时可以在后端将其打包（比如Grunt）成CSS文件之后再提供给前端，具体用法可以看<a href="http://www.1024i.com/demo/less/index.html">这里</a>的中文文档。</p>
+
+<h2 id="section-2">总结</h2>
 
 			<!-- 评论组件 -->
 			<div id="disqus_thread"/>
