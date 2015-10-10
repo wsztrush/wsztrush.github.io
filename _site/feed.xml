@@ -5,8 +5,8 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 21 Sep 2015 23:12:09 +0800</pubDate>
-    <lastBuildDate>Mon, 21 Sep 2015 23:12:09 +0800</lastBuildDate>
+    <pubDate>Sat, 10 Oct 2015 21:29:28 +0800</pubDate>
+    <lastBuildDate>Sat, 10 Oct 2015 21:29:28 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
@@ -1337,13 +1337,11 @@ public Token nextToken(){
 
 &lt;p&gt;直观上来看用switch进行预测，相当于构造了一个状态机吧，其中&lt;strong&gt;consume()&lt;/strong&gt;方法自增下标并将下一个字符当做向前看字符（消费字符）。在仅使用一个向前看符来进行语法分析时，也就是LL(1)，对于下面语法：&lt;/p&gt;
 
-&lt;blockquote&gt;
-  &lt;ul&gt;
-    &lt;li&gt;list : ‘[’ elements ‘]’;&lt;/li&gt;
-    &lt;li&gt;elements : element (‘,’ element);&lt;/li&gt;
-    &lt;li&gt;element : NAME | list;&lt;/li&gt;
-  &lt;/ul&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;&lt;code&gt;
+list : '[' elements ']';
+elements : element (',' element)*;
+element : NAME | list;
+&lt;/code&gt;&lt;/p&gt;
 
 &lt;p&gt;生成的Paser如下：&lt;/p&gt;
 
@@ -1378,9 +1376,9 @@ public class ListParser extends Parser {
 
 &lt;p&gt;那么文法：&lt;/p&gt;
 
-&lt;blockquote&gt;
-  &lt;p&gt;element : NAME ‘=’ NAME : NAME : list ;&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;&lt;code&gt;
+element : NAME '=' NAME : NAME : list ;
+&lt;/code&gt;&lt;/p&gt;
 
 &lt;p&gt;对应的程序描述就变为：&lt;/p&gt;
 
@@ -1423,9 +1421,9 @@ public boolean speculate_alt1() {
 
 &lt;p&gt;回溯解析最大的缺陷就是性能低，而其中一个原因则是做了不少重复工作，对于语法：&lt;/p&gt;
 
-&lt;blockquote&gt;
-  &lt;p&gt;s : expr ‘:’ | expr ‘;’;&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;&lt;code&gt;
+s : expr ':' | expr ';';
+&lt;/code&gt;&lt;/p&gt;
 
 &lt;p&gt;在尝试第一个子规则失败时会去尝试第二个，那么expr就会被匹配两次！如果能把之前匹配过的结果记住就好了（参考&lt;a href=&quot;http://www.cnblogs.com/kedebug/archive/2013/04/07/3006493.html&quot;&gt;记忆化搜索&lt;/a&gt;），此时仅需要做一些很小的修改：&lt;/p&gt;
 
@@ -1687,8 +1685,83 @@ class B : public A {// 5
   &lt;p&gt;预先遍历一次来定义类型。&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;这里要小心处理好符号和作用域的关系。&lt;/p&gt;
+&lt;p&gt;这里要小心处理好符号和作用域的关系。有了作用域和符号表之后需要对其进行简单的分析：&lt;/p&gt;
 
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;操作&lt;/th&gt;
+      &lt;th&gt;含义&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;计算表达式类型&lt;/td&gt;
+      &lt;td&gt;操作的返回结果&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;自动类型提升&lt;/td&gt;
+      &lt;td&gt;根据操作的对象来决定是否需要对其中低等级的进行提升&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;静态类型检查&lt;/td&gt;
+      &lt;td&gt;操作的对象类型是否合法&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;多态类型检查&lt;/td&gt;
+      &lt;td&gt;面向对象中的父子关系&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;简单来说都是在遍历AST的时候完成的，下面来看如何运行程序~~&lt;/p&gt;
+
+&lt;h2 id=&quot;section-2&quot;&gt;解释执行&lt;/h2&gt;
+
+&lt;p&gt;经过上面这些步骤我们已经知道了源码所要表达的意思，那么就可以用代码来实现其逻辑（也就是解释执行），根据实现方式区分有：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;strong&gt;语法制导解释器&lt;/strong&gt;：不会生成AST，在解析源码的过程中完成；&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;基于树的解释器&lt;/strong&gt;：先构建AST，在遍历的过程中完成执行；&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;这两种方式很好理解，用1+2*3的例子玩一玩就可以了，感觉这部分讲的有点啰嗦。用上面的方式执行优点简单、粗暴，缺点是耦合太强了，为了化解便有了：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;strong&gt;字节码汇编器&lt;/strong&gt;：将便于阅读的汇编语言翻译为二进制形式的字节码指令；&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;栈式解释器&lt;/strong&gt;：执行指令时使用操作数栈存放临时变量；&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;寄存器解释器&lt;/strong&gt;：执行指令时使用虚拟寄存器存放参数、局部变量和临时变量；&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;用中间指令（也可以理解为原子API）作为过渡，这样以后再有其他的DSL来了，只需要将其翻译为这种中间指令就可以了。&lt;/p&gt;
+
+&lt;h2 id=&quot;section-3&quot;&gt;生成输出&lt;/h2&gt;
+
+&lt;p&gt;要让自己定义的DSL可执行最简单的办法就是将其翻译为现有的一种语言，和各种CC干的差不多：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;比如ANTLR就是讲文法翻译为Java代码。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;strong&gt;语法制导&lt;/strong&gt;是最简单的方案，读入内容在解析的过程中完成输出，无法处理前向引用：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;而&lt;strong&gt;基于规则&lt;/strong&gt;则是专注于指定一条一条的规则，在匹配到某条规则的时候执行（输出）对应的操作：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;工业界普遍流行的是&lt;strong&gt;模型驱动&lt;/strong&gt;翻译，先创建AST，然后在遍历的过程中生成代码：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;对于简单的DSL可以使用模板（比如Velocity）来简化输出，但是难点并不在这里。&lt;/p&gt;
+
+&lt;h2 id=&quot;section-4&quot;&gt;总结&lt;/h2&gt;
+
+&lt;p&gt;这本书对于想实现DSL的人来说还是挺有作用的：例子、代码实现，但是想要学习理论的恐怕要失望了，因为这里几乎是没有的。&lt;/p&gt;
+
+&lt;p&gt;看到网上有人评价这本书能超过龙书，不知道是从哪里看出来的，类型差别这么大如何比较的？&lt;/p&gt;
 </description>
         <pubDate>Sun, 06 Sep 2015 00:00:00 +0800</pubDate>
         <link>/dsl/2015/09/06/Language-Implementation-Patterns.html</link>
