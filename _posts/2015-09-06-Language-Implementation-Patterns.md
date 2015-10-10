@@ -79,11 +79,11 @@ public Token nextToken(){
 
 直观上来看用switch进行预测，相当于构造了一个状态机吧，其中**consume()**方法自增下标并将下一个字符当做向前看字符（消费字符）。在仅使用一个向前看符来进行语法分析时，也就是LL(1)，对于下面语法：
 
-```
+<pre class="prettyprint">
 list : '[' elements ']';
 elements : element (',' element)*;
 element : NAME | list;
-```
+</pre>
 
 生成的Paser如下：
 
@@ -116,9 +116,9 @@ public class ListParser extends Parser {
 
 那么文法：
 
-```
+<pre class="prettyprint">
 element : NAME '=' NAME : NAME : list ;
-```
+</pre>
 
 对应的程序描述就变为：
 
@@ -161,9 +161,9 @@ public boolean speculate_alt1() {
 
 回溯解析最大的缺陷就是性能低，而其中一个原因则是做了不少重复工作，对于语法：
 
-```
+<pre class="prettyprint">
 s : expr ':' | expr ';';
-```
+</pre>
 
 在尝试第一个子规则失败时会去尝试第二个，那么expr就会被匹配两次！如果能把之前匹配过的结果记住就好了（参考[记忆化搜索](http://www.cnblogs.com/kedebug/archive/2013/04/07/3006493.html)），此时仅需要做一些很小的修改：
 
@@ -397,15 +397,15 @@ resolveMemeber|解析成员，只会根据superClass递归查找
 
 **语法制导**是最简单的方案，读入内容在解析的过程中完成输出，无法处理前向引用：
 
-![](http://)
+![](http://7xiz10.com1.z0.glb.clouddn.com/Language-Implementation-Patterns-4.JPG)
 
 而**基于规则**则是专注于指定一条一条的规则，在匹配到某条规则的时候执行（输出）对应的操作：
 
-![](http://)
+![](http://7xiz10.com1.z0.glb.clouddn.com/Language-Implementation-Patterns-5.JPG)
 
 工业界普遍流行的是**模型驱动**翻译，先创建AST，然后在遍历的过程中生成代码：
 
-![](http://)
+![](http://7xiz10.com1.z0.glb.clouddn.com/Language-Implementation-Patterns-6.JPG)
 
 对于简单的DSL可以使用模板（比如Velocity）来简化输出，但是难点并不在这里。
 
