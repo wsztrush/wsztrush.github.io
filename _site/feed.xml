@@ -5,8 +5,8 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sat, 10 Oct 2015 21:29:28 +0800</pubDate>
-    <lastBuildDate>Sat, 10 Oct 2015 21:29:28 +0800</lastBuildDate>
+    <pubDate>Sat, 10 Oct 2015 21:39:26 +0800</pubDate>
+    <lastBuildDate>Sat, 10 Oct 2015 21:39:26 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
@@ -1337,11 +1337,11 @@ public Token nextToken(){
 
 &lt;p&gt;直观上来看用switch进行预测，相当于构造了一个状态机吧，其中&lt;strong&gt;consume()&lt;/strong&gt;方法自增下标并将下一个字符当做向前看字符（消费字符）。在仅使用一个向前看符来进行语法分析时，也就是LL(1)，对于下面语法：&lt;/p&gt;
 
-&lt;p&gt;&lt;code&gt;
+&lt;pre class=&quot;prettyprint&quot;&gt;
 list : '[' elements ']';
 elements : element (',' element)*;
 element : NAME | list;
-&lt;/code&gt;&lt;/p&gt;
+&lt;/pre&gt;
 
 &lt;p&gt;生成的Paser如下：&lt;/p&gt;
 
@@ -1376,9 +1376,9 @@ public class ListParser extends Parser {
 
 &lt;p&gt;那么文法：&lt;/p&gt;
 
-&lt;p&gt;&lt;code&gt;
+&lt;pre class=&quot;prettyprint&quot;&gt;
 element : NAME '=' NAME : NAME : list ;
-&lt;/code&gt;&lt;/p&gt;
+&lt;/pre&gt;
 
 &lt;p&gt;对应的程序描述就变为：&lt;/p&gt;
 
@@ -1421,9 +1421,9 @@ public boolean speculate_alt1() {
 
 &lt;p&gt;回溯解析最大的缺陷就是性能低，而其中一个原因则是做了不少重复工作，对于语法：&lt;/p&gt;
 
-&lt;p&gt;&lt;code&gt;
+&lt;pre class=&quot;prettyprint&quot;&gt;
 s : expr ':' | expr ';';
-&lt;/code&gt;&lt;/p&gt;
+&lt;/pre&gt;
 
 &lt;p&gt;在尝试第一个子规则失败时会去尝试第二个，那么expr就会被匹配两次！如果能把之前匹配过的结果记住就好了（参考&lt;a href=&quot;http://www.cnblogs.com/kedebug/archive/2013/04/07/3006493.html&quot;&gt;记忆化搜索&lt;/a&gt;），此时仅需要做一些很小的修改：&lt;/p&gt;
 
@@ -1745,15 +1745,15 @@ class B : public A {// 5
 
 &lt;p&gt;&lt;strong&gt;语法制导&lt;/strong&gt;是最简单的方案，读入内容在解析的过程中完成输出，无法处理前向引用：&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Language-Implementation-Patterns-4.JPG&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;而&lt;strong&gt;基于规则&lt;/strong&gt;则是专注于指定一条一条的规则，在匹配到某条规则的时候执行（输出）对应的操作：&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Language-Implementation-Patterns-5.JPG&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;工业界普遍流行的是&lt;strong&gt;模型驱动&lt;/strong&gt;翻译，先创建AST，然后在遍历的过程中生成代码：&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Language-Implementation-Patterns-6.JPG&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;对于简单的DSL可以使用模板（比如Velocity）来简化输出，但是难点并不在这里。&lt;/p&gt;
 
