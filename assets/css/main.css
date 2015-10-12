@@ -101,3 +101,12 @@ blockquote  {
 th+th, td+td {
 	border-left:1px solid #333;
 }
+
+code {
+	padding:2px;
+	background:#a84;
+	font-size:13px;
+	line-height:14px;
+	border-radius:3px;
+	color:#fff;
+}
