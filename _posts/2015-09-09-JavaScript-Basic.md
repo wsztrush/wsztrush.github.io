@@ -8,33 +8,23 @@ categories: 编程技术
 
 ![](http://img3.douban.com/mpic/s8958650.jpg)
 
-最近被逼着学习JavaScript，这篇也算是记得一些笔记，如果你对其他的语法（Java等）比较熟悉，那么看完这篇文章并实践一下，也差不多算入门了:)
+因为工作需要最近开始学习JavaScript，虽然之前陆陆续续地零碎看过一些，但是很不系统，这篇文章打算从一个门外汉的角度来分几步看！
 
 ## 基本语法
 
-JavaScript中包括六种基本类型：
+JavaScript是弱类型的，有六种基本类型（用`typeof`查看）：
 
 类型|含义
 -|-
-undefined/null|区别看[这里](http://www.ruanyifeng.com/blog/2014/03/undefined-vs-null.html)
+undefined/null|区别看[这里](http://www.ruanyifeng.com/blog/2014/03/undefined-vs-null.html)，可能结合Map比较好理解一些
 boolean|需要注意从其他类型转换到Boolean的规则
 number|整数、浮点数、NaN
 string|字符串
 object|数据、对象的集合，是所有对象的基础
 
-接着来体会一下弱类型的方便之处：**"123" == 123**的结果居然是true，而**"123" === 123**才是预期中的false，此时会比较类型。常用的引用类型有：
+肉类型的强大之处在于将不同类型的数据进行比较的时候居然结果是一样的：`"123"==123`，简直毁三观~~不过也提供了另外一种方式`"123"===123`可以得到预期的结果。
 
-1. Array
-2. Date
-3. RegExp
-4. Function
-5. Boolean
-6. Number
-7. String
-8. Global：全局对象(不属于任何其他对象的属性和方法都是它的)
-9. Math
-
-结构控制语句中比较特别是加了**with**：
+在需要连续操作一个对象的多个属性或者方法时可以用with减少代码量：
 
 <pre class="prettyprint">
 with(location){
@@ -43,13 +33,112 @@ with(location){
 }
 </pre>
 
-可以看做是一个作用域操作符！另一个能控制作用域的就只有函数了，没有块作用域也算比较奇葩~ 函数的定义非常灵活：
+在JavaScript中定义函数非常灵活
 
-> 既不需要定义返回值，也不需要定义入参！
+> 既不需要定义返回值，也不需要定义入参（简直和弱类型一样随意...）
 
-其实它是把参数放到数组**arguments**里面了，处理方式和Python有点像。函数可以作为参数传来传去很容易让人头晕，再加上匿名函数和闭包就更烦了：
+可以使用`arguments`来获取所有的参数，这样看来参数的实现和**Python**有点像，而参数名称仅仅是用为了在代码中方便使用参数！
 
-> 闭包是指有权访问另一个函数作用域中变量的函数，也就是在一个函数内部创建的函数。
+在JavaScript中几乎所有的都是对象，第一种创建对象的方式为：
+
+<pre class="prettyprint">
+var Cat = {
+    name : '',
+    color : ''
+}
+</pre>
+
+这种方式在创建多个对象时非常麻烦，另外一种方法是：
+
+<pre class="prettyprint">
+function Cat(name, color){
+    this.name = name;
+    this.color = color;
+}
+</pre>
+
+这样在创建对象的时候就很简单了：`new Cat('abc', 'white')`，对象中有一些内部属性用来控制其行为：
+
+内部属性|含义
+-|-
+configurable|能否通过`delete`删除属性从而重新定义属性，能够修改属性的特性或者能否把属性修改为访问器属性
+enumerable|能否通过`for-in`循环返回属性
+writable|能否修改属性的值
+value|包含这个属性的数据值
+
+用法如下：
+
+<pre class="prettyprint">
+var person = {};
+Object.defineProperty(person, 'name', {
+    writeable: false,
+    value: 'abc'
+});
+</pre>
+
+另外提供了`get、set`方法，有了它们之后就可以很容易监听对象中每个属性的变化，在做数据绑定的时候比较好用：
+
+<pre class="prettyprint">
+var person = {name : 'abc'};
+Object.defineProperty(person, 'name', {
+    get: function(){
+        return 'bcd';
+    },
+    set: function(newValue){
+        console.log('hehe');
+    }
+});
+console.log(person.name);// bcd
+</pre>
+
+
+
+## 原型
+
+习惯了**class based programming**直接看**prototype based programming**感觉有点诡异：
+
+> 我们创建的每个函数都有一个prototype属性，指向一个对象，其中包含了可以由特定类型的所有实例共享的属性和方法
+
+而作用则是：**从当前对象中获取不到的属性可以尝试从prototype中获取**，只要记住这一点，很多问题就引刃而解！原型的用法很简单：
+
+<pre class="prettyprint">
+function Person(){}
+Person.prototype.name = 'abc';
+var person1 = new Person();
+console.log(person1.name);//abc
+</pre>
+
+接着来看一些和原型相关的方法：
+
+方法|作用
+-|-
+Person.isPrototypeOf(person1)|对象和对象之间是否存在原型链
+Object.getPrototypeOf(person1) == Person|获取原型
+Person.prototype.constructor|指向prototype属性所在函数的指针（也就是构造函数）
+person1.hasOwnProperty('name')|是否自己真的有，而不是从原型中获取
+
+
+
+
+
+
+参考：
+
+1. [Javascript面向对象编程（一）：封装](http://www.ruanyifeng.com/blog/2010/05/object-oriented_javascript_encapsulation.html)
+2. [Javascript面向对象编程（二）：构造函数的继承](http://www.ruanyifeng.com/blog/2010/05/object-oriented_javascript_inheritance.html)
+3. [Javascript面向对象编程（三）：非构造函数的继承](http://www.ruanyifeng.com/blog/2010/05/object-oriented_javascript_inheritance_continued.html)
+4. [全面理解面向对象的 JavaScript](http://www.ibm.com/developerworks/cn/web/1304_zengyz_jsoo/)
+
+## 闭包
+
+
+## 作用域和this
+
+
+
+
+
+
 
 来看看段代码理解一下闭包：
 
