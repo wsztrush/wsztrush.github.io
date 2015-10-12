@@ -8,7 +8,7 @@ categories: 编程技术
 
 ![](http://img3.douban.com/mpic/s8958650.jpg)
 
-因为工作需要最近开始学习JavaScript，虽然之前陆陆续续地零碎看过一些，但是很不系统，这篇文章打算从一个门外汉的角度来分几步看！
+首先我并不是一个JavaScript高手，因为工作需要最近才开始学习，虽然之前陆陆续续地零碎看过一些，但是很不系统，这篇文章打算从一个门外汉的角度来分几步看，希望能对初学者有一些帮助~
 
 ## 基本语法
 
@@ -22,9 +22,9 @@ number|整数、浮点数、NaN
 string|字符串
 object|数据、对象的集合，是所有对象的基础
 
-肉类型的强大之处在于将不同类型的数据进行比较的时候居然结果是一样的：`"123"==123`，简直毁三观~~不过也提供了另外一种方式`"123"===123`可以得到预期的结果。
+弱类型的强大之处在于将不同类型的数据进行比较的时候居然结果是一样的：`"123"==123`，简直毁三观~~不过也提供了另外一种方式`"123"===123`可以得到预期的结果。
 
-在需要连续操作一个对象的多个属性或者方法时可以用with减少代码量：
+在需要连续操作一个对象的多个属性或者方法时可以用`with`减少代码量：
 
 <pre class="prettyprint">
 with(location){
@@ -35,9 +35,9 @@ with(location){
 
 在JavaScript中定义函数非常灵活
 
-> 既不需要定义返回值，也不需要定义入参（简直和弱类型一样随意...）
+> 既不需要定义返回值，也不需要定义入参（简直比弱类型还随意...）
 
-可以使用`arguments`来获取所有的参数，这样看来参数的实现和**Python**有点像，而参数名称仅仅是用为了在代码中方便使用参数！
+可以使用`arguments`来获取所有的参数，这样看来参数的实现和**Python**有点像，参数名称仅仅是用为了在代码中方便使用参数！
 
 在JavaScript中几乎所有的都是对象，第一种创建对象的方式为：
 
@@ -116,13 +116,37 @@ Person.isPrototypeOf(person1)|对象和对象之间是否存在原型链
 Object.getPrototypeOf(person1) == Person|获取原型
 Person.prototype.constructor|指向prototype属性所在函数的指针（也就是构造函数）
 person1.hasOwnProperty('name')|是否自己真的有，而不是从原型中获取
+person1 instanceof Object|是否为指定类型
 
+可以用原型来实现类似继承效果，直接设置prototype比较麻烦，最好封装一下：
 
+<pre class="prettyprint">
+function object(o){
+    function F(){}
+    F.prototype = o;
+    return new F();
+}
+var person = {
+    name : 'abc'
+}
+var another_person = object(person);
+</pre>
 
+另外一种常见的写法：
 
+<pre class="prettyprint">
+function extend(Child, Parent) {
+    var F = function(){};
+    F.prototype = Parent.prototype;
+    Child.prototype = new F();
+    Child.prototype.constructor = Child;
+    Child.uber = Parent.prototype;
+}
+</pre>
 
+其实原型就是原型，它本身的含义已经非常明确，如果非要和其他编程语言中的概念去做对比就容易把自己绕进去~
 
-参考：
+参考资料：
 
 1. [Javascript面向对象编程（一）：封装](http://www.ruanyifeng.com/blog/2010/05/object-oriented_javascript_encapsulation.html)
 2. [Javascript面向对象编程（二）：构造函数的继承](http://www.ruanyifeng.com/blog/2010/05/object-oriented_javascript_inheritance.html)
@@ -131,16 +155,11 @@ person1.hasOwnProperty('name')|是否自己真的有，而不是从原型中获�
 
 ## 闭包
 
+闭包是一个既神秘又绕但其本质又非常简单的一个概念：
 
-## 作用域和this
+> 有权访问另一个函数作用域中的变量的函数
 
-
-
-
-
-
-
-来看看段代码理解一下闭包：
+赶紧来看一个例子：
 
 <pre class="prettyprint">
 function createFunctions(){
@@ -150,159 +169,80 @@ function createFunctions(){
             return i;
         };
     }
+    return result;
 }
 </pre>
 
-返回的方法数组每个的返回结果都是相同的，是不是和预期的不一样？要达到预期的效果需要：
+直观感觉`result[0]()`的返回值应该是0，实际上并非如此，内部函数可以访问外部函数作用域中的变量，但仅仅是包含一个引用而已，具体到执行的时候才去获取引用指向的值。
 
-<pre class="prettyprint">
-function createFunctions(){
-    var result = new Array();
-    for(var i = 0; i < 10; i++){
-        result[i] = function(num){
-            return num;
-        }(i);
-    }
-}
-</pre>
+闭包绕就绕在作用域上，当它和其他作用域也比较绕的东西勾搭在一起的时候就需要小心了，比如this：
 
-更复杂度是：**this**的原始含义为：
+> 当方法被某个对象调用时，this就等于那个对象
 
-> 当方法被某个对象调用时，this就等于那个对象。
-
-**记住**：要时刻小心是是谁在调用方法，再来看一段代码：
+我们来比较下面两段代码体会一下就好了，第一段：
 
 <pre class="prettyprint">
 var name = "the window";
-vra obj = {
-    var name = "my object";
+var obj = {
+    name : "my object",
     getNameFunc : function(){
         return function(){
             return this.name;
         }
     }
 }
-alert(obj.getNameFunc()());// the window
+console.log(obj.getNameFunc()()); // the window
 </pre>
 
-是不是隐隐感觉到了**闭包+this**组合的强大威力？虽然很多程序猿没有对象，但面向对象编程是一个永恒的话题：
-
-> 对象是无序属性的集合，其属性可以包含基本值、对象或者函数。
-
-有一些属性只给引擎内部使用，在我们自己写的JavaScript中是无法访问的，常用的有：
-
-1. configurable
-2. enumerable：能否通过for-in循环，默认为true
-3. writable：能否修改属性的值
-4. value：值
-5. get：在读取属性时调用的函数
-6. set：在设置属性时调用的函数
-
-创建对象除了用**new Object**之外还可以用构造函数**new Person**：
+第二段：
 
 <pre class="prettyprint">
-function Person(name, age, job){
-    this.name = name;
-    this.job = job;
-    this.age = age;
-}
-var person = new Person();
-</pre>
-
-其背后处理的逻辑如下：
-
-1. 创建一个新对象
-2. 将构造函数函数的作用域赋给新对象（因此this指向了新对象）
-3. 执行构造函数中的代码
-4. 返回新对象
-
-创建自定义的构造函数意味着将它的实例标志为一种特定的类型，这也是其优势所在：
-
-<pre class="prettyprint">
-alert(person instanceof Person); // true
-</pre>
-
-而最大的劣势在于：
-
-> 每个方法都要在每个实例上创建一遍。
-
-上面是将方法当成属性来使用，其实还有一种将方法当成方法来用的方法:)
-
-<pre class="prettyprint">
-function Person(){
-}
-Person.prototype = {
-    name : "a";
-    sayName : function(){
-        alert(this.name);
+var name = "the window";
+var obj = {
+    name : "my object",
+    getNameFunc : function(){
+    	var self = this;
+        return function(){
+            return self.name;
+        }
     }
 }
+console.log(obj.getNameFunc()()); // my object
 </pre>
 
-在方法的**prototype**中指定的属性（原型），对其所有的实例可用，这样方法的用法就和Java一致，而属性就像是类的静态属性，而且可以方便地用来模仿继承：
+参考资料：
 
-<pre class="prettyprint">
-function SubType(){
-    this.sayHello = function(){
-        alert("hello");
-    }
-}
-function SuperType(){
-}
-SubType.prototype = SuperType;
-new SubType().sayHello();// hello
-</pre>
+1. [Javascript的this用法](http://www.ruanyifeng.com/blog/2010/04/using_this_keyword_in_javascript.html)
+2. [学习Javascript闭包（Closure）](http://www.ruanyifeng.com/blog/2009/08/learning_javascript_closures.html)
+3. [闭包的秘密](http://www.gracecode.com/posts/2385.html)
+4. [Private Members in JavaScript](http://www.crockford.com/javascript/private.html)
 
-总的来说继承更像是提供了一个默认的parent指针，在查找属性、方法的时候可以递归向上查找，但是用不好的时候会出现一些莫名其妙的问题：
 
-<pre class="prettyprint">
-function Super(){
-    this.key = [1, 2, 3];
-}
-function A(){}
-function B(){}
 
-A.prototype = new Super();
 
-var a1 = new A();
-a1.key.push(4);
-alert(a1.key);// [1, 2, 3, 4]
 
-var a2 = new A();
-alert(a2.key);// [1, 2, 3, 4]
 
-// 用一个公共的方法来包装对象，这样就可以直接在对象上"继承"了
-function object(o){
-    function F(){}
-    F.prototype = o;
-    return new F();
-}
-</pre>
 
-在ECMAScript 5中新增了方法**Object.create()**规范了原型继承（类似object方法）。把SuperType中的属性共享给SubType的每个实例可能不能满足需求，那么可以试试下面这种方法：
 
-<pre class="prettyprint">
-function SuperType(){
-    this.colors = [1, 2, 3];
-}
-function SubType(){
-    SuperType.call(this); // apply也可以
-}
-var instance1 = new SubType();
-instance1.colors.push(4);
-alert(instance1.colors);// [1,2,3,4]
 
-var instance2 = new SubType();
-alert(instance2.colors);// [1,2,3]
-</pre>
 
-在SubType通过**call/apply**来执行SuperType方法，相当于是在当前的实例中产生了SuperType的备份，个人觉得把这种也算作继承有点牵强。最后，错误处理（try-catch-finally）和Java里面几乎一样，常见的错误类型有：
 
-1. 类型转换错误
-2. 数据类型错误
-3. 通信错误
 
-在写代码的时候要注意不要因为这些问题把程序搞挂了~
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## DOM与BOM
 
