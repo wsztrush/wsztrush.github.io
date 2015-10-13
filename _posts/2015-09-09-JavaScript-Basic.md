@@ -339,24 +339,73 @@ JavaScript对请求限制必须是相同域名的（为了安全），但是跨�
 
 > 发送请求时将页面的源信息设置到Origin中，服务器根据Origin来判断是否允许访问，如果允许，那么在返回的头中设置Access-Control-Allow-Origin
 
+在`Access-Control-Allow-Origin`与源信息匹配或者其值为*的时候，浏览器就允许跨域访问了！
+
 参考资料
 
-1. [HTML5中Access-Control-Allow-Origin解决跨域问题](http://www.111cn.net/wy/html5/75509.htm)
+1. [HTTP访问控制(CORS)](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Access_control_CORS)
+2. [自定义Access-Control-Allow-Origin策略以解决字体文件跨域权限问题](http://yuguo.us/weblog/access-control-allow-origin/)
 
+## 离线
 
+当在离线的情况下依然可以访问网页，那么Web页面和App的距离就更近一步了，而且HTML5中已经实现了，对于资源缓存使用`manifest`搞定：
 
+<pre class="prettyprint">
+&lt;html manifest="/example/demo.manifest"&gt;
+</pre>
 
+在该文件中指定页面中资源的缓存策略：
 
+<pre class="prettyprint">
+CACHE MANIFEST # 缓存的文件
+/theme.css
+/logo.gif
+/main.js
+NETWORK: # 不缓存的文件
+login.asp
+FALLBACK: # 没有网络时的替代网页
+/html5/ /404.html
+</pre>
 
-如果没有这个头部或者不匹配，浏览器就会驳回请求。多种浏览器在实现时都会做些限制：
+另外提供对应的JavaScript API `applicationCache`来查看缓存的状态：
 
-1. cookie不会随请求发送，也不会随响应返回
-2. 不能访问响应的头部信息
-3. 限制对头部信息的设置
+状态值|含义
+-|-
+0|无缓存，没有与页面相关的缓存
+1|闲置，应用缓存未得到更新
+2|检查中，正在下载描述文件并检查更新
+3|下载中，应用缓存正在下载描述文件中指定的资源
+4|更新完成，应用缓存已经更新，而且所有的资源已下载完毕，可以通过swapCache来使用
+5|废弃，应用缓存的描述文件已经不存在，页面无法访问应用缓存
 
-和上面的方案相比都是跨域，但是区别还是挺大的。
+应用缓存还有相关的事件来表示状态的改变：
 
+事件|含义
+-|-
+checking|浏览器为应用缓存查找更新时触发
+error|检查更新或下载资源期间发生错误时触发
+noupdate|检查描述文件发现无变化时触发
+downloading|开始下载应用缓存资源时触发
+progress|下载的应用缓存的过程中不断地触发
+updateready|页面新的应用缓存下载完毕并且可以通过swapCache使用时触发
+cached|在应用缓存完整可用时触发
+
+需要注意应用缓存机制会自动缓存引用了manifest的页面，那么这个页面在manifest文件没有发生变更的情况下会一直保持不变，这个可以用一个`iframe`间接缓存来解决。
+
+除了js、css等资源外还有其他数据需要缓存的话可以用下面几种方案来解决：
+
+1. Cookie
+2. Web Storage
+3. IndexedDB
+
+这部分就略了。
+
+参考资料
+
+1. [使用 HTML5 开发离线应用](https://www.ibm.com/developerworks/cn/web/1011_guozb_html5off/)
+2. [Web App指南之构建html5离线应用](http://foocoder.com/blog/web-appzhi-nan-zhi-gou-jian-html5chi-xian-ying-yong.html/)
+3. [HTML5 缓存: cache manifest](http://kb.cnblogs.com/page/76808/)
 
 ## 总结
 
-前端需要学的东西太多了，虽然这两天花把JavaScript的基础过了一遍，但是要想在实际中真正的用起来，还是有很多规范、工具要去学的，加油！！！
+这篇笔记仅仅是对常用的功能做一些记录，另外对于CANVAS绘画等技术后面会有单独的文章来进行介绍，最后再次推荐《JavaScript高级程序设计》~~
