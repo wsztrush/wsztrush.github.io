@@ -358,6 +358,7 @@ JavaScript对请求限制必须是相同域名的（为了安全），但是跨�
 
 <pre class="prettyprint">
 CACHE MANIFEST # 缓存的文件
+CACHE
 /theme.css
 /logo.gif
 /main.js
