@@ -155,7 +155,7 @@ function extend(Child, Parent) {
 
 ## 闭包
 
-闭包是一个既神秘又绕但其本质又非常简单的一个概念：
+闭包是一个既神秘又绕，但其本质又非常简单的一个概念：
 
 > 有权访问另一个函数作用域中的变量的函数
 
@@ -166,7 +166,7 @@ function createFunctions(){
     var result = new Array();
     for(var i = 0; i < 10; i++){
         result[i] = function(){
-            return i;
+            return i;// 注意这里，访问了外部函数中的变量
         };
     }
     return result;
@@ -217,36 +217,9 @@ console.log(obj.getNameFunc()()); // my object
 3. [闭包的秘密](http://www.gracecode.com/posts/2385.html)
 4. [Private Members in JavaScript](http://www.crockford.com/javascript/private.html)
 
+## DOM和BOM
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-## DOM与BOM
-
-**BOM**(浏览器对象模型)中提供了对象用来访问浏览器的功能：
+作为网页脚本语言，需要频繁地和浏览器、文档打交道，**BOM**提供了对象用来访问浏览器的功能：
 
 对象|功能
 -|-
@@ -256,9 +229,7 @@ navigator|用来识别浏览器、检测插件、注册处理程序
 screen|显示器像素
 history|浏览器历史
 
-浏览器就是JavaScript的运行环境，不同的浏览器实现的不同到时运行会有意想不到的结果，在做兼容性时需要写逻辑代码来测试浏览器对需要的功能是否支持！
-
-**DOM**(文档对象模型)是针对HTML和XML文档的一个API，将它们描绘成一个由多层节点构成的结构，节点的类型包括：
+而**DOM**则是一个多层结构，其中节点类型包括：
 
 类型|含义
 -|-
@@ -271,16 +242,34 @@ CDATASection|XML中的CDATA(这个就不用多说了)
 DocumentType|文档类型，能够影响到浏览器渲染时的行为(一个热乎的坑)
 Attr|元素的特性
 
-写JavaScript比较爽的就是随时运行随时生效，具体操作DOM的API还是很简单的，打开**console**尝试一下吧:)
+在判断节点类型中经常会用到`nodeName`和`nodeType`，另外有一个属性`childNodes`保存子节点：
+
+> NodeList对象并不是Array，而是基于DOM结构动态查询得到的结果
+
+其他属性（以及其他类型节点特有的属性）就不一一说了，直接用一个图来描述：
+
+![](http://7xiz10.com1.z0.glb.clouddn.com/JavaScript-Basic-1.png)
+
+用jQuery操作DOM很方便的一个原因是CSS选择器，其实在原生的JavaScript中也有类似的接口：
+
+接口|作用
+-|-
+querySelector|接收一个CSS选择符，返回与该模式匹配的第一个元素
+querySelectorAll|返回所有匹配CSS选择符的元素
+matchesSelector|检测元素与CSS选择符是否匹配
+
+HTML5规定可以为元素添加非标准的属性，但是要添加前缀`data-`，目的是为元素提供渲染无关的信息，访问时可以使用`dataset`：
+
+<pre class="prettyprint">
+&lt;div id="myDiv" data-appId="abc" data-myName="bcd"&gt;&lt;div&gt;
+var div = document.getElementById("myDiv");
+var appId = div.dataset.appId;
+var myName = div.dataset.myName;
+</pre>
 
 ## 事件
 
-JavaScript与HTML之间的交互是通过事件来实现的，而事件则是文档或者浏览器窗口中发生的一些特定的**交互瞬间**。事件流的方式有两种：
-
-1. **事件冒泡**：由最具体的元素接收，然后逐级上传
-2. **事件捕获**：上层节点更早接收到事件，而最具体的节点最后收到
-
-第一种监听事件的方式为直接绑定属性：
+JavaScript可以操作DOM，反过来DOM也可以调用JavaScript，通过事件来实现，第一种绑定方式：
 
 <pre class="prettyprint">
 var btn = document.getElementById("myBtn");
@@ -289,7 +278,7 @@ btn.onclick = function(){
 }
 </pre>
 
-另一种方法为增加监听器，用这种方法可以为同一个时间添加多个监听器（虽然没啥用）
+第二种绑定方式：
 
 <pre class="prettyprint">
 var btn = document.getElementById("myBtn");
@@ -298,24 +287,31 @@ btn.addEventListener("click", function(){
 }, false);
 </pre>
 
-不同浏览器的API有所不同，可以统一封装掉提供一个EventUtil来操作事件监听，在事件对象（event）中包含了相关的信息，细节就不讲了，常见的事件类型有下面几种：
+在事件中最核心的两个概念是：**捕获**和**冒泡**，冒泡是指事件开始时由最具体的元素接收，然后逐级向上传播到较为不具体的节点：
 
-1. UI事件
-2. 焦点事件
-3. 鼠标与滚轮事件
-4. 键盘与文本事件
-5. 复合事件
-6. 变动事件
-7. HTML5事件
-8. 设备事件
-9. 触摸与手势事件
-10. 拖放事件
+![](http://)
 
-事件也是要消耗内存的，使用需谨慎！
+另一种事件流就是捕获了：不太具体的节点更早地接收到事件，而最具体的节点最后收到事件，事件捕获的用意在于事件到达预定节点之前捕获它：
+
+![](http://)
+
+为了阻止事件的向上冒泡常用的方法有：
+
+方法|说明
+-|-
+return false|阻止触发事件的元素的默认动作，并且阻止冒泡
+preventDefault|阻止默认动作
+stopPragation|阻止冒泡
+
+最后，可以通过模拟事件来实现快捷键的功能~~
+
+参考资料
+
+1. [javascript中return false;preventDefault();stopPragation()的区别](http://www.cnblogs.com/wang_yb/archive/2013/04/11/3014767.html)
 
 ## 通信
 
-既然是浏览器脚本语言，和服务器通信自然是少不了的：
+网页和服务器异步通信的功能是必不可少的，代码如下：
 
 <pre class="prettyprint">
 var xhr = new XMLHttpRequest();
@@ -332,17 +328,25 @@ xhr.open("get", "xxx.xxx.com", true);
 xhr.send(null);
 </pre>
 
-现代Web应用中频繁使用的一项功能就是表单数据序列化，XMLHttpRequest2级为此定义了**FormData**类型。使用Ajax进行跨域是比较常见的需求，之前都是利用一些浏览器允许跨域的请求来做：
+JavaScript对请求限制必须是相同域名的（为了安全），但是跨域的需求也是刚需，那么大家只能八仙过海各显神通，常见的方式有：
 
 1. 图像Ping
 2. JSONP
 3. Comet
 4. 服务器发送事件（SSE）
-5. Web Scokets
 
-既然大家这么需要跨域，而且浏览器禁止不住，那干脆就提供一套好用的协议出来，于是有了CORS（跨域资源共享）：
+既然禁止跨域并不是合理的，那么就需要提供一套能够安全跨域的方案，于是有了CORS：
 
-> 发请求时将请求页面的源信息设置到Origin中，服务器根据Origin来判断是否允许访问，如果运行返回的头中设置Access-Control-Allow-Origin:*。
+> 发送请求时将页面的源信息设置到Origin中，服务器根据Origin来判断是否允许访问，如果允许，那么在返回的头中设置Access-Control-Allow-Origin
+
+参考资料
+
+1. [HTML5中Access-Control-Allow-Origin解决跨域问题](http://www.111cn.net/wy/html5/75509.htm)
+
+
+
+
+
 
 如果没有这个头部或者不匹配，浏览器就会驳回请求。多种浏览器在实现时都会做些限制：
 
@@ -352,9 +356,6 @@ xhr.send(null);
 
 和上面的方案相比都是跨域，但是区别还是挺大的。
 
-## 其他
-
-操作JSON、XML等数据，这里就记了，都是API~
 
 ## 总结
 
