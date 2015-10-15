@@ -5,9 +5,269 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 12 Oct 2015 21:40:04 +0800</pubDate>
-    <lastBuildDate>Mon, 12 Oct 2015 21:40:04 +0800</lastBuildDate>
+    <pubDate>Thu, 15 Oct 2015 22:49:57 +0800</pubDate>
+    <lastBuildDate>Thu, 15 Oct 2015 22:49:57 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
+    
+      <item>
+        <title>xml之schema</title>
+        <description>&lt;p&gt;在网络传输中JSON和XML是最长用的两种数据格式，JSON的特点是短小、简单，但是除了这点以外就完全不能跟XML比了，所以涉及到配置方面还是优先考虑XML吧！&lt;/p&gt;
+
+&lt;p&gt;但是裸奔的XML并不好用，比如我们打出来Jar包给别人用，需要他们自己在Spring配置中添加：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+&amp;lt;bean class=&quot;xxxxxx&quot;/&amp;gt;
+&lt;/pre&gt;
+
+&lt;p&gt;功能简单的时候是没有问题的，当你做的东西比较复杂的时候就会变成：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+&amp;lt;bean class=&quot;xxx&quot;&amp;gt;
+    &amp;lt;property name=&quot;aaa&quot; value=&quot;aaa&quot;/&amp;gt;
+    &amp;lt;property name=&quot;bbb&quot; value=&quot;bbb&quot;/&amp;gt;
+    &amp;lt;property name=&quot;ccc&quot; value=&quot;ccc&quot;/&amp;gt;
+&amp;lt;/bean&amp;gt;
+&lt;/pre&gt;
+
+&lt;p&gt;除非在你的WILE里面写的非常清楚应用用哪个&lt;code&gt;class&lt;/code&gt;，需要设置哪些&lt;code&gt;property&lt;/code&gt;，哪些是必填的等等等，不然没人知道该怎么写，而更好的解决办法是编写schema来定义XML的规则！&lt;/p&gt;
+
+&lt;h2 id=&quot;xmlns&quot;&gt;命名空间（xmlns）&lt;/h2&gt;
+
+&lt;p&gt;我们在配置Spring的时候经常会这么写：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+&amp;lt;beans:beans xmlns:beans=&quot;http://www.springframework.org/schema/beans&quot;&amp;gt;
+    &amp;lt;beans:import resource=&quot;xxx&quot;/&amp;gt;
+&amp;lt;/beans:beans&amp;gt;
+&lt;/pre&gt;
+
+&lt;p&gt;其中&lt;code&gt;http://www.springframework.org/schema/beans&lt;/code&gt;就是一个命名空间，而&lt;code&gt;xmlns:beans&lt;/code&gt;相当于设置了命名空间的一个代号，在使用时&lt;code&gt;beans:import&lt;/code&gt;就可以表示使用该命名空间中的import元素。&lt;/p&gt;
+
+&lt;p&gt;可以不写&lt;code&gt;:beans&lt;/code&gt;来表示默认就用该命名空间，那么配置就更简单了：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+&amp;lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;&amp;gt;
+    &amp;lt;import resource=&quot;xxx&quot;/&amp;gt;
+&amp;lt;/beans&amp;gt;
+&lt;/pre&gt;
+
+&lt;p&gt;在schema中由下面三个属性来控制命名空间的行为：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;targetNamespace：目标命名空间&lt;/li&gt;
+  &lt;li&gt;elementFormDefault：unqualified/qualified&lt;/li&gt;
+  &lt;li&gt;attributeFormDefault：unqualified/qualified&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;当设置&lt;code&gt;unqualified&lt;/code&gt;时schema中除了根元素以外，其他的元素都是没有命名空间的，在使用的时候需要将其命名空间设置为空：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+&amp;lt;easydt:easydt xmlns:easydt=&quot;http://www.cainiao.com/schema/easydt&quot;&amp;gt;
+    &amp;lt;provider xmlns=&quot;&quot;/&amp;gt;&amp;lt;!-- 注意这里 --&amp;gt;
+&amp;lt;/easydt:easydt&amp;gt;
+&lt;/pre&gt;
+
+&lt;p&gt;而设置为&lt;code&gt;qualified&lt;/code&gt;时schema中定义的所有元素都属于&lt;code&gt;targetNamespace&lt;/code&gt;所定义的命名空间：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+&amp;lt;easydt:easydt xmlns=&quot;http://www.cainiao.com/schema/easydt&quot;&amp;gt;
+    &amp;lt;provider/&amp;gt;&amp;lt;!-- 看这里 --&amp;gt;
+&amp;lt;/easydt:easydt&amp;gt;
+&lt;/pre&gt;
+
+&lt;p&gt;显然用qualified看起来更简单一些，不过也是看情况的。&lt;/p&gt;
+
+&lt;h2 id=&quot;section&quot;&gt;定义元素&lt;/h2&gt;
+
+&lt;p&gt;完整的schema的定义如下：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+&amp;lt;?xml version=&quot;1.0&quot;?&amp;gt;
+&amp;lt;xs:schema xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot;
+targetNamespace=&quot;http://www.w3school.com.cn&quot;
+xmlns=&quot;http://www.w3school.com.cn&quot;
+elementFormDefault=&quot;qualified&quot;&amp;gt;
+    在这里定义元素和属性
+&amp;lt;/xs:schema&amp;gt;
+&lt;/pre&gt;
+
+&lt;p&gt;其目的就是配置出来一堆的&lt;code&gt;element&lt;/code&gt;和&lt;code&gt;attribute&lt;/code&gt;来约束XML的行为，简单来说&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+&amp;lt;yyy xxx=&quot;xxx&quot;/&amp;gt;
+&lt;/pre&gt;
+
+&lt;p&gt;其中：yyy是element、xxx是属性！最简单的元素如下：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+&amp;lt;easydt:a&amp;gt;123&amp;lt;/easydt:a&amp;gt;
+&lt;/pre&gt;
+
+&lt;p&gt;对应的配置如下：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+&amp;lt;xs:element name=&quot;a&quot; type=&quot;xs:integer&quot;/&amp;gt;
+&lt;/pre&gt;
+
+&lt;p&gt;设置type为&lt;code&gt;integer&lt;/code&gt;之后会对内容进行检查，如果不是数字则报错，另外可以通过&lt;code&gt;simpleType&lt;/code&gt;对其扩展来实现更复杂的限定：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+&amp;lt;xs:element name=&quot;age&quot;&amp;gt;
+    &amp;lt;xs:simpleType&amp;gt;
+        &amp;lt;xs:restriction base=&quot;xs:integer&quot;&amp;gt;
+            &amp;lt;xs:minInclusive value=&quot;0&quot;/&amp;gt;
+            &amp;lt;xs:maxInclusive value=&quot;100&quot;/&amp;gt;
+        &amp;lt;/xs:restriction&amp;gt;
+    &amp;lt;/xs:simpleType&amp;gt;
+&amp;lt;/xs:element&amp;gt;
+&lt;/pre&gt;
+
+&lt;p&gt;向元素中添加子元素、属性之后就不是一个简单元素，而是一个复杂元素，可以用&lt;code&gt;complexType&lt;/code&gt;定义其类型：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+&amp;lt;xs:element name=&quot;note&quot;&amp;gt;
+    &amp;lt;xs:complexType&amp;gt;
+        &amp;lt;xs:attribute name=&quot;app&quot; type=&quot;xs:string&quot;/&amp;gt;
+    &amp;lt;/xs:complexType&amp;gt;
+&amp;lt;/xs:element&amp;gt;
+&lt;/pre&gt;
+
+&lt;p&gt;对应的XML的配置为&lt;code&gt;&amp;lt;easydt:note app=&quot;123&quot;/&amp;gt;&lt;/code&gt;，子节点的定义也很简单：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+&amp;lt;xs:element name=&quot;note&quot;&amp;gt;
+    &amp;lt;xs:complexType&amp;gt;
+        &amp;lt;xs:sequence&amp;gt;
+            &amp;lt;xs:element name=&quot;a&quot; type=&quot;xs:integer&quot;/&amp;gt;
+            &amp;lt;xs:element name=&quot;b&quot; type=&quot;xs:integer&quot;/&amp;gt;
+        &amp;lt;/xs:sequence&amp;gt;
+    &amp;lt;/xs:complexType&amp;gt;
+&amp;lt;/xs:element&amp;gt;
+&lt;/pre&gt;
+
+&lt;p&gt;对应的XML的配置为&lt;code&gt;&amp;lt;note&amp;gt;&amp;lt;a&amp;gt;1&amp;lt;/a&amp;gt;&amp;lt;b&amp;gt;2&amp;lt;/b&amp;gt;&amp;lt;/note&amp;gt;&lt;/code&gt;，其中sequence的作用是&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;组中的元素以指定的顺序出现在包含元素中，每个子元素可以出现0次到任意次&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;当然还有其他的方式：&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;指示器&lt;/th&gt;
+      &lt;th&gt;含义&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;all&lt;/td&gt;
+      &lt;td&gt;子元素可以按照任意顺序出现，且每个子元素必须只出现一次&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;choice&lt;/td&gt;
+      &lt;td&gt;随便添加子元素，可以使用&lt;code&gt;maxOccurs&lt;/code&gt;来设置可添加子元素的数目&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;attributeGroup&lt;/td&gt;
+      &lt;td&gt;属性组&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;group&lt;/td&gt;
+      &lt;td&gt;元素组&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;元素的类型是非常复杂的，不同的类型之间很可能有一些定义是可以重用的，我们可以定义一些基础的类型，然后使用&lt;code&gt;extension&lt;/code&gt;对其进行扩展可以得到：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+&amp;lt;xs:complexType name=&quot;baseInfo&quot;&amp;gt;
+    &amp;lt;xs:sequence&amp;gt;
+        &amp;lt;xs:element name=&quot;id&quot; type=&quot;xs:string&quot;/&amp;gt;
+    &amp;lt;/xs:sequence&amp;gt;
+&amp;lt;/xs:complexType&amp;gt;
+&amp;lt;xs:complexType name=&quot;fullpersoninfo&quot;&amp;gt;
+    &amp;lt;xs:complexContent&amp;gt;
+        &amp;lt;xs:extension base=&quot;baseInfo&quot;&amp;gt;
+            &amp;lt;xs:sequence&amp;gt;
+                &amp;lt;xs:element name=&quot;name&quot; type=&quot;xs:string&quot;/&amp;gt;
+            &amp;lt;/xs:sequence&amp;gt;
+        &amp;lt;/xs:extension&amp;gt;
+    &amp;lt;/xs:complexContent&amp;gt;
+&amp;lt;/xs:complexType&amp;gt;
+&lt;/pre&gt;
+
+&lt;p&gt;其他元素的可以在&lt;a href=&quot;http://www.w3school.com.cn/schema/schema_elements_ref.asp&quot;&gt;这里&lt;/a&gt;查看使用方法~~&lt;/p&gt;
+
+&lt;p&gt;当上面这些不能满足你的需求时，可以使用&lt;code&gt;any&lt;/code&gt;、&lt;code&gt;anyAttribute&lt;/code&gt;来允许用户配置没有在schema中定义过的东西，然后在解析的阶段进行处理！&lt;/p&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;解析&lt;/h2&gt;
+
+&lt;p&gt;在Spring中定义解析需要用下面两个文件来配置（需要放在META-INF目录，Spring会自动加载）：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;strong&gt;spring.schemas&lt;/strong&gt;：命名空间对应的schemas配置的位置&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;spring.handlers&lt;/strong&gt;：命名空间对应的解析类&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;来看个例子：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+// spring.schemas
+http\://www.cainiao.com/schema/easydt/easydt.xsd=META-INF/easydt.xsd
+// spring.handlers
+http\://www.cainiao.com/schema/easydt=com.cainiao.easydt.client.springTag.EasyDtNamespaceHandler
+&lt;/pre&gt;
+
+&lt;p&gt;在&lt;code&gt;NamespaceHandlerSupport&lt;/code&gt;中定义了遇到对应的元素的时候应该使用Parser：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+public class EasyDtNamespaceHandler extends NamespaceHandlerSupport {
+	public void init() {
+		registerBeanDefinitionParser(&quot;easydt&quot;, new EasyDtBeanDefinitionParser());
+	}
+}
+&lt;/pre&gt;
+
+&lt;p&gt;然后用&lt;code&gt;AbstractBeanDefinitionParser&lt;/code&gt;中拿到配置信息并使用&lt;code&gt;addPropertyValue&lt;/code&gt;来定义BeanDefinition：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+public class EasyDtBeanDefinitionParser extends AbstractSingleBeanDefinitionParser{
+	protected Class&lt;easydt&gt; getBeanClass(Element element) {
+		return EasyDt.class;
+	}
+	protected void doParse(Element element, ParserContext parserContext, BeanDefinitionBuilder builder) {
+		builder.addPropertyValue(&quot;domain&quot;, element.getAttribute(&quot;domain&quot;));
+	}
+}
+
+
+关于BeanDefinition的载入和解析的过程可以看[这里](http://book.51cto.com/art/201203/322589.htm)，具体的解析工作是交给`BeanDefinitionParserDelegate`来完成的，如果子元素不是简单元素可以调用`parseCustomElement`来完成解析：
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+builder.addPropertyValue(&quot;provider&quot;,
+    parserContext.getDelegate().parseCustomElement(
+        DomUtils.getChildElementByTagName(element, &quot;provider&quot;),
+        builder.getRawBeanDefinition()));
+&lt;/pre&gt;
+
+想更灵活地在Spring中玩耍XML还是要多看看Bean的解析过程。
+
+## 总结
+
+用这些最基本的用法基本可以搞定大部分的自定义schema的需求，对于复杂的还需要深入去研究。
+&lt;/easydt&gt;&lt;/pre&gt;
+</description>
+        <pubDate>Wed, 14 Oct 2015 00:00:00 +0800</pubDate>
+        <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/10/14/Xml-Schema.html</link>
+        <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/10/14/Xml-Schema.html</guid>
+        
+        
+        <category>编程技术</category>
+        
+      </item>
     
       <item>
         <title>JQUERY</title>
@@ -673,7 +933,7 @@ jQuery.extend( [ deep ], target , object1 [, objectN… ] )&lt;/p&gt;
         <title>JavaScript基础知识</title>
         <description>&lt;p&gt;&lt;img src=&quot;http://img3.douban.com/mpic/s8958650.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;因为工作需要最近开始学习JavaScript，虽然之前陆陆续续地零碎看过一些，但是很不系统，这篇文章打算从一个门外汉的角度来分几步看！&lt;/p&gt;
+&lt;p&gt;首先我并不是一个JavaScript高手，因为工作需要最近才开始学习，虽然之前陆陆续续地零碎看过一些，但是很不系统，这篇文章打算从一个门外汉的角度来分几步看，希望能对初学者有一些帮助~&lt;/p&gt;
 
 &lt;h2 id=&quot;section&quot;&gt;基本语法&lt;/h2&gt;
 
@@ -710,9 +970,9 @@ jQuery.extend( [ deep ], target , object1 [, objectN… ] )&lt;/p&gt;
   &lt;/tbody&gt;
 &lt;/table&gt;
 
-&lt;p&gt;肉类型的强大之处在于将不同类型的数据进行比较的时候居然结果是一样的：&lt;code&gt;&quot;123&quot;==123&lt;/code&gt;，简直毁三观~~不过也提供了另外一种方式&lt;code&gt;&quot;123&quot;===123&lt;/code&gt;可以得到预期的结果。&lt;/p&gt;
+&lt;p&gt;弱类型的强大之处在于将不同类型的数据进行比较的时候居然结果是一样的：&lt;code&gt;&quot;123&quot;==123&lt;/code&gt;，简直毁三观~~不过也提供了另外一种方式&lt;code&gt;&quot;123&quot;===123&lt;/code&gt;可以得到预期的结果。&lt;/p&gt;
 
-&lt;p&gt;在需要连续操作一个对象的多个属性或者方法时可以用with减少代码量：&lt;/p&gt;
+&lt;p&gt;在需要连续操作一个对象的多个属性或者方法时可以用&lt;code&gt;with&lt;/code&gt;减少代码量：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 with(location){
@@ -724,10 +984,10 @@ with(location){
 &lt;p&gt;在JavaScript中定义函数非常灵活&lt;/p&gt;
 
 &lt;blockquote&gt;
-  &lt;p&gt;既不需要定义返回值，也不需要定义入参（简直和弱类型一样随意…）&lt;/p&gt;
+  &lt;p&gt;既不需要定义返回值，也不需要定义入参（简直比弱类型还随意…）&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;可以使用&lt;code&gt;arguments&lt;/code&gt;来获取所有的参数，这样看来参数的实现和&lt;strong&gt;Python&lt;/strong&gt;有点像，而参数名称仅仅是用为了在代码中方便使用参数！&lt;/p&gt;
+&lt;p&gt;可以使用&lt;code&gt;arguments&lt;/code&gt;来获取所有的参数，这样看来参数的实现和&lt;strong&gt;Python&lt;/strong&gt;有点像，参数名称仅仅是用为了在代码中方便使用参数！&lt;/p&gt;
 
 &lt;p&gt;在JavaScript中几乎所有的都是对象，第一种创建对象的方式为：&lt;/p&gt;
 
@@ -844,10 +1104,42 @@ console.log(person1.name);//abc
       &lt;td&gt;person1.hasOwnProperty(‘name’)&lt;/td&gt;
       &lt;td&gt;是否自己真的有，而不是从原型中获取&lt;/td&gt;
     &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;person1 instanceof Object&lt;/td&gt;
+      &lt;td&gt;是否为指定类型&lt;/td&gt;
+    &lt;/tr&gt;
   &lt;/tbody&gt;
 &lt;/table&gt;
 
-&lt;p&gt;参考：&lt;/p&gt;
+&lt;p&gt;可以用原型来实现类似继承效果，直接设置prototype比较麻烦，最好封装一下：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+function object(o){
+    function F(){}
+    F.prototype = o;
+    return new F();
+}
+var person = {
+    name : 'abc'
+}
+var another_person = object(person);
+&lt;/pre&gt;
+
+&lt;p&gt;另外一种常见的写法：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+function extend(Child, Parent) {
+    var F = function(){};
+    F.prototype = Parent.prototype;
+    Child.prototype = new F();
+    Child.prototype.constructor = Child;
+    Child.uber = Parent.prototype;
+}
+&lt;/pre&gt;
+
+&lt;p&gt;其实原型就是原型，它本身的含义已经非常明确，如果非要和其他编程语言中的概念去做对比就容易把自己绕进去~&lt;/p&gt;
+
+&lt;p&gt;参考资料：&lt;/p&gt;
 
 &lt;ol&gt;
   &lt;li&gt;&lt;a href=&quot;http://www.ruanyifeng.com/blog/2010/05/object-oriented_javascript_encapsulation.html&quot;&gt;Javascript面向对象编程（一）：封装&lt;/a&gt;&lt;/li&gt;
@@ -858,187 +1150,77 @@ console.log(person1.name);//abc
 
 &lt;h2 id=&quot;section-2&quot;&gt;闭包&lt;/h2&gt;
 
-&lt;h2 id=&quot;this&quot;&gt;作用域和this&lt;/h2&gt;
+&lt;p&gt;闭包是一个既神秘又绕，但其本质又非常简单的一个概念：&lt;/p&gt;
 
-&lt;p&gt;来看看段代码理解一下闭包：&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;有权访问另一个函数作用域中的变量的函数&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;赶紧来看一个例子：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 function createFunctions(){
     var result = new Array();
     for(var i = 0; i &amp;lt; 10; i++){
         result[i] = function(){
-            return i;
+            return i;// 注意这里，访问了外部函数中的变量
         };
     }
+    return result;
 }
 &lt;/pre&gt;
 
-&lt;p&gt;返回的方法数组每个的返回结果都是相同的，是不是和预期的不一样？要达到预期的效果需要：&lt;/p&gt;
+&lt;p&gt;直观感觉&lt;code&gt;result[0]()&lt;/code&gt;的返回值应该是0，实际上并非如此，内部函数可以访问外部函数作用域中的变量，但仅仅是包含一个引用而已，具体到执行的时候才去获取引用指向的值。&lt;/p&gt;
 
-&lt;pre class=&quot;prettyprint&quot;&gt;
-function createFunctions(){
-    var result = new Array();
-    for(var i = 0; i &amp;lt; 10; i++){
-        result[i] = function(num){
-            return num;
-        }(i);
-    }
-}
-&lt;/pre&gt;
-
-&lt;p&gt;更复杂度是：&lt;strong&gt;this&lt;/strong&gt;的原始含义为：&lt;/p&gt;
+&lt;p&gt;闭包绕就绕在作用域上，当它和其他作用域也比较绕的东西勾搭在一起的时候就需要小心了，比如this：&lt;/p&gt;
 
 &lt;blockquote&gt;
-  &lt;p&gt;当方法被某个对象调用时，this就等于那个对象。&lt;/p&gt;
+  &lt;p&gt;当方法被某个对象调用时，this就等于那个对象&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;&lt;strong&gt;记住&lt;/strong&gt;：要时刻小心是是谁在调用方法，再来看一段代码：&lt;/p&gt;
+&lt;p&gt;我们来比较下面两段代码体会一下就好了，第一段：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 var name = &quot;the window&quot;;
-vra obj = {
-    var name = &quot;my object&quot;;
+var obj = {
+    name : &quot;my object&quot;,
     getNameFunc : function(){
         return function(){
             return this.name;
         }
     }
 }
-alert(obj.getNameFunc()());// the window
+console.log(obj.getNameFunc()()); // the window
 &lt;/pre&gt;
 
-&lt;p&gt;是不是隐隐感觉到了&lt;strong&gt;闭包+this&lt;/strong&gt;组合的强大威力？虽然很多程序猿没有对象，但面向对象编程是一个永恒的话题：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;对象是无序属性的集合，其属性可以包含基本值、对象或者函数。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;有一些属性只给引擎内部使用，在我们自己写的JavaScript中是无法访问的，常用的有：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;configurable&lt;/li&gt;
-  &lt;li&gt;enumerable：能否通过for-in循环，默认为true&lt;/li&gt;
-  &lt;li&gt;writable：能否修改属性的值&lt;/li&gt;
-  &lt;li&gt;value：值&lt;/li&gt;
-  &lt;li&gt;get：在读取属性时调用的函数&lt;/li&gt;
-  &lt;li&gt;set：在设置属性时调用的函数&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;创建对象除了用&lt;strong&gt;new Object&lt;/strong&gt;之外还可以用构造函数&lt;strong&gt;new Person&lt;/strong&gt;：&lt;/p&gt;
+&lt;p&gt;第二段：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
-function Person(name, age, job){
-    this.name = name;
-    this.job = job;
-    this.age = age;
-}
-var person = new Person();
-&lt;/pre&gt;
-
-&lt;p&gt;其背后处理的逻辑如下：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;创建一个新对象&lt;/li&gt;
-  &lt;li&gt;将构造函数函数的作用域赋给新对象（因此this指向了新对象）&lt;/li&gt;
-  &lt;li&gt;执行构造函数中的代码&lt;/li&gt;
-  &lt;li&gt;返回新对象&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;创建自定义的构造函数意味着将它的实例标志为一种特定的类型，这也是其优势所在：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-alert(person instanceof Person); // true
-&lt;/pre&gt;
-
-&lt;p&gt;而最大的劣势在于：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;每个方法都要在每个实例上创建一遍。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;上面是将方法当成属性来使用，其实还有一种将方法当成方法来用的方法:)&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-function Person(){
-}
-Person.prototype = {
-    name : &quot;a&quot;;
-    sayName : function(){
-        alert(this.name);
+var name = &quot;the window&quot;;
+var obj = {
+    name : &quot;my object&quot;,
+    getNameFunc : function(){
+    	var self = this;
+        return function(){
+            return self.name;
+        }
     }
 }
+console.log(obj.getNameFunc()()); // my object
 &lt;/pre&gt;
 
-&lt;p&gt;在方法的&lt;strong&gt;prototype&lt;/strong&gt;中指定的属性（原型），对其所有的实例可用，这样方法的用法就和Java一致，而属性就像是类的静态属性，而且可以方便地用来模仿继承：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-function SubType(){
-    this.sayHello = function(){
-        alert(&quot;hello&quot;);
-    }
-}
-function SuperType(){
-}
-SubType.prototype = SuperType;
-new SubType().sayHello();// hello
-&lt;/pre&gt;
-
-&lt;p&gt;总的来说继承更像是提供了一个默认的parent指针，在查找属性、方法的时候可以递归向上查找，但是用不好的时候会出现一些莫名其妙的问题：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-function Super(){
-    this.key = [1, 2, 3];
-}
-function A(){}
-function B(){}
-
-A.prototype = new Super();
-
-var a1 = new A();
-a1.key.push(4);
-alert(a1.key);// [1, 2, 3, 4]
-
-var a2 = new A();
-alert(a2.key);// [1, 2, 3, 4]
-
-// 用一个公共的方法来包装对象，这样就可以直接在对象上&quot;继承&quot;了
-function object(o){
-    function F(){}
-    F.prototype = o;
-    return new F();
-}
-&lt;/pre&gt;
-
-&lt;p&gt;在ECMAScript 5中新增了方法&lt;strong&gt;Object.create()&lt;/strong&gt;规范了原型继承（类似object方法）。把SuperType中的属性共享给SubType的每个实例可能不能满足需求，那么可以试试下面这种方法：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-function SuperType(){
-    this.colors = [1, 2, 3];
-}
-function SubType(){
-    SuperType.call(this); // apply也可以
-}
-var instance1 = new SubType();
-instance1.colors.push(4);
-alert(instance1.colors);// [1,2,3,4]
-
-var instance2 = new SubType();
-alert(instance2.colors);// [1,2,3]
-&lt;/pre&gt;
-
-&lt;p&gt;在SubType通过&lt;strong&gt;call/apply&lt;/strong&gt;来执行SuperType方法，相当于是在当前的实例中产生了SuperType的备份，个人觉得把这种也算作继承有点牵强。最后，错误处理（try-catch-finally）和Java里面几乎一样，常见的错误类型有：&lt;/p&gt;
+&lt;p&gt;参考资料：&lt;/p&gt;
 
 &lt;ol&gt;
-  &lt;li&gt;类型转换错误&lt;/li&gt;
-  &lt;li&gt;数据类型错误&lt;/li&gt;
-  &lt;li&gt;通信错误&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.ruanyifeng.com/blog/2010/04/using_this_keyword_in_javascript.html&quot;&gt;Javascript的this用法&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.ruanyifeng.com/blog/2009/08/learning_javascript_closures.html&quot;&gt;学习Javascript闭包（Closure）&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.gracecode.com/posts/2385.html&quot;&gt;闭包的秘密&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.crockford.com/javascript/private.html&quot;&gt;Private Members in JavaScript&lt;/a&gt;&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;p&gt;在写代码的时候要注意不要因为这些问题把程序搞挂了~&lt;/p&gt;
+&lt;h2 id=&quot;dombom&quot;&gt;DOM和BOM&lt;/h2&gt;
 
-&lt;h2 id=&quot;dombom&quot;&gt;DOM与BOM&lt;/h2&gt;
-
-&lt;p&gt;&lt;strong&gt;BOM&lt;/strong&gt;(浏览器对象模型)中提供了对象用来访问浏览器的功能：&lt;/p&gt;
+&lt;p&gt;作为网页脚本语言，需要频繁地和浏览器、文档打交道，&lt;strong&gt;BOM&lt;/strong&gt;提供了对象用来访问浏览器的功能：&lt;/p&gt;
 
 &lt;table&gt;
   &lt;thead&gt;
@@ -1071,9 +1253,7 @@ alert(instance2.colors);// [1,2,3]
   &lt;/tbody&gt;
 &lt;/table&gt;
 
-&lt;p&gt;浏览器就是JavaScript的运行环境，不同的浏览器实现的不同到时运行会有意想不到的结果，在做兼容性时需要写逻辑代码来测试浏览器对需要的功能是否支持！&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;DOM&lt;/strong&gt;(文档对象模型)是针对HTML和XML文档的一个API，将它们描绘成一个由多层节点构成的结构，节点的类型包括：&lt;/p&gt;
+&lt;p&gt;而&lt;strong&gt;DOM&lt;/strong&gt;则是一个多层结构，其中节点类型包括：&lt;/p&gt;
 
 &lt;table&gt;
   &lt;thead&gt;
@@ -1118,18 +1298,53 @@ alert(instance2.colors);// [1,2,3]
   &lt;/tbody&gt;
 &lt;/table&gt;
 
-&lt;p&gt;写JavaScript比较爽的就是随时运行随时生效，具体操作DOM的API还是很简单的，打开&lt;strong&gt;console&lt;/strong&gt;尝试一下吧:)&lt;/p&gt;
+&lt;p&gt;在判断节点类型中经常会用到&lt;code&gt;nodeName&lt;/code&gt;和&lt;code&gt;nodeType&lt;/code&gt;，另外有一个属性&lt;code&gt;childNodes&lt;/code&gt;保存子节点：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;NodeList对象并不是Array，而是基于DOM结构动态查询得到的结果&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;其他属性（以及其他类型节点特有的属性）就不一一说了，直接用一个图来描述：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/JavaScript-Basic-1.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;用jQuery操作DOM很方便的一个原因是CSS选择器，其实在原生的JavaScript中也有类似的接口：&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;接口&lt;/th&gt;
+      &lt;th&gt;作用&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;querySelector&lt;/td&gt;
+      &lt;td&gt;接收一个CSS选择符，返回与该模式匹配的第一个元素&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;querySelectorAll&lt;/td&gt;
+      &lt;td&gt;返回所有匹配CSS选择符的元素&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;matchesSelector&lt;/td&gt;
+      &lt;td&gt;检测元素与CSS选择符是否匹配&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;HTML5规定可以为元素添加非标准的属性，但是要添加前缀&lt;code&gt;data-&lt;/code&gt;，目的是为元素提供渲染无关的信息，访问时可以使用&lt;code&gt;dataset&lt;/code&gt;：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+&amp;lt;div id=&quot;myDiv&quot; data-appId=&quot;abc&quot; data-myName=&quot;bcd&quot;&amp;gt;&amp;lt;div&amp;gt;
+var div = document.getElementById(&quot;myDiv&quot;);
+var appId = div.dataset.appId;
+var myName = div.dataset.myName;
+&lt;/pre&gt;
 
 &lt;h2 id=&quot;section-3&quot;&gt;事件&lt;/h2&gt;
 
-&lt;p&gt;JavaScript与HTML之间的交互是通过事件来实现的，而事件则是文档或者浏览器窗口中发生的一些特定的&lt;strong&gt;交互瞬间&lt;/strong&gt;。事件流的方式有两种：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;&lt;strong&gt;事件冒泡&lt;/strong&gt;：由最具体的元素接收，然后逐级上传&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;事件捕获&lt;/strong&gt;：上层节点更早接收到事件，而最具体的节点最后收到&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;第一种监听事件的方式为直接绑定属性：&lt;/p&gt;
+&lt;p&gt;JavaScript可以操作DOM，反过来DOM也可以调用JavaScript，通过事件来实现，第一种绑定方式：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 var btn = document.getElementById(&quot;myBtn&quot;);
@@ -1138,7 +1353,7 @@ btn.onclick = function(){
 }
 &lt;/pre&gt;
 
-&lt;p&gt;另一种方法为增加监听器，用这种方法可以为同一个时间添加多个监听器（虽然没啥用）&lt;/p&gt;
+&lt;p&gt;第二种绑定方式：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 var btn = document.getElementById(&quot;myBtn&quot;);
@@ -1147,26 +1362,50 @@ btn.addEventListener(&quot;click&quot;, function(){
 }, false);
 &lt;/pre&gt;
 
-&lt;p&gt;不同浏览器的API有所不同，可以统一封装掉提供一个EventUtil来操作事件监听，在事件对象（event）中包含了相关的信息，细节就不讲了，常见的事件类型有下面几种：&lt;/p&gt;
+&lt;p&gt;在事件中最核心的两个概念是：&lt;strong&gt;捕获&lt;/strong&gt;和&lt;strong&gt;冒泡&lt;/strong&gt;，冒泡是指事件开始时由最具体的元素接收，然后逐级向上传播到较为不具体的节点：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/JavaScript-Basic-2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;另一种事件流就是捕获了：不太具体的节点更早地接收到事件，而最具体的节点最后收到事件，事件捕获的用意在于事件到达预定节点之前捕获它：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/JavaScript-Basic-3.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;为了阻止事件的向上冒泡常用的方法有：&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;方法&lt;/th&gt;
+      &lt;th&gt;说明&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;return false&lt;/td&gt;
+      &lt;td&gt;阻止触发事件的元素的默认动作，并且阻止冒泡&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;preventDefault&lt;/td&gt;
+      &lt;td&gt;阻止默认动作&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;stopPragation&lt;/td&gt;
+      &lt;td&gt;阻止冒泡&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;最后，可以通过模拟事件来实现快捷键的功能~~&lt;/p&gt;
+
+&lt;p&gt;参考资料&lt;/p&gt;
 
 &lt;ol&gt;
-  &lt;li&gt;UI事件&lt;/li&gt;
-  &lt;li&gt;焦点事件&lt;/li&gt;
-  &lt;li&gt;鼠标与滚轮事件&lt;/li&gt;
-  &lt;li&gt;键盘与文本事件&lt;/li&gt;
-  &lt;li&gt;复合事件&lt;/li&gt;
-  &lt;li&gt;变动事件&lt;/li&gt;
-  &lt;li&gt;HTML5事件&lt;/li&gt;
-  &lt;li&gt;设备事件&lt;/li&gt;
-  &lt;li&gt;触摸与手势事件&lt;/li&gt;
-  &lt;li&gt;拖放事件&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.cnblogs.com/wang_yb/archive/2013/04/11/3014767.html&quot;&gt;javascript中return false;preventDefault();stopPragation()的区别&lt;/a&gt;&lt;/li&gt;
 &lt;/ol&gt;
-
-&lt;p&gt;事件也是要消耗内存的，使用需谨慎！&lt;/p&gt;
 
 &lt;h2 id=&quot;section-4&quot;&gt;通信&lt;/h2&gt;
 
-&lt;p&gt;既然是浏览器脚本语言，和服务器通信自然是少不了的：&lt;/p&gt;
+&lt;p&gt;网页和服务器异步通信的功能是必不可少的，代码如下：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 var xhr = new XMLHttpRequest();
@@ -1183,39 +1422,153 @@ xhr.open(&quot;get&quot;, &quot;xxx.xxx.com&quot;, true);
 xhr.send(null);
 &lt;/pre&gt;
 
-&lt;p&gt;现代Web应用中频繁使用的一项功能就是表单数据序列化，XMLHttpRequest2级为此定义了&lt;strong&gt;FormData&lt;/strong&gt;类型。使用Ajax进行跨域是比较常见的需求，之前都是利用一些浏览器允许跨域的请求来做：&lt;/p&gt;
+&lt;p&gt;JavaScript对请求限制必须是相同域名的（为了安全），但是跨域的需求也是刚需，那么大家只能八仙过海各显神通，常见的方式有：&lt;/p&gt;
 
 &lt;ol&gt;
   &lt;li&gt;图像Ping&lt;/li&gt;
   &lt;li&gt;JSONP&lt;/li&gt;
   &lt;li&gt;Comet&lt;/li&gt;
   &lt;li&gt;服务器发送事件（SSE）&lt;/li&gt;
-  &lt;li&gt;Web Scokets&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;p&gt;既然大家这么需要跨域，而且浏览器禁止不住，那干脆就提供一套好用的协议出来，于是有了CORS（跨域资源共享）：&lt;/p&gt;
+&lt;p&gt;既然禁止跨域并不是合理的，那么就需要提供一套能够安全跨域的方案，于是有了CORS：&lt;/p&gt;
 
 &lt;blockquote&gt;
-  &lt;p&gt;发请求时将请求页面的源信息设置到Origin中，服务器根据Origin来判断是否允许访问，如果运行返回的头中设置Access-Control-Allow-Origin:*。&lt;/p&gt;
+  &lt;p&gt;发送请求时将页面的源信息设置到Origin中，服务器根据Origin来判断是否允许访问，如果允许，那么在返回的头中设置Access-Control-Allow-Origin&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;如果没有这个头部或者不匹配，浏览器就会驳回请求。多种浏览器在实现时都会做些限制：&lt;/p&gt;
+&lt;p&gt;在&lt;code&gt;Access-Control-Allow-Origin&lt;/code&gt;与源信息匹配或者其值为*的时候，浏览器就允许跨域访问了！&lt;/p&gt;
+
+&lt;p&gt;参考资料&lt;/p&gt;
 
 &lt;ol&gt;
-  &lt;li&gt;cookie不会随请求发送，也不会随响应返回&lt;/li&gt;
-  &lt;li&gt;不能访问响应的头部信息&lt;/li&gt;
-  &lt;li&gt;限制对头部信息的设置&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Access_control_CORS&quot;&gt;HTTP访问控制(CORS)&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://yuguo.us/weblog/access-control-allow-origin/&quot;&gt;自定义Access-Control-Allow-Origin策略以解决字体文件跨域权限问题&lt;/a&gt;&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;p&gt;和上面的方案相比都是跨域，但是区别还是挺大的。&lt;/p&gt;
+&lt;h2 id=&quot;section-5&quot;&gt;离线&lt;/h2&gt;
 
-&lt;h2 id=&quot;section-5&quot;&gt;其他&lt;/h2&gt;
+&lt;p&gt;当在离线的情况下依然可以访问网页，那么Web页面和App的距离就更近一步了，而且HTML5中已经实现了，对于资源缓存使用&lt;code&gt;manifest&lt;/code&gt;搞定：&lt;/p&gt;
 
-&lt;p&gt;操作JSON、XML等数据，这里就记了，都是API~&lt;/p&gt;
+&lt;pre class=&quot;prettyprint&quot;&gt;
+&amp;lt;html manifest=&quot;/example/demo.manifest&quot;&amp;gt;
+&lt;/pre&gt;
+
+&lt;p&gt;在该文件中指定页面中资源的缓存策略：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+CACHE MANIFEST # 缓存的文件
+CACHE
+/theme.css
+/logo.gif
+/main.js
+NETWORK: # 不缓存的文件
+login.asp
+FALLBACK: # 没有网络时的替代网页
+/html5/ /404.html
+&lt;/pre&gt;
+
+&lt;p&gt;另外提供对应的JavaScript API &lt;code&gt;applicationCache&lt;/code&gt;来查看缓存的状态：&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;状态值&lt;/th&gt;
+      &lt;th&gt;含义&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;0&lt;/td&gt;
+      &lt;td&gt;无缓存，没有与页面相关的缓存&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;闲置，应用缓存未得到更新&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2&lt;/td&gt;
+      &lt;td&gt;检查中，正在下载描述文件并检查更新&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;3&lt;/td&gt;
+      &lt;td&gt;下载中，应用缓存正在下载描述文件中指定的资源&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;4&lt;/td&gt;
+      &lt;td&gt;更新完成，应用缓存已经更新，而且所有的资源已下载完毕，可以通过swapCache来使用&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;5&lt;/td&gt;
+      &lt;td&gt;废弃，应用缓存的描述文件已经不存在，页面无法访问应用缓存&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;应用缓存还有相关的事件来表示状态的改变：&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;事件&lt;/th&gt;
+      &lt;th&gt;含义&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;checking&lt;/td&gt;
+      &lt;td&gt;浏览器为应用缓存查找更新时触发&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;error&lt;/td&gt;
+      &lt;td&gt;检查更新或下载资源期间发生错误时触发&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;noupdate&lt;/td&gt;
+      &lt;td&gt;检查描述文件发现无变化时触发&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;downloading&lt;/td&gt;
+      &lt;td&gt;开始下载应用缓存资源时触发&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;progress&lt;/td&gt;
+      &lt;td&gt;下载的应用缓存的过程中不断地触发&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;updateready&lt;/td&gt;
+      &lt;td&gt;页面新的应用缓存下载完毕并且可以通过swapCache使用时触发&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;cached&lt;/td&gt;
+      &lt;td&gt;在应用缓存完整可用时触发&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;需要注意应用缓存机制会自动缓存引用了manifest的页面，那么这个页面在manifest文件没有发生变更的情况下会一直保持不变，这个可以用一个&lt;code&gt;iframe&lt;/code&gt;间接缓存来解决。&lt;/p&gt;
+
+&lt;p&gt;除了js、css等资源外还有其他数据需要缓存的话可以用下面几种方案来解决：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Cookie&lt;/li&gt;
+  &lt;li&gt;Web Storage&lt;/li&gt;
+  &lt;li&gt;IndexedDB&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;这部分就略了。&lt;/p&gt;
+
+&lt;p&gt;参考资料&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.ibm.com/developerworks/cn/web/1011_guozb_html5off/&quot;&gt;使用 HTML5 开发离线应用&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://foocoder.com/blog/web-appzhi-nan-zhi-gou-jian-html5chi-xian-ying-yong.html/&quot;&gt;Web App指南之构建html5离线应用&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://kb.cnblogs.com/page/76808/&quot;&gt;HTML5 缓存: cache manifest&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
 
 &lt;h2 id=&quot;section-6&quot;&gt;总结&lt;/h2&gt;
 
-&lt;p&gt;前端需要学的东西太多了，虽然这两天花把JavaScript的基础过了一遍，但是要想在实际中真正的用起来，还是有很多规范、工具要去学的，加油！！！&lt;/p&gt;
+&lt;p&gt;这篇笔记仅仅是对常用的功能做一些记录，另外对于CANVAS绘画等技术后面会有单独的文章来进行介绍，最后再次推荐《JavaScript高级程序设计》~~&lt;/p&gt;
 </description>
         <pubDate>Wed, 09 Sep 2015 00:00:00 +0800</pubDate>
         <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/09/09/JavaScript-Basic.html</link>
@@ -2220,297 +2573,6 @@ public void runBare() throws Throwable {
         
         
         <category>dsl</category>
-        
-      </item>
-    
-      <item>
-        <title>Java并发编程实战</title>
-        <description>&lt;p&gt;看完之后感觉Doug Lea写的书都是精品，不过有些地方翻译的确实不怎么样…&lt;/p&gt;
-
-&lt;h2 id=&quot;section&quot;&gt;线程&lt;/h2&gt;
-
-&lt;p&gt;线程比进程更轻，更易于共享数据，关于Java中的线程要了解：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;线程安全&lt;/li&gt;
-  &lt;li&gt;可见性&lt;/li&gt;
-  &lt;li&gt;中断&lt;/li&gt;
-  &lt;li&gt;关闭钩子&lt;/li&gt;
-  &lt;li&gt;守护线程&lt;/li&gt;
-  &lt;li&gt;ThreadLocal&lt;/li&gt;
-  &lt;li&gt;线程的开销&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;很长一段时间对线程安全的定义比较迷糊，下面这个定义感觉是比较准确的：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;当多个线程访问某个类时，不管运行时环境采用何种调度方式，该类都能表现出正确的行为，那么就称这个类是线程安全的。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;或者更简单地描述：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;结果与调度的方式无关。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;看似简单但坑却不少，比如多线程中可见性这种反直觉的东西：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-private static boolean ready;
-private static int number;
-static class ReaderThread extends Thread {
-	public void run() {
-    	while(!ready){
-        	Thread.yield();
-        }
-        System.out.println(number);
-    }
-}
-public static void main(String[] args){
-	new ReaderThread().start();
-    number = 42;
-    ready = true;
-}
-&lt;/pre&gt;
-
-&lt;p&gt;这里程序可能持续运行下去，因为ReaderThread可能永远看不到ready的值；程序也可能输出0，因为ReadyThread可能只看到写入ready的值：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;在没有同步的情况下编译器、处理器以及运行时等都可能对操作的执行顺序进行一些意想不到的调整。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;开启线程只需要一个start，而想让它停下来就没那么简单了，因为stop已经不建议再使用，原因是：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;在任意位置抛出ThreadDeath&lt;/li&gt;
-  &lt;li&gt;释放锁&lt;/li&gt;
-  &lt;li&gt;关闭时需要同步，如果run是同步的那就永远都无法关闭&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;取而代之的是中断，但是中断并不代表停止，而是：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;调用interrupt并不意味着立即停止目标线程的执行，而只是传递请求中断的消息。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;但是比较靠谱的是在很多库中已经对中断做了处理：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;在调用join、sleep、wai等阻塞返回后会抛出异常并擦除中断状态&lt;/li&gt;
-  &lt;li&gt;在IO操作上阻塞时也会抛出异常并关闭流&lt;/li&gt;
-  &lt;li&gt;在java.nio.channel.Selector上等待时也会立即返回&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;如果没有上面这些情况的话，调用中断不会对线程的执行造成半毛钱影响，如果你需要你的线程去响应中断，需要在合适的地方增加代码去判断并处理。&lt;/p&gt;
-
-&lt;p&gt;想让线程按照我们的意愿停止已经很麻烦了，但是如果它运行的时候还抛出莫名其妙的异常就更加恼火了，不过幸好还有：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-public interface UncaughtExceptionHandler {
-	void uncaughtException(Thread t, Throwable e);
-}
-&lt;/pre&gt;
-
-&lt;p&gt;有时候我们需要在程序运行完成的时候做一些扫尾的工作，可以用关闭钩子来实现：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-Runtime.getRuntime().addShutdownHook(new Thread(){
-	public void run(){
-    	// your code
-    }
-})
-&lt;/pre&gt;
-
-&lt;p&gt;只有JVM是正常结束的时候才会运行钩子，被暴力kill掉的时候就没机会执行了。既然讲到JVM的退出刚好可以看下Daemon和正常线程的区别：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;当线程退出时，JVM会检查其他正在运行的线程，如果这些线程都是守护线程，那么JVM将退出。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;类似垃圾回收这些线程就得设置成守护线程，不能让他们影响了JVM的正常退出。在开启多线程的时候ThreadLocal真是一个神器，可以让很多信息的传递变得非常简单，具体可以看&lt;a href=&quot;http://wsztrush.github.io/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/05/14/Java-ThreadLocal.html&quot;&gt;这里&lt;/a&gt;。&lt;/p&gt;
-
-&lt;p&gt;最后，线程不仅在效率还是体验方面都带来了巨大的提升，单并非多多益善，增加线程也同时会增加一些开销：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;上下文切换&lt;/li&gt;
-  &lt;li&gt;内存同步（这个影响很小）&lt;/li&gt;
-  &lt;li&gt;阻塞（竞争的同步可能需要操作系统的介入）&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;现在大家已经很少new Thread().start();这么玩了，大部分都会用线程池来管理，下面接着看：&lt;/p&gt;
-
-&lt;h2 id=&quot;section-1&quot;&gt;线程池&lt;/h2&gt;
-
-&lt;p&gt;创建新线程也是有开销了，所以可以将线程缓存下来重复利用，在使用线程池时需要注意：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;阀值&lt;/li&gt;
-  &lt;li&gt;饱和策略&lt;/li&gt;
-  &lt;li&gt;ThreadFactory&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;平时用到的大部分线程池的底层都是ThreadPoolExecutor，在初始化时有几个关键的阀值需要注意：&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;阀值&lt;/th&gt;
-      &lt;th&gt;作用&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;corePoolSize&lt;/td&gt;
-      &lt;td&gt;在execute时如果当先线程数小于该值则直接创建新线程来运行&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;maximumPoolSize&lt;/td&gt;
-      &lt;td&gt;最大线程数&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;keepAliveTime&lt;/td&gt;
-      &lt;td&gt;Worker取任务的等待时长，超时后Worker就退出了&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;如果在execute的时候线程池已经满了，同时任务队列也满了，那么此时任务怎么办？这时候就饱和策略就要上场了：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-public interface RejectedExecutionHandler {
-    void rejectedExecution(Runnable r, ThreadPoolExecutor executor);
-}
-&lt;/pre&gt;
-
-&lt;p&gt;同时提供四种实现：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;AbortPolicy：抛异常&lt;/li&gt;
-  &lt;li&gt;CallerRunsPolicy：退回到调用者线程处理任务&lt;/li&gt;
-  &lt;li&gt;DiscardOldestPolicy：抛弃最老任务&lt;/li&gt;
-  &lt;li&gt;DiscardPolicy：抛弃&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;最后可以通过ThreadFactory来设置线程池中线程的属性：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-public interfact ThreadFactory{
-    Thread newThread(Runnable r);
-}
-&lt;/pre&gt;
-
-&lt;p&gt;在execute时如果需要创建新的线程就会调用该方法。&lt;/p&gt;
-
-&lt;h2 id=&quot;section-2&quot;&gt;锁&lt;/h2&gt;
-
-&lt;p&gt;多个线程同时跑为了保证结果的准确锁是少不了的：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;锁的实现&lt;/li&gt;
-  &lt;li&gt;死锁&lt;/li&gt;
-  &lt;li&gt;活锁&lt;/li&gt;
-  &lt;li&gt;减少锁竞争&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;常用的锁有两种实现：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;synchronized&lt;/li&gt;
-  &lt;li&gt;concurrent&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;在之前concurrent要比synchronized快很多，但这个已经是很久之前的事情了，在synchronized的实现中通过偏向锁、轻量级锁优化了性能，而concurrent则是Doug Lea的作品。&lt;/p&gt;
-
-&lt;p&gt;相比较来说各有优劣：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;synchronized缺点是不够灵活，但是你不需要费心释放锁；而concurrent使用很灵活，可以分别在不同的地方加锁、解锁，但是如果忘记解锁就悲剧了，一般用try-finally来做。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;另外concurrent中实现了各种策略的锁：&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;锁&lt;/th&gt;
-      &lt;th&gt;作用&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;ReentrantLock&lt;/td&gt;
-      &lt;td&gt;可重入独占锁&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;ReentrantReadWriteLock&lt;/td&gt;
-      &lt;td&gt;可重入读写锁&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;Condition&lt;/td&gt;
-      &lt;td&gt;条件&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;CountDownLatch&lt;/td&gt;
-      &lt;td&gt;向下递减，到0时线程被唤醒&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;CyclicBarrier&lt;/td&gt;
-      &lt;td&gt;有指定书目的线程await之后，一起开始执行&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;FutureTask&lt;/td&gt;
-      &lt;td&gt;先提交任务，在get时阻塞&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;Semaphore&lt;/td&gt;
-      &lt;td&gt;信号量&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;其实concurrent中核心是AQS框架，它将等待队列等操作都进行了封装，你只需要实现下面四个方法即可实现需要的锁：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;tryAcquire&lt;/li&gt;
-  &lt;li&gt;tryAcquireShared&lt;/li&gt;
-  &lt;li&gt;tryRelease&lt;/li&gt;
-  &lt;li&gt;tryReleaseShared&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;锁用的比较多的时候就容易产生死锁，一般原因分为下面几类：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;锁顺序死锁&lt;/li&gt;
-  &lt;li&gt;资源死锁&lt;/li&gt;
-  &lt;li&gt;线程饥饿死锁：在同一个线程池中执行有互相依赖的任务时需要注意&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;可以用&lt;strong&gt;jstack –l pid&lt;/strong&gt;来检测死锁。既然看到到了死锁，那就顺便看一下活锁：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;不停地取出第一个任务，但是每次都会失败。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;其实活锁看起来就是代码写的太挫了…用锁的时候除了导致程序的活跃性问题，还可能导致性能问题，减少锁开销的一般方法为：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;缩小同步的范围，快进快出&lt;/li&gt;
-  &lt;li&gt;减少锁的粒度&lt;/li&gt;
-  &lt;li&gt;锁分段&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;用锁一定要慎重。&lt;/p&gt;
-
-&lt;h2 id=&quot;section-3&quot;&gt;总结&lt;/h2&gt;
-
-&lt;p&gt;多线程编程中还需要看看&lt;strong&gt;非阻塞算法&lt;/strong&gt;、&lt;strong&gt;Java内存模型&lt;/strong&gt;，而真正在写代码的时候能写好确实是一件非常不容易的事情，通常需要通过很多代码的磨练总结在使用各个工具时候的一些基本原则，才能慢慢顺手一些。&lt;/p&gt;
-</description>
-        <pubDate>Wed, 19 Aug 2015 00:00:00 +0800</pubDate>
-        <link>/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/2015/08/19/Java-Concurrency-In-Practice.html</link>
-        <guid isPermaLink="true">/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/2015/08/19/Java-Concurrency-In-Practice.html</guid>
-        
-        
-        <category>读书笔记</category>
         
       </item>
     
