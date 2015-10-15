@@ -289,11 +289,11 @@ btn.addEventListener("click", function(){
 
 在事件中最核心的两个概念是：**捕获**和**冒泡**，冒泡是指事件开始时由最具体的元素接收，然后逐级向上传播到较为不具体的节点：
 
-![](http://)
+![](http://7xiz10.com1.z0.glb.clouddn.com/JavaScript-Basic-2.png)
 
 另一种事件流就是捕获了：不太具体的节点更早地接收到事件，而最具体的节点最后收到事件，事件捕获的用意在于事件到达预定节点之前捕获它：
 
-![](http://)
+![](http://7xiz10.com1.z0.glb.clouddn.com/JavaScript-Basic-3.png)
 
 为了阻止事件的向上冒泡常用的方法有：
 
