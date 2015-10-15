@@ -6,31 +6,53 @@ categories: 编程技术
 
 ---
 
-XML和JSON是两种比较常见的数据格式，但是除了JSON占用的空间小一点之外，其他方面XML绝对可以秒杀JSON格式。
+在网络传输中JSON和XML是最长用的两种数据格式，JSON的特点是短小、简单，但是除了这点以外就完全不能跟XML比了，所以涉及到配置方面还是优先考虑XML吧！
 
-如果我们在做一个系统，让别人去配置一堆的`<bean>`的体验非常差，完全是在QJ用户啊~而如果自定义一个schema的话，不仅配置看起来非常简洁直观，而且在IDE中配置的时候一般都会有很好的提示，逼格也有所提高！
-
-## 定义
-
-在schema中使用`xmlns`来管理元素的定义，比如设置了
+但是裸奔的XML并不好用，比如我们打出来Jar包给别人用，需要他们自己在Spring配置中添加：
 
 <pre class="prettyprint">
-xmlns:beans="http://www.springframework.org/schema/beans"
+&lt;bean class="xxxxxx"/>
 </pre>
 
-可以使用`beans`来使用其中定义的元素
+功能简单的时候是没有问题的，当你做的东西比较复杂的时候就会变成：
 
 <pre class="prettyprint">
-&lt;beans:import resource="xxxx"/&gt;
+&lt;bean class="xxx"&gt;
+    &lt;property name="aaa" value="aaa"/&gt;
+    &lt;property name="bbb" value="bbb"/&gt;
+    &lt;property name="ccc" value="ccc"/&gt;
+&lt;/bean&gt;
 </pre>
 
-而且可以设置默认命名空间`xmlns="xxxx"`来进一步简化配置为`<import resource="xxx"/>`，在定义schema时可以控制命名空间的使用：
+除非在你的WILE里面写的非常清楚应用用哪个`class`，需要设置哪些`property`，哪些是必填的等等等，不然没人知道该怎么写，而更好的解决办法是编写schema来定义XML的规则！
 
-1. **targetNamespace**：目标命名空间
-2. **elementFormDefault**：unqualified/qualified
-3. **attributeFormDefault**：unqualified/qualified
+## 命名空间（xmlns）
 
-设置为`unqualified`时schema除根元素以外的元素都没有命名空间，那么配置就变成：
+我们在配置Spring的时候经常会这么写：
+
+<pre class="prettyprint">
+&lt;beans:beans xmlns:beans="http://www.springframework.org/schema/beans"&gt;
+    &lt;beans:import resource="xxx"/&gt;
+&lt;/beans:beans&gt;
+</pre>
+
+其中`http://www.springframework.org/schema/beans`就是一个命名空间，而`xmlns:beans`相当于设置了命名空间的一个代号，在使用时`beans:import`就可以表示使用该命名空间中的import元素。
+
+可以不写`:beans`来表示默认就用该命名空间，那么配置就更简单了：
+
+<pre class="prettyprint">
+&lt;beans xmlns="http://www.springframework.org/schema/beans"&gt;
+    &lt;import resource="xxx"/&gt;
+&lt;/beans&gt;
+</pre>
+
+在schema中由下面三个属性来控制命名空间的行为：
+
+1. targetNamespace：目标命名空间
+2. elementFormDefault：unqualified/qualified
+3. attributeFormDefault：unqualified/qualified
+
+当设置`unqualified`时schema中除了根元素以外，其他的元素都是没有命名空间的，在使用的时候需要将其命名空间设置为空：
 
 <pre class="prettyprint">
 &lt;easydt:easydt xmlns:easydt="http://www.cainiao.com/schema/easydt"&gt;
@@ -38,7 +60,7 @@ xmlns:beans="http://www.springframework.org/schema/beans"
 &lt;/easydt:easydt&gt;
 </pre>
 
-而设置为`qualified`时schema中定义的所有元素都属于targetNamespace所定义的命名空间，这样配置会看起来简单一下：
+而设置为`qualified`时schema中定义的所有元素都属于`targetNamespace`所定义的命名空间：
 
 <pre class="prettyprint">
 &lt;easydt:easydt xmlns="http://www.cainiao.com/schema/easydt"&gt;
@@ -46,7 +68,11 @@ xmlns:beans="http://www.springframework.org/schema/beans"
 &lt;/easydt:easydt&gt;
 </pre>
 
-一个配置文件看起来是这样的：
+显然用qualified看起来更简单一些，不过也是看情况的。
+
+## 定义元素
+
+完整的schema的定义如下：
 
 <pre class="prettyprint">
 &lt;?xml version="1.0"?&gt;
@@ -54,66 +80,150 @@ xmlns:beans="http://www.springframework.org/schema/beans"
 targetNamespace="http://www.w3school.com.cn"
 xmlns="http://www.w3school.com.cn"
 elementFormDefault="qualified"&gt;
-...
-...
+    在这里定义元素和属性
 &lt;/xs:schema&gt;
 </pre>
 
-在schema中可以定义很复杂的文档结构，不过其最基本的内容为`<element>`、`<attribute>`，另外可以用`restriction`来设置元素或者属性的取值：
+其目的就是配置出来一堆的`element`和`attribute`来约束XML的行为，简单来说
 
 <pre class="prettyprint">
-&lt;element name="test"&gt;
-    &lt;simpleType&gt;
-        &lt;restriction base="integer"&gt;
-            &lt;minExclusive value="0"/&gt;&lt;!-- 最小值 --&gt;
-            &lt;maxExclusive value="100"/&gt;&lt;!-- 最大值 --&gt;
-        &lt;/restriction&gt;
-    &lt;/simpleType&gt;
-&lt;/element&gt;
+&lt;yyy xxx="xxx"/&gt;
 </pre>
 
-复杂的类型则需使用`<complexType>`进行组合：
+其中：yyy是element、xxx是属性！最简单的元素如下：
 
 <pre class="prettyprint">
-&lt;element name="easydt"&gt;
-    &lt;complexType&gt;
-        &lt;attribute name="app" type="string" use="required"/&gt;
-    &lt;/complexType&gt;
-&lt;/element&gt;
+&lt;easydt:a&gt;123&lt;/easydt:a&gt;
 </pre>
 
-上面定义的配置格式为`<easydt app="xxx"/>`，设置`use="required"`之后就要求必须有app，不然会报错。常用的元素如下：
+对应的配置如下：
 
-元素|作用
+<pre class="prettyprint">
+&lt;xs:element name="a" type="xs:integer"/&gt;
+</pre>
+
+设置type为`integer`之后会对内容进行检查，如果不是数字则报错，另外可以通过`simpleType`对其扩展来实现更复杂的限定：
+
+<pre class="prettyprint">
+&lt;xs:element name="age"&gt;
+    &lt;xs:simpleType&gt;
+        &lt;xs:restriction base="xs:integer"&gt;
+            &lt;xs:minInclusive value="0"/&gt;
+            &lt;xs:maxInclusive value="100"/&gt;
+        &lt;/xs:restriction&gt;
+    &lt;/xs:simpleType&gt;
+&lt;/xs:element&gt;
+</pre>
+
+向元素中添加子元素、属性之后就不是一个简单元素，而是一个复杂元素，可以用`complexType`定义其类型：
+
+<pre class="prettyprint">
+&lt;xs:element name="note"&gt;
+    &lt;xs:complexType&gt;
+        &lt;xs:attribute name="app" type="xs:string"/&gt;
+    &lt;/xs:complexType&gt;
+&lt;/xs:element&gt;
+</pre>
+
+对应的XML的配置为`<easydt:note app="123"/>`，子节点的定义也很简单：
+
+<pre class="prettyprint">
+&lt;xs:element name="note"&gt;
+    &lt;xs:complexType&gt;
+        &lt;xs:sequence&gt;
+            &lt;xs:element name="a" type="xs:integer"/&gt;
+            &lt;xs:element name="b" type="xs:integer"/&gt;
+        &lt;/xs:sequence&gt;
+    &lt;/xs:complexType&gt;
+&lt;/xs:element&gt;
+</pre>
+
+对应的XML的配置为`<note><a>1</a><b>2</b></note>`，其中sequence的作用是
+
+> 组中的元素以指定的顺序出现在包含元素中，每个子元素可以出现0次到任意次
+
+当然还有其他的方式：
+
+指示器|含义
 -|-
-[complexType](http://www.w3school.com.cn/schema/el_complextype.asp)|复杂类型
-[complexContent](http://www.phpstudy.net/e/schema/el_complexcontent.html)|对复杂类型的限制或扩展
-[simpleType](http://www.w3school.com.cn/schema/el_simpletype.asp)|简单类型，规定与具有纯文本内容的元素或属性的值有关的信息以及对他们的约束
-[simpleContent](http://www.w3school.com.cn/schema/el_simpleContent.asp)|对complexType元素的扩展或限制并且不包含任何元素
-[sequence](http://www.w3school.com.cn/schema/el_sequence.asp)|数组中的元素按照指定的顺序出现在包含元素中，每个元素可以出现0次到任意次数
-[extension](http://www.w3school.com.cn/schema/el_extension.asp)|指定目标进行扩展
-[all](http://www.w3school.com.cn/schema/el_all.asp)|子元素可以按照任意顺序出现，每个子元素可以出现一次或者零次
-[anyAttribute](http://www.w3school.com.cn/schema/el_anyattribute.asp)|使得配置可以通过未被schema规定的属性来扩展XML文档
-[choice](http://www.w3school.com.cn/schema/el_choice.asp)|允许其包含的元素中的一个出现
-[group](http://www.w3school.com.cn/schema/el_group.asp)|定义元素组，可以在复杂类型中使用
-[attributeGroup](http://www.w3school.com.cn/schema/el_attributegroup.asp)|对属性声明进行组合，这样这些声明就能够以组合的形式合并到复杂类型中
+all|子元素可以按照任意顺序出现，且每个子元素必须只出现一次
+choice|随便添加子元素，可以使用`maxOccurs`来设置可添加子元素的数目
+attributeGroup|属性组
+group|元素组
 
-运用这些元素可以方便地配置出复杂的类型，而且可以方便地重用其中一些部分，很直观是不是？在我们自己设计系统的时候也可以借鉴这种思路。
+元素的类型是非常复杂的，不同的类型之间很可能有一些定义是可以重用的，我们可以定义一些基础的类型，然后使用`extension`对其进行扩展可以得到：
+
+<pre class="prettyprint">
+&lt;xs:complexType name="baseInfo"&gt;
+    &lt;xs:sequence&gt;
+        &lt;xs:element name="id" type="xs:string"/&gt;
+    &lt;/xs:sequence&gt;
+&lt;/xs:complexType&gt;
+&lt;xs:complexType name="fullpersoninfo"&gt;
+    &lt;xs:complexContent&gt;
+        &lt;xs:extension base="baseInfo"&gt;
+            &lt;xs:sequence&gt;
+                &lt;xs:element name="name" type="xs:string"/&gt;
+            &lt;/xs:sequence&gt;
+        &lt;/xs:extension&gt;
+    &lt;/xs:complexContent&gt;
+&lt;/xs:complexType&gt;
+</pre>
+
+其他元素的可以在[这里](http://www.w3school.com.cn/schema/schema_elements_ref.asp)查看使用方法~~
+
+当上面这些不能满足你的需求时，可以使用`any`、`anyAttribute`来允许用户配置没有在schema中定义过的东西，然后在解析的阶段进行处理！
 
 ## 解析
 
+在Spring中定义解析需要用下面两个文件来配置（需要放在META-INF目录，Spring会自动加载）：
 
+1. **spring.schemas**：命名空间对应的schemas配置的位置
+2. **spring.handlers**：命名空间对应的解析类
 
+来看个例子：
 
+<pre class="prettyprint">
+// spring.schemas
+http\://www.cainiao.com/schema/easydt/easydt.xsd=META-INF/easydt.xsd
+// spring.handlers
+http\://www.cainiao.com/schema/easydt=com.cainiao.easydt.client.springTag.EasyDtNamespaceHandler
+</pre>
 
+在`NamespaceHandlerSupport`中定义了遇到对应的元素的时候应该使用Parser：
 
+<pre class="prettyprint">
+public class EasyDtNamespaceHandler extends NamespaceHandlerSupport {
+	public void init() {
+		registerBeanDefinitionParser("easydt", new EasyDtBeanDefinitionParser());
+	}
+}
+</pre>
 
+然后用`AbstractBeanDefinitionParser`中拿到配置信息并使用`addPropertyValue`来定义BeanDefinition：
 
+<pre class="prettyprint">
+public class EasyDtBeanDefinitionParser extends AbstractSingleBeanDefinitionParser{
+	protected Class<EasyDt> getBeanClass(Element element) {
+		return EasyDt.class;
+	}
+	protected void doParse(Element element, ParserContext parserContext, BeanDefinitionBuilder builder) {
+		builder.addPropertyValue("domain", element.getAttribute("domain"));
+	}
+}
+</pre>
 
+关于BeanDefinition的载入和解析的过程可以看[这里](http://book.51cto.com/art/201203/322589.htm)，具体的解析工作是交给`BeanDefinitionParserDelegate`来完成的，如果子元素不是简单元素可以调用`parseCustomElement`来完成解析：
+
+<pre class="prettyprint">
+builder.addPropertyValue("provider",
+    parserContext.getDelegate().parseCustomElement(
+        DomUtils.getChildElementByTagName(element, "provider"),
+        builder.getRawBeanDefinition()));
+</pre>
+
+想更灵活地在Spring中玩耍XML还是要多看看Bean的解析过程。
 
 ## 总结
 
-
-
-
-
+用这些最基本的用法基本可以搞定大部分的自定义schema的需求，对于复杂的还需要深入去研究。
