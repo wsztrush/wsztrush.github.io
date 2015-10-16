@@ -204,7 +204,7 @@ public class EasyDtNamespaceHandler extends NamespaceHandlerSupport {
 
 <pre class="prettyprint">
 public class EasyDtBeanDefinitionParser extends AbstractSingleBeanDefinitionParser{
-	protected Class<EasyDt> getBeanClass(Element element) {
+	protected Class&lt;EasyDt&gt; getBeanClass(Element element) {
 		return EasyDt.class;
 	}
 	protected void doParse(Element element, ParserContext parserContext, BeanDefinitionBuilder builder) {
