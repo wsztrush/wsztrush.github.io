@@ -241,16 +241,16 @@ public class EasyDtNamespaceHandler extends NamespaceHandlerSupport {
 
 <pre class="prettyprint">
 public class EasyDtBeanDefinitionParser extends AbstractSingleBeanDefinitionParser{
-	protected Class<easydt> getBeanClass(Element element) {
+	protected Class&lt;EasyDt&gt; getBeanClass(Element element) {
 		return EasyDt.class;
 	}
 	protected void doParse(Element element, ParserContext parserContext, BeanDefinitionBuilder builder) {
 		builder.addPropertyValue("domain", element.getAttribute("domain"));
 	}
 }
+</pre>
 
-
-关于BeanDefinition的载入和解析的过程可以看[这里](http://book.51cto.com/art/201203/322589.htm)，具体的解析工作是交给`BeanDefinitionParserDelegate`来完成的，如果子元素不是简单元素可以调用`parseCustomElement`来完成解析：
+<p>关于BeanDefinition的载入和解析的过程可以看<a href="http://book.51cto.com/art/201203/322589.htm">这里</a>，具体的解析工作是交给<code>BeanDefinitionParserDelegate</code>来完成的，如果子元素不是简单元素可以调用<code>parseCustomElement</code>来完成解析：</p>
 
 <pre class="prettyprint">
 builder.addPropertyValue("provider",
@@ -259,12 +259,11 @@ builder.addPropertyValue("provider",
         builder.getRawBeanDefinition()));
 </pre>
 
-想更灵活地在Spring中玩耍XML还是要多看看Bean的解析过程。
+<p>想更灵活地在Spring中玩耍XML还是要多看看Bean的解析过程。</p>
 
-## 总结
+<h2 id="section-2">总结</h2>
 
-用这些最基本的用法基本可以搞定大部分的自定义schema的需求，对于复杂的还需要深入去研究。
-</easydt></pre>
+<p>用这些最基本的用法基本可以搞定大部分的自定义schema的需求，对于复杂的还需要深入去研究。</p>
 
 			<!-- 评论组件 -->
 			<div id="disqus_thread"/>
@@ -275,6 +274,15 @@ builder.addPropertyValue("provider",
 	<div class="icon"><a href="https://github.com/wsztrush"><img src="http://7xiz10.com1.z0.glb.clouddn.com/github.png"/></a></div>
 	<div class="icon"><a href="http://weibo.com/wsztrush"><img src="http://7xiz10.com1.z0.glb.clouddn.com/weibo.png"/></a></div>
 	<div class="icon"><img id="barClick" src="http://7xiz10.com1.z0.glb.clouddn.com/right.png"/></div>
+</div>
+
+<div class="tool">
+	<span><b>WsztRush</b></span>
+	<div class="links">
+		<a href="">Blog</a>
+		<a href="/categories.html">Categories</a>
+		<a href="/about/">About</a>		
+	</div>
 </div>
 
 	</body>
