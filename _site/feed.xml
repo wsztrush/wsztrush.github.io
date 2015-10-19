@@ -5,9 +5,22 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 19 Oct 2015 23:20:53 +0800</pubDate>
-    <lastBuildDate>Mon, 19 Oct 2015 23:20:53 +0800</lastBuildDate>
+    <pubDate>Mon, 19 Oct 2015 23:26:45 +0800</pubDate>
+    <lastBuildDate>Mon, 19 Oct 2015 23:26:45 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
+    
+      <item>
+        <title>代码高亮（ACEJS）初级篇</title>
+        <description>
+</description>
+        <pubDate>Mon, 19 Oct 2015 00:00:00 +0800</pubDate>
+        <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/10/19/ACEJS-A.html</link>
+        <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/10/19/ACEJS-A.html</guid>
+        
+        
+        <category>编程技术</category>
+        
+      </item>
     
       <item>
         <title>模板语言的设计</title>
@@ -2445,66 +2458,6 @@ define(function(require, exports, module) {
         <pubDate>Sat, 05 Sep 2015 00:00:00 +0800</pubDate>
         <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/09/05/JavaScript-Sea.html</link>
         <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/09/05/JavaScript-Sea.html</guid>
-        
-        
-        <category>编程技术</category>
-        
-      </item>
-    
-      <item>
-        <title>junit</title>
-        <description>&lt;p&gt;打算定期看一个开源代码，听之前同事的建议于是从junit开始：&lt;/p&gt;
-
-&lt;p&gt;TestRunner加载和运行测试，入口类。
-TestDecorator对Test进行包装。
-TestSetup对Test进行包装，增加初始化、清理接口。&lt;/p&gt;
-
-&lt;p&gt;TestListener监听器，在发生对应的动作的时候进行调用：&lt;/p&gt;
-&lt;pre class=&quot;prettyprint&quot;&gt;
-public interface TestListener {
-    public void addError(Test test, Throwable t);
-    public void addFailure(Test test, AssertionFailedError t);
-    public void endTest(Test test);
-    public void startTest(Test test);
-}
-&lt;/pre&gt;
-
-&lt;p&gt;TestSuite是TestCase的组合：
-ActiveTestSuite创建一个新的线程来执行：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-public class TestSuite {
-    private Vector&lt;test&gt; fTests = new Vector&lt;test&gt;(10);
-}
-
-
-
-TestResult
-&lt;pre class=&quot;prettyprint&quot;&gt;
-public class TestResult{
-    protected List&lt;testfailure&gt; fFailures;
-    protected List&lt;testfailure&gt; fErrors;
-    protected List&lt;testlistener&gt; fListeners;
-}
-
-
-
-TestCase
-&lt;pre class=&quot;prettyprint&quot;&gt;
-public void runBare() throws Throwable {
-    setUp(); // 初始化
-    try {
-        runTest(); // 通过反射调用方法
-    } finally {
-        tearDown(); // 清理
-    }
-}
-&lt;/pre&gt;
-&lt;/testlistener&gt;&lt;/testfailure&gt;&lt;/testfailure&gt;&lt;/pre&gt;&lt;/test&gt;&lt;/test&gt;&lt;/pre&gt;
-</description>
-        <pubDate>Wed, 02 Sep 2015 00:00:00 +0800</pubDate>
-        <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/09/02/Junit.html</link>
-        <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/09/02/Junit.html</guid>
         
         
         <category>编程技术</category>
