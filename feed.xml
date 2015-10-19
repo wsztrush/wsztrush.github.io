@@ -5,9 +5,107 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 15 Oct 2015 22:58:11 +0800</pubDate>
-    <lastBuildDate>Thu, 15 Oct 2015 22:58:11 +0800</lastBuildDate>
+    <pubDate>Mon, 19 Oct 2015 23:19:49 +0800</pubDate>
+    <lastBuildDate>Mon, 19 Oct 2015 23:19:49 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
+    
+      <item>
+        <title>模板语言的设计</title>
+        <description>&lt;p&gt;最近在搞数据报表的显示配置，有点头疼，想自己设计一套DSL来做，原因是：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;上手成本低&lt;/li&gt;
+  &lt;li&gt;可以持续添加新功能&lt;/li&gt;
+  &lt;li&gt;在实现不同功能时可以用不同的引擎进行解析&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;但是现在的各种也不更新，简直可以把一个页面当做是一个应用来看！要定义这样的DSL也不是一件容易的事情，还是要好好从现有的模板中找找灵感~~&lt;/p&gt;
+
+&lt;h2 id=&quot;velocity&quot;&gt;Velocity&lt;/h2&gt;
+
+&lt;p&gt;在后端的世界里Velocity应该是非常著名的，一个简单的循环如下：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+#foreach( $info in $list)
+	$info.someList
+#end
+&lt;/pre&gt;
+
+&lt;p&gt;在进行渲染时，从上下文中取出变量将&lt;code&gt;$info.someList&lt;/code&gt;进行替换，于是得到了一个静态的字符串（页面），自身的逻辑控制则用&lt;code&gt;#&lt;/code&gt;打头的一些关键字来做！&lt;/p&gt;
+
+&lt;p&gt;用了这么些年，感觉用来生成静态页面（有时候也会用来当做模板引擎渲染SQL啥的）还是很好用的！但是不适合用它来写复杂的逻辑！&lt;/p&gt;
+
+&lt;h2 id=&quot;react&quot;&gt;React&lt;/h2&gt;
+
+&lt;p&gt;最近两年React红的发紫，不仅仅因为有个好爹，体验了一下感觉JSX还是不错的：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+var root =(
+    &amp;lt;ul className=&quot;my-list&quot;&amp;gt;
+        &amp;lt;li&amp;gt;First Text Content&amp;lt;/li&amp;gt;
+        &amp;lt;li&amp;gt;Second Text Content&amp;lt;/li&amp;gt;
+    &amp;lt;/ul&amp;gt;
+);
+&lt;/pre&gt;
+
+&lt;p&gt;这种JS和XML混排的方式看着有点头大，但是仔细看下还是挺直观的！在遇到&lt;code&gt;&amp;lt;xxx&amp;gt;&lt;/code&gt;的时候创建元素，在遇到&lt;code&gt;{xxx}&lt;/code&gt;的时候当做JS解析，而最终是将其翻译成JS代码来执行：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+var child1 = React.createElement('li', null, 'First Text Content');
+var child2 = React.createElement('li', null, 'Second Text Content');
+var root = React.createElement('ul', { className: 'my-list' }, child1, child2);
+&lt;/pre&gt;
+
+&lt;p&gt;让JS参与到模板渲染的过程中能极大地提高模板的能力，但是问题是太灵活了以至于数据变化的时候都不知道该怎么修改DOM了，这么看来虚拟DOM的&lt;strong&gt;Diff&lt;/strong&gt;算法其实也是无奈之举~~~&lt;/p&gt;
+
+&lt;h2 id=&quot;angular&quot;&gt;Angular&lt;/h2&gt;
+
+&lt;p&gt;感觉Angular中最有特色的就是用``做双向数据绑定：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+&amp;lt;div ng-if=&quot;person != null&quot;&amp;gt;
+    Welcome back, &amp;lt;b&amp;gt; &amp;lt;/b&amp;gt;!
+&amp;lt;/div&amp;gt;
+&amp;lt;div ng-if=&quot;person == null&quot;&amp;gt;
+    Please log in.
+&amp;lt;/div&amp;gt;
+&lt;/pre&gt;
+
+&lt;p&gt;但是对于列表什么的比较复杂的结构怎么搞？&lt;code&gt;ng-repeat&lt;/code&gt;貌似不是一个很好的选择~&lt;/p&gt;
+
+&lt;h2 id=&quot;emberjs&quot;&gt;EmberJS&lt;/h2&gt;
+
+&lt;p&gt;在绑定数据的同时可以进行一些简单的逻辑控制：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyrpint&quot;&gt;
+
+  Welcome back, &amp;lt;b&amp;gt; &amp;lt;/b&amp;gt;!
+
+  Please log in.
+
+&lt;/pre&gt;
+
+&lt;p&gt;看起来有点像是Angular和Velocity的结合体！越是这么搞越像是在搞静态页面，对于动态页面来说基本是不行的~~&lt;/p&gt;
+
+&lt;h2 id=&quot;mustache&quot;&gt;Mustache&lt;/h2&gt;
+
+&lt;p&gt;Mustache通常被称为JavaScript模板的基础：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+Mustache.render(&quot;Hello, &quot;, { name: &quot;Jack&quot; });
+&lt;/pre&gt;
+
+&lt;p&gt;用来渲染字符串（或者静态HTML）还是可以的！&lt;/p&gt;
+
+</description>
+        <pubDate>Thu, 15 Oct 2015 00:00:00 +0800</pubDate>
+        <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/10/15/Template-Language.html</link>
+        <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/10/15/Template-Language.html</guid>
+        
+        
+        <category>编程技术</category>
+        
+      </item>
     
       <item>
         <title>xml之schema</title>
@@ -235,16 +333,16 @@ public class EasyDtNamespaceHandler extends NamespaceHandlerSupport {
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 public class EasyDtBeanDefinitionParser extends AbstractSingleBeanDefinitionParser{
-	protected Class&lt;easydt&gt; getBeanClass(Element element) {
+	protected Class&amp;lt;EasyDt&amp;gt; getBeanClass(Element element) {
 		return EasyDt.class;
 	}
 	protected void doParse(Element element, ParserContext parserContext, BeanDefinitionBuilder builder) {
 		builder.addPropertyValue(&quot;domain&quot;, element.getAttribute(&quot;domain&quot;));
 	}
 }
+&lt;/pre&gt;
 
-
-关于BeanDefinition的载入和解析的过程可以看[这里](http://book.51cto.com/art/201203/322589.htm)，具体的解析工作是交给`BeanDefinitionParserDelegate`来完成的，如果子元素不是简单元素可以调用`parseCustomElement`来完成解析：
+&lt;p&gt;关于BeanDefinition的载入和解析的过程可以看&lt;a href=&quot;http://book.51cto.com/art/201203/322589.htm&quot;&gt;这里&lt;/a&gt;，具体的解析工作是交给&lt;code&gt;BeanDefinitionParserDelegate&lt;/code&gt;来完成的，如果子元素不是简单元素可以调用&lt;code&gt;parseCustomElement&lt;/code&gt;来完成解析：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 builder.addPropertyValue(&quot;provider&quot;,
@@ -253,12 +351,11 @@ builder.addPropertyValue(&quot;provider&quot;,
         builder.getRawBeanDefinition()));
 &lt;/pre&gt;
 
-想更灵活地在Spring中玩耍XML还是要多看看Bean的解析过程。
+&lt;p&gt;想更灵活地在Spring中玩耍XML还是要多看看Bean的解析过程。&lt;/p&gt;
 
-## 总结
+&lt;h2 id=&quot;section-2&quot;&gt;总结&lt;/h2&gt;
 
-用这些最基本的用法基本可以搞定大部分的自定义schema的需求，对于复杂的还需要深入去研究。
-&lt;/easydt&gt;&lt;/pre&gt;
+&lt;p&gt;用这些最基本的用法基本可以搞定大部分的自定义schema的需求，对于复杂的还需要深入去研究。&lt;/p&gt;
 </description>
         <pubDate>Wed, 14 Oct 2015 00:00:00 +0800</pubDate>
         <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/10/14/Xml-Schema.html</link>
@@ -2411,168 +2508,6 @@ public void runBare() throws Throwable {
         
         
         <category>编程技术</category>
-        
-      </item>
-    
-      <item>
-        <title>页面配置</title>
-        <description>&lt;p&gt;用MVC框架来开发WEB页面已经是非常成熟的一个事情，那为什么还需要用配置的方式来做页面？&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;不需要应用发布、重启即可生效&lt;/li&gt;
-  &lt;li&gt;可以跨应用重复使用模块&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;在做的比较完善的情况下，产品跟你说一个需求，可能等他回到座位上的时候你已经做好了。当然并不是所有的页面都可以用配置来做，不然配置的方式会巨复杂无比：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;页面布局足够简单&lt;/li&gt;
-  &lt;li&gt;组件足够通用，能够重复利用&lt;/li&gt;
-  &lt;li&gt;数量足够多&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;报表是一个非常典型的场景，大家可能对&lt;a href=&quot;http://www.umeng.com/apps/4100008dd65107258db11ef4/reports/realtime_summary&quot;&gt;报表&lt;/a&gt;这样的页面见到不是特别多，其实在运营后台、仓库管理系统页面非常非常非常多，如果配置能做够灵活，那么这部分的工作量就都可以省下来了。&lt;/p&gt;
-
-&lt;p&gt;那么，要实现一个页面配置需要解决哪些问题？&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;布局&lt;/li&gt;
-  &lt;li&gt;组件重复使用&lt;/li&gt;
-  &lt;li&gt;交互&lt;/li&gt;
-  &lt;li&gt;预览&lt;/li&gt;
-  &lt;li&gt;业务应用接入&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;下面依次来看：&lt;/p&gt;
-
-&lt;h2 id=&quot;section&quot;&gt;布局&lt;/h2&gt;
-
-&lt;p&gt;经典的布局解决方案是栅格系统（bootstrap），其中的角色包括：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;container&lt;/li&gt;
-  &lt;li&gt;row&lt;/li&gt;
-  &lt;li&gt;cloumn&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;比较牛逼的是可以嵌套，用到的技巧可以看&lt;a href=&quot;http://segmentfault.com/a/1190000000743553&quot;&gt;这里&lt;/a&gt;，这样我们用这种方式实现比较复杂的表头的时候还是比较容易的! 让开发去写一大堆的class、div来做页面现在比较头大，那么现在的办法是：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;用简洁的语法把页面需要展示的东西表达清楚，然后将其翻译成HTML+JS。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;自己YY的一个语法如下：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-@layout
-    @layout
-        @CompA // 条件
-        @CompB // 条件
-    @CompC // 查询
-    @CompD // 导出
-@CompE // 列表展示
-@CompF // 分页
-&lt;/pre&gt;
-
-&lt;p&gt;通过缩进来控制层次（或者归属）关系，通过@layout来统一控制一组组件的排列展示。&lt;/p&gt;
-
-&lt;h2 id=&quot;section-1&quot;&gt;组件的重复利用&lt;/h2&gt;
-
-&lt;p&gt;能够复用的组件可以是：展示+数据，在重复利用时只需要将其引入那么基本上什么都不用管了：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-@import:easydt/warehouse_list // 引入仓库列表组件
-&lt;/pre&gt;
-
-&lt;p&gt;引入之后展示就没有问题了，只需要考虑该组件如何与页面上其他的组件互动。&lt;/p&gt;
-
-&lt;h2 id=&quot;section-2&quot;&gt;交互&lt;/h2&gt;
-
-&lt;p&gt;我们要做的是一个动态的页面，静态页面的解决方案现在已经很多了，相比较动态页面要复杂很多：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;响应用户操作&lt;/li&gt;
-  &lt;li&gt;组件之间交互&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;用户的响应还比较简单，对于不同的控件可以预先实现不同的事件，在事件发生时触发对应的代码：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-@CompA
-    @on(click)
-        alert(&quot;用户点击了按钮&quot;)
-&lt;/pre&gt;
-
-&lt;p&gt;组件之间的交互有两种实现方式：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;暴露接口供其他组件调用&lt;/li&gt;
-  &lt;li&gt;事件驱动&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;第一种方式在MFC、Swing等编写的时候基本上都属于这种，感觉写起来太消耗脑细胞! 而且HTML的页面上各部分的交互数据居多，那么可以参考Actor模型来设计：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-@channel(param)
-
-@CompA(to = &quot;param&quot;)
-@CompB(to = &quot;param&quot;)
-@CompC(to = &quot;param&quot;)
-
-@CompD(from = &quot;param&quot;)
-    @on(click) // 响应点击事件
-        // do sth.
-&lt;/pre&gt;
-
-&lt;p&gt;在查询条件A、B、C发生变化时将结果发送消息给D，然后在D本地将其保存起来方便后面使用（比如发送请求）。&lt;/p&gt;
-
-&lt;h2 id=&quot;section-3&quot;&gt;预览&lt;/h2&gt;
-
-&lt;p&gt;在一个独立的页面配置应用上配置完成之后预览时，需要的数据要到业务应用中获取，用ajax的话就遇到了跨域问题。两种解决办法：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;所有的接口使用JSONP格式&lt;/li&gt;
-  &lt;li&gt;在业务系统中提供一个页面专门用来做预览&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;用JSONP的主要缺点就是只能用GET方式，也就是说：&lt;strong&gt;GET的限制JSONP全都有&lt;/strong&gt;。第二种方法则有点像开个后门，直接看到的效果和在应用中看到的效果已经是一致的。&lt;/p&gt;
-
-&lt;h2 id=&quot;section-4&quot;&gt;业务应用接入&lt;/h2&gt;
-
-&lt;p&gt;接入的方式是由配置的产出的结果有关系的，现在有两种产出的方式：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;提供JSON接口来输出展示需要的数据&lt;/li&gt;
-  &lt;li&gt;根据配置动态生成JS文件&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;第一种方式比较直观，做起来也很简单，业务方执行的流程如下：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;开发写个页面将CODE设置进去&lt;/li&gt;
-  &lt;li&gt;渲染HTML页面，然后运行JS根据CODE去获取展示所需的数据&lt;/li&gt;
-  &lt;li&gt;渲染页面&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;该方式有个小小的问题：&lt;strong&gt;在根据CODE获取页面时页面会出现空白&lt;/strong&gt;。用第二种方式将生成的JS引入对应的页面即可，具体页面长什么样子都在该JS文件中保存。这样做的好处是：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;可以在JS文件中定义更加复杂的操作&lt;/li&gt;
-  &lt;li&gt;JS代码在浏览器做缓存，从第二次操作开始就不需要请求页面展示的数据&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;另外在产出JS时基本上就没有搞不定的事情了。&lt;/p&gt;
-
-&lt;h2 id=&quot;section-5&quot;&gt;总结&lt;/h2&gt;
-
-&lt;p&gt;其实这个还没开始做，想法也在UPDATING，做完再来总结:)&lt;/p&gt;
-</description>
-        <pubDate>Fri, 28 Aug 2015 00:00:00 +0800</pubDate>
-        <link>/dsl/2015/08/28/Easydt-Page-Solution.html</link>
-        <guid isPermaLink="true">/dsl/2015/08/28/Easydt-Page-Solution.html</guid>
-        
-        
-        <category>dsl</category>
         
       </item>
     
