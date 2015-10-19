@@ -2,13 +2,13 @@
 <html>
 	{% include head.html %}
 	<body onload="prettyPrint()">
+		{% include tool.html %}
 		<div class="post-container">
 			<h1>{{ page.title }}</h1>
 			{{ content }}
 			<!-- 评论组件 -->
 			<div id="disqus_thread"/>
 		</div>
-		{% include tool.html %}
 	</body>
 </html>
 <!-- 评论组件 -->
