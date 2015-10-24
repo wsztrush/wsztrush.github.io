@@ -11,7 +11,7 @@
 	<!-- google代码高亮 -->
 	<script src="/assets/css/prettify.js"></script>
 	<link href="/assets/css/prettify.css" rel="stylesheet">
-	<title>代码高亮（ACEJS）初级篇</title>
+	<title>用ACE做WEB代码高亮（一）</title>
 </head>
 
 	<body onload="prettyPrint()">
@@ -25,8 +25,225 @@
 </div>
 
 		<div class="post-container">
-			<h1>代码高亮（ACEJS）初级篇</h1>
-			
+			<h1>用ACE做WEB代码高亮（一）</h1>
+			<p>后台应用通常会有很多的配置页面，现在在状态是直接搞一个textarea来搞：</p>
+
+<p><img src="http://7xiz10.com1.z0.glb.clouddn.com/ACE-1.PNG" alt="" /></p>
+
+<p>这种粗糙、QJ用户的行为显然不是一个有节操的程序员该干的，为了这种配置的页面好用最少应该提供三个功能：</p>
+
+<ol>
+  <li>高亮：提示关键字、类型，可以在第一时间发现简单错误</li>
+  <li>缩进：增加配置可读性的最简单的办法</li>
+  <li>折叠：有一大堆的配置的时候折叠还是挺好用的</li>
+</ol>
+
+<p>在网上逛了一圈发现Colud9的ACE还是挺好用的（GitHub上10000+的Star也说明了实力），可以在<a href="https://ace.c9.io/build/kitchen-sink.html">这里</a>体验下，国内的<a href="https://coding.net/">coding.net</a>平台所使用的也是该工具，但是做出来的效果离Colud9还是有不小的差距。。。</p>
+
+<p>由于网上的资料不多，学习过程非常痛苦，有些东西是直接看<a href="https://github.com/ajaxorg/ace">代码</a>去猜测运行的原理，希望对需要的人有一点帮助！</p>
+
+<h2 id="section">使用</h2>
+
+<p>使用方法很经典（和HighCharts等差不多）：</p>
+
+<pre class="prettyprint">
+&lt;!DOCTYPE html&gt;
+&lt;head&gt;
+&lt;style type="text/css" media="screen"&gt;
+    #editor {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+    }
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div id="editor"&gt;function foo(items) {
+    var x = "All this is syntax highlighted";
+    return x;
+}&lt;/div&gt;
+&lt;script src="https://ace.c9.io/build/src/ace.js" type="text/javascript" charset="utf-8"&gt;&lt;/script&gt;
+&lt;script&gt;
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/monokai");
+	editor.getSession().setMode("ace/mode/javascript");
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<p>完成后ACE会在<code>&lt;div id="editor"&gt;&lt;/div&gt;</code>渲染出对应的DOM结构，其中：</p>
+
+<ol>
+  <li><strong>editor.setTheme</strong>：设置主题，有点皮肤的意思</li>
+  <li><strong>editor.getSession().setMode</strong>：设置模式，上面这段设置的是JavaScript的模式，其中包括了高亮、缩进、折叠凳功能</li>
+</ol>
+
+<p><a href="https://github.com/ajaxorg/ace/tree/master/lib/ace/mode">内部</a>有大部分语言的模式，正常情况下你是不需要考虑后面的内容的。后来有同事用drools做规则引擎，这个没有现成的只能自己来搞！</p>
+
+<h2 id="section-1">高亮</h2>
+
+<p>让代码高亮显示的思路很简单，比如将关键字用<code>&lt;span class="ace_keyword"&gt;&lt;/span&gt;</code>包裹起来并在CSS中设置样式即可，那么关键问题就是如何对源码进行<strong>词法分析</strong>了。</p>
+
+<p>在ACE中实现的时候有点像<strong>状态机</strong>，在处理时不断地从当前状态的规则集中找到匹配<code>regex</code>的规则，之后跳转到对应的<code>next</code>状态：</p>
+
+<pre class="prettyprint">
+this.$rules = {
+    "start" : [
+        {
+            token: &lt;token&gt;, // class名称
+            regex: &lt;regex&gt;, // 正则匹配串
+            next:  &lt;next&gt;   // 下个状态
+        }
+    ]
+};
+</pre>
+
+<p>相比普通的词法分析器，一个状态就相当于一个小的隔离环境，在这个隔离环境中在做匹配的时候难度要小很多，你只需要考虑在该状态内可能出现的TOKEN即可：</p>
+
+<p><img src="http://7xiz10.com1.z0.glb.clouddn.com/ACE-2.PNG" alt="" /></p>
+
+<p>另外比较好用的几点：</p>
+
+<ol>
+  <li>设置<strong>merge:true</strong>来合并连续的token</li>
+  <li>利用<strong>createKeywordMapper</strong>来简化关键字列表的编写</li>
+</ol>
+
+<p>那么简单来做个drools高亮的Mode如下：</p>
+
+<pre class="prettyprint">
+ace.define("ace/mode/drools_highlight_rules", function(require, exports, module) {
+    "use strict";
+    var oop = require("../lib/oop");
+    var TextHighlightRules = require("./text_highlight_rules").TextHighlightRules;
+    var DroolsHighlightRules = function(){
+        var keywordMapper = this.createKeywordMapper({
+            "keyword":
+                "when|then|rule|end|salience"
+        }, "identifier");
+        this.$rules = {
+            "start" :[{
+                token : keywordMapper,
+                regex : "[a-zA-Z_$][a-zA-Z0-9_$]*\\b"
+            }]
+        };
+    };
+    oop.inherits(DroolsHighlightRules, TextHighlightRules);
+    exports.DroolsHighlightRules = DroolsHighlightRules;
+});
+ 
+ace.define("ace/mode/drools", function(require, exports, module) {
+    "use strict";
+    var oop = require("../lib/oop");
+    var TextMode = require("./text").Mode;
+    var DroolsHighlightRules = require("./drools_highlight_rules").DroolsHighlightRules;
+    var DroolsMode = function(){
+        this.HighlightRules = DroolsHighlightRules;
+    };
+    oop.inherits(DroolsMode, TextMode);
+    (function() {
+        this.$id = "ace/mode/drools"
+    }).call(DroolsMode.prototype),
+    exports.Mode = DroolsMode;
+});
+</pre>
+
+<p>效果如下：</p>
+
+<p><img src="http://7xiz10.com1.z0.glb.clouddn.com/ACE-3.PNG" alt="" /></p>
+
+<p>更多的功能可以在<a href="https://ace.c9.io/#nav=higlighter">这里</a>看到，不过貌似很不稳定- -！</p>
+
+<h2 id="section-2">缩进</h2>
+
+<p>ACE为MODE扩展缩进预留了接口，你只需要实现<strong>getNextLineIndent</strong>方法即可，会将其结果自动添加到新行的开头，参数含义为：</p>
+
+<ol>
+  <li>state：状态</li>
+  <li>line：当前行内容</li>
+  <li>tab：缩进符号</li>
+</ol>
+
+<p>来看个例子（如果是{[(结尾的，那么下一行的缩进加一）：</p>
+
+<pre class="prettyprint">
+(function(){
+    this.getNextLineIndent = function(state, line, tab) {
+        var indent = this.$getIndent(line);
+        if (state == "start") {
+            var match = line.match(/^.*[\{\(\[]\s*$/); // 如果是{[(结尾的，那么下一行的缩进加一
+            if (match) {
+                indent += tab;
+            }
+        }
+        return indent;
+    };
+}).call(DroolsMode.prototype);
+</pre>
+
+<p>对大部分的缩进需求这种方式完全能搞定了。</p>
+
+<h2 id="section-3">折叠</h2>
+
+<p>折叠的实现涉及到范围对象new Range(Number startRow, Number startColumn, Number endRow, Number endColumn)：</p>
+
+<ol>
+  <li>startRow：开始行</li>
+  <li>startColumn：开始列</li>
+  <li>endRow：结束行</li>
+  <li>endColumn：结束列</li>
+</ol>
+
+<p>实现折叠需要提供两个方法：</p>
+
+<ol>
+  <li><strong>getFoldWidget</strong>：折叠开始的地方</li>
+  <li><strong>getFoldWidgetRange</strong>：需要折叠的范围</li>
+</ol>
+
+<p>下面我们为drools实现一个简单的折叠逻辑，也就是将<strong>rule</strong>与<strong>end</strong>之间的部分能够折叠隐藏：</p>
+
+<pre class="prettyprint">
+ace.define("ace/mode/folding/drools_fold", function(require, exports, module) {
+    "use strict";
+    var Range = require("../../range").Range;
+    var FoldMode = exports.FoldMode = function() {};
+    (function() {
+        this.getFoldWidget = function(session, foldStyle, row) {
+            var line = session.getLine(row);
+            if (line == "rule")
+                return "start";
+            return "";
+        };
+        this.getFoldWidgetRange = function(session, foldStyle, row) {
+            var startRow = row, startColumn = 4;
+            var endRow = row+1, endColumn = 3;
+            while(session.getLine(endRow) != "end"){
+                endRow += 1;
+            }
+            return new Range(startRow, startColumn, endRow, endColumn);
+        };
+    }).call(FoldMode.prototype);
+});
+</pre>
+
+<p>然后需要在drools的Mode中设置<strong>foldingRules</strong>：</p>
+
+<pre class="prettyprint">
+var DroolsFoldMode = require("ace/mode/folding/drools_fold").FoldMode;
+var DroolsMode = function(){
+    this.foldingRules = new DroolsFoldMode();
+};
+</pre>
+
+<p>在ACE中提供了一个基本的折叠块：<strong>fold_mode</strong>，用来折叠相同的缩进部分，如果需要直接集成即可！</p>
+
+<h2 id="section-4">总结</h2>
+
+<p>实现了这三部分功能已经可以大幅度提升简单配置页面的体验，但是作为一个在线的IDE才仅仅是万里长征的第一步！</p>
 
 			<!-- 评论组件 -->
 			<div id="disqus_thread"/>
