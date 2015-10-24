@@ -5,9 +5,41 @@ title: ABOUT
 
 ---
 
-基本上当下我们所做的事情，一辈子只会做这么一次，所以，就尽全力把它做好:)
+It was the best of times
 
-在这个博客中记录下一些思考！如果有帮到你并且你想感谢我，就请我喝一杯零度可乐（2.5￥）吧~
+it was the worst of times
+
+it was the age of wisdom
+
+it was the age of foolishness
+
+it was the epoch of belief
+
+it was the epoch of incredulity
+
+it was the season of Light
+
+it was the season of Darkness
+
+it was the spring of hope
+
+it was the winter of despair
+
+we had everything before us
+
+we had nothing before us
+
+we were all going direct to Heaven
+
+we were all going direct the other way--in short
+
+the period was so. far like the present period
+
+that some of its noisiest authorities insisted on its being received
+
+for good or for evil
+
+in the superlative degree of comparison only
 
 ![](http://7xiz10.com1.z0.glb.clouddn.com/ 微信收钱.jpg)
 
