@@ -5,41 +5,25 @@ title: ABOUT
 
 ---
 
-It was the best of times
+如果发出声音是危险的
 
-it was the worst of times
+那就保持沉默
 
-it was the age of wisdom
+如果自觉无力发光
 
-it was the age of foolishness
+那就别去照亮别人
 
-it was the epoch of belief
+但是
 
-it was the epoch of incredulity
+不要习惯了黑暗就为黑暗辩护
 
-it was the season of Light
+不要为自己的苟且而得意洋洋
 
-it was the season of Darkness
+不要嘲讽那些比自己更勇敢、更有热量的人们
 
-it was the spring of hope
+可以卑微如尘土
 
-it was the winter of despair
-
-we had everything before us
-
-we had nothing before us
-
-we were all going direct to Heaven
-
-we were all going direct the other way--in short
-
-the period was so. far like the present period
-
-that some of its noisiest authorities insisted on its being received
-
-for good or for evil
-
-in the superlative degree of comparison only
+不可扭曲如蛆虫
 
 ![](http://7xiz10.com1.z0.glb.clouddn.com/ 微信收钱.jpg)
 

@@ -56,7 +56,7 @@
 
 /* Put a border around prettyprinted code snippets. */
 pre.prettyprint {
-  background-color: #cfc;
+  background-color: #fff;
   padding: 10px;
   font-family: Menlo,Monaco,"Andale Mono","lucida console","Courier New",monospace !important;
   font-size:13px;
