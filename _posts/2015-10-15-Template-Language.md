@@ -277,14 +277,31 @@ func main(){
 
 用过**MarkDown**或者**Jade**或者**Python**的同学可能对这种方式已经比较熟悉了，都没用过的话可以对比一下几种层级表示方式：
 
-1. 缩进
-2. 大括号
-3. END表示结束符
+1. 缩进式
+2. 大括号式
+3. END结束符式
 
+使用组件时需要设置一些属性来控制其行为：
 
+<pre class="prettyprint">
+@xxxxx(name="TEST" style={{color:"white"}} list=ajax("/url.do"))
+</pre>
 
+另外如果可以在模板中直接编写JavaScript代码就更灵活了：
 
+<pre class="prettyprint">
+@xxxxx
+    @on(init)
+        this.name = "TEST";
+        this.style = {color:"white"};
+        ....
+</pre>
 
+组件之间通过消息来通信，那么问题来了：
+
+1. 来自哪里
+2. 去往何处
+3. 消息体里面应该有什么
 
 
 
