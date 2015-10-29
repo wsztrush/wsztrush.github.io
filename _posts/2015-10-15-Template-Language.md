@@ -94,9 +94,9 @@ My name: &lt;input type="text" ng-model="yourname" placeholder="World"&gt;
 <pre class="prettyprint">
 &lt;ul&gt;
     &lt;li ng-repeat="o in question.options"&gt;
-        &lt;b&gt;{{$index+1}}.&lt;/b&gt;
+        &lt;b&gt;\{{$index+1\}}.&lt;/b&gt;
         &lt;input type="radio" name="optcheck" /&gt;
-        {{o.content}}
+        \{{o.content\}}
     &lt;/li&gt;
 &lt;/ul&gt;
 </pre>
@@ -105,7 +105,7 @@ My name: &lt;input type="text" ng-model="yourname" placeholder="World"&gt;
 
 > 之前的模板都是静态的，像一锤子买卖，而Angular的模板是动态的！
 
-刚开始接触前端的时候也想过这个问题，但是实在没有想出来应该如何定义这样的模板语言，而Angular则已经实现了，但是代价就是上手成本高：
+刚开始接触前端的时候也想过这个问题，但是实在没有想出来应该如何定义这样的模板语言，而Angular则已经实现了，但是代价就是限制多、门槛高：
 
 1. 模块
 2. 控制器
@@ -114,7 +114,7 @@ My name: &lt;input type="text" ng-model="yourname" placeholder="World"&gt;
 5. 作用域
 6. ...
 
-可能大家不明白为什么上手成本高：当你在适合Angular的例子上操作的时候上手非常容易，但是实现复杂的功能需要熟悉很多不那么直观的概念。还有一点比较不喜欢的是：
+可能大家不明白为什么门槛高：当你在适合Angular的例子上操作的时候上手非常容易，但是实现复杂的功能需要熟悉很多不那么直观的概念。还有一点比较不喜欢的是：
 
 > 将展示和数据完全分开，甚至模板与展示相关的判断逻辑也分开！
 
@@ -124,17 +124,9 @@ My name: &lt;input type="text" ng-model="yourname" placeholder="World"&gt;
 
 在页面复杂的时候双向数据绑定的行为可能是预测不出来（这点保留意见，没有深入玩过）。
 
-参考资料：
-
-1. [走进AngularJs(一)angular基本概念的认识与实战](http://www.cnblogs.com/lvdabao/p/AngularJs.html?utm_source=tuicool&utm_medium=referral#myexample)
-2. [走进AngularJs(二) ng模板中常用指令的使用方式](http://www.cnblogs.com/lvdabao/p/3379659.html)
-3. [2015年的JavaScript：Angular之类的框架将被库取代](http://ourjs.com/detail/5483d2d10dad0fbb6d000014)
-4. [AngularJS 作用域与数据绑定机制](https://www.ibm.com/developerworks/cn/opensource/os-cn-AngularJS/)
-5. [我是怎么从顾虑到热爱ReactJS的(与AngularJS经典MVC数据绑定的对比)](http://ourjs.com/detail/5567c046d11a73aa4d000003)
-
 ## React
 
-上面已经有文章把它与Angular进行了比较，那么现在我们来近距离看看最近红得发紫的React，第一关是**JSX**语法：
+接着我们来看下最近红得发紫的React，网上已经有很多它与Angular的比较，有些还是有点道理的。使用React的第一关是**JSX**语法：
 
 <pre class="prettyprint">
 var root =(
@@ -158,7 +150,7 @@ var root = React.createElement(
 
 当然你也可以在[babel在线工具](https://babeljs.io/repl/)来体验这种语法。
 
-看起来很美好，但实际上也不能太任性：在模板中也仅仅是能取数据而已，控制语句`for`等不能使用（多用babel玩一下就能体会到从JSX到JS之间的转换有多简单）：
+看起来很美好，但实际上也不能太任性：模板的作用仅在于**映射**！控制语句`for`等是不能使用（多用babel玩一下就能体会到从JSX到JS之间的转换有多简单）：
 
 > 思路有点像Angular那样去扩展HTML原有的东西（Angular扩展的是Attribute，而React进一步扩展了Element）！
 
@@ -185,71 +177,11 @@ Unmounting|已移出真实 DOM
 componentWillReceiveProps|已加载组件收到新的参数时调用
 shouldComponentUpdate|组件判断是否重新渲染时调用
 
-大家都在讲React很快、非常快，这就是第三关了VirtualDOM：真实的DOM操作代价太大，在`render`会先操作内存中的DOM结构，然后最小化反映到真正的DOM上（DomDiff算法可以在[这里](https://github.com/migijs/migi/wiki/%E5%9F%BA%E4%BA%8Evd%E5%92%8Cvr%E7%9A%84DomDiff%E7%AE%97%E6%B3%95)感受下）。
-
-参考资料：
-
-1. [深入浅出React（三）：理解JSX和组件](http://www.infoq.com/cn/articles/react-jsx-and-component?utm_campaign=rightbar_v2&utm_source=infoq&utm_medium=articles_link&utm_content=link_text)
-2. [深入浅出React（四）：虚拟DOM Diff算法解析](http://www.infoq.com/cn/articles/react-dom-diff)
-3. [组件的详细说明和生命周期](http://reactjs.cn/react/docs/component-specs.html)
-4. [react.js的的diff算法真的很强大](http://zjumty.iteye.com/blog/2207030)
-5. [React 的 diff 算法](http://segmentfault.com/a/1190000000606216)
-6. [React 入门实例教程](http://www.ruanyifeng.com/blog/2015/03/react.html)
-7. [React官网](http://facebook.github.io/react/index.html)
+大家都在讲React很快、非常快，这就是第三关的**虚拟DOM**：真实的DOM操作代价太大，在`render`会先操作内存中的DOM结构，然后最小化反映到真正的DOM上（DomDiff算法可以在[这里](https://github.com/migijs/migi/wiki/%E5%9F%BA%E4%BA%8Evd%E5%92%8Cvr%E7%9A%84DomDiff%E7%AE%97%E6%B3%95)感受下）。
 
 ## Noob Template
 
-写了这么多年的代码，最持久的一个“口号”就是：
-
-> 高内聚、低耦合
-
-先来看低耦合，在用Java写代码的时候大家已经习惯用**共享内存**的方式来实现多线程间的通信（就不举栗子了），另外一种思路是：
-
-> 用通信的方式来共享内存
-
-在古老的[Erlang](http://svn.liancheng.info/cpie-cn/trunk/.build/html/part-i/chapter-5.html)语言中是这样的：
-
-<pre class="prettyprint">
-receive
-    Message1 [when Guard1] -&gt;
-        Actions1 ;
-    Message2 [when Guard2] -&gt;
-        Actions2 ;
-    ...
-end
-</pre>
-
-还有比较新的[Golang](http://www.cnblogs.com/hustcat/p/4003729.html)中的channel：
-
-<pre class="prettyprint">
-func Producer (queue chan&lt;- int){
-    for i:= 0; i &lt; 10; i++ {
-        queue &lt;- i
-    }
-}
-func Consumer( queue &lt;-chan int){
-    for i :=0; i &lt; 10; i++{
-        v := &lt;- queue
-            fmt.Println("receive:", v)
-    }
-}
-func main(){
-    queue := make(chan int, 1)
-    go Producer(queue)
-    go Consumer(queue)
-    time.Sleep(1e9) //让Producer与Consumer完成
-}
-</pre>
-
-而回头再开看看浏览器中JS的执行方式：
-
-![](http://)
-
-几乎所有的东西都是`事件`->`回调函数`这种模式，而恰好你也玩过C里面的`epoll`的话也许会觉得这种方式是多么高效，那么：
-
-> 各个组件之间的关系是可以互相发送消息，在组件收到消息的时候执行内部操作！
-
-可能有人会纠结`接口`和`消息`这两种方式的区别，我总感觉他们之间没啥区别.. 低耦合看完了再回过头来看如何高内聚：在上面我们看到的各种办法把逻辑与HTML代码分开，如果是JS的话：
+在上面我们看到的各种办法把逻辑与HTML代码分开，如果是JS的话：
 
 > HTML的`<`和JavaScript的`{`其实已经天然地起到了这个作用！
 
@@ -297,17 +229,31 @@ func main(){
         ....
 </pre>
 
-组件之间通过消息来通信，那么问题来了：
+然后结合React的精华：
 
-1. 来自哪里
-2. 去往何处
-3. 消息体里面应该有什么
+> 最小化DOM操作（用这个模式实现起来好像不怎么方便）
+
+那么这样实现的模板怎么样？
+
+## 总结
+
+在后端渲染页面来展示的方式有点像漫画：看完一页翻一页；每次改变数据刷一次页面有点像动画：一帧一帧地动。
 
 
+参考资料：
 
-
-
-
+1. [走进AngularJs(一)angular基本概念的认识与实战](http://www.cnblogs.com/lvdabao/p/AngularJs.html?utm_source=tuicool&utm_medium=referral#myexample)
+2. [走进AngularJs(二) ng模板中常用指令的使用方式](http://www.cnblogs.com/lvdabao/p/3379659.html)
+3. [2015年的JavaScript：Angular之类的框架将被库取代](http://ourjs.com/detail/5483d2d10dad0fbb6d000014)
+4. [AngularJS 作用域与数据绑定机制](https://www.ibm.com/developerworks/cn/opensource/os-cn-AngularJS/)
+5. [我是怎么从顾虑到热爱ReactJS的(与AngularJS经典MVC数据绑定的对比)](http://ourjs.com/detail/5567c046d11a73aa4d000003)
+1. [深入浅出React（三）：理解JSX和组件](http://www.infoq.com/cn/articles/react-jsx-and-component?utm_campaign=rightbar_v2&utm_source=infoq&utm_medium=articles_link&utm_content=link_text)
+2. [深入浅出React（四）：虚拟DOM Diff算法解析](http://www.infoq.com/cn/articles/react-dom-diff)
+3. [组件的详细说明和生命周期](http://reactjs.cn/react/docs/component-specs.html)
+4. [react.js的的diff算法真的很强大](http://zjumty.iteye.com/blog/2207030)
+5. [React 的 diff 算法](http://segmentfault.com/a/1190000000606216)
+6. [React 入门实例教程](http://www.ruanyifeng.com/blog/2015/03/react.html)
+7. [React官网](http://facebook.github.io/react/index.html)
 
 
 
