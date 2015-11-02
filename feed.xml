@@ -5,8 +5,8 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 28 Oct 2015 23:24:02 +0800</pubDate>
-    <lastBuildDate>Wed, 28 Oct 2015 23:24:02 +0800</lastBuildDate>
+    <pubDate>Mon, 02 Nov 2015 22:39:51 +0800</pubDate>
+    <lastBuildDate>Mon, 02 Nov 2015 22:39:51 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
@@ -339,9 +339,9 @@ My name: &amp;lt;input type=&quot;text&quot; ng-model=&quot;yourname&quot; place
 &lt;pre class=&quot;prettyprint&quot;&gt;
 &amp;lt;ul&amp;gt;
     &amp;lt;li ng-repeat=&quot;o in question.options&quot;&amp;gt;
-        &amp;lt;b&amp;gt;.&amp;lt;/b&amp;gt;
+        &amp;lt;b&amp;gt;\.&amp;lt;/b&amp;gt;
         &amp;lt;input type=&quot;radio&quot; name=&quot;optcheck&quot; /&amp;gt;
-        
+        \
     &amp;lt;/li&amp;gt;
 &amp;lt;/ul&amp;gt;
 &lt;/pre&gt;
@@ -352,7 +352,7 @@ My name: &amp;lt;input type=&quot;text&quot; ng-model=&quot;yourname&quot; place
   &lt;p&gt;之前的模板都是静态的，像一锤子买卖，而Angular的模板是动态的！&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;刚开始接触前端的时候也想过这个问题，但是实在没有想出来应该如何定义这样的模板语言，而Angular则已经实现了，但是代价就是上手成本高：&lt;/p&gt;
+&lt;p&gt;刚开始接触前端的时候也想过这个问题，但是实在没有想出来应该如何定义这样的模板语言，而Angular则已经实现了，但是代价就是限制多、门槛高：&lt;/p&gt;
 
 &lt;ol&gt;
   &lt;li&gt;模块&lt;/li&gt;
@@ -363,7 +363,7 @@ My name: &amp;lt;input type=&quot;text&quot; ng-model=&quot;yourname&quot; place
   &lt;li&gt;…&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;p&gt;可能大家不明白为什么上手成本高：当你在适合Angular的例子上操作的时候上手非常容易，但是实现复杂的功能需要熟悉很多不那么直观的概念。还有一点比较不喜欢的是：&lt;/p&gt;
+&lt;p&gt;可能大家不明白为什么门槛高：当你在适合Angular的例子上操作的时候上手非常容易，但是实现复杂的功能需要熟悉很多不那么直观的概念。还有一点比较不喜欢的是：&lt;/p&gt;
 
 &lt;blockquote&gt;
   &lt;p&gt;将展示和数据完全分开，甚至模板与展示相关的判断逻辑也分开！&lt;/p&gt;
@@ -375,19 +375,9 @@ My name: &amp;lt;input type=&quot;text&quot; ng-model=&quot;yourname&quot; place
 
 &lt;p&gt;在页面复杂的时候双向数据绑定的行为可能是预测不出来（这点保留意见，没有深入玩过）。&lt;/p&gt;
 
-&lt;p&gt;参考资料：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;&lt;a href=&quot;http://www.cnblogs.com/lvdabao/p/AngularJs.html?utm_source=tuicool&amp;amp;utm_medium=referral#myexample&quot;&gt;走进AngularJs(一)angular基本概念的认识与实战&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://www.cnblogs.com/lvdabao/p/3379659.html&quot;&gt;走进AngularJs(二) ng模板中常用指令的使用方式&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://ourjs.com/detail/5483d2d10dad0fbb6d000014&quot;&gt;2015年的JavaScript：Angular之类的框架将被库取代&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://www.ibm.com/developerworks/cn/opensource/os-cn-AngularJS/&quot;&gt;AngularJS 作用域与数据绑定机制&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://ourjs.com/detail/5567c046d11a73aa4d000003&quot;&gt;我是怎么从顾虑到热爱ReactJS的(与AngularJS经典MVC数据绑定的对比)&lt;/a&gt;&lt;/li&gt;
-&lt;/ol&gt;
-
 &lt;h2 id=&quot;react&quot;&gt;React&lt;/h2&gt;
 
-&lt;p&gt;上面已经有文章把它与Angular进行了比较，那么现在我们来近距离看看最近红得发紫的React，第一关是&lt;strong&gt;JSX&lt;/strong&gt;语法：&lt;/p&gt;
+&lt;p&gt;接着我们来看下最近红得发紫的React，网上已经有很多它与Angular的比较，有些还是有点道理的。使用React的第一关是&lt;strong&gt;JSX&lt;/strong&gt;语法：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 var root =(
@@ -411,7 +401,7 @@ var root = React.createElement(
 
 &lt;p&gt;当然你也可以在&lt;a href=&quot;https://babeljs.io/repl/&quot;&gt;babel在线工具&lt;/a&gt;来体验这种语法。&lt;/p&gt;
 
-&lt;p&gt;看起来很美好，但实际上也不能太任性：在模板中也仅仅是能取数据而已，控制语句&lt;code&gt;for&lt;/code&gt;等不能使用（多用babel玩一下就能体会到从JSX到JS之间的转换有多简单）：&lt;/p&gt;
+&lt;p&gt;看起来很美好，但实际上也不能太任性：模板的作用仅在于&lt;strong&gt;映射&lt;/strong&gt;！控制语句&lt;code&gt;for&lt;/code&gt;等是不能使用（多用babel玩一下就能体会到从JSX到JS之间的转换有多简单）：&lt;/p&gt;
 
 &lt;blockquote&gt;
   &lt;p&gt;思路有点像Angular那样去扩展HTML原有的东西（Angular扩展的是Attribute，而React进一步扩展了Element）！&lt;/p&gt;
@@ -473,79 +463,11 @@ var root = React.createElement(
   &lt;/tbody&gt;
 &lt;/table&gt;
 
-&lt;p&gt;大家都在讲React很快、非常快，这就是第三关了VirtualDOM：真实的DOM操作代价太大，在&lt;code&gt;render&lt;/code&gt;会先操作内存中的DOM结构，然后最小化反映到真正的DOM上（DomDiff算法可以在&lt;a href=&quot;https://github.com/migijs/migi/wiki/%E5%9F%BA%E4%BA%8Evd%E5%92%8Cvr%E7%9A%84DomDiff%E7%AE%97%E6%B3%95&quot;&gt;这里&lt;/a&gt;感受下）。&lt;/p&gt;
-
-&lt;p&gt;参考资料：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;&lt;a href=&quot;http://www.infoq.com/cn/articles/react-jsx-and-component?utm_campaign=rightbar_v2&amp;amp;utm_source=infoq&amp;amp;utm_medium=articles_link&amp;amp;utm_content=link_text&quot;&gt;深入浅出React（三）：理解JSX和组件&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://www.infoq.com/cn/articles/react-dom-diff&quot;&gt;深入浅出React（四）：虚拟DOM Diff算法解析&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://reactjs.cn/react/docs/component-specs.html&quot;&gt;组件的详细说明和生命周期&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://zjumty.iteye.com/blog/2207030&quot;&gt;react.js的的diff算法真的很强大&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://segmentfault.com/a/1190000000606216&quot;&gt;React 的 diff 算法&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://www.ruanyifeng.com/blog/2015/03/react.html&quot;&gt;React 入门实例教程&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://facebook.github.io/react/index.html&quot;&gt;React官网&lt;/a&gt;&lt;/li&gt;
-&lt;/ol&gt;
+&lt;p&gt;大家都在讲React很快、非常快，这就是第三关的&lt;strong&gt;虚拟DOM&lt;/strong&gt;：真实的DOM操作代价太大，在&lt;code&gt;render&lt;/code&gt;会先操作内存中的DOM结构，然后最小化反映到真正的DOM上（DomDiff算法可以在&lt;a href=&quot;https://github.com/migijs/migi/wiki/%E5%9F%BA%E4%BA%8Evd%E5%92%8Cvr%E7%9A%84DomDiff%E7%AE%97%E6%B3%95&quot;&gt;这里&lt;/a&gt;感受下）。&lt;/p&gt;
 
 &lt;h2 id=&quot;noob-template&quot;&gt;Noob Template&lt;/h2&gt;
 
-&lt;p&gt;写了这么多年的代码，最持久的一个“口号”就是：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;高内聚、低耦合&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;先来看低耦合，在用Java写代码的时候大家已经习惯用&lt;strong&gt;共享内存&lt;/strong&gt;的方式来实现多线程间的通信（就不举栗子了），另外一种思路是：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;用通信的方式来共享内存&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;在古老的&lt;a href=&quot;http://svn.liancheng.info/cpie-cn/trunk/.build/html/part-i/chapter-5.html&quot;&gt;Erlang&lt;/a&gt;语言中是这样的：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-receive
-    Message1 [when Guard1] -&amp;gt;
-        Actions1 ;
-    Message2 [when Guard2] -&amp;gt;
-        Actions2 ;
-    ...
-end
-&lt;/pre&gt;
-
-&lt;p&gt;还有比较新的&lt;a href=&quot;http://www.cnblogs.com/hustcat/p/4003729.html&quot;&gt;Golang&lt;/a&gt;中的channel：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-func Producer (queue chan&amp;lt;- int){
-    for i:= 0; i &amp;lt; 10; i++ {
-        queue &amp;lt;- i
-    }
-}
-func Consumer( queue &amp;lt;-chan int){
-    for i :=0; i &amp;lt; 10; i++{
-        v := &amp;lt;- queue
-            fmt.Println(&quot;receive:&quot;, v)
-    }
-}
-func main(){
-    queue := make(chan int, 1)
-    go Producer(queue)
-    go Consumer(queue)
-    time.Sleep(1e9) //让Producer与Consumer完成
-}
-&lt;/pre&gt;
-
-&lt;p&gt;而回头再开看看浏览器中JS的执行方式：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;几乎所有的东西都是&lt;code&gt;事件&lt;/code&gt;-&amp;gt;&lt;code&gt;回调函数&lt;/code&gt;这种模式，而恰好你也玩过C里面的&lt;code&gt;epoll&lt;/code&gt;的话也许会觉得这种方式是多么高效，那么：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;各个组件之间的关系是可以互相发送消息，在组件收到消息的时候执行内部操作！&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;可能有人会纠结&lt;code&gt;接口&lt;/code&gt;和&lt;code&gt;消息&lt;/code&gt;这两种方式的区别，我总感觉他们之间没啥区别.. 低耦合看完了再回过头来看如何高内聚：在上面我们看到的各种办法把逻辑与HTML代码分开，如果是JS的话：&lt;/p&gt;
+&lt;p&gt;在上面我们看到的各种办法把逻辑与HTML代码分开，如果是JS的话：&lt;/p&gt;
 
 &lt;blockquote&gt;
   &lt;p&gt;HTML的&lt;code&gt;&amp;lt;&lt;/code&gt;和JavaScript的&lt;code&gt;{&lt;/code&gt;其实已经天然地起到了这个作用！&lt;/p&gt;
@@ -576,15 +498,285 @@ func main(){
 &lt;p&gt;用过&lt;strong&gt;MarkDown&lt;/strong&gt;或者&lt;strong&gt;Jade&lt;/strong&gt;或者&lt;strong&gt;Python&lt;/strong&gt;的同学可能对这种方式已经比较熟悉了，都没用过的话可以对比一下几种层级表示方式：&lt;/p&gt;
 
 &lt;ol&gt;
-  &lt;li&gt;缩进&lt;/li&gt;
-  &lt;li&gt;大括号&lt;/li&gt;
-  &lt;li&gt;END表示结束符&lt;/li&gt;
+  &lt;li&gt;缩进式&lt;/li&gt;
+  &lt;li&gt;大括号式&lt;/li&gt;
+  &lt;li&gt;END结束符式&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;使用组件时需要设置一些属性来控制其行为：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+@xxxxx(name=&quot;TEST&quot; style= list=ajax(&quot;/url.do&quot;))
+&lt;/pre&gt;
+
+&lt;p&gt;另外如果可以在模板中直接编写JavaScript代码就更灵活了：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+@xxxxx
+    @on(init)
+        this.name = &quot;TEST&quot;;
+        this.style = {color:&quot;white&quot;};
+        ....
+&lt;/pre&gt;
+
+&lt;p&gt;然后结合React的精华：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;最小化DOM操作（用这个模式实现起来好像不怎么方便）&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;那么这样实现的模板怎么样？&lt;/p&gt;
+
+&lt;h2 id=&quot;section&quot;&gt;总结&lt;/h2&gt;
+
+&lt;p&gt;在后端渲染页面来展示的方式有点像漫画：看完一页翻一页；每次改变数据刷一次页面有点像动画：一帧一帧地动。&lt;/p&gt;
+
+&lt;p&gt;参考资料：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.cnblogs.com/lvdabao/p/AngularJs.html?utm_source=tuicool&amp;amp;utm_medium=referral#myexample&quot;&gt;走进AngularJs(一)angular基本概念的认识与实战&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.cnblogs.com/lvdabao/p/3379659.html&quot;&gt;走进AngularJs(二) ng模板中常用指令的使用方式&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://ourjs.com/detail/5483d2d10dad0fbb6d000014&quot;&gt;2015年的JavaScript：Angular之类的框架将被库取代&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.ibm.com/developerworks/cn/opensource/os-cn-AngularJS/&quot;&gt;AngularJS 作用域与数据绑定机制&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://ourjs.com/detail/5567c046d11a73aa4d000003&quot;&gt;我是怎么从顾虑到热爱ReactJS的(与AngularJS经典MVC数据绑定的对比)&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.infoq.com/cn/articles/react-jsx-and-component?utm_campaign=rightbar_v2&amp;amp;utm_source=infoq&amp;amp;utm_medium=articles_link&amp;amp;utm_content=link_text&quot;&gt;深入浅出React（三）：理解JSX和组件&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.infoq.com/cn/articles/react-dom-diff&quot;&gt;深入浅出React（四）：虚拟DOM Diff算法解析&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://reactjs.cn/react/docs/component-specs.html&quot;&gt;组件的详细说明和生命周期&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://zjumty.iteye.com/blog/2207030&quot;&gt;react.js的的diff算法真的很强大&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://segmentfault.com/a/1190000000606216&quot;&gt;React 的 diff 算法&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.ruanyifeng.com/blog/2015/03/react.html&quot;&gt;React 入门实例教程&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://facebook.github.io/react/index.html&quot;&gt;React官网&lt;/a&gt;&lt;/li&gt;
 &lt;/ol&gt;
 
 </description>
         <pubDate>Thu, 15 Oct 2015 00:00:00 +0800</pubDate>
         <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/10/15/Template-Language.html</link>
         <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/10/15/Template-Language.html</guid>
+        
+        
+        <category>编程技术</category>
+        
+      </item>
+    
+      <item>
+        <title>组装页面</title>
+        <description>&lt;p&gt;在码农中最持久的一个口号就是：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;低耦合、高内聚&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;先来看低耦合，在用Java写代码的时候大家已经习惯用&lt;strong&gt;共享内存&lt;/strong&gt;的方式来实现多线程间的通信（就不举栗子了），有点问题的时候排查起来比较头疼，而另外一种思路是：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;用通信的方式来共享内存&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;比如在古老的&lt;a href=&quot;http://svn.liancheng.info/cpie-cn/trunk/.build/html/part-i/chapter-5.html&quot;&gt;Erlang&lt;/a&gt;中是这样的：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+receive
+    Message1 [when Guard1] -&amp;gt;
+        Actions1 ;
+    Message2 [when Guard2] -&amp;gt;
+        Actions2 ;
+    ...
+end
+&lt;/pre&gt;
+
+&lt;p&gt;而比较新的&lt;a href=&quot;http://www.cnblogs.com/hustcat/p/4003729.html&quot;&gt;Golang&lt;/a&gt;中是这样的：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+func Producer (queue chan&amp;lt;- int){
+    for i:= 0; i &amp;lt; 10; i++ {
+        queue &amp;lt;- i
+    }
+}
+func Consumer( queue &amp;lt;-chan int){
+    for i :=0; i &amp;lt; 10; i++{
+        v := &amp;lt;- queue
+            fmt.Println(&quot;receive:&quot;, v)
+    }
+}
+func main(){
+    queue := make(chan int, 1)
+    go Producer(queue)
+    go Consumer(queue)
+    time.Sleep(1e9) //让Producer与Consumer完成
+}
+&lt;/pre&gt;
+
+&lt;p&gt;在HTML中也有点像这种消息驱动的方式，页面上的每个操作都会转换成事件传递给JavaScript进行处理，在JavaScript中的事件处理方式如下（单线程）：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Build-Up-Page.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;在可视化编程中这种方式还是挺给力的，在使用一个组件时，需要根据它的事件来让用户去扩展（写代码）：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+@input(name = &quot;abc&quot;)
+    @on(click)
+        ......
+    @on(change)
+        ......
+&lt;/pre&gt;
+
+&lt;p&gt;编写代码的时候需要关注两个量：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;strong&gt;event&lt;/strong&gt;：事件对象&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;this&lt;/strong&gt;：订阅了事件的组件，也就是当前组件&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;组件可以监听另一个组件的事件，这样两个组件就可以实现交互（和HTML的区别是动作与展示结合在一起）：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+@input(name = &quot;abc&quot;)
+    .....
+@table(...)
+    @target(abc)
+        @on(click)
+            .....
+    @on(target = &quot;abc&quot; type=&quot;click&quot;)
+        ....
+&lt;/pre&gt;
+
+&lt;p&gt;在时间对象中包含的字段有：&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;字段&lt;/th&gt;
+      &lt;th&gt;作用&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;target&lt;/td&gt;
+      &lt;td&gt;产生事件的组件名称&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;type&lt;/td&gt;
+      &lt;td&gt;事件类型&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;data&lt;/td&gt;
+      &lt;td&gt;数据&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;在实现时需要三个操作：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;绑定&lt;/li&gt;
+  &lt;li&gt;取消绑定&lt;/li&gt;
+  &lt;li&gt;发送&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;在组件从页面上消失的时候是需要取消绑定的，不然可能会有问题，在配置完成页面后组件之间的关系如下：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Build-Up-Page-1.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;在接收到事件的时候可以做任何你想做的事情，比如更新一下页面的展示。因为组件已经封装的比较彻底了，暴露给用户的只有数据，那么只能通过更新数据来更新展示：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+@table
+    @on(click)
+        setState({list:[1,2,3,4]});
+&lt;/pre&gt;
+
+&lt;p&gt;如果对应的模板为：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+@render
+    for(var i in list){
+        &amp;lt;li&amp;gt;${i}&amp;lt;/li&amp;gt;
+    }
+&lt;/pre&gt;
+
+&lt;p&gt;那么得到的HTML的代码如下：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+&amp;lt;li&amp;gt;1&amp;lt;/li&amp;gt;
+&amp;lt;li&amp;gt;2&amp;lt;/li&amp;gt;
+&amp;lt;li&amp;gt;3&amp;lt;/li&amp;gt;
+&amp;lt;li&amp;gt;4&amp;lt;/li&amp;gt;
+&lt;/pre&gt;
+
+&lt;p&gt;在更新展示时如果直接用&lt;a href=&quot;http://www.w3school.com.cn/jsref/prop_tablerow_innerhtml.asp&quot;&gt;innerHTML&lt;/a&gt;或者&lt;a href=&quot;https://developer.mozilla.org/zh-CN/docs/Web/API/Element/outerHTML&quot;&gt;outerHTML&lt;/a&gt;实现起来比较简单，但问题是体验比较差：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;用户的输入（或者列表的选择）都会消失，感觉有点像区域被刷新了一下。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;另外在全部更新的情况下要比逐个更新元素要快一些，但是很多情况下我们只需要更新页面上的一小部分，那么就可以考虑用JavaScript原生的DOM操作来搞：&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;操作&lt;/th&gt;
+      &lt;th&gt;作用&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;a href=&quot;https://developer.mozilla.org/zh-CN/docs/Web/API/Document/createElement&quot;&gt;createElement&lt;/a&gt;&lt;/td&gt;
+      &lt;td&gt;创建HTML元素&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;a href=&quot;https://developer.mozilla.org/zh-CN/docs/Web/API/Node/appendChild&quot;&gt;appendChild&lt;/a&gt;&lt;/td&gt;
+      &lt;td&gt;将一个节点插入到指定的父节点的最末尾处&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;a href=&quot;https://developer.mozilla.org/zh-CN/docs/Web/API/Node/removeChild&quot;&gt;removeChild&lt;/a&gt;&lt;/td&gt;
+      &lt;td&gt;从某个父节点中移除指定的子节点,并返回那个子节点&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;a href=&quot;https://developer.mozilla.org/zh-CN/docs/Web/API/Node/replaceChild&quot;&gt;replaceChild&lt;/a&gt;&lt;/td&gt;
+      &lt;td&gt;用指定的节点替换当前节点的一个子节点，并返回被替换掉的节点&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;a href=&quot;https://developer.mozilla.org/zh-CN/docs/Web/API/Node/insertBefore&quot;&gt;insertBefore&lt;/a&gt;&lt;/td&gt;
+      &lt;td&gt;在当前节点的某个子节点之前再插入一个子节点&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;虽然没有&lt;strong&gt;insertAfter&lt;/strong&gt;方法，但是实现起来非常简单。DOM结构中另一个变化的打头就是属性：&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;操作&lt;/th&gt;
+      &lt;th&gt;作用&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;a href=&quot;https://developer.mozilla.org/zh-CN/docs/Web/API/Element/getAttribute&quot;&gt;getAttribute&lt;/a&gt;&lt;/td&gt;
+      &lt;td&gt;获取属性&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;a href=&quot;https://developer.mozilla.org/zh-CN/docs/Web/API/element/setAttribute&quot;&gt;setAttribute&lt;/a&gt;&lt;/td&gt;
+      &lt;td&gt;设置属性&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;a href=&quot;https://developer.mozilla.org/zh-CN/docs/Web/API/element/removeAttribute&quot;&gt;removeAttribute&lt;/a&gt;&lt;/td&gt;
+      &lt;td&gt;移除属性&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;最后想修改标签中的字符时可以用&lt;a href=&quot;https://developer.mozilla.org/zh-CN/docs/Web/API/Element/innerHTML&quot;&gt;innerHTML&lt;/a&gt;或者&lt;a href=&quot;https://developer.mozilla.org/zh-CN/docs/Web/API/Node/textContent&quot;&gt;textContent&lt;/a&gt;直接搞定，最后一个问题就是如何更新DOM结构：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Build-Up-Page-2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;追求性能可以根据&lt;strong&gt;增&lt;/strong&gt;、&lt;strong&gt;删&lt;/strong&gt;、&lt;strong&gt;改&lt;/strong&gt;的成本用动态规划算出一个最有的修改方式，但是长期来看处理的数据都相当有限，只需要用贪心地策略来保证用户体验就可以了。&lt;/p&gt;
+
+</description>
+        <pubDate>Thu, 15 Oct 2015 00:00:00 +0800</pubDate>
+        <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/10/15/Build-Up-Page-A.html</link>
+        <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/10/15/Build-Up-Page-A.html</guid>
         
         
         <category>编程技术</category>
@@ -2818,120 +3010,6 @@ class B : public A {// 5
         
         
         <category>dsl</category>
-        
-      </item>
-    
-      <item>
-        <title>JavaScript模块化及SEA.JS的使用</title>
-        <description>&lt;p&gt;最近因为缺前端，不得已要自学一下，囧~ 偶然在看到阮一峰很久之前关于模块化的文章：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;&lt;a href=&quot;http://www.ruanyifeng.com/blog/2012/10/javascript_module.html&quot;&gt;模块的写法&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://www.ruanyifeng.com/blog/2012/10/asynchronous_module_definition.html&quot;&gt;AMD规范&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://www.ruanyifeng.com/blog/2012/11/require_js.html&quot;&gt;require.js的用法&lt;/a&gt;&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;看完之后用来下玉伯的sea.js，感觉比较给力。&lt;/p&gt;
-
-&lt;h2 id=&quot;why&quot;&gt;WHY&lt;/h2&gt;
-
-&lt;p&gt;工程中前端开发的代码量早已与后端代码量差不了太多，如果将所有代码放到单个文件中是个头疼的问题：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;全局变量互相影响&lt;/li&gt;
-  &lt;li&gt;JS文件变大影响加载速度&lt;/li&gt;
-  &lt;li&gt;结构混乱&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;但是比较悲剧：在JavaScript中并没有提供类、模块等封装的方法，那么就需要我们想办法利用现有的东西来做模块化。2009年Ryan Dahl创建了&lt;strong&gt;node.js&lt;/strong&gt;项目，将javascript用于服务器端编程，这标志”Javascript模块化编程”正式诞生。&lt;/p&gt;
-
-&lt;h2 id=&quot;how&quot;&gt;HOW&lt;/h2&gt;
-
-&lt;p&gt;为了避免上面的缺点以及为了不暴露私有成员，通常用&lt;a href=&quot;http://blog.csdn.net/qq838419230/article/details/8030078&quot;&gt;立即执行函数&lt;/a&gt;来搞定模块化的定义模块：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-var module1 = (function(){
-    var _count = 0;
-    var m1 = function(){
-        //...
-    };
-    var m2 = function(){
-        //...
-    };
-    return {
-        m1 : m1, m2 : m2
-    };
-})();
-&lt;/pre&gt;
-
-&lt;p&gt;大家定义出来的模块可能五花八门，如果都用统一的形式来定义那就可以很方便的引用了。目前常用规范有两种：&lt;strong&gt;CommonJS&lt;/strong&gt;和&lt;strong&gt;AMD&lt;/strong&gt;，node.js的模块系统就是参照CommonJS来实现的：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-var math = require('math');// 全局的require方法用来加载模块
-math.add(2,3);
-&lt;/pre&gt;
-
-&lt;p&gt;其中math.add(2,3)要等到require完成之后才能执行，也就是说这是一个&lt;strong&gt;同步&lt;/strong&gt;的过程，在网络不好的环境中浏览器就会进入假死状态，体验极差，为了解决这个问题我们来看&lt;strong&gt;异步&lt;/strong&gt;的AMD规范(require.js)：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-require(['math'], function (math) {// require([module], callback);
-    math.add(2, 3);
-});
-&lt;/pre&gt;
-
-&lt;p&gt;参数module是要加载模块的列表，callback则是加载成功之后回调函数。AMD规范中模块的写法如下：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-// math.js
-define(function (){
-    var add = function (x,y){
-        return x+y;
-    };
-    return { add: add };
-});
-&lt;/pre&gt;
-
-&lt;p&gt;另外可以用require.js来加载非规范AMD模块、文本、图片等，感觉略强大。&lt;/p&gt;
-
-&lt;h2 id=&quot;seajs&quot;&gt;SEA.JS&lt;/h2&gt;
-
-&lt;p&gt;CMD是sea.js使用的规范(所以这个术语貌似只有国人知道)，模块定义如下：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-define(function(require, exports, module) {
-    var a = require('./a');
-    a.doSomething();
-    var b = require('./b');
-    b.doSomething();
-});
-&lt;/pre&gt;
-
-&lt;p&gt;是不是和AMD很像？通过&lt;strong&gt;require&lt;/strong&gt;在需要的时候引入依赖，通过&lt;strong&gt;exports&lt;/strong&gt;来暴露接口。AMD和CMD的区别可以看&lt;a href=&quot;http://www.zhihu.com/question/20351507/answer/14859415&quot;&gt;这里&lt;/a&gt;，还有&lt;a href=&quot;http://blog.chinaunix.net/uid-26672038-id-4112229.html&quot;&gt;这里&lt;/a&gt;。sea.js中常用的API有：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/seajs/seajs/issues/262&quot;&gt;seajs.config&lt;/a&gt;：配制&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/seajs/seajs/issues/260&quot;&gt;seajs.use&lt;/a&gt;：在页面上加载模块&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/seajs/seajs/issues/242&quot;&gt;define&lt;/a&gt;：定义模块&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/seajs/seajs/issues/259&quot;&gt;require&lt;/a&gt;：获取指定模块&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/seajs/seajs/issues/242&quot;&gt;require.async&lt;/a&gt;：在模块内部异步加载一个或多个模块&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/seajs/seajs/issues/242&quot;&gt;exports&lt;/a&gt;：在模块内部对外提供接口&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/seajs/seajs/issues/242&quot;&gt;module.exports&lt;/a&gt;：在模块内部对外提供接口&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;这些API已经定义的足够简单，因此，例子就忽略了（你可以看&lt;a href=&quot;http://&quot;&gt;这里&lt;/a&gt;）。。。&lt;/p&gt;
-
-&lt;h2 id=&quot;section&quot;&gt;总结&lt;/h2&gt;
-
-&lt;p&gt;简单看下来，感觉很受用！不过…模块化的趋势貌似是&lt;a href=&quot;http://es6.ruanyifeng.com/#docs/intro&quot;&gt;ECMAScript 6&lt;/a&gt;，ES6的目标是让JavaScript可以用来编写大型、复杂的应用程序，成为企业级开发语言！&lt;/p&gt;
-
-&lt;p&gt;不过…&lt;a href=&quot;http://kangax.github.io/compat-table/es6/&quot;&gt;浏览器的支持程度&lt;/a&gt;比较堪忧。。。&lt;/p&gt;
-</description>
-        <pubDate>Sat, 05 Sep 2015 00:00:00 +0800</pubDate>
-        <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/09/05/JavaScript-Sea.html</link>
-        <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/09/05/JavaScript-Sea.html</guid>
-        
-        
-        <category>编程技术</category>
         
       </item>
     

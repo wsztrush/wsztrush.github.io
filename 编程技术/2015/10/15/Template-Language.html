@@ -124,9 +124,9 @@ My name: &lt;input type="text" ng-model="yourname" placeholder="World"&gt;
 <pre class="prettyprint">
 &lt;ul&gt;
     &lt;li ng-repeat="o in question.options"&gt;
-        &lt;b&gt;.&lt;/b&gt;
+        &lt;b&gt;\.&lt;/b&gt;
         &lt;input type="radio" name="optcheck" /&gt;
-        
+        \
     &lt;/li&gt;
 &lt;/ul&gt;
 </pre>
@@ -137,7 +137,7 @@ My name: &lt;input type="text" ng-model="yourname" placeholder="World"&gt;
   <p>之前的模板都是静态的，像一锤子买卖，而Angular的模板是动态的！</p>
 </blockquote>
 
-<p>刚开始接触前端的时候也想过这个问题，但是实在没有想出来应该如何定义这样的模板语言，而Angular则已经实现了，但是代价就是上手成本高：</p>
+<p>刚开始接触前端的时候也想过这个问题，但是实在没有想出来应该如何定义这样的模板语言，而Angular则已经实现了，但是代价就是限制多、门槛高：</p>
 
 <ol>
   <li>模块</li>
@@ -148,7 +148,7 @@ My name: &lt;input type="text" ng-model="yourname" placeholder="World"&gt;
   <li>…</li>
 </ol>
 
-<p>可能大家不明白为什么上手成本高：当你在适合Angular的例子上操作的时候上手非常容易，但是实现复杂的功能需要熟悉很多不那么直观的概念。还有一点比较不喜欢的是：</p>
+<p>可能大家不明白为什么门槛高：当你在适合Angular的例子上操作的时候上手非常容易，但是实现复杂的功能需要熟悉很多不那么直观的概念。还有一点比较不喜欢的是：</p>
 
 <blockquote>
   <p>将展示和数据完全分开，甚至模板与展示相关的判断逻辑也分开！</p>
@@ -160,19 +160,9 @@ My name: &lt;input type="text" ng-model="yourname" placeholder="World"&gt;
 
 <p>在页面复杂的时候双向数据绑定的行为可能是预测不出来（这点保留意见，没有深入玩过）。</p>
 
-<p>参考资料：</p>
-
-<ol>
-  <li><a href="http://www.cnblogs.com/lvdabao/p/AngularJs.html?utm_source=tuicool&amp;utm_medium=referral#myexample">走进AngularJs(一)angular基本概念的认识与实战</a></li>
-  <li><a href="http://www.cnblogs.com/lvdabao/p/3379659.html">走进AngularJs(二) ng模板中常用指令的使用方式</a></li>
-  <li><a href="http://ourjs.com/detail/5483d2d10dad0fbb6d000014">2015年的JavaScript：Angular之类的框架将被库取代</a></li>
-  <li><a href="https://www.ibm.com/developerworks/cn/opensource/os-cn-AngularJS/">AngularJS 作用域与数据绑定机制</a></li>
-  <li><a href="http://ourjs.com/detail/5567c046d11a73aa4d000003">我是怎么从顾虑到热爱ReactJS的(与AngularJS经典MVC数据绑定的对比)</a></li>
-</ol>
-
 <h2 id="react">React</h2>
 
-<p>上面已经有文章把它与Angular进行了比较，那么现在我们来近距离看看最近红得发紫的React，第一关是<strong>JSX</strong>语法：</p>
+<p>接着我们来看下最近红得发紫的React，网上已经有很多它与Angular的比较，有些还是有点道理的。使用React的第一关是<strong>JSX</strong>语法：</p>
 
 <pre class="prettyprint">
 var root =(
@@ -196,7 +186,7 @@ var root = React.createElement(
 
 <p>当然你也可以在<a href="https://babeljs.io/repl/">babel在线工具</a>来体验这种语法。</p>
 
-<p>看起来很美好，但实际上也不能太任性：在模板中也仅仅是能取数据而已，控制语句<code>for</code>等不能使用（多用babel玩一下就能体会到从JSX到JS之间的转换有多简单）：</p>
+<p>看起来很美好，但实际上也不能太任性：模板的作用仅在于<strong>映射</strong>！控制语句<code>for</code>等是不能使用（多用babel玩一下就能体会到从JSX到JS之间的转换有多简单）：</p>
 
 <blockquote>
   <p>思路有点像Angular那样去扩展HTML原有的东西（Angular扩展的是Attribute，而React进一步扩展了Element）！</p>
@@ -258,79 +248,11 @@ var root = React.createElement(
   </tbody>
 </table>
 
-<p>大家都在讲React很快、非常快，这就是第三关了VirtualDOM：真实的DOM操作代价太大，在<code>render</code>会先操作内存中的DOM结构，然后最小化反映到真正的DOM上（DomDiff算法可以在<a href="https://github.com/migijs/migi/wiki/%E5%9F%BA%E4%BA%8Evd%E5%92%8Cvr%E7%9A%84DomDiff%E7%AE%97%E6%B3%95">这里</a>感受下）。</p>
-
-<p>参考资料：</p>
-
-<ol>
-  <li><a href="http://www.infoq.com/cn/articles/react-jsx-and-component?utm_campaign=rightbar_v2&amp;utm_source=infoq&amp;utm_medium=articles_link&amp;utm_content=link_text">深入浅出React（三）：理解JSX和组件</a></li>
-  <li><a href="http://www.infoq.com/cn/articles/react-dom-diff">深入浅出React（四）：虚拟DOM Diff算法解析</a></li>
-  <li><a href="http://reactjs.cn/react/docs/component-specs.html">组件的详细说明和生命周期</a></li>
-  <li><a href="http://zjumty.iteye.com/blog/2207030">react.js的的diff算法真的很强大</a></li>
-  <li><a href="http://segmentfault.com/a/1190000000606216">React 的 diff 算法</a></li>
-  <li><a href="http://www.ruanyifeng.com/blog/2015/03/react.html">React 入门实例教程</a></li>
-  <li><a href="http://facebook.github.io/react/index.html">React官网</a></li>
-</ol>
+<p>大家都在讲React很快、非常快，这就是第三关的<strong>虚拟DOM</strong>：真实的DOM操作代价太大，在<code>render</code>会先操作内存中的DOM结构，然后最小化反映到真正的DOM上（DomDiff算法可以在<a href="https://github.com/migijs/migi/wiki/%E5%9F%BA%E4%BA%8Evd%E5%92%8Cvr%E7%9A%84DomDiff%E7%AE%97%E6%B3%95">这里</a>感受下）。</p>
 
 <h2 id="noob-template">Noob Template</h2>
 
-<p>写了这么多年的代码，最持久的一个“口号”就是：</p>
-
-<blockquote>
-  <p>高内聚、低耦合</p>
-</blockquote>
-
-<p>先来看低耦合，在用Java写代码的时候大家已经习惯用<strong>共享内存</strong>的方式来实现多线程间的通信（就不举栗子了），另外一种思路是：</p>
-
-<blockquote>
-  <p>用通信的方式来共享内存</p>
-</blockquote>
-
-<p>在古老的<a href="http://svn.liancheng.info/cpie-cn/trunk/.build/html/part-i/chapter-5.html">Erlang</a>语言中是这样的：</p>
-
-<pre class="prettyprint">
-receive
-    Message1 [when Guard1] -&gt;
-        Actions1 ;
-    Message2 [when Guard2] -&gt;
-        Actions2 ;
-    ...
-end
-</pre>
-
-<p>还有比较新的<a href="http://www.cnblogs.com/hustcat/p/4003729.html">Golang</a>中的channel：</p>
-
-<pre class="prettyprint">
-func Producer (queue chan&lt;- int){
-    for i:= 0; i &lt; 10; i++ {
-        queue &lt;- i
-    }
-}
-func Consumer( queue &lt;-chan int){
-    for i :=0; i &lt; 10; i++{
-        v := &lt;- queue
-            fmt.Println("receive:", v)
-    }
-}
-func main(){
-    queue := make(chan int, 1)
-    go Producer(queue)
-    go Consumer(queue)
-    time.Sleep(1e9) //让Producer与Consumer完成
-}
-</pre>
-
-<p>而回头再开看看浏览器中JS的执行方式：</p>
-
-<p><img src="http://" alt="" /></p>
-
-<p>几乎所有的东西都是<code>事件</code>-&gt;<code>回调函数</code>这种模式，而恰好你也玩过C里面的<code>epoll</code>的话也许会觉得这种方式是多么高效，那么：</p>
-
-<blockquote>
-  <p>各个组件之间的关系是可以互相发送消息，在组件收到消息的时候执行内部操作！</p>
-</blockquote>
-
-<p>可能有人会纠结<code>接口</code>和<code>消息</code>这两种方式的区别，我总感觉他们之间没啥区别.. 低耦合看完了再回过头来看如何高内聚：在上面我们看到的各种办法把逻辑与HTML代码分开，如果是JS的话：</p>
+<p>在上面我们看到的各种办法把逻辑与HTML代码分开，如果是JS的话：</p>
 
 <blockquote>
   <p>HTML的<code>&lt;</code>和JavaScript的<code>{</code>其实已经天然地起到了这个作用！</p>
@@ -361,9 +283,54 @@ func main(){
 <p>用过<strong>MarkDown</strong>或者<strong>Jade</strong>或者<strong>Python</strong>的同学可能对这种方式已经比较熟悉了，都没用过的话可以对比一下几种层级表示方式：</p>
 
 <ol>
-  <li>缩进</li>
-  <li>大括号</li>
-  <li>END表示结束符</li>
+  <li>缩进式</li>
+  <li>大括号式</li>
+  <li>END结束符式</li>
+</ol>
+
+<p>使用组件时需要设置一些属性来控制其行为：</p>
+
+<pre class="prettyprint">
+@xxxxx(name="TEST" style= list=ajax("/url.do"))
+</pre>
+
+<p>另外如果可以在模板中直接编写JavaScript代码就更灵活了：</p>
+
+<pre class="prettyprint">
+@xxxxx
+    @on(init)
+        this.name = "TEST";
+        this.style = {color:"white"};
+        ....
+</pre>
+
+<p>然后结合React的精华：</p>
+
+<blockquote>
+  <p>最小化DOM操作（用这个模式实现起来好像不怎么方便）</p>
+</blockquote>
+
+<p>那么这样实现的模板怎么样？</p>
+
+<h2 id="section">总结</h2>
+
+<p>在后端渲染页面来展示的方式有点像漫画：看完一页翻一页；每次改变数据刷一次页面有点像动画：一帧一帧地动。</p>
+
+<p>参考资料：</p>
+
+<ol>
+  <li><a href="http://www.cnblogs.com/lvdabao/p/AngularJs.html?utm_source=tuicool&amp;utm_medium=referral#myexample">走进AngularJs(一)angular基本概念的认识与实战</a></li>
+  <li><a href="http://www.cnblogs.com/lvdabao/p/3379659.html">走进AngularJs(二) ng模板中常用指令的使用方式</a></li>
+  <li><a href="http://ourjs.com/detail/5483d2d10dad0fbb6d000014">2015年的JavaScript：Angular之类的框架将被库取代</a></li>
+  <li><a href="https://www.ibm.com/developerworks/cn/opensource/os-cn-AngularJS/">AngularJS 作用域与数据绑定机制</a></li>
+  <li><a href="http://ourjs.com/detail/5567c046d11a73aa4d000003">我是怎么从顾虑到热爱ReactJS的(与AngularJS经典MVC数据绑定的对比)</a></li>
+  <li><a href="http://www.infoq.com/cn/articles/react-jsx-and-component?utm_campaign=rightbar_v2&amp;utm_source=infoq&amp;utm_medium=articles_link&amp;utm_content=link_text">深入浅出React（三）：理解JSX和组件</a></li>
+  <li><a href="http://www.infoq.com/cn/articles/react-dom-diff">深入浅出React（四）：虚拟DOM Diff算法解析</a></li>
+  <li><a href="http://reactjs.cn/react/docs/component-specs.html">组件的详细说明和生命周期</a></li>
+  <li><a href="http://zjumty.iteye.com/blog/2207030">react.js的的diff算法真的很强大</a></li>
+  <li><a href="http://segmentfault.com/a/1190000000606216">React 的 diff 算法</a></li>
+  <li><a href="http://www.ruanyifeng.com/blog/2015/03/react.html">React 入门实例教程</a></li>
+  <li><a href="http://facebook.github.io/react/index.html">React官网</a></li>
 </ol>
 
 
