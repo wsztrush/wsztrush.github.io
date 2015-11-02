@@ -148,11 +148,11 @@ data|数据
 
 最后想修改标签中的字符时可以用[innerHTML](https://developer.mozilla.org/zh-CN/docs/Web/API/Element/innerHTML)或者[textContent](https://developer.mozilla.org/zh-CN/docs/Web/API/Node/textContent)直接搞定，最后一个问题就是如何更新DOM结构：
 
-![](http://)
+![](http://7xiz10.com1.z0.glb.clouddn.com/Build-Up-Page-2.png)
 
-如果追求性能可以根据**增**、**删**、**改**的成本用动态规划算出一个最有的修改方式，但是长期来看处理的数据都相当有限，只需要用贪心地策略来保证用户体验就可以了。
+追求性能可以根据**增**、**删**、**改**的成本用动态规划算出一个最有的修改方式，但是长期来看处理的数据都相当有限，只需要用贪心地策略来保证用户体验就可以了。
 
-## 总结
+
 
 
 
