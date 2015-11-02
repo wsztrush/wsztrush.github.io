@@ -72,7 +72,7 @@ func main(){
 }
 </pre>
 
-<p>在HTML中也有点像这种消息驱动的方式，页面上的每个操作都会转换成事件传递给JavaScript进行处理，在JavaScript中的事件处理方式如下（单线程）：</p>
+<p>再回过头来看HTML其实也是通过消息来驱动的，页面上的每个操作都会转换成事件传递给JavaScript进行处理，在JavaScript中的事件处理方式如下（单线程）：</p>
 
 <p><img src="http://7xiz10.com1.z0.glb.clouddn.com/Build-Up-Page.jpg" alt="" /></p>
 
@@ -86,7 +86,7 @@ func main(){
         ......
 </pre>
 
-<p>编写代码的时候需要关注两个量：</p>
+<p>用户在编写代码的时候只需要关注两个对象：</p>
 
 <ol>
   <li><strong>event</strong>：事件对象</li>
@@ -106,7 +106,7 @@ func main(){
         ....
 </pre>
 
-<p>在时间对象中包含的字段有：</p>
+<p>在event中包含的字段有：</p>
 
 <table>
   <thead>
@@ -131,7 +131,7 @@ func main(){
   </tbody>
 </table>
 
-<p>在实现时需要三个操作：</p>
+<p>实现事件的订阅/发布需要三个操作：</p>
 
 <ol>
   <li>绑定</li>
@@ -139,7 +139,7 @@ func main(){
   <li>发送</li>
 </ol>
 
-<p>在组件从页面上消失的时候是需要取消绑定的，不然可能会有问题，在配置完成页面后组件之间的关系如下：</p>
+<p>在组件从页面上消失的时候是需要取消绑定的，不然可能会有问题，配置完成页面上组件之间的关系如下：</p>
 
 <p><img src="http://7xiz10.com1.z0.glb.clouddn.com/Build-Up-Page-1.png" alt="" /></p>
 
@@ -175,7 +175,7 @@ func main(){
   <p>用户的输入（或者列表的选择）都会消失，感觉有点像区域被刷新了一下。</p>
 </blockquote>
 
-<p>另外在全部更新的情况下要比逐个更新元素要快一些，但是很多情况下我们只需要更新页面上的一小部分，那么就可以考虑用JavaScript原生的DOM操作来搞：</p>
+<p>另外在全部更新的情况下要比逐个更新元素要快一些，但是很多情况下我们只需要更新页面上的一小部分，那么就可以考虑用JS原生的DOM操作来搞：</p>
 
 <table>
   <thead>
@@ -208,7 +208,7 @@ func main(){
   </tbody>
 </table>
 
-<p>虽然没有<strong>insertAfter</strong>方法，但是实现起来非常简单。DOM结构中另一个变化的打头就是属性：</p>
+<p>虽然没有<strong>insertAfter</strong>方法，但是实现起来非常简单。DOM结构中另一个变化的大头就是属性：</p>
 
 <table>
   <thead>
@@ -237,7 +237,7 @@ func main(){
 
 <p><img src="http://7xiz10.com1.z0.glb.clouddn.com/Build-Up-Page-2.png" alt="" /></p>
 
-<p>追求性能可以根据<strong>增</strong>、<strong>删</strong>、<strong>改</strong>的成本用动态规划算出一个最有的修改方式，但是长期来看处理的数据都相当有限，只需要用贪心地策略来保证用户体验就可以了。</p>
+<p>追求性能可以根据<strong>增</strong>、<strong>删</strong>、<strong>改</strong>的成本用动态规划算出一个最优的修改方式，但是长期来看处理的数据都相当有限，只需要用贪心地策略来保证用户体验即可。</p>
 
 
 			<!-- 评论组件 -->

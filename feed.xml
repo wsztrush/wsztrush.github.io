@@ -5,8 +5,8 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 02 Nov 2015 22:39:51 +0800</pubDate>
-    <lastBuildDate>Mon, 02 Nov 2015 22:39:51 +0800</lastBuildDate>
+    <pubDate>Mon, 02 Nov 2015 22:51:05 +0800</pubDate>
+    <lastBuildDate>Mon, 02 Nov 2015 22:51:05 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
@@ -606,7 +606,7 @@ func main(){
 }
 &lt;/pre&gt;
 
-&lt;p&gt;在HTML中也有点像这种消息驱动的方式，页面上的每个操作都会转换成事件传递给JavaScript进行处理，在JavaScript中的事件处理方式如下（单线程）：&lt;/p&gt;
+&lt;p&gt;再回过头来看HTML其实也是通过消息来驱动的，页面上的每个操作都会转换成事件传递给JavaScript进行处理，在JavaScript中的事件处理方式如下（单线程）：&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Build-Up-Page.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
@@ -620,7 +620,7 @@ func main(){
         ......
 &lt;/pre&gt;
 
-&lt;p&gt;编写代码的时候需要关注两个量：&lt;/p&gt;
+&lt;p&gt;用户在编写代码的时候只需要关注两个对象：&lt;/p&gt;
 
 &lt;ol&gt;
   &lt;li&gt;&lt;strong&gt;event&lt;/strong&gt;：事件对象&lt;/li&gt;
@@ -640,7 +640,7 @@ func main(){
         ....
 &lt;/pre&gt;
 
-&lt;p&gt;在时间对象中包含的字段有：&lt;/p&gt;
+&lt;p&gt;在event中包含的字段有：&lt;/p&gt;
 
 &lt;table&gt;
   &lt;thead&gt;
@@ -665,7 +665,7 @@ func main(){
   &lt;/tbody&gt;
 &lt;/table&gt;
 
-&lt;p&gt;在实现时需要三个操作：&lt;/p&gt;
+&lt;p&gt;实现事件的订阅/发布需要三个操作：&lt;/p&gt;
 
 &lt;ol&gt;
   &lt;li&gt;绑定&lt;/li&gt;
@@ -673,7 +673,7 @@ func main(){
   &lt;li&gt;发送&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;p&gt;在组件从页面上消失的时候是需要取消绑定的，不然可能会有问题，在配置完成页面后组件之间的关系如下：&lt;/p&gt;
+&lt;p&gt;在组件从页面上消失的时候是需要取消绑定的，不然可能会有问题，配置完成页面上组件之间的关系如下：&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Build-Up-Page-1.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
@@ -709,7 +709,7 @@ func main(){
   &lt;p&gt;用户的输入（或者列表的选择）都会消失，感觉有点像区域被刷新了一下。&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;另外在全部更新的情况下要比逐个更新元素要快一些，但是很多情况下我们只需要更新页面上的一小部分，那么就可以考虑用JavaScript原生的DOM操作来搞：&lt;/p&gt;
+&lt;p&gt;另外在全部更新的情况下要比逐个更新元素要快一些，但是很多情况下我们只需要更新页面上的一小部分，那么就可以考虑用JS原生的DOM操作来搞：&lt;/p&gt;
 
 &lt;table&gt;
   &lt;thead&gt;
@@ -742,7 +742,7 @@ func main(){
   &lt;/tbody&gt;
 &lt;/table&gt;
 
-&lt;p&gt;虽然没有&lt;strong&gt;insertAfter&lt;/strong&gt;方法，但是实现起来非常简单。DOM结构中另一个变化的打头就是属性：&lt;/p&gt;
+&lt;p&gt;虽然没有&lt;strong&gt;insertAfter&lt;/strong&gt;方法，但是实现起来非常简单。DOM结构中另一个变化的大头就是属性：&lt;/p&gt;
 
 &lt;table&gt;
   &lt;thead&gt;
@@ -771,7 +771,7 @@ func main(){
 
 &lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Build-Up-Page-2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;追求性能可以根据&lt;strong&gt;增&lt;/strong&gt;、&lt;strong&gt;删&lt;/strong&gt;、&lt;strong&gt;改&lt;/strong&gt;的成本用动态规划算出一个最有的修改方式，但是长期来看处理的数据都相当有限，只需要用贪心地策略来保证用户体验就可以了。&lt;/p&gt;
+&lt;p&gt;追求性能可以根据&lt;strong&gt;增&lt;/strong&gt;、&lt;strong&gt;删&lt;/strong&gt;、&lt;strong&gt;改&lt;/strong&gt;的成本用动态规划算出一个最优的修改方式，但是长期来看处理的数据都相当有限，只需要用贪心地策略来保证用户体验即可。&lt;/p&gt;
 
 </description>
         <pubDate>Thu, 15 Oct 2015 00:00:00 +0800</pubDate>
