@@ -86,9 +86,9 @@ define(function (){ // define([module], callback);
 });
 </pre>
 
-用RequireJS可以加载很多其他资源（看[这里](http://www.ruanyifeng.com/blog/2012/11/require_js.html)），很好很强大！在工作中用的比较多的是[SeaJS](https://github.com/seajs/seajs)，所使用的规范称为CMD，推崇：
+用RequireJS可以加载很多其他资源（看[这里](http://www.ruanyifeng.com/blog/2012/11/require_js.html)），很好很强大！在工作中用的比较多的是[SeaJS](https://github.com/seajs/seajs)，所使用的规范称为CMD，推崇（应该是指异步模式）：
 
-> as lazy as possible.
+> as lazy as possible！
 
 对于依赖的模块的处理方式和AMD的区别在于：
 
@@ -113,7 +113,7 @@ define(function(require, exports, module) {
 
 > 创建script标签的时候设置一下onload和src！
 
-事实上是这样的，但也不完全是！下面来开始看SeaJS的代码（[sea-debug.js](https://github.com/seajs/seajs/blob/master/dist/sea-debug.js#L868)）。一个模块在加载的过程中可能经历下面几种状态：
+事实上是这样的，但也不完全是！下面来开始看SeaJS的代码（[sea-debug.js](https://github.com/seajs/seajs/blob/master/dist/sea-debug.js)）。一个模块在加载的过程中可能经历下面几种状态：
 
 <pre class="prettyprint">
 var STATUS = Module.STATUS = {
@@ -206,7 +206,7 @@ Module.prototype.load = function() {
 
 此时A中的`remain`为3，也就是说它还有三个依赖的模块没有加载完成！而如果模块B依赖模块E、F，那么在它load的时候会将A也传递出去：
 
-![](http://)
+![](http://7xiz10.com1.z0.glb.clouddn.com/JavaScript-Sea-2.png)
 
 有几个细节：
 
@@ -278,7 +278,11 @@ function require(id) {
 }
 </pre>
 
-到这里核心的逻辑基本上讲完了，以后在用的时候就可以解释一些诡异的问题了！
+到这里核心的逻辑基本上讲完了，补一张状态的转换图：
+
+![](http://7xiz10.com1.z0.glb.clouddn.com/JavaScript-Sea-3.png)
+
+以后在用的时候就可以解释一些诡异的问题了！
 
 ## 总结
 
