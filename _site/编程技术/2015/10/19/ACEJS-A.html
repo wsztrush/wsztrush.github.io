@@ -74,7 +74,7 @@
 &lt;/html&gt;
 </pre>
 
-<p>完成后ACE会在<code>&lt;div id="editor"&gt;&lt;/div&gt;</code>渲染出对应的DOM结构，其中：</p>
+<p>完成后ACE会在<code class="highlighter-rouge">&lt;div id="editor"&gt;&lt;/div&gt;</code>渲染出对应的DOM结构，其中：</p>
 
 <ol>
   <li><strong>editor.setTheme</strong>：设置主题，有点皮肤的意思</li>
@@ -85,9 +85,9 @@
 
 <h2 id="section-1">高亮</h2>
 
-<p>让代码高亮显示的思路很简单，比如将关键字用<code>&lt;span class="ace_keyword"&gt;&lt;/span&gt;</code>包裹起来并在CSS中设置样式即可，那么关键问题就是如何对源码进行<strong>词法分析</strong>了。</p>
+<p>让代码高亮显示的思路很简单，比如将关键字用<code class="highlighter-rouge">&lt;span class="ace_keyword"&gt;&lt;/span&gt;</code>包裹起来并在CSS中设置样式即可，那么关键问题就是如何对源码进行<strong>词法分析</strong>了。</p>
 
-<p>在ACE中实现的时候有点像<strong>状态机</strong>，在处理时不断地从当前状态的规则集中找到匹配<code>regex</code>的规则，之后跳转到对应的<code>next</code>状态：</p>
+<p>在ACE中实现的时候有点像<strong>状态机</strong>，在处理时不断地从当前状态的规则集中找到匹配<code class="highlighter-rouge">regex</code>的规则，之后跳转到对应的<code class="highlighter-rouge">next</code>状态：</p>
 
 <pre class="prettyprint">
 this.$rules = {

@@ -32,7 +32,7 @@
 
 <h2 id="section">基本语法</h2>
 
-<p>JavaScript是弱类型的，有六种基本类型（用<code>typeof</code>查看）：</p>
+<p>JavaScript是弱类型的，有六种基本类型（用<code class="highlighter-rouge">typeof</code>查看）：</p>
 
 <table>
   <thead>
@@ -65,9 +65,9 @@
   </tbody>
 </table>
 
-<p>弱类型的强大之处在于将不同类型的数据进行比较的时候居然结果是一样的：<code>"123"==123</code>，简直毁三观~~不过也提供了另外一种方式<code>"123"===123</code>可以得到预期的结果。</p>
+<p>弱类型的强大之处在于将不同类型的数据进行比较的时候居然结果是一样的：<code class="highlighter-rouge">"123"==123</code>，简直毁三观~~不过也提供了另外一种方式<code class="highlighter-rouge">"123"===123</code>可以得到预期的结果。</p>
 
-<p>在需要连续操作一个对象的多个属性或者方法时可以用<code>with</code>减少代码量：</p>
+<p>在需要连续操作一个对象的多个属性或者方法时可以用<code class="highlighter-rouge">with</code>减少代码量：</p>
 
 <pre class="prettyprint">
 with(location){
@@ -82,7 +82,7 @@ with(location){
   <p>既不需要定义返回值，也不需要定义入参（简直比弱类型还随意…）</p>
 </blockquote>
 
-<p>可以使用<code>arguments</code>来获取所有的参数，这样看来参数的实现和<strong>Python</strong>有点像，参数名称仅仅是用为了在代码中方便使用参数！</p>
+<p>可以使用<code class="highlighter-rouge">arguments</code>来获取所有的参数，这样看来参数的实现和<strong>Python</strong>有点像，参数名称仅仅是用为了在代码中方便使用参数！</p>
 
 <p>在JavaScript中几乎所有的都是对象，第一种创建对象的方式为：</p>
 
@@ -102,7 +102,7 @@ function Cat(name, color){
 }
 </pre>
 
-<p>这样在创建对象的时候就很简单了：<code>new Cat('abc', 'white')</code>，对象中有一些内部属性用来控制其行为：</p>
+<p>这样在创建对象的时候就很简单了：<code class="highlighter-rouge">new Cat('abc', 'white')</code>，对象中有一些内部属性用来控制其行为：</p>
 
 <table>
   <thead>
@@ -114,11 +114,11 @@ function Cat(name, color){
   <tbody>
     <tr>
       <td>configurable</td>
-      <td>能否通过<code>delete</code>删除属性从而重新定义属性，能够修改属性的特性或者能否把属性修改为访问器属性</td>
+      <td>能否通过<code class="highlighter-rouge">delete</code>删除属性从而重新定义属性，能够修改属性的特性或者能否把属性修改为访问器属性</td>
     </tr>
     <tr>
       <td>enumerable</td>
-      <td>能否通过<code>for-in</code>循环返回属性</td>
+      <td>能否通过<code class="highlighter-rouge">for-in</code>循环返回属性</td>
     </tr>
     <tr>
       <td>writable</td>
@@ -141,7 +141,7 @@ Object.defineProperty(person, 'name', {
 });
 </pre>
 
-<p>另外提供了<code>get、set</code>方法，有了它们之后就可以很容易监听对象中每个属性的变化，在做数据绑定的时候比较好用：</p>
+<p>另外提供了<code class="highlighter-rouge">get、set</code>方法，有了它们之后就可以很容易监听对象中每个属性的变化，在做数据绑定的时候比较好用：</p>
 
 <pre class="prettyprint">
 var person = {name : 'abc'};
@@ -265,7 +265,7 @@ function createFunctions(){
 }
 </pre>
 
-<p>直观感觉<code>result[0]()</code>的返回值应该是0，实际上并非如此，内部函数可以访问外部函数作用域中的变量，但仅仅是包含一个引用而已，具体到执行的时候才去获取引用指向的值。</p>
+<p>直观感觉<code class="highlighter-rouge">result[0]()</code>的返回值应该是0，实际上并非如此，内部函数可以访问外部函数作用域中的变量，但仅仅是包含一个引用而已，具体到执行的时候才去获取引用指向的值。</p>
 
 <p>闭包绕就绕在作用域上，当它和其他作用域也比较绕的东西勾搭在一起的时候就需要小心了，比如this：</p>
 
@@ -393,7 +393,7 @@ console.log(obj.getNameFunc()()); // my object
   </tbody>
 </table>
 
-<p>在判断节点类型中经常会用到<code>nodeName</code>和<code>nodeType</code>，另外有一个属性<code>childNodes</code>保存子节点：</p>
+<p>在判断节点类型中经常会用到<code class="highlighter-rouge">nodeName</code>和<code class="highlighter-rouge">nodeType</code>，另外有一个属性<code class="highlighter-rouge">childNodes</code>保存子节点：</p>
 
 <blockquote>
   <p>NodeList对象并不是Array，而是基于DOM结构动态查询得到的结果</p>
@@ -428,7 +428,7 @@ console.log(obj.getNameFunc()()); // my object
   </tbody>
 </table>
 
-<p>HTML5规定可以为元素添加非标准的属性，但是要添加前缀<code>data-</code>，目的是为元素提供渲染无关的信息，访问时可以使用<code>dataset</code>：</p>
+<p>HTML5规定可以为元素添加非标准的属性，但是要添加前缀<code class="highlighter-rouge">data-</code>，目的是为元素提供渲染无关的信息，访问时可以使用<code class="highlighter-rouge">dataset</code>：</p>
 
 <pre class="prettyprint">
 &lt;div id="myDiv" data-appId="abc" data-myName="bcd"&gt;&lt;div&gt;
@@ -532,7 +532,7 @@ xhr.send(null);
   <p>发送请求时将页面的源信息设置到Origin中，服务器根据Origin来判断是否允许访问，如果允许，那么在返回的头中设置Access-Control-Allow-Origin</p>
 </blockquote>
 
-<p>在<code>Access-Control-Allow-Origin</code>与源信息匹配或者其值为*的时候，浏览器就允许跨域访问了！</p>
+<p>在<code class="highlighter-rouge">Access-Control-Allow-Origin</code>与源信息匹配或者其值为*的时候，浏览器就允许跨域访问了！</p>
 
 <p>参考资料</p>
 
@@ -543,7 +543,7 @@ xhr.send(null);
 
 <h2 id="section-5">离线</h2>
 
-<p>当在离线的情况下依然可以访问网页，那么Web页面和App的距离就更近一步了，而且HTML5中已经实现了，对于资源缓存使用<code>manifest</code>搞定：</p>
+<p>当在离线的情况下依然可以访问网页，那么Web页面和App的距离就更近一步了，而且HTML5中已经实现了，对于资源缓存使用<code class="highlighter-rouge">manifest</code>搞定：</p>
 
 <pre class="prettyprint">
 &lt;html manifest="/example/demo.manifest"&gt;
@@ -563,7 +563,7 @@ FALLBACK: # 没有网络时的替代网页
 /html5/ /404.html
 </pre>
 
-<p>另外提供对应的JavaScript API <code>applicationCache</code>来查看缓存的状态：</p>
+<p>另外提供对应的JavaScript API <code class="highlighter-rouge">applicationCache</code>来查看缓存的状态：</p>
 
 <table>
   <thead>
@@ -641,7 +641,7 @@ FALLBACK: # 没有网络时的替代网页
   </tbody>
 </table>
 
-<p>需要注意应用缓存机制会自动缓存引用了manifest的页面，那么这个页面在manifest文件没有发生变更的情况下会一直保持不变，这个可以用一个<code>iframe</code>间接缓存来解决。</p>
+<p>需要注意应用缓存机制会自动缓存引用了manifest的页面，那么这个页面在manifest文件没有发生变更的情况下会一直保持不变，这个可以用一个<code class="highlighter-rouge">iframe</code>间接缓存来解决。</p>
 
 <p>除了js、css等资源外还有其他数据需要缓存的话可以用下面几种方案来解决：</p>
 

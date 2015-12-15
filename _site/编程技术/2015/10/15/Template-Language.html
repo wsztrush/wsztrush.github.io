@@ -59,8 +59,8 @@ outputStream.write(data.getByte("UTF-8"));
 <p>这种写法非常直观以至于我现在都用它来渲染SQL语句，如果你也想这么玩需要自己定义<strong>ResourceLoader</strong>来自定义资源加载。编写Velocity模板时只需要记住两个关键点：</p>
 
 <ol>
-  <li>所有的控制结构是以<code>#</code>开头</li>
-  <li>所有的取数据逻辑以<code>$</code>开头（恰好你也在用jQuery的话会产生冲突）</li>
+  <li>所有的控制结构是以<code class="highlighter-rouge">#</code>开头</li>
+  <li>所有的取数据逻辑以<code class="highlighter-rouge">$</code>开头（恰好你也在用jQuery的话会产生冲突）</li>
 </ol>
 
 <p>而其他的部分都会append到输出，使用时如果每次都对模板进行解析那速度估计就跟蜗牛一样，正确的姿势应该是<strong>编译并缓存</strong>（这些内容与主题关系不大就不说了）。</p>
@@ -71,7 +71,7 @@ outputStream.write(data.getByte("UTF-8"));
   <p>使用HTML（甚至普通文本）中很少用到的字符来区分语法结构</p>
 </blockquote>
 
-<p>学习成本很低，但是单纯地使用它来编写一些复杂的逻辑还是很痛苦的事情。不过相比较来看<strong>FreeMarker</strong>的写法更让人难受，加个<code>&lt;</code>有啥意义么（估计会被喷）：</p>
+<p>学习成本很低，但是单纯地使用它来编写一些复杂的逻辑还是很痛苦的事情。不过相比较来看<strong>FreeMarker</strong>的写法更让人难受，加个<code class="highlighter-rouge">&lt;</code>有啥意义么（估计会被喷）：</p>
 
 <pre class="prettyprint">
 &lt;ul&gt;
@@ -119,7 +119,7 @@ My name: &lt;input type="text" ng-model="yourname" placeholder="World"&gt;
 
 <p><img src="http://" alt="" /></p>
 
-<p>两个输入框的内容，你随便改变哪一个，另一个都会随之变化，这就是<strong>双向绑定</strong>（也许你已经注意到<code>ng-model</code>了），当你需要输出列表时要用到<code>ng-repeat</code>：</p>
+<p>两个输入框的内容，你随便改变哪一个，另一个都会随之变化，这就是<strong>双向绑定</strong>（也许你已经注意到<code class="highlighter-rouge">ng-model</code>了），当你需要输出列表时要用到<code class="highlighter-rouge">ng-repeat</code>：</p>
 
 <pre class="prettyprint">
 &lt;ul&gt;
@@ -186,7 +186,7 @@ var root = React.createElement(
 
 <p>当然你也可以在<a href="https://babeljs.io/repl/">babel在线工具</a>来体验这种语法。</p>
 
-<p>看起来很美好，但实际上也不能太任性：模板的作用仅在于<strong>映射</strong>！控制语句<code>for</code>等是不能使用（多用babel玩一下就能体会到从JSX到JS之间的转换有多简单）：</p>
+<p>看起来很美好，但实际上也不能太任性：模板的作用仅在于<strong>映射</strong>！控制语句<code class="highlighter-rouge">for</code>等是不能使用（多用babel玩一下就能体会到从JSX到JS之间的转换有多简单）：</p>
 
 <blockquote>
   <p>思路有点像Angular那样去扩展HTML原有的东西（Angular扩展的是Attribute，而React进一步扩展了Element）！</p>
@@ -217,7 +217,7 @@ var root = React.createElement(
   </tbody>
 </table>
 
-<p>为每个状态配了两个处理函数：<code>will</code>函数在进入状态之前调用，<code>did</code>函数在进入状态之后调用：</p>
+<p>为每个状态配了两个处理函数：<code class="highlighter-rouge">will</code>函数在进入状态之前调用，<code class="highlighter-rouge">did</code>函数在进入状态之后调用：</p>
 
 <ol>
   <li>componentWillMount</li>
@@ -248,14 +248,14 @@ var root = React.createElement(
   </tbody>
 </table>
 
-<p>大家都在讲React很快、非常快，这就是第三关的<strong>虚拟DOM</strong>：真实的DOM操作代价太大，在<code>render</code>会先操作内存中的DOM结构，然后最小化反映到真正的DOM上（DomDiff算法可以在<a href="https://github.com/migijs/migi/wiki/%E5%9F%BA%E4%BA%8Evd%E5%92%8Cvr%E7%9A%84DomDiff%E7%AE%97%E6%B3%95">这里</a>感受下）。</p>
+<p>大家都在讲React很快、非常快，这就是第三关的<strong>虚拟DOM</strong>：真实的DOM操作代价太大，在<code class="highlighter-rouge">render</code>会先操作内存中的DOM结构，然后最小化反映到真正的DOM上（DomDiff算法可以在<a href="https://github.com/migijs/migi/wiki/%E5%9F%BA%E4%BA%8Evd%E5%92%8Cvr%E7%9A%84DomDiff%E7%AE%97%E6%B3%95">这里</a>感受下）。</p>
 
 <h2 id="noob-template">Noob Template</h2>
 
 <p>在上面我们看到的各种办法把逻辑与HTML代码分开，如果是JS的话：</p>
 
 <blockquote>
-  <p>HTML的<code>&lt;</code>和JavaScript的<code>{</code>其实已经天然地起到了这个作用！</p>
+  <p>HTML的<code class="highlighter-rouge">&lt;</code>和JavaScript的<code class="highlighter-rouge"><span class="p">{</span></code>其实已经天然地起到了这个作用！</p>
 </blockquote>
 
 <p>下面这段代码不用说也应该可以猜到输出应该是什么吧：</p>

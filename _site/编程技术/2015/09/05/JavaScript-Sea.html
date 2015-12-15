@@ -162,7 +162,7 @@ var STATUS = Module.STATUS = {
 }
 </pre>
 
-<p>内存中用<code>Modul</code>对象来维护模块的信息：</p>
+<p>内存中用<code class="highlighter-rouge">Modul</code>对象来维护模块的信息：</p>
 
 <pre class="prettyprint">
 function Module(uri, deps) {
@@ -174,7 +174,7 @@ function Module(uri, deps) {
 }
 </pre>
 
-<p>在页面上启动模块系统需要使用<code>seajs.use</code>方法：</p>
+<p>在页面上启动模块系统需要使用<code class="highlighter-rouge">seajs.use</code>方法：</p>
 
 <pre class="prettyprint">
 seajs.use(‘./main’, function(main) {// 依赖及回调方法
@@ -182,7 +182,7 @@ seajs.use(‘./main’, function(main) {// 依赖及回调方法
 });
 </pre>
 
-<p>加载过程的整体逻辑可以在<code>Module.prototype.load</code>中看到：</p>
+<p>加载过程的整体逻辑可以在<code class="highlighter-rouge">Module.prototype.load</code>中看到：</p>
 
 <pre class="prettyprint">
 Module.prototype.load = function() {
@@ -220,7 +220,7 @@ Module.prototype.load = function() {
 }
 </pre>
 
-<p>总体上逻辑很顺就不讲了，唯一比较绕的就是<code>_entry</code>数组了。网上没有找到比较通俗易懂的文章，于是看着代码连蒙带猜地大概看懂了，其实只要记住它的目标即可：</p>
+<p>总体上逻辑很顺就不讲了，唯一比较绕的就是<code class="highlighter-rouge">_entry</code>数组了。网上没有找到比较通俗易懂的文章，于是看着代码连蒙带猜地大概看懂了，其实只要记住它的目标即可：</p>
 
 <blockquote>
   <p>当依赖的所有模块加载完成后执行回调函数！</p>
@@ -236,7 +236,7 @@ Module.prototype.load = function() {
 
 <p><img src="http://7xiz10.com1.z0.glb.clouddn.com/JavaScript-Sea-1.png" alt="" /></p>
 
-<p>此时A中的<code>remain</code>为3，也就是说它还有三个依赖的模块没有加载完成！而如果模块B依赖模块E、F，那么在它load的时候会将A也传递出去：</p>
+<p>此时A中的<code class="highlighter-rouge">remain</code>为3，也就是说它还有三个依赖的模块没有加载完成！而如果模块B依赖模块E、F，那么在它load的时候会将A也传递出去：</p>
 
 <p><img src="http://7xiz10.com1.z0.glb.clouddn.com/JavaScript-Sea-2.png" alt="" /></p>
 
@@ -248,14 +248,14 @@ Module.prototype.load = function() {
   <li>如果依赖的模块正在加载那么会递归传播；</li>
 </ol>
 
-<p>维护好依赖关系之后就可以通过<code>Module.prototype.fetch</code>来加载模块，有两种<code>sendRequest</code>的实现方式：</p>
+<p>维护好依赖关系之后就可以通过<code class="highlighter-rouge">Module.prototype.fetch</code>来加载模块，有两种<code class="highlighter-rouge">sendRequest</code>的实现方式：</p>
 
 <ol>
   <li>importScripts</li>
   <li>script</li>
 </ol>
 
-<p>然后根据结果执行<code>load</code>或者<code>error</code>方法。依赖的所有模块都加载完成后就会执行<code>onload</code>方法：</p>
+<p>然后根据结果执行<code class="highlighter-rouge">load</code>或者<code class="highlighter-rouge">error</code>方法。依赖的所有模块都加载完成后就会执行<code class="highlighter-rouge">onload</code>方法：</p>
 
 <pre class="prettyprint">
 Module.prototype.onload = function() {
@@ -271,7 +271,7 @@ Module.prototype.onload = function() {
 }
 </pre>
 
-<p>其中<code>--entry.remain</code>就相当于告诉entry对应的模块：你的依赖列表里面已经有一个完成了！而<code>entry.remain === 0</code>则说明它所依赖的所有的模块都已经加载完成了！那么此时将执行回调函数：</p>
+<p>其中<code class="highlighter-rouge">--entry.remain</code>就相当于告诉entry对应的模块：你的依赖列表里面已经有一个完成了！而<code class="highlighter-rouge">entry.remain === 0</code>则说明它所依赖的所有的模块都已经加载完成了！那么此时将执行回调函数：</p>
 
 <pre class="prettyprint">
 for (var i = 0, len = uris.length; i &lt; len; i++) {
@@ -282,13 +282,13 @@ if (callback) {
 }
 </pre>
 
-<p>脚本下载完成之后会马上执行<code>define</code>方法来维护模块的信息：</p>
+<p>脚本下载完成之后会马上执行<code class="highlighter-rouge">define</code>方法来维护模块的信息：</p>
 
 <blockquote>
   <p>没有显式地指定dependencies时会用parseDependencies来用正则匹配方法中的require()片段（指定依赖列表是个好习惯）。</p>
 </blockquote>
 
-<p>接着执行<code>factory</code>方法来生成模块的数据：</p>
+<p>接着执行<code class="highlighter-rouge">factory</code>方法来生成模块的数据：</p>
 
 <pre class="prettyprint">
 var exports = isFunction(factory) ?
@@ -296,7 +296,7 @@ var exports = isFunction(factory) ?
     factory
 </pre>
 
-<p>然后执行你在seajs.use中定义的<code>callback</code>方法：</p>
+<p>然后执行你在seajs.use中定义的<code class="highlighter-rouge">callback</code>方法：</p>
 
 <pre class="prettyprint">
 if (callback) {
