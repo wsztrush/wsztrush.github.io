@@ -5,9 +5,9 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 18 Nov 2015 22:40:39 +0800</pubDate>
-    <lastBuildDate>Wed, 18 Nov 2015 22:40:39 +0800</lastBuildDate>
-    <generator>Jekyll v2.5.3</generator>
+    <pubDate>Tue, 15 Dec 2015 13:55:56 +0800</pubDate>
+    <lastBuildDate>Tue, 15 Dec 2015 13:55:56 +0800</lastBuildDate>
+    <generator>Jekyll v3.0.1</generator>
     
       <item>
         <title>用ACE来写代码（二）</title>
@@ -344,7 +344,7 @@ var languageTools = ace.require(&quot;ace/ext/language_tools&quot;);
 &amp;lt;/html&amp;gt;
 &lt;/pre&gt;
 
-&lt;p&gt;完成后ACE会在&lt;code&gt;&amp;lt;div id=&quot;editor&quot;&amp;gt;&amp;lt;/div&amp;gt;&lt;/code&gt;渲染出对应的DOM结构，其中：&lt;/p&gt;
+&lt;p&gt;完成后ACE会在&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;div id=&quot;editor&quot;&amp;gt;&amp;lt;/div&amp;gt;&lt;/code&gt;渲染出对应的DOM结构，其中：&lt;/p&gt;
 
 &lt;ol&gt;
   &lt;li&gt;&lt;strong&gt;editor.setTheme&lt;/strong&gt;：设置主题，有点皮肤的意思&lt;/li&gt;
@@ -355,9 +355,9 @@ var languageTools = ace.require(&quot;ace/ext/language_tools&quot;);
 
 &lt;h2 id=&quot;section-1&quot;&gt;高亮&lt;/h2&gt;
 
-&lt;p&gt;让代码高亮显示的思路很简单，比如将关键字用&lt;code&gt;&amp;lt;span class=&quot;ace_keyword&quot;&amp;gt;&amp;lt;/span&amp;gt;&lt;/code&gt;包裹起来并在CSS中设置样式即可，那么关键问题就是如何对源码进行&lt;strong&gt;词法分析&lt;/strong&gt;了。&lt;/p&gt;
+&lt;p&gt;让代码高亮显示的思路很简单，比如将关键字用&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;span class=&quot;ace_keyword&quot;&amp;gt;&amp;lt;/span&amp;gt;&lt;/code&gt;包裹起来并在CSS中设置样式即可，那么关键问题就是如何对源码进行&lt;strong&gt;词法分析&lt;/strong&gt;了。&lt;/p&gt;
 
-&lt;p&gt;在ACE中实现的时候有点像&lt;strong&gt;状态机&lt;/strong&gt;，在处理时不断地从当前状态的规则集中找到匹配&lt;code&gt;regex&lt;/code&gt;的规则，之后跳转到对应的&lt;code&gt;next&lt;/code&gt;状态：&lt;/p&gt;
+&lt;p&gt;在ACE中实现的时候有点像&lt;strong&gt;状态机&lt;/strong&gt;，在处理时不断地从当前状态的规则集中找到匹配&lt;code class=&quot;highlighter-rouge&quot;&gt;regex&lt;/code&gt;的规则，之后跳转到对应的&lt;code class=&quot;highlighter-rouge&quot;&gt;next&lt;/code&gt;状态：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 this.$rules = {
@@ -518,325 +518,6 @@ var DroolsMode = function(){
         <pubDate>Mon, 19 Oct 2015 00:00:00 +0800</pubDate>
         <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/10/19/ACEJS-A.html</link>
         <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/10/19/ACEJS-A.html</guid>
-        
-        
-        <category>编程技术</category>
-        
-      </item>
-    
-      <item>
-        <title>模板语言设计</title>
-        <description>&lt;p&gt;平时各种模板用的很HIGH，但是当有一天遇到一个特殊需求，貌似现在的各种模板都不是那么好用，那么就不得不系统地思考一下模板语言应该如何设计~&lt;/p&gt;
-
-&lt;h2 id=&quot;veolcity&quot;&gt;Veolcity&lt;/h2&gt;
-
-&lt;p&gt;做过WEB开发的JAVAER可能都这么干过：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-String data = &quot;&amp;lt;body&amp;gt;hello world&amp;lt;/body&amp;gt;&quot;;
-OutputStream outputStream = response.getOutputStream();
-response.setHeader(&quot;content-type&quot;, &quot;text/html;charset=UTF-8&quot;);
-outputStream.write(data.getByte(&quot;UTF-8&quot;));
-&lt;/pre&gt;
-
-&lt;p&gt;简单的输出没问题，稍微复杂一点就不行了：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;程序复杂&lt;/li&gt;
-  &lt;li&gt;代码几乎没有可读性和可维护性&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;在使用Velocity之后情况有了明显的好转，当你想输出一个列表的时候可以这么干：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-&amp;lt;ul&amp;gt;
-	#foreach($i in $list)
-	&amp;lt;li&amp;gt;$i&amp;lt;/li&amp;gt;
-	#end
-&amp;lt;/ul&amp;gt;
-&lt;/pre&gt;
-
-&lt;p&gt;这种写法非常直观以至于我现在都用它来渲染SQL语句，如果你也想这么玩需要自己定义&lt;strong&gt;ResourceLoader&lt;/strong&gt;来自定义资源加载。编写Velocity模板时只需要记住两个关键点：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;所有的控制结构是以&lt;code&gt;#&lt;/code&gt;开头&lt;/li&gt;
-  &lt;li&gt;所有的取数据逻辑以&lt;code&gt;$&lt;/code&gt;开头（恰好你也在用jQuery的话会产生冲突）&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;而其他的部分都会append到输出，使用时如果每次都对模板进行解析那速度估计就跟蜗牛一样，正确的姿势应该是&lt;strong&gt;编译并缓存&lt;/strong&gt;（这些内容与主题关系不大就不说了）。&lt;/p&gt;
-
-&lt;p&gt;其中语法设计的核心思想是：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;使用HTML（甚至普通文本）中很少用到的字符来区分语法结构&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;学习成本很低，但是单纯地使用它来编写一些复杂的逻辑还是很痛苦的事情。不过相比较来看&lt;strong&gt;FreeMarker&lt;/strong&gt;的写法更让人难受，加个&lt;code&gt;&amp;lt;&lt;/code&gt;有啥意义么（估计会被喷）：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-&amp;lt;ul&amp;gt;
-	&amp;lt;#list list as i&amp;gt;
-		&amp;lt;li&amp;gt;i&amp;lt;/li&amp;gt;
-	&amp;lt;/#list&amp;gt;
-&amp;lt;/ul&amp;gt;
-&lt;/pre&gt;
-
-&lt;p&gt;类似的模板引擎还有&lt;strong&gt;CommonTemplate&lt;/strong&gt;、&lt;strong&gt;HTTL&lt;/strong&gt;等。虽然这些技术已经将性能提到到一个很高的水准，但在后端处理页面展示还是非常局限：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;只能每次都获取全部的数据并把页面渲染一遍&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;浪费服务器资源不说，体验也很差，真是出力不讨好！&lt;/p&gt;
-
-&lt;h2 id=&quot;angular&quot;&gt;Angular&lt;/h2&gt;
-
-&lt;p&gt;在JavaScript的世界里也有与Velocity相似的模板技术（更多可以看&lt;a href=&quot;http://cdc.tencent.com/?p=5723&quot;&gt;这里&lt;/a&gt;）：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-&amp;lt;h3&amp;gt;
-&amp;lt;% if (typeof content === 'string'){ %&amp;gt;
-	&amp;lt;%= content %&amp;gt;
-&amp;lt;% } %&amp;gt;
-&amp;lt;/h3&amp;gt;
-&lt;/pre&gt;
-
-&lt;p&gt;从Java转JavaScript可能觉得这种方式很好用：在数据发生变化的时候执行一下render然后替换掉原先改位置的DOM结构就可以了~ 但是能不能更进一步：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;DOM结构随着数据的变化而自动跟着变化&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;看起来是终极目标，貌似&lt;a href=&quot;http://www.apjs.net/&quot;&gt;Angular&lt;/a&gt;完美地实现了：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-Your name: &amp;lt;input type=&quot;text&quot; ng-model=&quot;yourname&quot; placeholder=&quot;World&quot;&amp;gt;
-&amp;lt;hr&amp;gt;
-My name: &amp;lt;input type=&quot;text&quot; ng-model=&quot;yourname&quot; placeholder=&quot;World&quot;&amp;gt;
-&lt;/pre&gt;
-
-&lt;p&gt;执行的效果为：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;两个输入框的内容，你随便改变哪一个，另一个都会随之变化，这就是&lt;strong&gt;双向绑定&lt;/strong&gt;（也许你已经注意到&lt;code&gt;ng-model&lt;/code&gt;了），当你需要输出列表时要用到&lt;code&gt;ng-repeat&lt;/code&gt;：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-&amp;lt;ul&amp;gt;
-    &amp;lt;li ng-repeat=&quot;o in question.options&quot;&amp;gt;
-        &amp;lt;b&amp;gt;\.&amp;lt;/b&amp;gt;
-        &amp;lt;input type=&quot;radio&quot; name=&quot;optcheck&quot; /&amp;gt;
-        \
-    &amp;lt;/li&amp;gt;
-&amp;lt;/ul&amp;gt;
-&lt;/pre&gt;
-
-&lt;p&gt;这种思想非常先进，和之前出现的模板都是不一样的：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;之前的模板都是静态的，像一锤子买卖，而Angular的模板是动态的！&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;刚开始接触前端的时候也想过这个问题，但是实在没有想出来应该如何定义这样的模板语言，而Angular则已经实现了，但是代价就是限制多、门槛高：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;模块&lt;/li&gt;
-  &lt;li&gt;控制器&lt;/li&gt;
-  &lt;li&gt;过滤器&lt;/li&gt;
-  &lt;li&gt;指令&lt;/li&gt;
-  &lt;li&gt;作用域&lt;/li&gt;
-  &lt;li&gt;…&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;可能大家不明白为什么门槛高：当你在适合Angular的例子上操作的时候上手非常容易，但是实现复杂的功能需要熟悉很多不那么直观的概念。还有一点比较不喜欢的是：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;将展示和数据完全分开，甚至模板与展示相关的判断逻辑也分开！&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;这样确实能保持模板的简洁，但是总体上是否简洁、直观就不好说了。甚至连双向绑定这么好的卖点都有时候会被吐槽：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;在页面复杂的时候双向数据绑定的行为可能是预测不出来（这点保留意见，没有深入玩过）。&lt;/p&gt;
-
-&lt;h2 id=&quot;react&quot;&gt;React&lt;/h2&gt;
-
-&lt;p&gt;接着我们来看下最近红得发紫的React，网上已经有很多它与Angular的比较，有些还是有点道理的。使用React的第一关是&lt;strong&gt;JSX&lt;/strong&gt;语法：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-var root =(
-  &amp;lt;ul className=&quot;my-list&quot;&amp;gt;
-    &amp;lt;li&amp;gt;First Text Content&amp;lt;/li&amp;gt;
-    &amp;lt;li&amp;gt;Second Text Content&amp;lt;/li&amp;gt;
-  &amp;lt;/ul&amp;gt;
-);
-&lt;/pre&gt;
-
-&lt;p&gt;看起来就是将HTML代码嵌入到JavaScript中，看起来很怪但是也比较容易理解，而真正得到的代码如下:&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-var root = React.createElement(
-    &quot;ul&quot;,
-    { className: &quot;my-list&quot; },
-    React.createElement(&quot;li&quot;, null, &quot;First Text Content&quot;),
-    React.createElement(&quot;li&quot;, null, &quot;Second Text Content&quot;)
-);
-&lt;/pre&gt;
-
-&lt;p&gt;当然你也可以在&lt;a href=&quot;https://babeljs.io/repl/&quot;&gt;babel在线工具&lt;/a&gt;来体验这种语法。&lt;/p&gt;
-
-&lt;p&gt;看起来很美好，但实际上也不能太任性：模板的作用仅在于&lt;strong&gt;映射&lt;/strong&gt;！控制语句&lt;code&gt;for&lt;/code&gt;等是不能使用（多用babel玩一下就能体会到从JSX到JS之间的转换有多简单）：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;思路有点像Angular那样去扩展HTML原有的东西（Angular扩展的是Attribute，而React进一步扩展了Element）！&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;在用React的时候需要过的第二关是&lt;strong&gt;生命周期&lt;/strong&gt;，讲道理的话生命周期这种东西应该越简单越合理，然而并不是这样：&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;状态&lt;/th&gt;
-      &lt;th&gt;含义&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;Mounting&lt;/td&gt;
-      &lt;td&gt;已插入真实 DOM&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;Updating&lt;/td&gt;
-      &lt;td&gt;正在被重新渲染&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;Unmounting&lt;/td&gt;
-      &lt;td&gt;已移出真实 DOM&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;为每个状态配了两个处理函数：&lt;code&gt;will&lt;/code&gt;函数在进入状态之前调用，&lt;code&gt;did&lt;/code&gt;函数在进入状态之后调用：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;componentWillMount&lt;/li&gt;
-  &lt;li&gt;componentDidMount&lt;/li&gt;
-  &lt;li&gt;componentWillUpdate&lt;/li&gt;
-  &lt;li&gt;componentDidUpdate&lt;/li&gt;
-  &lt;li&gt;componentWillUnmount&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;另外提供两个特殊状态的处理函数：&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;函数&lt;/th&gt;
-      &lt;th&gt;作用&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;componentWillReceiveProps&lt;/td&gt;
-      &lt;td&gt;已加载组件收到新的参数时调用&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;shouldComponentUpdate&lt;/td&gt;
-      &lt;td&gt;组件判断是否重新渲染时调用&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;大家都在讲React很快、非常快，这就是第三关的&lt;strong&gt;虚拟DOM&lt;/strong&gt;：真实的DOM操作代价太大，在&lt;code&gt;render&lt;/code&gt;会先操作内存中的DOM结构，然后最小化反映到真正的DOM上（DomDiff算法可以在&lt;a href=&quot;https://github.com/migijs/migi/wiki/%E5%9F%BA%E4%BA%8Evd%E5%92%8Cvr%E7%9A%84DomDiff%E7%AE%97%E6%B3%95&quot;&gt;这里&lt;/a&gt;感受下）。&lt;/p&gt;
-
-&lt;h2 id=&quot;noob-template&quot;&gt;Noob Template&lt;/h2&gt;
-
-&lt;p&gt;在上面我们看到的各种办法把逻辑与HTML代码分开，如果是JS的话：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;HTML的&lt;code&gt;&amp;lt;&lt;/code&gt;和JavaScript的&lt;code&gt;{&lt;/code&gt;其实已经天然地起到了这个作用！&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;下面这段代码不用说也应该可以猜到输出应该是什么吧：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-&amp;lt;ul&amp;gt;
-    for(var i = 0; i &amp;lt; 10; i++){
-        &amp;lt;li&amp;gt;${i}&amp;lt;/li&amp;gt;
-    }
-&amp;lt;/ul&amp;gt;
-&lt;/pre&gt;
-
-&lt;p&gt;当用组件来搭建一个页面的时候可以是这样（包含嵌套的逻辑）：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-@xxxxxx
-    @yyyyyy
-        ...
-    @yyyyyy
-        ...
-    @yyyyyy
-        ...
-&lt;/pre&gt;
-
-&lt;p&gt;用过&lt;strong&gt;MarkDown&lt;/strong&gt;或者&lt;strong&gt;Jade&lt;/strong&gt;或者&lt;strong&gt;Python&lt;/strong&gt;的同学可能对这种方式已经比较熟悉了，都没用过的话可以对比一下几种层级表示方式：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;缩进式&lt;/li&gt;
-  &lt;li&gt;大括号式&lt;/li&gt;
-  &lt;li&gt;END结束符式&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;使用组件时需要设置一些属性来控制其行为：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-@xxxxx(name=&quot;TEST&quot; style= list=ajax(&quot;/url.do&quot;))
-&lt;/pre&gt;
-
-&lt;p&gt;另外如果可以在模板中直接编写JavaScript代码就更灵活了：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-@xxxxx
-    @on(init)
-        this.name = &quot;TEST&quot;;
-        this.style = {color:&quot;white&quot;};
-        ....
-&lt;/pre&gt;
-
-&lt;p&gt;然后结合React的精华：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;最小化DOM操作（用这个模式实现起来好像不怎么方便）&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;那么这样实现的模板怎么样？&lt;/p&gt;
-
-&lt;h2 id=&quot;section&quot;&gt;总结&lt;/h2&gt;
-
-&lt;p&gt;在后端渲染页面来展示的方式有点像漫画：看完一页翻一页；每次改变数据刷一次页面有点像动画：一帧一帧地动。&lt;/p&gt;
-
-&lt;p&gt;参考资料：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;&lt;a href=&quot;http://www.cnblogs.com/lvdabao/p/AngularJs.html?utm_source=tuicool&amp;amp;utm_medium=referral#myexample&quot;&gt;走进AngularJs(一)angular基本概念的认识与实战&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://www.cnblogs.com/lvdabao/p/3379659.html&quot;&gt;走进AngularJs(二) ng模板中常用指令的使用方式&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://ourjs.com/detail/5483d2d10dad0fbb6d000014&quot;&gt;2015年的JavaScript：Angular之类的框架将被库取代&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://www.ibm.com/developerworks/cn/opensource/os-cn-AngularJS/&quot;&gt;AngularJS 作用域与数据绑定机制&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://ourjs.com/detail/5567c046d11a73aa4d000003&quot;&gt;我是怎么从顾虑到热爱ReactJS的(与AngularJS经典MVC数据绑定的对比)&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://www.infoq.com/cn/articles/react-jsx-and-component?utm_campaign=rightbar_v2&amp;amp;utm_source=infoq&amp;amp;utm_medium=articles_link&amp;amp;utm_content=link_text&quot;&gt;深入浅出React（三）：理解JSX和组件&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://www.infoq.com/cn/articles/react-dom-diff&quot;&gt;深入浅出React（四）：虚拟DOM Diff算法解析&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://reactjs.cn/react/docs/component-specs.html&quot;&gt;组件的详细说明和生命周期&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://zjumty.iteye.com/blog/2207030&quot;&gt;react.js的的diff算法真的很强大&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://segmentfault.com/a/1190000000606216&quot;&gt;React 的 diff 算法&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://www.ruanyifeng.com/blog/2015/03/react.html&quot;&gt;React 入门实例教程&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://facebook.github.io/react/index.html&quot;&gt;React官网&lt;/a&gt;&lt;/li&gt;
-&lt;/ol&gt;
-
-</description>
-        <pubDate>Thu, 15 Oct 2015 00:00:00 +0800</pubDate>
-        <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/10/15/Template-Language.html</link>
-        <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/10/15/Template-Language.html</guid>
         
         
         <category>编程技术</category>
@@ -1069,6 +750,325 @@ func main(){
       </item>
     
       <item>
+        <title>模板语言设计</title>
+        <description>&lt;p&gt;平时各种模板用的很HIGH，但是当有一天遇到一个特殊需求，貌似现在的各种模板都不是那么好用，那么就不得不系统地思考一下模板语言应该如何设计~&lt;/p&gt;
+
+&lt;h2 id=&quot;veolcity&quot;&gt;Veolcity&lt;/h2&gt;
+
+&lt;p&gt;做过WEB开发的JAVAER可能都这么干过：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+String data = &quot;&amp;lt;body&amp;gt;hello world&amp;lt;/body&amp;gt;&quot;;
+OutputStream outputStream = response.getOutputStream();
+response.setHeader(&quot;content-type&quot;, &quot;text/html;charset=UTF-8&quot;);
+outputStream.write(data.getByte(&quot;UTF-8&quot;));
+&lt;/pre&gt;
+
+&lt;p&gt;简单的输出没问题，稍微复杂一点就不行了：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;程序复杂&lt;/li&gt;
+  &lt;li&gt;代码几乎没有可读性和可维护性&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;在使用Velocity之后情况有了明显的好转，当你想输出一个列表的时候可以这么干：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+&amp;lt;ul&amp;gt;
+	#foreach($i in $list)
+	&amp;lt;li&amp;gt;$i&amp;lt;/li&amp;gt;
+	#end
+&amp;lt;/ul&amp;gt;
+&lt;/pre&gt;
+
+&lt;p&gt;这种写法非常直观以至于我现在都用它来渲染SQL语句，如果你也想这么玩需要自己定义&lt;strong&gt;ResourceLoader&lt;/strong&gt;来自定义资源加载。编写Velocity模板时只需要记住两个关键点：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;所有的控制结构是以&lt;code class=&quot;highlighter-rouge&quot;&gt;#&lt;/code&gt;开头&lt;/li&gt;
+  &lt;li&gt;所有的取数据逻辑以&lt;code class=&quot;highlighter-rouge&quot;&gt;$&lt;/code&gt;开头（恰好你也在用jQuery的话会产生冲突）&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;而其他的部分都会append到输出，使用时如果每次都对模板进行解析那速度估计就跟蜗牛一样，正确的姿势应该是&lt;strong&gt;编译并缓存&lt;/strong&gt;（这些内容与主题关系不大就不说了）。&lt;/p&gt;
+
+&lt;p&gt;其中语法设计的核心思想是：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;使用HTML（甚至普通文本）中很少用到的字符来区分语法结构&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;学习成本很低，但是单纯地使用它来编写一些复杂的逻辑还是很痛苦的事情。不过相比较来看&lt;strong&gt;FreeMarker&lt;/strong&gt;的写法更让人难受，加个&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;&lt;/code&gt;有啥意义么（估计会被喷）：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+&amp;lt;ul&amp;gt;
+	&amp;lt;#list list as i&amp;gt;
+		&amp;lt;li&amp;gt;i&amp;lt;/li&amp;gt;
+	&amp;lt;/#list&amp;gt;
+&amp;lt;/ul&amp;gt;
+&lt;/pre&gt;
+
+&lt;p&gt;类似的模板引擎还有&lt;strong&gt;CommonTemplate&lt;/strong&gt;、&lt;strong&gt;HTTL&lt;/strong&gt;等。虽然这些技术已经将性能提到到一个很高的水准，但在后端处理页面展示还是非常局限：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;只能每次都获取全部的数据并把页面渲染一遍&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;浪费服务器资源不说，体验也很差，真是出力不讨好！&lt;/p&gt;
+
+&lt;h2 id=&quot;angular&quot;&gt;Angular&lt;/h2&gt;
+
+&lt;p&gt;在JavaScript的世界里也有与Velocity相似的模板技术（更多可以看&lt;a href=&quot;http://cdc.tencent.com/?p=5723&quot;&gt;这里&lt;/a&gt;）：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+&amp;lt;h3&amp;gt;
+&amp;lt;% if (typeof content === &#39;string&#39;){ %&amp;gt;
+	&amp;lt;%= content %&amp;gt;
+&amp;lt;% } %&amp;gt;
+&amp;lt;/h3&amp;gt;
+&lt;/pre&gt;
+
+&lt;p&gt;从Java转JavaScript可能觉得这种方式很好用：在数据发生变化的时候执行一下render然后替换掉原先改位置的DOM结构就可以了~ 但是能不能更进一步：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;DOM结构随着数据的变化而自动跟着变化&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;看起来是终极目标，貌似&lt;a href=&quot;http://www.apjs.net/&quot;&gt;Angular&lt;/a&gt;完美地实现了：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+Your name: &amp;lt;input type=&quot;text&quot; ng-model=&quot;yourname&quot; placeholder=&quot;World&quot;&amp;gt;
+&amp;lt;hr&amp;gt;
+My name: &amp;lt;input type=&quot;text&quot; ng-model=&quot;yourname&quot; placeholder=&quot;World&quot;&amp;gt;
+&lt;/pre&gt;
+
+&lt;p&gt;执行的效果为：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;两个输入框的内容，你随便改变哪一个，另一个都会随之变化，这就是&lt;strong&gt;双向绑定&lt;/strong&gt;（也许你已经注意到&lt;code class=&quot;highlighter-rouge&quot;&gt;ng-model&lt;/code&gt;了），当你需要输出列表时要用到&lt;code class=&quot;highlighter-rouge&quot;&gt;ng-repeat&lt;/code&gt;：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+&amp;lt;ul&amp;gt;
+    &amp;lt;li ng-repeat=&quot;o in question.options&quot;&amp;gt;
+        &amp;lt;b&amp;gt;\.&amp;lt;/b&amp;gt;
+        &amp;lt;input type=&quot;radio&quot; name=&quot;optcheck&quot; /&amp;gt;
+        \
+    &amp;lt;/li&amp;gt;
+&amp;lt;/ul&amp;gt;
+&lt;/pre&gt;
+
+&lt;p&gt;这种思想非常先进，和之前出现的模板都是不一样的：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;之前的模板都是静态的，像一锤子买卖，而Angular的模板是动态的！&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;刚开始接触前端的时候也想过这个问题，但是实在没有想出来应该如何定义这样的模板语言，而Angular则已经实现了，但是代价就是限制多、门槛高：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;模块&lt;/li&gt;
+  &lt;li&gt;控制器&lt;/li&gt;
+  &lt;li&gt;过滤器&lt;/li&gt;
+  &lt;li&gt;指令&lt;/li&gt;
+  &lt;li&gt;作用域&lt;/li&gt;
+  &lt;li&gt;…&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;可能大家不明白为什么门槛高：当你在适合Angular的例子上操作的时候上手非常容易，但是实现复杂的功能需要熟悉很多不那么直观的概念。还有一点比较不喜欢的是：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;将展示和数据完全分开，甚至模板与展示相关的判断逻辑也分开！&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;这样确实能保持模板的简洁，但是总体上是否简洁、直观就不好说了。甚至连双向绑定这么好的卖点都有时候会被吐槽：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;在页面复杂的时候双向数据绑定的行为可能是预测不出来（这点保留意见，没有深入玩过）。&lt;/p&gt;
+
+&lt;h2 id=&quot;react&quot;&gt;React&lt;/h2&gt;
+
+&lt;p&gt;接着我们来看下最近红得发紫的React，网上已经有很多它与Angular的比较，有些还是有点道理的。使用React的第一关是&lt;strong&gt;JSX&lt;/strong&gt;语法：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+var root =(
+  &amp;lt;ul className=&quot;my-list&quot;&amp;gt;
+    &amp;lt;li&amp;gt;First Text Content&amp;lt;/li&amp;gt;
+    &amp;lt;li&amp;gt;Second Text Content&amp;lt;/li&amp;gt;
+  &amp;lt;/ul&amp;gt;
+);
+&lt;/pre&gt;
+
+&lt;p&gt;看起来就是将HTML代码嵌入到JavaScript中，看起来很怪但是也比较容易理解，而真正得到的代码如下:&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+var root = React.createElement(
+    &quot;ul&quot;,
+    { className: &quot;my-list&quot; },
+    React.createElement(&quot;li&quot;, null, &quot;First Text Content&quot;),
+    React.createElement(&quot;li&quot;, null, &quot;Second Text Content&quot;)
+);
+&lt;/pre&gt;
+
+&lt;p&gt;当然你也可以在&lt;a href=&quot;https://babeljs.io/repl/&quot;&gt;babel在线工具&lt;/a&gt;来体验这种语法。&lt;/p&gt;
+
+&lt;p&gt;看起来很美好，但实际上也不能太任性：模板的作用仅在于&lt;strong&gt;映射&lt;/strong&gt;！控制语句&lt;code class=&quot;highlighter-rouge&quot;&gt;for&lt;/code&gt;等是不能使用（多用babel玩一下就能体会到从JSX到JS之间的转换有多简单）：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;思路有点像Angular那样去扩展HTML原有的东西（Angular扩展的是Attribute，而React进一步扩展了Element）！&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;在用React的时候需要过的第二关是&lt;strong&gt;生命周期&lt;/strong&gt;，讲道理的话生命周期这种东西应该越简单越合理，然而并不是这样：&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;状态&lt;/th&gt;
+      &lt;th&gt;含义&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Mounting&lt;/td&gt;
+      &lt;td&gt;已插入真实 DOM&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Updating&lt;/td&gt;
+      &lt;td&gt;正在被重新渲染&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Unmounting&lt;/td&gt;
+      &lt;td&gt;已移出真实 DOM&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;为每个状态配了两个处理函数：&lt;code class=&quot;highlighter-rouge&quot;&gt;will&lt;/code&gt;函数在进入状态之前调用，&lt;code class=&quot;highlighter-rouge&quot;&gt;did&lt;/code&gt;函数在进入状态之后调用：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;componentWillMount&lt;/li&gt;
+  &lt;li&gt;componentDidMount&lt;/li&gt;
+  &lt;li&gt;componentWillUpdate&lt;/li&gt;
+  &lt;li&gt;componentDidUpdate&lt;/li&gt;
+  &lt;li&gt;componentWillUnmount&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;另外提供两个特殊状态的处理函数：&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;函数&lt;/th&gt;
+      &lt;th&gt;作用&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;componentWillReceiveProps&lt;/td&gt;
+      &lt;td&gt;已加载组件收到新的参数时调用&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;shouldComponentUpdate&lt;/td&gt;
+      &lt;td&gt;组件判断是否重新渲染时调用&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;大家都在讲React很快、非常快，这就是第三关的&lt;strong&gt;虚拟DOM&lt;/strong&gt;：真实的DOM操作代价太大，在&lt;code class=&quot;highlighter-rouge&quot;&gt;render&lt;/code&gt;会先操作内存中的DOM结构，然后最小化反映到真正的DOM上（DomDiff算法可以在&lt;a href=&quot;https://github.com/migijs/migi/wiki/%E5%9F%BA%E4%BA%8Evd%E5%92%8Cvr%E7%9A%84DomDiff%E7%AE%97%E6%B3%95&quot;&gt;这里&lt;/a&gt;感受下）。&lt;/p&gt;
+
+&lt;h2 id=&quot;noob-template&quot;&gt;Noob Template&lt;/h2&gt;
+
+&lt;p&gt;在上面我们看到的各种办法把逻辑与HTML代码分开，如果是JS的话：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;HTML的&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;&lt;/code&gt;和JavaScript的&lt;code class=&quot;highlighter-rouge&quot;&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;/code&gt;其实已经天然地起到了这个作用！&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;下面这段代码不用说也应该可以猜到输出应该是什么吧：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+&amp;lt;ul&amp;gt;
+    for(var i = 0; i &amp;lt; 10; i++){
+        &amp;lt;li&amp;gt;${i}&amp;lt;/li&amp;gt;
+    }
+&amp;lt;/ul&amp;gt;
+&lt;/pre&gt;
+
+&lt;p&gt;当用组件来搭建一个页面的时候可以是这样（包含嵌套的逻辑）：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+@xxxxxx
+    @yyyyyy
+        ...
+    @yyyyyy
+        ...
+    @yyyyyy
+        ...
+&lt;/pre&gt;
+
+&lt;p&gt;用过&lt;strong&gt;MarkDown&lt;/strong&gt;或者&lt;strong&gt;Jade&lt;/strong&gt;或者&lt;strong&gt;Python&lt;/strong&gt;的同学可能对这种方式已经比较熟悉了，都没用过的话可以对比一下几种层级表示方式：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;缩进式&lt;/li&gt;
+  &lt;li&gt;大括号式&lt;/li&gt;
+  &lt;li&gt;END结束符式&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;使用组件时需要设置一些属性来控制其行为：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+@xxxxx(name=&quot;TEST&quot; style= list=ajax(&quot;/url.do&quot;))
+&lt;/pre&gt;
+
+&lt;p&gt;另外如果可以在模板中直接编写JavaScript代码就更灵活了：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+@xxxxx
+    @on(init)
+        this.name = &quot;TEST&quot;;
+        this.style = {color:&quot;white&quot;};
+        ....
+&lt;/pre&gt;
+
+&lt;p&gt;然后结合React的精华：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;最小化DOM操作（用这个模式实现起来好像不怎么方便）&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;那么这样实现的模板怎么样？&lt;/p&gt;
+
+&lt;h2 id=&quot;section&quot;&gt;总结&lt;/h2&gt;
+
+&lt;p&gt;在后端渲染页面来展示的方式有点像漫画：看完一页翻一页；每次改变数据刷一次页面有点像动画：一帧一帧地动。&lt;/p&gt;
+
+&lt;p&gt;参考资料：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.cnblogs.com/lvdabao/p/AngularJs.html?utm_source=tuicool&amp;amp;utm_medium=referral#myexample&quot;&gt;走进AngularJs(一)angular基本概念的认识与实战&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.cnblogs.com/lvdabao/p/3379659.html&quot;&gt;走进AngularJs(二) ng模板中常用指令的使用方式&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://ourjs.com/detail/5483d2d10dad0fbb6d000014&quot;&gt;2015年的JavaScript：Angular之类的框架将被库取代&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.ibm.com/developerworks/cn/opensource/os-cn-AngularJS/&quot;&gt;AngularJS 作用域与数据绑定机制&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://ourjs.com/detail/5567c046d11a73aa4d000003&quot;&gt;我是怎么从顾虑到热爱ReactJS的(与AngularJS经典MVC数据绑定的对比)&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.infoq.com/cn/articles/react-jsx-and-component?utm_campaign=rightbar_v2&amp;amp;utm_source=infoq&amp;amp;utm_medium=articles_link&amp;amp;utm_content=link_text&quot;&gt;深入浅出React（三）：理解JSX和组件&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.infoq.com/cn/articles/react-dom-diff&quot;&gt;深入浅出React（四）：虚拟DOM Diff算法解析&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://reactjs.cn/react/docs/component-specs.html&quot;&gt;组件的详细说明和生命周期&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://zjumty.iteye.com/blog/2207030&quot;&gt;react.js的的diff算法真的很强大&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://segmentfault.com/a/1190000000606216&quot;&gt;React 的 diff 算法&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.ruanyifeng.com/blog/2015/03/react.html&quot;&gt;React 入门实例教程&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://facebook.github.io/react/index.html&quot;&gt;React官网&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+</description>
+        <pubDate>Thu, 15 Oct 2015 00:00:00 +0800</pubDate>
+        <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/10/15/Template-Language.html</link>
+        <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/10/15/Template-Language.html</guid>
+        
+        
+        <category>编程技术</category>
+        
+      </item>
+    
+      <item>
         <title>xml之schema</title>
         <description>&lt;p&gt;在网络传输中JSON和XML是最长用的两种数据格式，JSON的特点是短小、简单，但是除了这点以外就完全不能跟XML比了，所以涉及到配置方面还是优先考虑XML吧！&lt;/p&gt;
 
@@ -1088,7 +1088,7 @@ func main(){
 &amp;lt;/bean&amp;gt;
 &lt;/pre&gt;
 
-&lt;p&gt;除非在你的WILE里面写的非常清楚应用用哪个&lt;code&gt;class&lt;/code&gt;，需要设置哪些&lt;code&gt;property&lt;/code&gt;，哪些是必填的等等等，不然没人知道该怎么写，而更好的解决办法是编写schema来定义XML的规则！&lt;/p&gt;
+&lt;p&gt;除非在你的WILE里面写的非常清楚应用用哪个&lt;code class=&quot;highlighter-rouge&quot;&gt;class&lt;/code&gt;，需要设置哪些&lt;code class=&quot;highlighter-rouge&quot;&gt;property&lt;/code&gt;，哪些是必填的等等等，不然没人知道该怎么写，而更好的解决办法是编写schema来定义XML的规则！&lt;/p&gt;
 
 &lt;h2 id=&quot;xmlns&quot;&gt;命名空间（xmlns）&lt;/h2&gt;
 
@@ -1100,9 +1100,9 @@ func main(){
 &amp;lt;/beans:beans&amp;gt;
 &lt;/pre&gt;
 
-&lt;p&gt;其中&lt;code&gt;http://www.springframework.org/schema/beans&lt;/code&gt;就是一个命名空间，而&lt;code&gt;xmlns:beans&lt;/code&gt;相当于设置了命名空间的一个代号，在使用时&lt;code&gt;beans:import&lt;/code&gt;就可以表示使用该命名空间中的import元素。&lt;/p&gt;
+&lt;p&gt;其中&lt;code class=&quot;highlighter-rouge&quot;&gt;http://www.springframework.org/schema/beans&lt;/code&gt;就是一个命名空间，而&lt;code class=&quot;highlighter-rouge&quot;&gt;xmlns:beans&lt;/code&gt;相当于设置了命名空间的一个代号，在使用时&lt;code class=&quot;highlighter-rouge&quot;&gt;beans:import&lt;/code&gt;就可以表示使用该命名空间中的import元素。&lt;/p&gt;
 
-&lt;p&gt;可以不写&lt;code&gt;:beans&lt;/code&gt;来表示默认就用该命名空间，那么配置就更简单了：&lt;/p&gt;
+&lt;p&gt;可以不写&lt;code class=&quot;highlighter-rouge&quot;&gt;:beans&lt;/code&gt;来表示默认就用该命名空间，那么配置就更简单了：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 &amp;lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;&amp;gt;
@@ -1118,7 +1118,7 @@ func main(){
   &lt;li&gt;attributeFormDefault：unqualified/qualified&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;p&gt;当设置&lt;code&gt;unqualified&lt;/code&gt;时schema中除了根元素以外，其他的元素都是没有命名空间的，在使用的时候需要将其命名空间设置为空：&lt;/p&gt;
+&lt;p&gt;当设置&lt;code class=&quot;highlighter-rouge&quot;&gt;unqualified&lt;/code&gt;时schema中除了根元素以外，其他的元素都是没有命名空间的，在使用的时候需要将其命名空间设置为空：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 &amp;lt;easydt:easydt xmlns:easydt=&quot;http://www.cainiao.com/schema/easydt&quot;&amp;gt;
@@ -1126,7 +1126,7 @@ func main(){
 &amp;lt;/easydt:easydt&amp;gt;
 &lt;/pre&gt;
 
-&lt;p&gt;而设置为&lt;code&gt;qualified&lt;/code&gt;时schema中定义的所有元素都属于&lt;code&gt;targetNamespace&lt;/code&gt;所定义的命名空间：&lt;/p&gt;
+&lt;p&gt;而设置为&lt;code class=&quot;highlighter-rouge&quot;&gt;qualified&lt;/code&gt;时schema中定义的所有元素都属于&lt;code class=&quot;highlighter-rouge&quot;&gt;targetNamespace&lt;/code&gt;所定义的命名空间：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 &amp;lt;easydt:easydt xmlns=&quot;http://www.cainiao.com/schema/easydt&quot;&amp;gt;
@@ -1150,7 +1150,7 @@ elementFormDefault=&quot;qualified&quot;&amp;gt;
 &amp;lt;/xs:schema&amp;gt;
 &lt;/pre&gt;
 
-&lt;p&gt;其目的就是配置出来一堆的&lt;code&gt;element&lt;/code&gt;和&lt;code&gt;attribute&lt;/code&gt;来约束XML的行为，简单来说&lt;/p&gt;
+&lt;p&gt;其目的就是配置出来一堆的&lt;code class=&quot;highlighter-rouge&quot;&gt;element&lt;/code&gt;和&lt;code class=&quot;highlighter-rouge&quot;&gt;attribute&lt;/code&gt;来约束XML的行为，简单来说&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 &amp;lt;yyy xxx=&quot;xxx&quot;/&amp;gt;
@@ -1168,7 +1168,7 @@ elementFormDefault=&quot;qualified&quot;&amp;gt;
 &amp;lt;xs:element name=&quot;a&quot; type=&quot;xs:integer&quot;/&amp;gt;
 &lt;/pre&gt;
 
-&lt;p&gt;设置type为&lt;code&gt;integer&lt;/code&gt;之后会对内容进行检查，如果不是数字则报错，另外可以通过&lt;code&gt;simpleType&lt;/code&gt;对其扩展来实现更复杂的限定：&lt;/p&gt;
+&lt;p&gt;设置type为&lt;code class=&quot;highlighter-rouge&quot;&gt;integer&lt;/code&gt;之后会对内容进行检查，如果不是数字则报错，另外可以通过&lt;code class=&quot;highlighter-rouge&quot;&gt;simpleType&lt;/code&gt;对其扩展来实现更复杂的限定：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 &amp;lt;xs:element name=&quot;age&quot;&amp;gt;
@@ -1181,7 +1181,7 @@ elementFormDefault=&quot;qualified&quot;&amp;gt;
 &amp;lt;/xs:element&amp;gt;
 &lt;/pre&gt;
 
-&lt;p&gt;向元素中添加子元素、属性之后就不是一个简单元素，而是一个复杂元素，可以用&lt;code&gt;complexType&lt;/code&gt;定义其类型：&lt;/p&gt;
+&lt;p&gt;向元素中添加子元素、属性之后就不是一个简单元素，而是一个复杂元素，可以用&lt;code class=&quot;highlighter-rouge&quot;&gt;complexType&lt;/code&gt;定义其类型：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 &amp;lt;xs:element name=&quot;note&quot;&amp;gt;
@@ -1191,7 +1191,7 @@ elementFormDefault=&quot;qualified&quot;&amp;gt;
 &amp;lt;/xs:element&amp;gt;
 &lt;/pre&gt;
 
-&lt;p&gt;对应的XML的配置为&lt;code&gt;&amp;lt;easydt:note app=&quot;123&quot;/&amp;gt;&lt;/code&gt;，子节点的定义也很简单：&lt;/p&gt;
+&lt;p&gt;对应的XML的配置为&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;easydt:note app=&quot;123&quot;/&amp;gt;&lt;/code&gt;，子节点的定义也很简单：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 &amp;lt;xs:element name=&quot;note&quot;&amp;gt;
@@ -1204,7 +1204,7 @@ elementFormDefault=&quot;qualified&quot;&amp;gt;
 &amp;lt;/xs:element&amp;gt;
 &lt;/pre&gt;
 
-&lt;p&gt;对应的XML的配置为&lt;code&gt;&amp;lt;note&amp;gt;&amp;lt;a&amp;gt;1&amp;lt;/a&amp;gt;&amp;lt;b&amp;gt;2&amp;lt;/b&amp;gt;&amp;lt;/note&amp;gt;&lt;/code&gt;，其中sequence的作用是&lt;/p&gt;
+&lt;p&gt;对应的XML的配置为&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;note&amp;gt;&amp;lt;a&amp;gt;1&amp;lt;/a&amp;gt;&amp;lt;b&amp;gt;2&amp;lt;/b&amp;gt;&amp;lt;/note&amp;gt;&lt;/code&gt;，其中sequence的作用是&lt;/p&gt;
 
 &lt;blockquote&gt;
   &lt;p&gt;组中的元素以指定的顺序出现在包含元素中，每个子元素可以出现0次到任意次&lt;/p&gt;
@@ -1226,7 +1226,7 @@ elementFormDefault=&quot;qualified&quot;&amp;gt;
     &lt;/tr&gt;
     &lt;tr&gt;
       &lt;td&gt;choice&lt;/td&gt;
-      &lt;td&gt;随便添加子元素，可以使用&lt;code&gt;maxOccurs&lt;/code&gt;来设置可添加子元素的数目&lt;/td&gt;
+      &lt;td&gt;随便添加子元素，可以使用&lt;code class=&quot;highlighter-rouge&quot;&gt;maxOccurs&lt;/code&gt;来设置可添加子元素的数目&lt;/td&gt;
     &lt;/tr&gt;
     &lt;tr&gt;
       &lt;td&gt;attributeGroup&lt;/td&gt;
@@ -1239,7 +1239,7 @@ elementFormDefault=&quot;qualified&quot;&amp;gt;
   &lt;/tbody&gt;
 &lt;/table&gt;
 
-&lt;p&gt;元素的类型是非常复杂的，不同的类型之间很可能有一些定义是可以重用的，我们可以定义一些基础的类型，然后使用&lt;code&gt;extension&lt;/code&gt;对其进行扩展可以得到：&lt;/p&gt;
+&lt;p&gt;元素的类型是非常复杂的，不同的类型之间很可能有一些定义是可以重用的，我们可以定义一些基础的类型，然后使用&lt;code class=&quot;highlighter-rouge&quot;&gt;extension&lt;/code&gt;对其进行扩展可以得到：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 &amp;lt;xs:complexType name=&quot;baseInfo&quot;&amp;gt;
@@ -1260,7 +1260,7 @@ elementFormDefault=&quot;qualified&quot;&amp;gt;
 
 &lt;p&gt;其他元素的可以在&lt;a href=&quot;http://www.w3school.com.cn/schema/schema_elements_ref.asp&quot;&gt;这里&lt;/a&gt;查看使用方法~~&lt;/p&gt;
 
-&lt;p&gt;当上面这些不能满足你的需求时，可以使用&lt;code&gt;any&lt;/code&gt;、&lt;code&gt;anyAttribute&lt;/code&gt;来允许用户配置没有在schema中定义过的东西，然后在解析的阶段进行处理！&lt;/p&gt;
+&lt;p&gt;当上面这些不能满足你的需求时，可以使用&lt;code class=&quot;highlighter-rouge&quot;&gt;any&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;anyAttribute&lt;/code&gt;来允许用户配置没有在schema中定义过的东西，然后在解析的阶段进行处理！&lt;/p&gt;
 
 &lt;h2 id=&quot;section-1&quot;&gt;解析&lt;/h2&gt;
 
@@ -1280,7 +1280,7 @@ http\://www.cainiao.com/schema/easydt/easydt.xsd=META-INF/easydt.xsd
 http\://www.cainiao.com/schema/easydt=com.cainiao.easydt.client.springTag.EasyDtNamespaceHandler
 &lt;/pre&gt;
 
-&lt;p&gt;在&lt;code&gt;NamespaceHandlerSupport&lt;/code&gt;中定义了遇到对应的元素的时候应该使用Parser：&lt;/p&gt;
+&lt;p&gt;在&lt;code class=&quot;highlighter-rouge&quot;&gt;NamespaceHandlerSupport&lt;/code&gt;中定义了遇到对应的元素的时候应该使用Parser：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 public class EasyDtNamespaceHandler extends NamespaceHandlerSupport {
@@ -1290,7 +1290,7 @@ public class EasyDtNamespaceHandler extends NamespaceHandlerSupport {
 }
 &lt;/pre&gt;
 
-&lt;p&gt;然后用&lt;code&gt;AbstractBeanDefinitionParser&lt;/code&gt;中拿到配置信息并使用&lt;code&gt;addPropertyValue&lt;/code&gt;来定义BeanDefinition：&lt;/p&gt;
+&lt;p&gt;然后用&lt;code class=&quot;highlighter-rouge&quot;&gt;AbstractBeanDefinitionParser&lt;/code&gt;中拿到配置信息并使用&lt;code class=&quot;highlighter-rouge&quot;&gt;addPropertyValue&lt;/code&gt;来定义BeanDefinition：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 public class EasyDtBeanDefinitionParser extends AbstractSingleBeanDefinitionParser{
@@ -1303,7 +1303,7 @@ public class EasyDtBeanDefinitionParser extends AbstractSingleBeanDefinitionPars
 }
 &lt;/pre&gt;
 
-&lt;p&gt;关于BeanDefinition的载入和解析的过程可以看&lt;a href=&quot;http://book.51cto.com/art/201203/322589.htm&quot;&gt;这里&lt;/a&gt;，具体的解析工作是交给&lt;code&gt;BeanDefinitionParserDelegate&lt;/code&gt;来完成的，如果子元素不是简单元素可以调用&lt;code&gt;parseCustomElement&lt;/code&gt;来完成解析：&lt;/p&gt;
+&lt;p&gt;关于BeanDefinition的载入和解析的过程可以看&lt;a href=&quot;http://book.51cto.com/art/201203/322589.htm&quot;&gt;这里&lt;/a&gt;，具体的解析工作是交给&lt;code class=&quot;highlighter-rouge&quot;&gt;BeanDefinitionParserDelegate&lt;/code&gt;来完成的，如果子元素不是简单元素可以调用&lt;code class=&quot;highlighter-rouge&quot;&gt;parseCustomElement&lt;/code&gt;来完成解析：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 builder.addPropertyValue(&quot;provider&quot;,
@@ -1995,7 +1995,7 @@ jQuery.extend( [ deep ], target , object1 [, objectN… ] )&lt;/p&gt;
 
 &lt;h2 id=&quot;section&quot;&gt;基本语法&lt;/h2&gt;
 
-&lt;p&gt;JavaScript是弱类型的，有六种基本类型（用&lt;code&gt;typeof&lt;/code&gt;查看）：&lt;/p&gt;
+&lt;p&gt;JavaScript是弱类型的，有六种基本类型（用&lt;code class=&quot;highlighter-rouge&quot;&gt;typeof&lt;/code&gt;查看）：&lt;/p&gt;
 
 &lt;table&gt;
   &lt;thead&gt;
@@ -2028,9 +2028,9 @@ jQuery.extend( [ deep ], target , object1 [, objectN… ] )&lt;/p&gt;
   &lt;/tbody&gt;
 &lt;/table&gt;
 
-&lt;p&gt;弱类型的强大之处在于将不同类型的数据进行比较的时候居然结果是一样的：&lt;code&gt;&quot;123&quot;==123&lt;/code&gt;，简直毁三观~~不过也提供了另外一种方式&lt;code&gt;&quot;123&quot;===123&lt;/code&gt;可以得到预期的结果。&lt;/p&gt;
+&lt;p&gt;弱类型的强大之处在于将不同类型的数据进行比较的时候居然结果是一样的：&lt;code class=&quot;highlighter-rouge&quot;&gt;&quot;123&quot;==123&lt;/code&gt;，简直毁三观~~不过也提供了另外一种方式&lt;code class=&quot;highlighter-rouge&quot;&gt;&quot;123&quot;===123&lt;/code&gt;可以得到预期的结果。&lt;/p&gt;
 
-&lt;p&gt;在需要连续操作一个对象的多个属性或者方法时可以用&lt;code&gt;with&lt;/code&gt;减少代码量：&lt;/p&gt;
+&lt;p&gt;在需要连续操作一个对象的多个属性或者方法时可以用&lt;code class=&quot;highlighter-rouge&quot;&gt;with&lt;/code&gt;减少代码量：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 with(location){
@@ -2045,14 +2045,14 @@ with(location){
   &lt;p&gt;既不需要定义返回值，也不需要定义入参（简直比弱类型还随意…）&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;可以使用&lt;code&gt;arguments&lt;/code&gt;来获取所有的参数，这样看来参数的实现和&lt;strong&gt;Python&lt;/strong&gt;有点像，参数名称仅仅是用为了在代码中方便使用参数！&lt;/p&gt;
+&lt;p&gt;可以使用&lt;code class=&quot;highlighter-rouge&quot;&gt;arguments&lt;/code&gt;来获取所有的参数，这样看来参数的实现和&lt;strong&gt;Python&lt;/strong&gt;有点像，参数名称仅仅是用为了在代码中方便使用参数！&lt;/p&gt;
 
 &lt;p&gt;在JavaScript中几乎所有的都是对象，第一种创建对象的方式为：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 var Cat = {
-    name : '',
-    color : ''
+    name : &#39;&#39;,
+    color : &#39;&#39;
 }
 &lt;/pre&gt;
 
@@ -2065,7 +2065,7 @@ function Cat(name, color){
 }
 &lt;/pre&gt;
 
-&lt;p&gt;这样在创建对象的时候就很简单了：&lt;code&gt;new Cat('abc', 'white')&lt;/code&gt;，对象中有一些内部属性用来控制其行为：&lt;/p&gt;
+&lt;p&gt;这样在创建对象的时候就很简单了：&lt;code class=&quot;highlighter-rouge&quot;&gt;new Cat(&#39;abc&#39;, &#39;white&#39;)&lt;/code&gt;，对象中有一些内部属性用来控制其行为：&lt;/p&gt;
 
 &lt;table&gt;
   &lt;thead&gt;
@@ -2077,11 +2077,11 @@ function Cat(name, color){
   &lt;tbody&gt;
     &lt;tr&gt;
       &lt;td&gt;configurable&lt;/td&gt;
-      &lt;td&gt;能否通过&lt;code&gt;delete&lt;/code&gt;删除属性从而重新定义属性，能够修改属性的特性或者能否把属性修改为访问器属性&lt;/td&gt;
+      &lt;td&gt;能否通过&lt;code class=&quot;highlighter-rouge&quot;&gt;delete&lt;/code&gt;删除属性从而重新定义属性，能够修改属性的特性或者能否把属性修改为访问器属性&lt;/td&gt;
     &lt;/tr&gt;
     &lt;tr&gt;
       &lt;td&gt;enumerable&lt;/td&gt;
-      &lt;td&gt;能否通过&lt;code&gt;for-in&lt;/code&gt;循环返回属性&lt;/td&gt;
+      &lt;td&gt;能否通过&lt;code class=&quot;highlighter-rouge&quot;&gt;for-in&lt;/code&gt;循环返回属性&lt;/td&gt;
     &lt;/tr&gt;
     &lt;tr&gt;
       &lt;td&gt;writable&lt;/td&gt;
@@ -2098,22 +2098,22 @@ function Cat(name, color){
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 var person = {};
-Object.defineProperty(person, 'name', {
+Object.defineProperty(person, &#39;name&#39;, {
     writeable: false,
-    value: 'abc'
+    value: &#39;abc&#39;
 });
 &lt;/pre&gt;
 
-&lt;p&gt;另外提供了&lt;code&gt;get、set&lt;/code&gt;方法，有了它们之后就可以很容易监听对象中每个属性的变化，在做数据绑定的时候比较好用：&lt;/p&gt;
+&lt;p&gt;另外提供了&lt;code class=&quot;highlighter-rouge&quot;&gt;get、set&lt;/code&gt;方法，有了它们之后就可以很容易监听对象中每个属性的变化，在做数据绑定的时候比较好用：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
-var person = {name : 'abc'};
-Object.defineProperty(person, 'name', {
+var person = {name : &#39;abc&#39;};
+Object.defineProperty(person, &#39;name&#39;, {
     get: function(){
-        return 'bcd';
+        return &#39;bcd&#39;;
     },
     set: function(newValue){
-        console.log('hehe');
+        console.log(&#39;hehe&#39;);
     }
 });
 console.log(person.name);// bcd
@@ -2131,7 +2131,7 @@ console.log(person.name);// bcd
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 function Person(){}
-Person.prototype.name = 'abc';
+Person.prototype.name = &#39;abc&#39;;
 var person1 = new Person();
 console.log(person1.name);//abc
 &lt;/pre&gt;
@@ -2178,7 +2178,7 @@ function object(o){
     return new F();
 }
 var person = {
-    name : 'abc'
+    name : &#39;abc&#39;
 }
 var another_person = object(person);
 &lt;/pre&gt;
@@ -2228,7 +2228,7 @@ function createFunctions(){
 }
 &lt;/pre&gt;
 
-&lt;p&gt;直观感觉&lt;code&gt;result[0]()&lt;/code&gt;的返回值应该是0，实际上并非如此，内部函数可以访问外部函数作用域中的变量，但仅仅是包含一个引用而已，具体到执行的时候才去获取引用指向的值。&lt;/p&gt;
+&lt;p&gt;直观感觉&lt;code class=&quot;highlighter-rouge&quot;&gt;result[0]()&lt;/code&gt;的返回值应该是0，实际上并非如此，内部函数可以访问外部函数作用域中的变量，但仅仅是包含一个引用而已，具体到执行的时候才去获取引用指向的值。&lt;/p&gt;
 
 &lt;p&gt;闭包绕就绕在作用域上，当它和其他作用域也比较绕的东西勾搭在一起的时候就需要小心了，比如this：&lt;/p&gt;
 
@@ -2356,7 +2356,7 @@ console.log(obj.getNameFunc()()); // my object
   &lt;/tbody&gt;
 &lt;/table&gt;
 
-&lt;p&gt;在判断节点类型中经常会用到&lt;code&gt;nodeName&lt;/code&gt;和&lt;code&gt;nodeType&lt;/code&gt;，另外有一个属性&lt;code&gt;childNodes&lt;/code&gt;保存子节点：&lt;/p&gt;
+&lt;p&gt;在判断节点类型中经常会用到&lt;code class=&quot;highlighter-rouge&quot;&gt;nodeName&lt;/code&gt;和&lt;code class=&quot;highlighter-rouge&quot;&gt;nodeType&lt;/code&gt;，另外有一个属性&lt;code class=&quot;highlighter-rouge&quot;&gt;childNodes&lt;/code&gt;保存子节点：&lt;/p&gt;
 
 &lt;blockquote&gt;
   &lt;p&gt;NodeList对象并不是Array，而是基于DOM结构动态查询得到的结果&lt;/p&gt;
@@ -2391,7 +2391,7 @@ console.log(obj.getNameFunc()()); // my object
   &lt;/tbody&gt;
 &lt;/table&gt;
 
-&lt;p&gt;HTML5规定可以为元素添加非标准的属性，但是要添加前缀&lt;code&gt;data-&lt;/code&gt;，目的是为元素提供渲染无关的信息，访问时可以使用&lt;code&gt;dataset&lt;/code&gt;：&lt;/p&gt;
+&lt;p&gt;HTML5规定可以为元素添加非标准的属性，但是要添加前缀&lt;code class=&quot;highlighter-rouge&quot;&gt;data-&lt;/code&gt;，目的是为元素提供渲染无关的信息，访问时可以使用&lt;code class=&quot;highlighter-rouge&quot;&gt;dataset&lt;/code&gt;：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 &amp;lt;div id=&quot;myDiv&quot; data-appId=&quot;abc&quot; data-myName=&quot;bcd&quot;&amp;gt;&amp;lt;div&amp;gt;
@@ -2495,7 +2495,7 @@ xhr.send(null);
   &lt;p&gt;发送请求时将页面的源信息设置到Origin中，服务器根据Origin来判断是否允许访问，如果允许，那么在返回的头中设置Access-Control-Allow-Origin&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;在&lt;code&gt;Access-Control-Allow-Origin&lt;/code&gt;与源信息匹配或者其值为*的时候，浏览器就允许跨域访问了！&lt;/p&gt;
+&lt;p&gt;在&lt;code class=&quot;highlighter-rouge&quot;&gt;Access-Control-Allow-Origin&lt;/code&gt;与源信息匹配或者其值为*的时候，浏览器就允许跨域访问了！&lt;/p&gt;
 
 &lt;p&gt;参考资料&lt;/p&gt;
 
@@ -2506,7 +2506,7 @@ xhr.send(null);
 
 &lt;h2 id=&quot;section-5&quot;&gt;离线&lt;/h2&gt;
 
-&lt;p&gt;当在离线的情况下依然可以访问网页，那么Web页面和App的距离就更近一步了，而且HTML5中已经实现了，对于资源缓存使用&lt;code&gt;manifest&lt;/code&gt;搞定：&lt;/p&gt;
+&lt;p&gt;当在离线的情况下依然可以访问网页，那么Web页面和App的距离就更近一步了，而且HTML5中已经实现了，对于资源缓存使用&lt;code class=&quot;highlighter-rouge&quot;&gt;manifest&lt;/code&gt;搞定：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 &amp;lt;html manifest=&quot;/example/demo.manifest&quot;&amp;gt;
@@ -2526,7 +2526,7 @@ FALLBACK: # 没有网络时的替代网页
 /html5/ /404.html
 &lt;/pre&gt;
 
-&lt;p&gt;另外提供对应的JavaScript API &lt;code&gt;applicationCache&lt;/code&gt;来查看缓存的状态：&lt;/p&gt;
+&lt;p&gt;另外提供对应的JavaScript API &lt;code class=&quot;highlighter-rouge&quot;&gt;applicationCache&lt;/code&gt;来查看缓存的状态：&lt;/p&gt;
 
 &lt;table&gt;
   &lt;thead&gt;
@@ -2604,7 +2604,7 @@ FALLBACK: # 没有网络时的替代网页
   &lt;/tbody&gt;
 &lt;/table&gt;
 
-&lt;p&gt;需要注意应用缓存机制会自动缓存引用了manifest的页面，那么这个页面在manifest文件没有发生变更的情况下会一直保持不变，这个可以用一个&lt;code&gt;iframe&lt;/code&gt;间接缓存来解决。&lt;/p&gt;
+&lt;p&gt;需要注意应用缓存机制会自动缓存引用了manifest的页面，那么这个页面在manifest文件没有发生变更的情况下会一直保持不变，这个可以用一个&lt;code class=&quot;highlighter-rouge&quot;&gt;iframe&lt;/code&gt;间接缓存来解决。&lt;/p&gt;
 
 &lt;p&gt;除了js、css等资源外还有其他数据需要缓存的话可以用下面几种方案来解决：&lt;/p&gt;
 

@@ -44,7 +44,7 @@
 &lt;/bean&gt;
 </pre>
 
-<p>除非在你的WILE里面写的非常清楚应用用哪个<code>class</code>，需要设置哪些<code>property</code>，哪些是必填的等等等，不然没人知道该怎么写，而更好的解决办法是编写schema来定义XML的规则！</p>
+<p>除非在你的WILE里面写的非常清楚应用用哪个<code class="highlighter-rouge">class</code>，需要设置哪些<code class="highlighter-rouge">property</code>，哪些是必填的等等等，不然没人知道该怎么写，而更好的解决办法是编写schema来定义XML的规则！</p>
 
 <h2 id="xmlns">命名空间（xmlns）</h2>
 
@@ -56,9 +56,9 @@
 &lt;/beans:beans&gt;
 </pre>
 
-<p>其中<code>http://www.springframework.org/schema/beans</code>就是一个命名空间，而<code>xmlns:beans</code>相当于设置了命名空间的一个代号，在使用时<code>beans:import</code>就可以表示使用该命名空间中的import元素。</p>
+<p>其中<code class="highlighter-rouge">http://www.springframework.org/schema/beans</code>就是一个命名空间，而<code class="highlighter-rouge">xmlns:beans</code>相当于设置了命名空间的一个代号，在使用时<code class="highlighter-rouge">beans:import</code>就可以表示使用该命名空间中的import元素。</p>
 
-<p>可以不写<code>:beans</code>来表示默认就用该命名空间，那么配置就更简单了：</p>
+<p>可以不写<code class="highlighter-rouge">:beans</code>来表示默认就用该命名空间，那么配置就更简单了：</p>
 
 <pre class="prettyprint">
 &lt;beans xmlns="http://www.springframework.org/schema/beans"&gt;
@@ -74,7 +74,7 @@
   <li>attributeFormDefault：unqualified/qualified</li>
 </ol>
 
-<p>当设置<code>unqualified</code>时schema中除了根元素以外，其他的元素都是没有命名空间的，在使用的时候需要将其命名空间设置为空：</p>
+<p>当设置<code class="highlighter-rouge">unqualified</code>时schema中除了根元素以外，其他的元素都是没有命名空间的，在使用的时候需要将其命名空间设置为空：</p>
 
 <pre class="prettyprint">
 &lt;easydt:easydt xmlns:easydt="http://www.cainiao.com/schema/easydt"&gt;
@@ -82,7 +82,7 @@
 &lt;/easydt:easydt&gt;
 </pre>
 
-<p>而设置为<code>qualified</code>时schema中定义的所有元素都属于<code>targetNamespace</code>所定义的命名空间：</p>
+<p>而设置为<code class="highlighter-rouge">qualified</code>时schema中定义的所有元素都属于<code class="highlighter-rouge">targetNamespace</code>所定义的命名空间：</p>
 
 <pre class="prettyprint">
 &lt;easydt:easydt xmlns="http://www.cainiao.com/schema/easydt"&gt;
@@ -106,7 +106,7 @@ elementFormDefault="qualified"&gt;
 &lt;/xs:schema&gt;
 </pre>
 
-<p>其目的就是配置出来一堆的<code>element</code>和<code>attribute</code>来约束XML的行为，简单来说</p>
+<p>其目的就是配置出来一堆的<code class="highlighter-rouge">element</code>和<code class="highlighter-rouge">attribute</code>来约束XML的行为，简单来说</p>
 
 <pre class="prettyprint">
 &lt;yyy xxx="xxx"/&gt;
@@ -124,7 +124,7 @@ elementFormDefault="qualified"&gt;
 &lt;xs:element name="a" type="xs:integer"/&gt;
 </pre>
 
-<p>设置type为<code>integer</code>之后会对内容进行检查，如果不是数字则报错，另外可以通过<code>simpleType</code>对其扩展来实现更复杂的限定：</p>
+<p>设置type为<code class="highlighter-rouge">integer</code>之后会对内容进行检查，如果不是数字则报错，另外可以通过<code class="highlighter-rouge">simpleType</code>对其扩展来实现更复杂的限定：</p>
 
 <pre class="prettyprint">
 &lt;xs:element name="age"&gt;
@@ -137,7 +137,7 @@ elementFormDefault="qualified"&gt;
 &lt;/xs:element&gt;
 </pre>
 
-<p>向元素中添加子元素、属性之后就不是一个简单元素，而是一个复杂元素，可以用<code>complexType</code>定义其类型：</p>
+<p>向元素中添加子元素、属性之后就不是一个简单元素，而是一个复杂元素，可以用<code class="highlighter-rouge">complexType</code>定义其类型：</p>
 
 <pre class="prettyprint">
 &lt;xs:element name="note"&gt;
@@ -147,7 +147,7 @@ elementFormDefault="qualified"&gt;
 &lt;/xs:element&gt;
 </pre>
 
-<p>对应的XML的配置为<code>&lt;easydt:note app="123"/&gt;</code>，子节点的定义也很简单：</p>
+<p>对应的XML的配置为<code class="highlighter-rouge">&lt;easydt:note app="123"/&gt;</code>，子节点的定义也很简单：</p>
 
 <pre class="prettyprint">
 &lt;xs:element name="note"&gt;
@@ -160,7 +160,7 @@ elementFormDefault="qualified"&gt;
 &lt;/xs:element&gt;
 </pre>
 
-<p>对应的XML的配置为<code>&lt;note&gt;&lt;a&gt;1&lt;/a&gt;&lt;b&gt;2&lt;/b&gt;&lt;/note&gt;</code>，其中sequence的作用是</p>
+<p>对应的XML的配置为<code class="highlighter-rouge">&lt;note&gt;&lt;a&gt;1&lt;/a&gt;&lt;b&gt;2&lt;/b&gt;&lt;/note&gt;</code>，其中sequence的作用是</p>
 
 <blockquote>
   <p>组中的元素以指定的顺序出现在包含元素中，每个子元素可以出现0次到任意次</p>
@@ -182,7 +182,7 @@ elementFormDefault="qualified"&gt;
     </tr>
     <tr>
       <td>choice</td>
-      <td>随便添加子元素，可以使用<code>maxOccurs</code>来设置可添加子元素的数目</td>
+      <td>随便添加子元素，可以使用<code class="highlighter-rouge">maxOccurs</code>来设置可添加子元素的数目</td>
     </tr>
     <tr>
       <td>attributeGroup</td>
@@ -195,7 +195,7 @@ elementFormDefault="qualified"&gt;
   </tbody>
 </table>
 
-<p>元素的类型是非常复杂的，不同的类型之间很可能有一些定义是可以重用的，我们可以定义一些基础的类型，然后使用<code>extension</code>对其进行扩展可以得到：</p>
+<p>元素的类型是非常复杂的，不同的类型之间很可能有一些定义是可以重用的，我们可以定义一些基础的类型，然后使用<code class="highlighter-rouge">extension</code>对其进行扩展可以得到：</p>
 
 <pre class="prettyprint">
 &lt;xs:complexType name="baseInfo"&gt;
@@ -216,7 +216,7 @@ elementFormDefault="qualified"&gt;
 
 <p>其他元素的可以在<a href="http://www.w3school.com.cn/schema/schema_elements_ref.asp">这里</a>查看使用方法~~</p>
 
-<p>当上面这些不能满足你的需求时，可以使用<code>any</code>、<code>anyAttribute</code>来允许用户配置没有在schema中定义过的东西，然后在解析的阶段进行处理！</p>
+<p>当上面这些不能满足你的需求时，可以使用<code class="highlighter-rouge">any</code>、<code class="highlighter-rouge">anyAttribute</code>来允许用户配置没有在schema中定义过的东西，然后在解析的阶段进行处理！</p>
 
 <h2 id="section-1">解析</h2>
 
@@ -236,7 +236,7 @@ http\://www.cainiao.com/schema/easydt/easydt.xsd=META-INF/easydt.xsd
 http\://www.cainiao.com/schema/easydt=com.cainiao.easydt.client.springTag.EasyDtNamespaceHandler
 </pre>
 
-<p>在<code>NamespaceHandlerSupport</code>中定义了遇到对应的元素的时候应该使用Parser：</p>
+<p>在<code class="highlighter-rouge">NamespaceHandlerSupport</code>中定义了遇到对应的元素的时候应该使用Parser：</p>
 
 <pre class="prettyprint">
 public class EasyDtNamespaceHandler extends NamespaceHandlerSupport {
@@ -246,7 +246,7 @@ public class EasyDtNamespaceHandler extends NamespaceHandlerSupport {
 }
 </pre>
 
-<p>然后用<code>AbstractBeanDefinitionParser</code>中拿到配置信息并使用<code>addPropertyValue</code>来定义BeanDefinition：</p>
+<p>然后用<code class="highlighter-rouge">AbstractBeanDefinitionParser</code>中拿到配置信息并使用<code class="highlighter-rouge">addPropertyValue</code>来定义BeanDefinition：</p>
 
 <pre class="prettyprint">
 public class EasyDtBeanDefinitionParser extends AbstractSingleBeanDefinitionParser{
@@ -259,7 +259,7 @@ public class EasyDtBeanDefinitionParser extends AbstractSingleBeanDefinitionPars
 }
 </pre>
 
-<p>关于BeanDefinition的载入和解析的过程可以看<a href="http://book.51cto.com/art/201203/322589.htm">这里</a>，具体的解析工作是交给<code>BeanDefinitionParserDelegate</code>来完成的，如果子元素不是简单元素可以调用<code>parseCustomElement</code>来完成解析：</p>
+<p>关于BeanDefinition的载入和解析的过程可以看<a href="http://book.51cto.com/art/201203/322589.htm">这里</a>，具体的解析工作是交给<code class="highlighter-rouge">BeanDefinitionParserDelegate</code>来完成的，如果子元素不是简单元素可以调用<code class="highlighter-rouge">parseCustomElement</code>来完成解析：</p>
 
 <pre class="prettyprint">
 builder.addPropertyValue("provider",
