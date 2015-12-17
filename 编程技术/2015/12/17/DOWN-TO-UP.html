@@ -26,11 +26,41 @@
 
 		<div class="post-container">
 			<h1>从下向上的设计</h1>
-			<section data-markdown="">
+			<div class="highlighter-rouge"><pre class="highlight"><code>&lt;script type="text/javascript" src="http://cdn.bootcss.com/reveal.js/3.0.0/js/reveal.min.js"&gt;&lt;/script&gt;
+	&lt;section data-markdown&gt;
+	  ## Markdown support
 
-## hi
-
-</section>
+	  Write content using inline or external Markdown.
+	  Instructions and more info available in the [readme](https://github.com/hakimel/reveal.js#markdown).
+	&lt;/section&gt; &lt;script&gt; //在这里对幻灯片进行配置 Reveal.initialize({
+// 是否显示右下角的方向盘
+controls: true,
+// 是否显示页面底部的进度条
+progress: true,
+// 是否开启快捷键
+keyboard: true,
+// 是否支持概览模式
+overview: true,
+// 是否自动居中
+center: true,
+// 是否循环显示幻灯片
+loop: false,
+// Change the presentation direction to be RTL
+rtl: false,
+// Number of milliseconds between automatically proceeding to the
+// next slide, disabled when set to 0, this value can be overwritten
+// by using a data-autoslide attribute on your slides
+autoSlide: 0,
+// 是否支持鼠标滚轮
+mouseWheel: false,
+// 是否支持链接的3D反转
+rollingLinks: true,
+// 翻页效果
+transition: 'default', // default/cube/page/concave/zoom/linear/fade/none
+// 翻页速度
+transitionSpeed: 'default', // default/fast/slow }); &lt;/script&gt;
+</code></pre>
+</div>
 
 
 			<!-- 评论组件 -->
@@ -60,7 +90,4 @@
   })();
 </script>
 
-<script type="text/javascript">
-	document.getElementById("barClick").onclick = click;
-</script>
 
