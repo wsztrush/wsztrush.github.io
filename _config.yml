@@ -3,3 +3,4 @@ markdown: kramdown
 safe: false
 excerpt_separator: "\n\n\n"
 paginate: 50
+gems: [jekyll-paginate]
