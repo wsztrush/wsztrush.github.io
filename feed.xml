@@ -5,13 +5,82 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 17 Dec 2015 16:20:45 +0800</pubDate>
-    <lastBuildDate>Thu, 17 Dec 2015 16:20:45 +0800</lastBuildDate>
+    <pubDate>Thu, 17 Dec 2015 17:00:59 +0800</pubDate>
+    <lastBuildDate>Thu, 17 Dec 2015 17:00:59 +0800</lastBuildDate>
     <generator>Jekyll v3.0.1</generator>
     
       <item>
         <title>从下向上的开发</title>
-        <description>&lt;p&gt;因为在公司接触业务比较少,更多的是&lt;/p&gt;
+        <description>&lt;p&gt;因为在公司接触业务比较少，更多的是在想办法做一些工具来帮助快速开发，过程中感觉做业务的思路与做工具（系统）的思路差别比较大。下面分享一下在两个模块中的思考过程。&lt;/p&gt;
+
+&lt;h2 id=&quot;section&quot;&gt;获取数据&lt;/h2&gt;
+
+&lt;p&gt;团队做的业务复杂无比，其中包括很多报表，如果按照一般的开发流程：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;iBatis(SQL)&lt;/li&gt;
+  &lt;li&gt;DAO+DO&lt;/li&gt;
+  &lt;li&gt;Manager&lt;/li&gt;
+  &lt;li&gt;Web+VO&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;有几十张这样的报表的话，写起来还是非常痛苦的。那么，思考一下是否可以把里面真正的&lt;strong&gt;逻辑部分&lt;/strong&gt;取出来，其他的代码都非常像就直接重用即可：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;写一个SQL就可以完成数据的读取和组织！&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;那么现在配置数据接口就非常简单了。&lt;/p&gt;
+
+&lt;p&gt;当初乐观地以为这样就结束了，&lt;strong&gt;图样图森破啊&lt;/strong&gt;！！SQL返回的其实是一个LIST，而实际中报表的类型千差万别：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+{
+    title : &quot;xxx&quot;,
+    data : [1, 2, 3, 4, 5, 6, 7, 8]
+}
+&lt;/pre&gt;
+
+&lt;p&gt;还有：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+[
+    {text : &#39;A&#39;, value : 1},
+    {text : &#39;B&#39;, value : 2}
+]
+&lt;/pre&gt;
+
+&lt;p&gt;甚至还有一些常量、枚举，于是我们火速开发了更多的一些取数据的功能：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;MYSQL&lt;/li&gt;
+  &lt;li&gt;MYSQL-XXX&lt;/li&gt;
+  &lt;li&gt;JSON&lt;/li&gt;
+  &lt;li&gt;VELOCITY&lt;/li&gt;
+  &lt;li&gt;XXXX&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;最后我们增加了一个&lt;strong&gt;GROOVY&lt;/strong&gt;加工数据的功能，世界一下子清净。但是，看起来很美好的一个设计用起来其实并不那么美好。&lt;/p&gt;
+
+&lt;p&gt;在一开始考虑的时候只想到：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;我要一个可以XXX的系统。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;写代码的时候直接奔着这个目标就去了，不带任何的拐弯抹角。当我们一步到位完成后洋洋得意时，可能更多的考虑下：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;我们的系统可以从哪些地方可以扩展？留有多少的灵活性？&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;回归正题，尝到一点脚本语言的甜头后：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;是否可以用脚本来加工数据？应该没有比这个更灵活的了～&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;组装页面&lt;/h2&gt;
 
 &lt;!--
 
