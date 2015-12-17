@@ -1,15 +1,19 @@
 <!DOCTYPEhtmlPUBLIC"-//W3C//DTDXHTML1.0Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
 <html>
 	<head>
-		<script type="text/javascript" src="http://cdn.bootcss.com/reveal.js/3.0.0/js/reveal.min.js"></script>
+		<script src="http://cdn.bootcss.com/reveal.js/3.0.0/lib/js/head.min.js"></script>
+		<script src="http://cdn.bootcss.com/reveal.js/3.0.0/js/reveal.min.js"></script>
+
+		<link rel="stylesheet" href="http://cdn.bootcss.com/reveal.js/3.0.0/css/reveal.css">
+		<link rel="stylesheet" href="http://cdn.bootcss.com/reveal.js/3.0.0/css/theme/black.min.css" id="theme">
+		<link rel="stylesheet" href="http://cdn.bootcss.com/reveal.js/3.0.0/lib/css/zenburn.min.css">
 	</head>
 	<body>
-		<section data-markdown>
-		  ## Markdown support
-
-		  Write content using inline or external Markdown.
-		  Instructions and more info available in the [readme](https://github.com/hakimel/reveal.js#markdown).
-		</section>
+		<div class="reveal">
+			<div class="slides">
+				{{ content }}
+			</div>
+		</div>
 	</body>
 </html>
 <script>
@@ -41,5 +45,13 @@ Reveal.initialize({
 	transition: 'default', // default/cube/page/concave/zoom/linear/fade/none
 	// 翻页速度
 	transitionSpeed: 'default', // default/fast/slow
+	dependencies: [
+		{ src: 'http://cdn.bootcss.com/reveal.js/3.0.0/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+		{ src: 'http://cdn.bootcss.com/reveal.js/3.0.0/plugin/markdown/marked.min.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+		{ src: 'http://cdn.bootcss.com/reveal.js/3.0.0/plugin/markdown/markdown.min.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+		{ src: 'http://cdn.bootcss.com/reveal.js/3.0.0/plugin/highlight/highlight.min.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+		{ src: 'http://cdn.bootcss.com/reveal.js/3.0.0/plugin/zoom-js/zoom.min.js', async: true },
+		{ src: 'http://cdn.bootcss.com/reveal.js/3.0.0/plugin/notes/notes.min.js', async: true }
+	]
 });
 </script>
