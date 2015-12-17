@@ -5,17 +5,47 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 17 Dec 2015 14:26:57 +0800</pubDate>
-    <lastBuildDate>Thu, 17 Dec 2015 14:26:57 +0800</lastBuildDate>
+    <pubDate>Thu, 17 Dec 2015 14:50:49 +0800</pubDate>
+    <lastBuildDate>Thu, 17 Dec 2015 14:50:49 +0800</lastBuildDate>
     <generator>Jekyll v3.0.1</generator>
     
       <item>
         <title>从下向上的设计</title>
-        <description>&lt;section data-markdown=&quot;&quot;&gt;
+        <description>&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;lt;script type=&quot;text/javascript&quot; src=&quot;http://cdn.bootcss.com/reveal.js/3.0.0/js/reveal.min.js&quot;&amp;gt;&amp;lt;/script&amp;gt;
+	&amp;lt;section data-markdown&amp;gt;
+	  ## Markdown support
 
-## hi
-
-&lt;/section&gt;
+	  Write content using inline or external Markdown.
+	  Instructions and more info available in the [readme](https://github.com/hakimel/reveal.js#markdown).
+	&amp;lt;/section&amp;gt; &amp;lt;script&amp;gt; //在这里对幻灯片进行配置 Reveal.initialize({
+// 是否显示右下角的方向盘
+controls: true,
+// 是否显示页面底部的进度条
+progress: true,
+// 是否开启快捷键
+keyboard: true,
+// 是否支持概览模式
+overview: true,
+// 是否自动居中
+center: true,
+// 是否循环显示幻灯片
+loop: false,
+// Change the presentation direction to be RTL
+rtl: false,
+// Number of milliseconds between automatically proceeding to the
+// next slide, disabled when set to 0, this value can be overwritten
+// by using a data-autoslide attribute on your slides
+autoSlide: 0,
+// 是否支持鼠标滚轮
+mouseWheel: false,
+// 是否支持链接的3D反转
+rollingLinks: true,
+// 翻页效果
+transition: &#39;default&#39;, // default/cube/page/concave/zoom/linear/fade/none
+// 翻页速度
+transitionSpeed: &#39;default&#39;, // default/fast/slow }); &amp;lt;/script&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
 </description>
         <pubDate>Thu, 17 Dec 2015 00:00:00 +0800</pubDate>
