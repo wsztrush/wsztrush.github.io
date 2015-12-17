@@ -5,8 +5,8 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 17 Dec 2015 17:00:59 +0800</pubDate>
-    <lastBuildDate>Thu, 17 Dec 2015 17:00:59 +0800</lastBuildDate>
+    <pubDate>Thu, 17 Dec 2015 17:59:59 +0800</pubDate>
+    <lastBuildDate>Thu, 17 Dec 2015 17:59:59 +0800</lastBuildDate>
     <generator>Jekyll v3.0.1</generator>
     
       <item>
@@ -15,7 +15,7 @@
 
 &lt;h2 id=&quot;section&quot;&gt;获取数据&lt;/h2&gt;
 
-&lt;p&gt;团队做的业务复杂无比，其中包括很多报表，如果按照一般的开发流程：&lt;/p&gt;
+&lt;p&gt;团队做的业务复杂无比，几百张的数据表导致有非常非常多的报表，通常的做法是这样的：&lt;/p&gt;
 
 &lt;ol&gt;
   &lt;li&gt;iBatis(SQL)&lt;/li&gt;
@@ -24,15 +24,15 @@
   &lt;li&gt;Web+VO&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;p&gt;有几十张这样的报表的话，写起来还是非常痛苦的。那么，思考一下是否可以把里面真正的&lt;strong&gt;逻辑部分&lt;/strong&gt;取出来，其他的代码都非常像就直接重用即可：&lt;/p&gt;
+&lt;p&gt;几十张报表开发起来非常痛苦，而且大部分的代码实现的功能都是&lt;strong&gt;相似&lt;/strong&gt;的！说到相似，那么是不是把不同的部分（取数逻辑）独立出来，相同部分进行复用即可：&lt;/p&gt;
 
 &lt;blockquote&gt;
-  &lt;p&gt;写一个SQL就可以完成数据的读取和组织！&lt;/p&gt;
+  &lt;p&gt;配置一个数据接口只需要填写一段SQL就可以了！&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;那么现在配置数据接口就非常简单了。&lt;/p&gt;
+&lt;p&gt;其他的操作（数据库、返回数据）不需要你再关心了。YY了一下大部分的需求用SQL绝对绰绰有余，这件事情就这样结束了！&lt;strong&gt;图样图森破啊&lt;/strong&gt;！！&lt;/p&gt;
 
-&lt;p&gt;当初乐观地以为这样就结束了，&lt;strong&gt;图样图森破啊&lt;/strong&gt;！！SQL返回的其实是一个LIST，而实际中报表的类型千差万别：&lt;/p&gt;
+&lt;p&gt;马上我们遇到了这样的需求：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 {
@@ -41,7 +41,7 @@
 }
 &lt;/pre&gt;
 
-&lt;p&gt;还有：&lt;/p&gt;
+&lt;p&gt;还有这样（一些常量）：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 [
@@ -50,7 +50,7 @@
 ]
 &lt;/pre&gt;
 
-&lt;p&gt;甚至还有一些常量、枚举，于是我们火速开发了更多的一些取数据的功能：&lt;/p&gt;
+&lt;p&gt;于是我们火速开发了更多的一些功能组件来解决遇到对应的问题：&lt;/p&gt;
 
 &lt;ol&gt;
   &lt;li&gt;MYSQL&lt;/li&gt;
@@ -60,25 +60,61 @@
   &lt;li&gt;XXXX&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;p&gt;最后我们增加了一个&lt;strong&gt;GROOVY&lt;/strong&gt;加工数据的功能，世界一下子清净。但是，看起来很美好的一个设计用起来其实并不那么美好。&lt;/p&gt;
+&lt;p&gt;组件越来越多，“新手”进来已经不是特别了解每个的具体含义，配置的成本也越来越大。感觉系统用起来并不想当初想的那么美好！&lt;/p&gt;
 
-&lt;p&gt;在一开始考虑的时候只想到：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;我要一个可以XXX的系统。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;写代码的时候直接奔着这个目标就去了，不带任何的拐弯抹角。当我们一步到位完成后洋洋得意时，可能更多的考虑下：&lt;/p&gt;
+&lt;p&gt;从一开始的目标：&lt;/p&gt;
 
 &lt;blockquote&gt;
-  &lt;p&gt;我们的系统可以从哪些地方可以扩展？留有多少的灵活性？&lt;/p&gt;
+  &lt;p&gt;我要一个可以干啥干啥的功能！&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;回归正题，尝到一点脚本语言的甜头后：&lt;/p&gt;
+&lt;p&gt;在实现起来没有任何的拐弯抹角，一步到位完成之后没有考虑过：&lt;/p&gt;
 
 &lt;blockquote&gt;
-  &lt;p&gt;是否可以用脚本来加工数据？应该没有比这个更灵活的了～&lt;/p&gt;
+  &lt;p&gt;系统有多少的灵活性、可以从哪些方面扩展？&lt;/p&gt;
 &lt;/blockquote&gt;
+
+&lt;p&gt;仔细想了一下，我们对系统进行了一个简单的改造：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;利用GROOVY脚本极大的灵活性，让系统的适应能力也有所提高！虽然花了很多业务时间来研究ACE的功能来提高编辑体验，但是还是有非常多的同一种吐槽：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;写脚本的学习成本太高！&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;更郁闷的是来吐槽的都是“资深”JAVA开发工程师！在现在的系统上面只需要实现一个方法：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+static Ojbect execute(){
+    return [1, 2, 3];
+}
+&lt;/pre&gt;
+
+&lt;p&gt;即可通过RPC或者HTTP获取数据（在底层已经将参数传递等东西都封装完成），作为一个程序猿对这样写一小段脚本就能实现的方式挺亲切的，不明白为啥其他的同是开发对这种方式极其的排斥，以至于我几乎没有机会去讲我夹下来要做的事情。&lt;/p&gt;
+
+&lt;p&gt;接下来要做什么呢？&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;脚本再简单也只能开发来写，那像原来只会SQL的人就用不来这个系统了。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;显然不能让这种情况发生，解决办法也非常简单：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+static Object execute(sql, datasource){
+    // 查数据库并返回
+}
+&lt;/pre&gt;
+
+&lt;p&gt;而此时用户看到的配置页面就小白很多了：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;保存时会将其填写的信息以及要使用的目标脚本一起保存下来，执行时将参数传给指定的脚本执行即可（是不是有点像带参数的ln）。&lt;/p&gt;
+
+&lt;p&gt;将这种功能开放给各个业务系统，那么就可以自己去做各自需要的小白配置页面了。&lt;/p&gt;
 
 &lt;h2 id=&quot;section-1&quot;&gt;组装页面&lt;/h2&gt;
 
