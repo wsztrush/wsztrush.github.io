@@ -5,9 +5,27 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 17 Dec 2015 10:56:20 +0800</pubDate>
-    <lastBuildDate>Thu, 17 Dec 2015 10:56:20 +0800</lastBuildDate>
+    <pubDate>Thu, 17 Dec 2015 14:26:57 +0800</pubDate>
+    <lastBuildDate>Thu, 17 Dec 2015 14:26:57 +0800</lastBuildDate>
     <generator>Jekyll v3.0.1</generator>
+    
+      <item>
+        <title>从下向上的设计</title>
+        <description>&lt;section data-markdown=&quot;&quot;&gt;
+
+## hi
+
+&lt;/section&gt;
+
+</description>
+        <pubDate>Thu, 17 Dec 2015 00:00:00 +0800</pubDate>
+        <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/12/17/DOWN-TO-UP.html</link>
+        <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/12/17/DOWN-TO-UP.html</guid>
+        
+        
+        <category>编程技术</category>
+        
+      </item>
     
       <item>
         <title>用ACE来写代码（二）</title>
@@ -2631,153 +2649,6 @@ FALLBACK: # 没有网络时的替代网页
         <pubDate>Wed, 09 Sep 2015 00:00:00 +0800</pubDate>
         <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/09/09/JavaScript-Basic.html</link>
         <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/09/09/JavaScript-Basic.html</guid>
-        
-        
-        <category>编程技术</category>
-        
-      </item>
-    
-      <item>
-        <title>解决运行Groovy脚本中的问题</title>
-        <description>&lt;p&gt;在需要灵活配置时Groovy通常时一个不错的选择，但是问题比较多：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;效率&lt;/li&gt;
-  &lt;li&gt;垃圾回收&lt;/li&gt;
-  &lt;li&gt;死循环&lt;/li&gt;
-  &lt;li&gt;调用System.exit()等不安全的方法&lt;/li&gt;
-  &lt;li&gt;拼命申请内存导致OOM：现在没有想到方案&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;第一、二中已经有比较成熟的方案，但是后面的两个问题就不那么好解决了。&lt;/p&gt;
-
-&lt;h2 id=&quot;section&quot;&gt;死循环&lt;/h2&gt;
-
-&lt;p&gt;执行Groovy脚本的时候我用的是下面的方法：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-Class clazz = new GroovyClassLoader().parseClass(&quot;your code&quot;);
-Method method = clazz.getMethod(&quot;xxxx&quot;);
-method.invoke(null);
-&lt;/pre&gt;
-
-&lt;p&gt;如果用户编写的脚本是（能用技术解决的东西最好不要用价值观来保证）：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-while(true){
-	// do nothing.
-}
-&lt;/pre&gt;
-
-&lt;p&gt;机器的CPU马上会飚的很高，可能你会想到用&lt;strong&gt;Thread.stop()&lt;/strong&gt;来终止这个罪恶的脚本，但是对于这个脚本：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-while(true){
-	try{/* your code */}
-    catch(Exception e){ }
-}
-&lt;/pre&gt;
-
-&lt;p&gt;只能说根本停不下来。因为：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;Thread.stop()仅仅是在线程的任意位置抛出ThreadDeath异常。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;况且Thread.stop很早就不建议使用了，而是用&lt;strong&gt;Thread.interrupt()&lt;/strong&gt;，但是简单来说中断仅仅是去通知一下目标线程，而不是真的去停掉它。&lt;/p&gt;
-
-&lt;p&gt;那么，现在的目标就是如何将中断检查的代码插入到用户编写的脚本中：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-public static void checkInterrupted() {
-    if (Thread.currentThread().isInterrupted()) {
-        throw new RuntimeException(&quot;task is interrupted!&quot;);
-    }
-}
-&lt;/pre&gt;
-
-&lt;p&gt;将输入的脚本作为字符串来处理，估计会累到吐血！接着自然想到先将源码结构化，那么自然想到在编译的过程中对语法树进行操作即可达到目的：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-public static class SafeGroovyClassLoader extends GroovyClassLoader {
-    protected CompilationUnit createCompilationUnit(CompilerConfiguration config, CodeSource source) {
-    CompilationUnit compilationUnit = super.createCompilationUnit(config, source);
-    compilationUnit.addPhaseOperation(new CompilationUnit.SourceUnitOperation() {
-        public void call(SourceUnit source) throws CompilationFailedException {
-            ModuleNode ast = source.getAST();
-            // 自定义visitor来操作
-        }
-    }
-}
-&lt;/pre&gt;
-
-&lt;p&gt;遍历时我们需要处理的节点包括：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;FOR&lt;/li&gt;
-  &lt;li&gt;WHILE&lt;/li&gt;
-  &lt;li&gt;DOWHILE&lt;/li&gt;
-  &lt;li&gt;CATCH&lt;/li&gt;
-  &lt;li&gt;FINALLY&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;在这些块的开始位置插入&lt;strong&gt;checkInterrupted&lt;/strong&gt;方法的调用：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-private BlockStatement createCheckBlock(Statement statement) {
-    if (statement instanceof BlockStatement) {
-        BlockStatement blockStatement = (BlockStatement) statement;
-        blockStatement.getStatements().add(0, checkInterruptedStatement);
-        return blockStatement;
-    } else if (statement instanceof EmptyStatement) {
-        BlockStatement blockStatement = new BlockStatement();
-        blockStatement.getStatements().add(checkInterruptedStatement);
-        return blockStatement;
-    } else {
-        BlockStatement blockStatement = new BlockStatement();
-        blockStatement.getStatements().add(checkInterruptedStatement);
-        blockStatement.getStatements().add(statement);
-        return blockStatement;
-    }
-}
-
-public void visitCatchStatement(CatchStatement catchStatement) {
-    catchStatement.getCode().visit(this);
-    catchStatement.setCode(createCheckBlock(catchStatement.getCode()));
-}
-&lt;/pre&gt;
-
-&lt;p&gt;你想的话可以在checkInterrupted中加入循环次数统计。现在线程可以中断，貌似问题已经解决了，但是谁来中断他？有三种方案：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;用线程池来运行脚本，在外面用Future.get来等待（超时中断）&lt;/li&gt;
-  &lt;li&gt;创建一个线程来join当前线程（超时中断）&lt;/li&gt;
-  &lt;li&gt;执行任务前将当前线程插入到map中，然后用一个定时任务来扫描并将超时的中断&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;第一、二种方案每个请求都会创建多余一个线程（不划算），那就来看看第三种方案的实现方式：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-// 保存线程开始时间
-Map&amp;lt;Thread, Long&amp;gt; threadCache = Maps.newHashMap();
-// 执行前将线程插入
-threadCache.put(Thread.currentThread(), System.currentTimeMillis());
-// 遍历threadCache根据时间判断是否中断
-&lt;/pre&gt;
-
-&lt;p&gt;这种方案实现起来要好好考虑一下同步的问题！&lt;/p&gt;
-
-&lt;h2 id=&quot;systemexit&quot;&gt;System.exit&lt;/h2&gt;
-
-&lt;p&gt;在不做限制的情况下，执行上面方法系统直接就停止了，怎么办？办法很简单（当然不是靠价值观）：建立黑名单，在遍历语法树时是否调用了黑名单中的方法。&lt;/p&gt;
-
-&lt;h2 id=&quot;section-1&quot;&gt;总结&lt;/h2&gt;
-
-&lt;p&gt;应用这么多，可能大家都需要用到一些脚本的功能，但是能也没有比较把这些都再各个系统里面去实现一把（没啥意义），如果有这么一个打通脚本与应用、数据的平台也不错！&lt;/p&gt;
-</description>
-        <pubDate>Tue, 08 Sep 2015 00:00:00 +0800</pubDate>
-        <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/09/08/Groovy.html</link>
-        <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/09/08/Groovy.html</guid>
         
         
         <category>编程技术</category>
