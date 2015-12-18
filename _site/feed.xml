@@ -5,8 +5,8 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 18 Dec 2015 14:23:26 +0800</pubDate>
-    <lastBuildDate>Fri, 18 Dec 2015 14:23:26 +0800</lastBuildDate>
+    <pubDate>Fri, 18 Dec 2015 14:58:15 +0800</pubDate>
+    <lastBuildDate>Fri, 18 Dec 2015 14:58:15 +0800</lastBuildDate>
     <generator>Jekyll v3.0.1</generator>
     
       <item>
@@ -32,7 +32,7 @@
 
 &lt;p&gt;其他的操作（数据库、返回数据）不需要你再关心了。YY了一下大部分的需求用SQL绝对绰绰有余，这件事情就这样结束了！&lt;strong&gt;图样图森破啊&lt;/strong&gt;！！&lt;/p&gt;
 
-&lt;p&gt;我们遇到了这样的需求：&lt;/p&gt;
+&lt;p&gt;马上遇到了这样的需求：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 {
@@ -102,9 +102,18 @@ static Ojbect execute(){
 
 &lt;p&gt;显然不能让这种情况发生，解决办法也非常简单：&lt;/p&gt;
 
+&lt;ol&gt;
+  &lt;li&gt;写一个通用解决问题的脚本&lt;/li&gt;
+  &lt;li&gt;在执行时，将SQL、数据源信息通过参数传给对应的通用脚本执行&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;比如一个查询数据库的脚本如下：&lt;/p&gt;
+
 &lt;pre class=&quot;prettyprint&quot;&gt;
 static Object execute(sql, datasource){
-    // 查数据库并返回
+    // 1. 根据datasource获取数据源
+    // 2. 指定sql
+    // 3. 返回执行结果
 }
 &lt;/pre&gt;
 
@@ -118,15 +127,9 @@ static Object execute(sql, datasource){
 
 &lt;h2 id=&quot;section-1&quot;&gt;组装页面&lt;/h2&gt;
 
-&lt;p&gt;因为阴差阳错，最近学习了一小点的前端知识，前端开发的模式还是非常的直观，但是对于大部分的后端来说还是门槛较高，需要想办法解决！&lt;/p&gt;
+&lt;p&gt;由于非常缺前端，最近学了一小点的前端知识，开发起来还是非常的直观，但是对于大部分的后端来说还是门槛较高，需要想办法解决！&lt;/p&gt;
 
-&lt;p&gt;首先，想办法对前端的组件进行抽象：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-组件=数据+动作+展示
-&lt;/pre&gt;
-
-&lt;p&gt;举个例子，对于一个带下拉列表的输入框各部分对应为：&lt;/p&gt;
+&lt;p&gt;首先，把页面上的各个部分抽象成组件：&lt;strong&gt;组件=数据+动作+展示&lt;/strong&gt;。比如带下拉列表的选择输入框：&lt;/p&gt;
 
 &lt;ol&gt;
   &lt;li&gt;数据：列表中的内容以及当前展示的内容&lt;/li&gt;
@@ -150,6 +153,37 @@ static Object execute(sql, datasource){
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 @input(label=&quot;仓库&quot; name=&quot;warehouse&quot; items=[{text:&quot;A&quot;, value:&quot;1&quot;},{text:&quot;B&quot;, value:&quot;2&quot;}])
+&lt;/pre&gt;
+
+&lt;p&gt;你只需要写这一行就可以实现一个输入框，直观上做了两件事情：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;使用组件input&lt;/li&gt;
+  &lt;li&gt;设置一些属性（数据）&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;那展示的控制呢？这个显然不应该交给用户来控制，比如：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;需要引入哪些CSS、JS？&lt;/li&gt;
+  &lt;li&gt;对应的DOM结构应该是什么样的？&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;用户只知道他需要用一个下拉选择框而已，他不需要管这些事情！接下来拼装页面，我们要做的就是把这些组件拼装起来并建立联系：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+@layout// 布局
+    @input(name=&quot;a&quot;)
+    @input(name=&quot;b&quot;)
+    @input(name=&quot;c&quot;)
+    @button// 查询
+        @on(click)
+            // 1. 获取a、b、c的数据
+            // 2. 请求数据
+            // 3. 更新table、page的展示
+@layout
+    @table // 表格
+    @page// 分页
 &lt;/pre&gt;
 
 &lt;!--

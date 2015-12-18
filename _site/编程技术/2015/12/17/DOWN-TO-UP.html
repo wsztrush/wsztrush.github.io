@@ -47,7 +47,7 @@
 
 <p>其他的操作（数据库、返回数据）不需要你再关心了。YY了一下大部分的需求用SQL绝对绰绰有余，这件事情就这样结束了！<strong>图样图森破啊</strong>！！</p>
 
-<p>我们遇到了这样的需求：</p>
+<p>马上遇到了这样的需求：</p>
 
 <pre class="prettyprint">
 {
@@ -117,9 +117,18 @@ static Ojbect execute(){
 
 <p>显然不能让这种情况发生，解决办法也非常简单：</p>
 
+<ol>
+  <li>写一个通用解决问题的脚本</li>
+  <li>在执行时，将SQL、数据源信息通过参数传给对应的通用脚本执行</li>
+</ol>
+
+<p>比如一个查询数据库的脚本如下：</p>
+
 <pre class="prettyprint">
 static Object execute(sql, datasource){
-    // 查数据库并返回
+    // 1. 根据datasource获取数据源
+    // 2. 指定sql
+    // 3. 返回执行结果
 }
 </pre>
 
@@ -133,15 +142,9 @@ static Object execute(sql, datasource){
 
 <h2 id="section-1">组装页面</h2>
 
-<p>因为阴差阳错，最近学习了一小点的前端知识，前端开发的模式还是非常的直观，但是对于大部分的后端来说还是门槛较高，需要想办法解决！</p>
+<p>由于非常缺前端，最近学了一小点的前端知识，开发起来还是非常的直观，但是对于大部分的后端来说还是门槛较高，需要想办法解决！</p>
 
-<p>首先，想办法对前端的组件进行抽象：</p>
-
-<pre class="prettyprint">
-组件=数据+动作+展示
-</pre>
-
-<p>举个例子，对于一个带下拉列表的输入框各部分对应为：</p>
+<p>首先，把页面上的各个部分抽象成组件：<strong>组件=数据+动作+展示</strong>。比如带下拉列表的选择输入框：</p>
 
 <ol>
   <li>数据：列表中的内容以及当前展示的内容</li>
@@ -165,6 +168,37 @@ static Object execute(sql, datasource){
 
 <pre class="prettyprint">
 @input(label="仓库" name="warehouse" items=[{text:"A", value:"1"},{text:"B", value:"2"}])
+</pre>
+
+<p>你只需要写这一行就可以实现一个输入框，直观上做了两件事情：</p>
+
+<ol>
+  <li>使用组件input</li>
+  <li>设置一些属性（数据）</li>
+</ol>
+
+<p>那展示的控制呢？这个显然不应该交给用户来控制，比如：</p>
+
+<ol>
+  <li>需要引入哪些CSS、JS？</li>
+  <li>对应的DOM结构应该是什么样的？</li>
+</ol>
+
+<p>用户只知道他需要用一个下拉选择框而已，他不需要管这些事情！接下来拼装页面，我们要做的就是把这些组件拼装起来并建立联系：</p>
+
+<pre class="prettyprint">
+@layout// 布局
+    @input(name="a")
+    @input(name="b")
+    @input(name="c")
+    @button// 查询
+        @on(click)
+            // 1. 获取a、b、c的数据
+            // 2. 请求数据
+            // 3. 更新table、page的展示
+@layout
+    @table // 表格
+    @page// 分页
 </pre>
 
 <!--
