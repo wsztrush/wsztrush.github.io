@@ -5,8 +5,8 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 17 Dec 2015 18:45:35 +0800</pubDate>
-    <lastBuildDate>Thu, 17 Dec 2015 18:45:35 +0800</lastBuildDate>
+    <pubDate>Fri, 18 Dec 2015 14:23:26 +0800</pubDate>
+    <lastBuildDate>Fri, 18 Dec 2015 14:23:26 +0800</lastBuildDate>
     <generator>Jekyll v3.0.1</generator>
     
       <item>
@@ -32,7 +32,7 @@
 
 &lt;p&gt;其他的操作（数据库、返回数据）不需要你再关心了。YY了一下大部分的需求用SQL绝对绰绰有余，这件事情就这样结束了！&lt;strong&gt;图样图森破啊&lt;/strong&gt;！！&lt;/p&gt;
 
-&lt;p&gt;马上我们遇到了这样的需求：&lt;/p&gt;
+&lt;p&gt;我们遇到了这样的需求：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 {
@@ -50,7 +50,7 @@
 ]
 &lt;/pre&gt;
 
-&lt;p&gt;于是我们火速开发了更多的一些功能组件来解决遇到对应的问题：&lt;/p&gt;
+&lt;p&gt;于是火速开发了更多的功能组件来解决问题：&lt;/p&gt;
 
 &lt;ol&gt;
   &lt;li&gt;MYSQL&lt;/li&gt;
@@ -62,7 +62,7 @@
 
 &lt;p&gt;组件越来越多，“新手”进来已经不是特别了解每个的具体含义，配置的成本也越来越大。感觉系统用起来并不想当初想的那么美好！&lt;/p&gt;
 
-&lt;p&gt;从一开始的目标：&lt;/p&gt;
+&lt;p&gt;停下来想一下，从一开始的目标：&lt;/p&gt;
 
 &lt;blockquote&gt;
   &lt;p&gt;我要一个可以干啥干啥的功能！&lt;/p&gt;
@@ -74,7 +74,7 @@
   &lt;p&gt;系统有多少的灵活性、可以从哪些方面扩展？&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;仔细想了一下，我们对系统进行了一个简单的改造：&lt;/p&gt;
+&lt;p&gt;仔细想了一下，我们对系统进行了简单的改造：&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
@@ -84,7 +84,7 @@
   &lt;p&gt;写脚本的学习成本太高！&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;更郁闷的是来吐槽的都是“资深”JAVA开发工程师！在现在的系统上面只需要实现一个方法：&lt;/p&gt;
+&lt;p&gt;更郁闷的是来吐槽的都是“资深”JAVA开发工程师（GROOVY和JAVA不是很像么）！在现在的系统上面只需要实现一个方法：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 static Ojbect execute(){
@@ -114,9 +114,43 @@ static Object execute(sql, datasource){
 
 &lt;p&gt;保存时会将其填写的信息以及要使用的目标脚本一起保存下来，执行时将参数传给指定的脚本执行即可（是不是有点像带参数的ln）。&lt;/p&gt;
 
-&lt;p&gt;将这种功能开放给各个业务系统，那么就可以自己去做各自需要的小白配置页面了。&lt;/p&gt;
+&lt;p&gt;将该功能开放给各个业务系统，那么就可以自己去做各自需要的小白配置页面了。&lt;/p&gt;
 
 &lt;h2 id=&quot;section-1&quot;&gt;组装页面&lt;/h2&gt;
+
+&lt;p&gt;因为阴差阳错，最近学习了一小点的前端知识，前端开发的模式还是非常的直观，但是对于大部分的后端来说还是门槛较高，需要想办法解决！&lt;/p&gt;
+
+&lt;p&gt;首先，想办法对前端的组件进行抽象：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+组件=数据+动作+展示
+&lt;/pre&gt;
+
+&lt;p&gt;举个例子，对于一个带下拉列表的输入框各部分对应为：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;数据：列表中的内容以及当前展示的内容&lt;/li&gt;
+  &lt;li&gt;动作：内容发生改变&lt;/li&gt;
+  &lt;li&gt;展示：用bootstrap等前段框架实现&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;这样看来组件就比较聚合了，但是光聚合没用啊，一个页面中的所有组件需要互相之间进行交互，比如（正向）：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;当组件A发生事件E时，组件B需要进行一些操作。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;还有一种（反向）：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;当组件A发生事件E时，需要让组件B进行一些操作。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;那具体该怎么用呢？我们自己定义一些非常简单的DSL来控制组件：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+@input(label=&quot;仓库&quot; name=&quot;warehouse&quot; items=[{text:&quot;A&quot;, value:&quot;1&quot;},{text:&quot;B&quot;, value:&quot;2&quot;}])
+&lt;/pre&gt;
 
 &lt;!--
 
