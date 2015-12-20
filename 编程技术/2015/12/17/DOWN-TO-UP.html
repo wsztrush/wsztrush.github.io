@@ -142,49 +142,80 @@ static Object execute(sql, datasource){
 
 <h2 id="section-1">组装页面</h2>
 
-<p>由于非常缺前端，最近学了一小点的前端知识，开发起来还是非常的直观，但是对于大部分的后端来说还是门槛较高，需要想办法解决！</p>
+<p>缺前端是个普遍的问题，如果能将前端的开发简化到后端也能参与，也许能在一定程度上得到解决。</p>
 
 <p>首先，把页面上的各个部分抽象成组件：<strong>组件=数据+动作+展示</strong>。比如带下拉列表的选择输入框：</p>
 
 <ol>
   <li>数据：列表中的内容以及当前展示的内容</li>
   <li>动作：内容发生改变</li>
-  <li>展示：用bootstrap等前段框架实现</li>
+  <li>展示：可以用bootstrap等前段框架实现</li>
 </ol>
 
-<p>这样看来组件就比较聚合了，但是光聚合没用啊，一个页面中的所有组件需要互相之间进行交互，比如（正向）：</p>
-
-<blockquote>
-  <p>当组件A发生事件E时，组件B需要进行一些操作。</p>
-</blockquote>
-
-<p>还有一种（反向）：</p>
-
-<blockquote>
-  <p>当组件A发生事件E时，需要让组件B进行一些操作。</p>
-</blockquote>
-
-<p>那具体该怎么用呢？我们自己定义一些非常简单的DSL来控制组件：</p>
+<p>在使用的时候就非常简单了（一行代码相当于原来20行左右的HTML+JS）：</p>
 
 <pre class="prettyprint">
 @input(label="仓库" name="warehouse" items=[{text:"A", value:"1"},{text:"B", value:"2"}])
 </pre>
 
-<p>你只需要写这一行就可以实现一个输入框，直观上做了两件事情：</p>
+<p>直观上干了两件事情：</p>
 
 <ol>
-  <li>使用组件input</li>
-  <li>设置一些属性（数据）</li>
+  <li>使用组件输入框（input）</li>
+  <li>设置一些属性（label、name、items）</li>
 </ol>
 
-<p>那展示的控制呢？这个显然不应该交给用户来控制，比如：</p>
+<p>那展示呢？这个显然不应该交给用户来操心，比如：</p>
 
 <ol>
   <li>需要引入哪些CSS、JS？</li>
   <li>对应的DOM结构应该是什么样的？</li>
 </ol>
 
-<p>用户只知道他需要用一个下拉选择框而已，他不需要管这些事情！接下来拼装页面，我们要做的就是把这些组件拼装起来并建立联系：</p>
+<p>为了达到这种效果，一个组件的定义可以是这样的：</p>
+
+<pre class="prettyprint">
+@import(
+    'bootstrap.css' // 依赖的CSS文件（需要的时候也可以加JS）
+)
+@component
+    this.width = '10px'; // 一些默认的数据
+
+    @render  // 在render下定义渲染（有点像JSX吧）
+    &lt;ul&gt;
+        for(i in items){
+            &lt;li&gt;${items[i]}&lt;/li&gt;
+        }
+    &lt;/ul&gt;
+</pre>
+
+<p>在做的过程中发现一些好玩的问题：</p>
+
+<blockquote>
+  <p>JS的资源不一定适合SEAJS来加载，因为JS之间可能有依赖关系。</p>
+</blockquote>
+
+<p>渲染DOM的部分类似JSX，但更暴力：<strong>支持各种JavaScript语法</strong>，但这一点是有代价的。仔细想一下：</p>
+
+<blockquote>
+  <p>JavaScript和HTML的语法之间天然就是彼此隔离的，除了’&lt;‘之外。</p>
+</blockquote>
+
+<p>那做到上面这种模板语法也就比较简单自然了。到这里组件就变为一个<strong>方便定制</strong>、<strong>高度聚合</strong>的东西了！但是光聚合没用啊，需要把他们拼装成一个页面，需要解决：</p>
+
+<ol>
+  <li>布局（把组件拼装成一个完整的区块甚至页面）</li>
+  <li>数据交互</li>
+</ol>
+
+<p>简单想了一种方案：</p>
+
+<ol>
+  <li>利用<strong>缩进</strong>来控制层次关系</li>
+  <li>利用<strong>@on</strong>来进行组件关联</li>
+</ol>
+
+<p>举个例子：</p>
 
 <pre class="prettyprint">
 @layout// 布局
@@ -201,32 +232,12 @@ static Object execute(sql, datasource){
     @page// 分页
 </pre>
 
-<!--
+<pre class="prettyprint">
+&lt;script&gt;
+engine.init("page", document.body);// 将page对应的页面渲染到body下面。
+&lt;/script&gt;
+</pre>
 
-<section><h1>从下到上开发</h1></section>
-<section data-markdown data-separator="---" data-separator-vertical="--"  >
-	<script type="text/template">
-		<span style="color:red;">&lt;abc&gt;</span><span style="color:red;">abc</span>
-	</script>
-</section>
-
-<section data-markdown data-separator="---" data-separator-vertical="--"  >
-	<script type="text/template">
-    # 主题1
-    - 主题1-内容1
-    - 主题1-内容2
-<img src="https://www.google.com.hk/logos/doodles/2015/beethovens-245th-birthday-4687587541254144.2-res.png"/>
-    --
-    ## 主题1-内容1
-    内容1-细节1
-    --
-    ## 主题1-内容2
-    内容1-细节2
-    ---
-    # 主题2
-	</script>
-</section>
--->
 
 			<!-- 评论组件 -->
 			<div id="disqus_thread"/>
