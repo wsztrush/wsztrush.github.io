@@ -5,12 +5,12 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 20 Dec 2015 16:34:00 +0800</pubDate>
-    <lastBuildDate>Sun, 20 Dec 2015 16:34:00 +0800</lastBuildDate>
+    <pubDate>Sun, 20 Dec 2015 16:46:59 +0800</pubDate>
+    <lastBuildDate>Sun, 20 Dec 2015 16:46:59 +0800</lastBuildDate>
     <generator>Jekyll v3.0.1</generator>
     
       <item>
-        <title>从下向上的开发</title>
+        <title>从下向上来开发</title>
         <description>&lt;p&gt;因为在公司接触业务比较少，更多的是在想办法做一些工具来帮助快速开发，过程中感觉做业务的思路与做工具（系统）的思路差别比较大。下面分享一下在两个模块中的思考过程。&lt;/p&gt;
 
 &lt;h2 id=&quot;section&quot;&gt;获取数据&lt;/h2&gt;
@@ -296,7 +296,7 @@ engine.init(&quot;page&quot;, document.body);// 将page对应的页面渲染到b
   &lt;li&gt;越上越好用，但扩展起来不是很容易&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;p&gt;在对一些场景实现工具，根据灵活度和易用性来分成几步来做，这样不同的技术背景的人都可以使用，而且最关键的是可以扩展出更多的使用场景！&lt;/p&gt;
+&lt;p&gt;在对一些场景实现工具，根据灵活度和易用性来分成几步来做，这样不同的技术背景的人都可以使用，而且最关键的是可以扩展出更多的使用场景！:-)&lt;/p&gt;
 </description>
         <pubDate>Thu, 17 Dec 2015 00:00:00 +0800</pubDate>
         <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/12/17/DOWN-TO-UP.html</link>
