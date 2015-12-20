@@ -5,8 +5,8 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 18 Dec 2015 14:58:15 +0800</pubDate>
-    <lastBuildDate>Fri, 18 Dec 2015 14:58:15 +0800</lastBuildDate>
+    <pubDate>Sun, 20 Dec 2015 14:37:33 +0800</pubDate>
+    <lastBuildDate>Sun, 20 Dec 2015 14:37:33 +0800</lastBuildDate>
     <generator>Jekyll v3.0.1</generator>
     
       <item>
@@ -127,49 +127,80 @@ static Object execute(sql, datasource){
 
 &lt;h2 id=&quot;section-1&quot;&gt;组装页面&lt;/h2&gt;
 
-&lt;p&gt;由于非常缺前端，最近学了一小点的前端知识，开发起来还是非常的直观，但是对于大部分的后端来说还是门槛较高，需要想办法解决！&lt;/p&gt;
+&lt;p&gt;缺前端是个普遍的问题，如果能将前端的开发简化到后端也能参与，也许能在一定程度上得到解决。&lt;/p&gt;
 
 &lt;p&gt;首先，把页面上的各个部分抽象成组件：&lt;strong&gt;组件=数据+动作+展示&lt;/strong&gt;。比如带下拉列表的选择输入框：&lt;/p&gt;
 
 &lt;ol&gt;
   &lt;li&gt;数据：列表中的内容以及当前展示的内容&lt;/li&gt;
   &lt;li&gt;动作：内容发生改变&lt;/li&gt;
-  &lt;li&gt;展示：用bootstrap等前段框架实现&lt;/li&gt;
+  &lt;li&gt;展示：可以用bootstrap等前段框架实现&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;p&gt;这样看来组件就比较聚合了，但是光聚合没用啊，一个页面中的所有组件需要互相之间进行交互，比如（正向）：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;当组件A发生事件E时，组件B需要进行一些操作。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;还有一种（反向）：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;当组件A发生事件E时，需要让组件B进行一些操作。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;那具体该怎么用呢？我们自己定义一些非常简单的DSL来控制组件：&lt;/p&gt;
+&lt;p&gt;在使用的时候就非常简单了（一行代码相当于原来20行左右的HTML+JS）：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 @input(label=&quot;仓库&quot; name=&quot;warehouse&quot; items=[{text:&quot;A&quot;, value:&quot;1&quot;},{text:&quot;B&quot;, value:&quot;2&quot;}])
 &lt;/pre&gt;
 
-&lt;p&gt;你只需要写这一行就可以实现一个输入框，直观上做了两件事情：&lt;/p&gt;
+&lt;p&gt;直观上干了两件事情：&lt;/p&gt;
 
 &lt;ol&gt;
-  &lt;li&gt;使用组件input&lt;/li&gt;
-  &lt;li&gt;设置一些属性（数据）&lt;/li&gt;
+  &lt;li&gt;使用组件输入框（input）&lt;/li&gt;
+  &lt;li&gt;设置一些属性（label、name、items）&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;p&gt;那展示的控制呢？这个显然不应该交给用户来控制，比如：&lt;/p&gt;
+&lt;p&gt;那展示呢？这个显然不应该交给用户来操心，比如：&lt;/p&gt;
 
 &lt;ol&gt;
   &lt;li&gt;需要引入哪些CSS、JS？&lt;/li&gt;
   &lt;li&gt;对应的DOM结构应该是什么样的？&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;p&gt;用户只知道他需要用一个下拉选择框而已，他不需要管这些事情！接下来拼装页面，我们要做的就是把这些组件拼装起来并建立联系：&lt;/p&gt;
+&lt;p&gt;为了达到这种效果，一个组件的定义可以是这样的：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+@import(
+    &#39;bootstrap.css&#39; // 依赖的CSS文件（需要的时候也可以加JS）
+)
+@component
+    this.width = &#39;10px&#39;; // 一些默认的数据
+
+    @render  // 在render下定义渲染（有点像JSX吧）
+    &amp;lt;ul&amp;gt;
+        for(i in items){
+            &amp;lt;li&amp;gt;${items[i]}&amp;lt;/li&amp;gt;
+        }
+    &amp;lt;/ul&amp;gt;
+&lt;/pre&gt;
+
+&lt;p&gt;在做的过程中发现一些好玩的问题：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;JS的资源不一定适合SEAJS来加载，因为JS之间可能有依赖关系。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;渲染DOM的部分类似JSX，但更暴力：&lt;strong&gt;支持各种JavaScript语法&lt;/strong&gt;，但这一点是有代价的。仔细想一下：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;JavaScript和HTML的语法之间天然就是彼此隔离的，除了’&amp;lt;‘之外。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;那做到上面这种模板语法也就比较简单自然了。到这里组件就变为一个&lt;strong&gt;方便定制&lt;/strong&gt;、&lt;strong&gt;高度聚合&lt;/strong&gt;的东西了！但是光聚合没用啊，需要把他们拼装成一个页面，需要解决：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;布局（把组件拼装成一个完整的区块甚至页面）&lt;/li&gt;
+  &lt;li&gt;数据交互&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;简单想了一种方案：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;利用&lt;strong&gt;缩进&lt;/strong&gt;来控制层次关系&lt;/li&gt;
+  &lt;li&gt;利用&lt;strong&gt;@on&lt;/strong&gt;来进行组件关联&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;举个例子：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 @layout// 布局
@@ -186,32 +217,12 @@ static Object execute(sql, datasource){
     @page// 分页
 &lt;/pre&gt;
 
-&lt;!--
+&lt;pre class=&quot;prettyprint&quot;&gt;
+&amp;lt;script&amp;gt;
+engine.init(&quot;page&quot;, document.body);// 将page对应的页面渲染到body下面。
+&amp;lt;/script&amp;gt;
+&lt;/pre&gt;
 
-&lt;section&gt;&lt;h1&gt;从下到上开发&lt;/h1&gt;&lt;/section&gt;
-&lt;section data-markdown data-separator=&quot;---&quot; data-separator-vertical=&quot;--&quot;  &gt;
-	&lt;script type=&quot;text/template&quot;&gt;
-		&lt;span style=&quot;color:red;&quot;&gt;&amp;lt;abc&amp;gt;&lt;/span&gt;&lt;span style=&quot;color:red;&quot;&gt;abc&lt;/span&gt;
-	&lt;/script&gt;
-&lt;/section&gt;
-
-&lt;section data-markdown data-separator=&quot;---&quot; data-separator-vertical=&quot;--&quot;  &gt;
-	&lt;script type=&quot;text/template&quot;&gt;
-    # 主题1
-    - 主题1-内容1
-    - 主题1-内容2
-&lt;img src=&quot;https://www.google.com.hk/logos/doodles/2015/beethovens-245th-birthday-4687587541254144.2-res.png&quot;/&gt;
-    --
-    ## 主题1-内容1
-    内容1-细节1
-    --
-    ## 主题1-内容2
-    内容1-细节2
-    ---
-    # 主题2
-	&lt;/script&gt;
-&lt;/section&gt;
---&gt;
 </description>
         <pubDate>Thu, 17 Dec 2015 00:00:00 +0800</pubDate>
         <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/12/17/DOWN-TO-UP.html</link>
