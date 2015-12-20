@@ -5,8 +5,8 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 20 Dec 2015 15:40:59 +0800</pubDate>
-    <lastBuildDate>Sun, 20 Dec 2015 15:40:59 +0800</lastBuildDate>
+    <pubDate>Sun, 20 Dec 2015 16:34:00 +0800</pubDate>
+    <lastBuildDate>Sun, 20 Dec 2015 16:34:00 +0800</lastBuildDate>
     <generator>Jekyll v3.0.1</generator>
     
       <item>
@@ -178,17 +178,17 @@ static Object execute(sql, datasource){
   &lt;p&gt;JS的资源不一定适合SEAJS来加载，因为JS之间可能有依赖关系。&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;渲染DOM的部分类似JSX，但更暴力：&lt;strong&gt;支持各种JavaScript语法&lt;/strong&gt;，但这一点是有代价的。仔细想一下：&lt;/p&gt;
+&lt;p&gt;渲染DOM的部分类似JSX，但更暴力：&lt;strong&gt;支持JavaScript的各种控制结构&lt;/strong&gt;，但这一点是有代价的。仔细想一下：&lt;/p&gt;
 
 &lt;blockquote&gt;
-  &lt;p&gt;JavaScript和HTML的语法之间天然就是彼此隔离的，除了’&amp;lt;‘之外。&lt;/p&gt;
+  &lt;p&gt;JavaScript和HTML的语法之间天然就是彼此隔离的，除了‘&amp;lt;’之外。&lt;/p&gt;
 &lt;/blockquote&gt;
 
 &lt;p&gt;那做到上面这种模板语法也就比较简单自然了。到这里组件就变为一个&lt;strong&gt;方便定制&lt;/strong&gt;、&lt;strong&gt;高度聚合&lt;/strong&gt;的东西了！但是光聚合没用啊，需要把他们拼装成一个页面，需要解决：&lt;/p&gt;
 
 &lt;ol&gt;
   &lt;li&gt;布局（把组件拼装成一个完整的区块甚至页面）&lt;/li&gt;
-  &lt;li&gt;数据交互&lt;/li&gt;
+  &lt;li&gt;数据交互（组件之间建立关联）&lt;/li&gt;
 &lt;/ol&gt;
 
 &lt;p&gt;简单想了一种方案：&lt;/p&gt;
@@ -205,7 +205,7 @@ static Object execute(sql, datasource){
     @input(name=&quot;a&quot;)
     @input(name=&quot;b&quot;)
     @input(name=&quot;c&quot;)
-    @button// 查询
+    @button(label=&#39;查询&#39;)// 查询
         @on(click)
             // 1. 获取a、b、c的数据
             // 2. 请求数据
@@ -215,7 +215,7 @@ static Object execute(sql, datasource){
     @page// 分页
 &lt;/pre&gt;
 
-&lt;p&gt;当请求&lt;/p&gt;
+&lt;p&gt;当点击查询按钮时，根据三个输入框（a、b、c）的内容查询数据并更新表格的展示。最后我们需要将该页面放到业务系统中，做法也非常的‘土’：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 &amp;lt;script&amp;gt;
@@ -223,6 +223,80 @@ engine.init(&quot;page&quot;, document.body);// 将page对应的页面渲染到b
 &amp;lt;/script&amp;gt;
 &lt;/pre&gt;
 
+&lt;p&gt;渲染的位置你可以随意指定。到这里用法就说完了，下面来看如何实现：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/DOWN-TO-UP-3.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;模块很简单，我用SEAJS的方法，但是作了一些简化和定制。组件的操作包括：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;使用组件（添加到父组件的children列表中）&lt;/li&gt;
+  &lt;li&gt;设置属性&lt;/li&gt;
+  &lt;li&gt;绑定事件&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;HTML的操作包括：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;创建标签&lt;/li&gt;
+  &lt;li&gt;设置属性&lt;/li&gt;
+  &lt;li&gt;绑定事件&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;既然想为以后留好扩展性，那么JavaScript作为中间层应该是一个不错的选择，将对应的HTML操作可以翻译成下面几个方法（组件的也类似）：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;create   // 创建HTML标签&lt;/li&gt;
+  &lt;li&gt;attr     // 设置属性&lt;/li&gt;
+  &lt;li&gt;listen   // 绑定事件&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;为了处理层次还需要&lt;strong&gt;push&lt;/strong&gt;、&lt;strong&gt;pop&lt;/strong&gt;方法。为了实现这些我们需要一个翻译器：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/DOWN-TO-UP-4.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;将生成的JS文件保存到CDN上面，再结合HTTP缓存，性能应该还是可以的！我们继续，在此基础上可以扩展出更多的玩法：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/DOWN-TO-UP-5.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;现在是将结果渲染到某个DOM节点下面，那是否可以直接在Velocity中使用某个组件，像这样:&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+&amp;lt;div&amp;gt;
+    @input(label=&quot;xxx&quot; name=&quot;xxx&quot;)
+&amp;lt;/div&amp;gt;
+&lt;/pre&gt;
+
+&lt;p&gt;上面是对后端Javaer敞开大门，那前端工程师是否可以得到好处，像这样：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+&amp;lt;script type=&quot;text/engine&quot;&amp;gt;
+@input(label=&quot;xxx&quot; name=&quot;xxx&quot;)
+&amp;lt;/script&amp;gt;
+&lt;/pre&gt;
+
+&lt;p&gt;因为每一步前后都没有耦合，你完全可以去扩展自己想要的东西。&lt;/p&gt;
+
+&lt;h2 id=&quot;section-2&quot;&gt;总结&lt;/h2&gt;
+
+&lt;p&gt;远古时期的程序员在实现业务时可能把：取数据、业务逻辑、渲染都放在一个代码中完成，后来逐渐分成几层来做：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Model&lt;/li&gt;
+  &lt;li&gt;View&lt;/li&gt;
+  &lt;li&gt;Controller&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;不仅结构更清晰，而且在任何一层你都可以选择不同的方案来实现。我们在做工具时也可以参考这种思路，多分几步来做。&lt;/p&gt;
+
+&lt;p&gt;那什么是从下到上呢？和上面的分层的角度不一样：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;越下越灵活，但门槛越高&lt;/li&gt;
+  &lt;li&gt;越上越好用，但扩展起来不是很容易&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;在对一些场景实现工具，根据灵活度和易用性来分成几步来做，这样不同的技术背景的人都可以使用，而且最关键的是可以扩展出更多的使用场景！&lt;/p&gt;
 </description>
         <pubDate>Thu, 17 Dec 2015 00:00:00 +0800</pubDate>
         <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/12/17/DOWN-TO-UP.html</link>
