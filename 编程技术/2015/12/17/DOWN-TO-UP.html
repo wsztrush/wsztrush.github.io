@@ -45,9 +45,7 @@
   <p>配置一个数据接口只需要填写一段SQL就可以了！</p>
 </blockquote>
 
-<p>其他的操作（数据库、返回数据）不需要你再关心了。YY了一下大部分的需求用SQL绝对绰绰有余，这件事情就这样结束了！<strong>图样图森破啊</strong>！！</p>
-
-<p>马上遇到了这样的需求：</p>
+<p>其他的操作（数据库、返回数据）不需要你再关心了。YY了一下大部分的需求用SQL绝对绰绰有余，这件事情就这样结束了！<strong>图样图森破啊</strong>！！马上遇到了这样的需求：</p>
 
 <pre class="prettyprint">
 {
@@ -89,9 +87,9 @@
   <p>系统有多少的灵活性、可以从哪些方面扩展？</p>
 </blockquote>
 
-<p>仔细想了一下，我们对系统进行了简单的改造：</p>
+<p>仔细想了一想，我们对系统进行了简单的改造：</p>
 
-<p><img src="" alt="" /></p>
+<p><img src="http://7xiz10.com1.z0.glb.clouddn.com/DOWN-TO-UP-1.png" alt="" /></p>
 
 <p>利用GROOVY脚本极大的灵活性，让系统的适应能力也有所提高！虽然花了很多业务时间来研究ACE的功能来提高编辑体验，但是还是有非常多的同一种吐槽：</p>
 
@@ -134,7 +132,7 @@ static Object execute(sql, datasource){
 
 <p>而此时用户看到的配置页面就小白很多了：</p>
 
-<p><img src="" alt="" /></p>
+<p><img src="http://7xiz10.com1.z0.glb.clouddn.com/DOWN-TO-UP-2.png" alt="" /></p>
 
 <p>保存时会将其填写的信息以及要使用的目标脚本一起保存下来，执行时将参数传给指定的脚本执行即可（是不是有点像带参数的ln）。</p>
 
@@ -231,6 +229,8 @@ static Object execute(sql, datasource){
     @table // 表格
     @page// 分页
 </pre>
+
+<p>当请求</p>
 
 <pre class="prettyprint">
 &lt;script&gt;
