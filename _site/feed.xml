@@ -5,8 +5,8 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 20 Dec 2015 16:48:39 +0800</pubDate>
-    <lastBuildDate>Sun, 20 Dec 2015 16:48:39 +0800</lastBuildDate>
+    <pubDate>Mon, 21 Dec 2015 14:55:09 +0800</pubDate>
+    <lastBuildDate>Mon, 21 Dec 2015 14:55:09 +0800</lastBuildDate>
     <generator>Jekyll v3.0.1</generator>
     
       <item>
@@ -301,6 +301,231 @@ engine.init(&quot;page&quot;, document.body);// 将page对应的页面渲染到b
         <pubDate>Thu, 17 Dec 2015 00:00:00 +0800</pubDate>
         <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/12/17/DOWN-TO-UP.html</link>
         <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/12/17/DOWN-TO-UP.html</guid>
+        
+        
+        <category>编程技术</category>
+        
+      </item>
+    
+      <item>
+        <title>EASYDT</title>
+        <description>&lt;!-- test --&gt;
+
+&lt;!-- test end--&gt;
+
+&lt;!-- (0) --&gt;
+&lt;section&gt;&lt;h1&gt;EASY-DT&lt;/h1&gt;&lt;/section&gt;
+&lt;!-- (1) --&gt;
+&lt;section&gt;&lt;h3&gt;方便、快速地提供标准数据接口&lt;/h3&gt;&lt;/section&gt;
+&lt;!-- (2) --&gt;
+&lt;section&gt;
+&lt;!-- (2.1) --&gt;
+&lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
+### 老的配置方式
+
+&lt;div style=&quot;display:inline-block;&quot;&gt;
+![](http://7xiz10.com1.z0.glb.clouddn.com/DOWN-TO-UP-1.png)
+![](http://7xiz10.com1.z0.glb.clouddn.com/DOWN-TO-UP-1.png)
+&lt;/div&gt;
+
+- 理想：让不会写代码的人也能配置 &lt;!-- .element: class=&quot;fragment&quot; --&gt;
+- 现实：并没有多少人会用 &lt;!-- .element: class=&quot;fragment&quot; --&gt;
+&lt;/script&gt;&lt;/section&gt;
+&lt;!-- (2.2) --&gt;
+&lt;section&gt;
+&lt;h3&gt;实际中的数据&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;
+[
+    {
+        &quot;name&quot;: &quot;拣选&quot;,
+        &quot;list&quot;: [
+            0, 0, 0, 0, 0, 0, 0, 0, 256, 6049, 5684, 3008
+        ],
+        &quot;latest_count&quot;: 4862
+    },
+    {}
+]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/section&gt;
+&lt;!-- (2.3) --&gt;
+&lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
+### 分析问题
+
+- 功能作用单一
+- 无法地将功能组件组合使用
+- 扩展复杂
+- 过多的功能容易导致混淆
+&lt;/script&gt;&lt;/section&gt;
+&lt;!-- (2.4) --&gt;
+&lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
+### 使用GROOVY组合基础功能
+
+- 调试
+- 安全控制
+- 版本控制
+- 编辑保存
+- 同步
+- 扩展性&lt;!-- .element: class=&quot;fragment highlight-red&quot; --&gt;
+&lt;/script&gt;&lt;/section&gt;
+&lt;!-- (2.5) --&gt;
+&lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
+![现在的编辑页面](http://7xiz10.com1.z0.glb.clouddn.com/DOWN-TO-UP-1.png)
+
+- 对开发来说GROOVY的学习成本应该还是比较低的
+&lt;/script&gt;&lt;/section&gt;
+&lt;!-- (2.6) --&gt;
+&lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
+### 小白用户更愿意看到的是
+
+![现在的编辑页面](http://7xiz10.com1.z0.glb.clouddn.com/DOWN-TO-UP-1.png)&lt;!-- .element: class=&quot;fragment&quot; --&gt;
+&lt;/script&gt;&lt;/section&gt;
+&lt;!-- (2.7) --&gt;
+&lt;section&gt;
+&lt;h3&gt;可能的一种扩展方法&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;
+static Object execute(){
+    def template_context = get(&quot;template_context&quot;);
+    def sql = template_context.get(&quot;sql&quot;);
+    def datasource = template_context.get(&quot;datasource&quot;);
+    // 
+}
+static void mock(){
+    // 
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/section&gt;
+&lt;!-- (2.8) --&gt;
+&lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
+### 整体结构
+&lt;/script&gt;&lt;/section&gt;
+&lt;/section&gt;
+&lt;!--(3)--&gt;
+&lt;section&gt;&lt;h3&gt;更简单的前端页面开发&lt;/h3&gt;&lt;/section&gt;
+&lt;!--(4)--&gt;
+&lt;section&gt;
+&lt;!--(4.1)--&gt;
+&lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
+### 分析问题
+
+- 后端开发不懂前端逻辑，前端很容易成为瓶颈&lt;!-- .element: class=&quot;fragment&quot; --&gt;
+- 逻辑复杂&lt;!-- .element: class=&quot;fragment&quot; --&gt;
+- 代码重复&lt;!-- .element: class=&quot;fragment&quot; --&gt;
+- 可读性和维护性不是很好&lt;!-- .element: class=&quot;fragment&quot; --&gt;
+&lt;/script&gt;&lt;/section&gt;
+&lt;!--(4.2)--&gt;
+&lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
+### 解决问题
+
+- 灵活性：生成JavaScript代码
+- 可读性：用简单的DSL来描述
+- 易用性：在组件中封装JS、CSS的依赖
+&lt;/script&gt;&lt;/section&gt;
+&lt;!--(4.3)--&gt;
+&lt;section&gt;
+&lt;h3&gt;使用组件&lt;/h3&gt;
+&lt;br /&gt;
+&lt;br /&gt;
+&lt;div class=&quot;fragment&quot;&gt;
+&lt;span style=&quot;color:red;&quot;&gt;@input&lt;/span&gt;
+(
+&lt;span style=&quot;color:green;&quot;&gt;label&lt;/span&gt;=&quot;仓库&quot; 
+&lt;span style=&quot;color:green;&quot;&gt;name&lt;/span&gt;=&quot;warehouse&quot;
+)
+&lt;/div&gt;
+&lt;/section&gt;
+&lt;!--(4.4)--&gt;
+&lt;section&gt;
+&lt;h3&gt;组件关联&lt;/h3&gt;
+&lt;br /&gt;
+&lt;pre&gt;&lt;code&gt;
+@input(name=&quot;warehouse&quot;)
+@input(name=&quot;owner&quot;)
+    @on(target=&quot;warehouse&quot; type=&quot;change&quot;)
+        // 1. 请求接口获取数据
+        // 2. 更新组件自生的数据
+        // 3. 刷新展示
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/section&gt;
+&lt;!--(4.5)--&gt;
+&lt;section&gt;
+&lt;h3&gt;定义组件&lt;/h3&gt;
+&lt;br /&gt;
+&lt;pre&gt;&lt;code&gt;
+@import(
+    &#39;bootstrap.css&#39; // 依赖的CSS文件（需要的时候也可以加JS）
+)
+@component
+    this.width = &#39;10px&#39;; // 一些默认的数据
+
+    @render  // 在render下定义渲染（有点像JSX吧）
+        &lt;ul&gt;
+            for(i in items){
+                &lt;li&gt;${items[i]}&lt;/li&gt;
+            }
+        &lt;/ul&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/section&gt;
+&lt;!-- (4.6) --&gt;
+&lt;section&gt;
+&lt;h3&gt;生成的代码&lt;/h3&gt;
+&lt;br /&gt;
+&lt;pre&gt;&lt;code&gt;
+	create(&quot;div&quot;);
+	attr(&quot;class&quot;,&quot;control-group span8&quot;);
+	push();
+	create(&quot;label&quot;);
+	attr(&quot;class&quot;,&quot;control-label&quot;);
+	push();
+	create(null, (&quot;供应商编码：&quot;));
+	pop();
+	create(&quot;div&quot;);
+	attr(&quot;id&quot;,&quot;s1&quot;+this.name);
+	attr(&quot;class&quot;,&quot;controls&quot;);
+	push();
+	pop();
+	pop();
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/section&gt;
+&lt;!--(4.7)--&gt;
+&lt;section&gt;
+&lt;h3&gt;前端&lt;/h3&gt;
+&lt;br /&gt;
+&lt;pre&gt;&lt;code&gt;
+&lt;script type=&quot;text/engine&quot;&gt;
+@layout
+    @input(label=&quot;xxx&quot; name=&quot;xxx&quot;)
+    @input(label=&quot;xxx&quot; name=&quot;xxx&quot;)
+    @input(label=&quot;xxx&quot; name=&quot;xxx&quot;)
+@layout
+    @table
+    @page
+&lt;/script&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/section&gt;
+&lt;!--(4.8)--&gt;
+&lt;section&gt;
+&lt;h3&gt;后端&lt;/h3&gt;
+&lt;br /&gt;
+&lt;pre&gt;&lt;code&gt;
+&lt;script type=&quot;text/engine&quot;&gt;
+&lt;form&gt;
+    @input(label=&quot;xxx&quot; name=&quot;xxx&quot;) // 使用组件
+    @input(label=&quot;xxx&quot; name=&quot;xxx&quot;) // 使用组件
+    @input(label=&quot;xxx&quot; name=&quot;xxx&quot;) // 使用组件
+    &lt;table&gt;&lt;/table&gt;
+&lt;/form&gt;
+&lt;/script&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/section&gt;
+&lt;!--(4.9)--&gt;
+&lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
+### 整体结构
+&lt;/script&gt;&lt;/section&gt;
+&lt;/section&gt;
+</description>
+        <pubDate>Thu, 17 Dec 2015 00:00:00 +0800</pubDate>
+        <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/12/17/DOWN-TO-UP-SLIDES.html</link>
+        <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/12/17/DOWN-TO-UP-SLIDES.html</guid>
         
         
         <category>编程技术</category>
@@ -2279,656 +2504,6 @@ jQuery.extend( [ deep ], target , object1 [, objectN… ] )&lt;/p&gt;
         <pubDate>Fri, 11 Sep 2015 00:00:00 +0800</pubDate>
         <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/09/11/Css-Less.html</link>
         <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/09/11/Css-Less.html</guid>
-        
-        
-        <category>编程技术</category>
-        
-      </item>
-    
-      <item>
-        <title>JavaScript基础知识</title>
-        <description>&lt;p&gt;&lt;img src=&quot;http://img3.douban.com/mpic/s8958650.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;首先我并不是一个JavaScript高手，因为工作需要最近才开始学习，虽然之前陆陆续续地零碎看过一些，但是很不系统，这篇文章打算从一个门外汉的角度来分几步看，希望能对初学者有一些帮助~&lt;/p&gt;
-
-&lt;h2 id=&quot;section&quot;&gt;基本语法&lt;/h2&gt;
-
-&lt;p&gt;JavaScript是弱类型的，有六种基本类型（用&lt;code class=&quot;highlighter-rouge&quot;&gt;typeof&lt;/code&gt;查看）：&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;类型&lt;/th&gt;
-      &lt;th&gt;含义&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;undefined/null&lt;/td&gt;
-      &lt;td&gt;区别看&lt;a href=&quot;http://www.ruanyifeng.com/blog/2014/03/undefined-vs-null.html&quot;&gt;这里&lt;/a&gt;，可能结合Map比较好理解一些&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;boolean&lt;/td&gt;
-      &lt;td&gt;需要注意从其他类型转换到Boolean的规则&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;number&lt;/td&gt;
-      &lt;td&gt;整数、浮点数、NaN&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;string&lt;/td&gt;
-      &lt;td&gt;字符串&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;object&lt;/td&gt;
-      &lt;td&gt;数据、对象的集合，是所有对象的基础&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;弱类型的强大之处在于将不同类型的数据进行比较的时候居然结果是一样的：&lt;code class=&quot;highlighter-rouge&quot;&gt;&quot;123&quot;==123&lt;/code&gt;，简直毁三观~~不过也提供了另外一种方式&lt;code class=&quot;highlighter-rouge&quot;&gt;&quot;123&quot;===123&lt;/code&gt;可以得到预期的结果。&lt;/p&gt;
-
-&lt;p&gt;在需要连续操作一个对象的多个属性或者方法时可以用&lt;code class=&quot;highlighter-rouge&quot;&gt;with&lt;/code&gt;减少代码量：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-with(location){
-    var a = search.substring(1); // var a = location.search.substring(1)
-    var b = hostname;// var b = location.hostname
-}
-&lt;/pre&gt;
-
-&lt;p&gt;在JavaScript中定义函数非常灵活&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;既不需要定义返回值，也不需要定义入参（简直比弱类型还随意…）&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;可以使用&lt;code class=&quot;highlighter-rouge&quot;&gt;arguments&lt;/code&gt;来获取所有的参数，这样看来参数的实现和&lt;strong&gt;Python&lt;/strong&gt;有点像，参数名称仅仅是用为了在代码中方便使用参数！&lt;/p&gt;
-
-&lt;p&gt;在JavaScript中几乎所有的都是对象，第一种创建对象的方式为：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-var Cat = {
-    name : &#39;&#39;,
-    color : &#39;&#39;
-}
-&lt;/pre&gt;
-
-&lt;p&gt;这种方式在创建多个对象时非常麻烦，另外一种方法是：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-function Cat(name, color){
-    this.name = name;
-    this.color = color;
-}
-&lt;/pre&gt;
-
-&lt;p&gt;这样在创建对象的时候就很简单了：&lt;code class=&quot;highlighter-rouge&quot;&gt;new Cat(&#39;abc&#39;, &#39;white&#39;)&lt;/code&gt;，对象中有一些内部属性用来控制其行为：&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;内部属性&lt;/th&gt;
-      &lt;th&gt;含义&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;configurable&lt;/td&gt;
-      &lt;td&gt;能否通过&lt;code class=&quot;highlighter-rouge&quot;&gt;delete&lt;/code&gt;删除属性从而重新定义属性，能够修改属性的特性或者能否把属性修改为访问器属性&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;enumerable&lt;/td&gt;
-      &lt;td&gt;能否通过&lt;code class=&quot;highlighter-rouge&quot;&gt;for-in&lt;/code&gt;循环返回属性&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;writable&lt;/td&gt;
-      &lt;td&gt;能否修改属性的值&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;value&lt;/td&gt;
-      &lt;td&gt;包含这个属性的数据值&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;用法如下：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-var person = {};
-Object.defineProperty(person, &#39;name&#39;, {
-    writeable: false,
-    value: &#39;abc&#39;
-});
-&lt;/pre&gt;
-
-&lt;p&gt;另外提供了&lt;code class=&quot;highlighter-rouge&quot;&gt;get、set&lt;/code&gt;方法，有了它们之后就可以很容易监听对象中每个属性的变化，在做数据绑定的时候比较好用：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-var person = {name : &#39;abc&#39;};
-Object.defineProperty(person, &#39;name&#39;, {
-    get: function(){
-        return &#39;bcd&#39;;
-    },
-    set: function(newValue){
-        console.log(&#39;hehe&#39;);
-    }
-});
-console.log(person.name);// bcd
-&lt;/pre&gt;
-
-&lt;h2 id=&quot;section-1&quot;&gt;原型&lt;/h2&gt;
-
-&lt;p&gt;习惯了&lt;strong&gt;class based programming&lt;/strong&gt;直接看&lt;strong&gt;prototype based programming&lt;/strong&gt;感觉有点诡异：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;我们创建的每个函数都有一个prototype属性，指向一个对象，其中包含了可以由特定类型的所有实例共享的属性和方法&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;而作用则是：&lt;strong&gt;从当前对象中获取不到的属性可以尝试从prototype中获取&lt;/strong&gt;，只要记住这一点，很多问题就引刃而解！原型的用法很简单：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-function Person(){}
-Person.prototype.name = &#39;abc&#39;;
-var person1 = new Person();
-console.log(person1.name);//abc
-&lt;/pre&gt;
-
-&lt;p&gt;接着来看一些和原型相关的方法：&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;方法&lt;/th&gt;
-      &lt;th&gt;作用&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;Person.isPrototypeOf(person1)&lt;/td&gt;
-      &lt;td&gt;对象和对象之间是否存在原型链&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;Object.getPrototypeOf(person1) == Person&lt;/td&gt;
-      &lt;td&gt;获取原型&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;Person.prototype.constructor&lt;/td&gt;
-      &lt;td&gt;指向prototype属性所在函数的指针（也就是构造函数）&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;person1.hasOwnProperty(‘name’)&lt;/td&gt;
-      &lt;td&gt;是否自己真的有，而不是从原型中获取&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;person1 instanceof Object&lt;/td&gt;
-      &lt;td&gt;是否为指定类型&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;可以用原型来实现类似继承效果，直接设置prototype比较麻烦，最好封装一下：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-function object(o){
-    function F(){}
-    F.prototype = o;
-    return new F();
-}
-var person = {
-    name : &#39;abc&#39;
-}
-var another_person = object(person);
-&lt;/pre&gt;
-
-&lt;p&gt;另外一种常见的写法：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-function extend(Child, Parent) {
-    var F = function(){};
-    F.prototype = Parent.prototype;
-    Child.prototype = new F();
-    Child.prototype.constructor = Child;
-    Child.uber = Parent.prototype;
-}
-&lt;/pre&gt;
-
-&lt;p&gt;其实原型就是原型，它本身的含义已经非常明确，如果非要和其他编程语言中的概念去做对比就容易把自己绕进去~&lt;/p&gt;
-
-&lt;p&gt;参考资料：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;&lt;a href=&quot;http://www.ruanyifeng.com/blog/2010/05/object-oriented_javascript_encapsulation.html&quot;&gt;Javascript面向对象编程（一）：封装&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://www.ruanyifeng.com/blog/2010/05/object-oriented_javascript_inheritance.html&quot;&gt;Javascript面向对象编程（二）：构造函数的继承&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://www.ruanyifeng.com/blog/2010/05/object-oriented_javascript_inheritance_continued.html&quot;&gt;Javascript面向对象编程（三）：非构造函数的继承&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://www.ibm.com/developerworks/cn/web/1304_zengyz_jsoo/&quot;&gt;全面理解面向对象的 JavaScript&lt;/a&gt;&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h2 id=&quot;section-2&quot;&gt;闭包&lt;/h2&gt;
-
-&lt;p&gt;闭包是一个既神秘又绕，但其本质又非常简单的一个概念：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;有权访问另一个函数作用域中的变量的函数&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;赶紧来看一个例子：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-function createFunctions(){
-    var result = new Array();
-    for(var i = 0; i &amp;lt; 10; i++){
-        result[i] = function(){
-            return i;// 注意这里，访问了外部函数中的变量
-        };
-    }
-    return result;
-}
-&lt;/pre&gt;
-
-&lt;p&gt;直观感觉&lt;code class=&quot;highlighter-rouge&quot;&gt;result[0]()&lt;/code&gt;的返回值应该是0，实际上并非如此，内部函数可以访问外部函数作用域中的变量，但仅仅是包含一个引用而已，具体到执行的时候才去获取引用指向的值。&lt;/p&gt;
-
-&lt;p&gt;闭包绕就绕在作用域上，当它和其他作用域也比较绕的东西勾搭在一起的时候就需要小心了，比如this：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;当方法被某个对象调用时，this就等于那个对象&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;我们来比较下面两段代码体会一下就好了，第一段：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-var name = &quot;the window&quot;;
-var obj = {
-    name : &quot;my object&quot;,
-    getNameFunc : function(){
-        return function(){
-            return this.name;
-        }
-    }
-}
-console.log(obj.getNameFunc()()); // the window
-&lt;/pre&gt;
-
-&lt;p&gt;第二段：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-var name = &quot;the window&quot;;
-var obj = {
-    name : &quot;my object&quot;,
-    getNameFunc : function(){
-    	var self = this;
-        return function(){
-            return self.name;
-        }
-    }
-}
-console.log(obj.getNameFunc()()); // my object
-&lt;/pre&gt;
-
-&lt;p&gt;参考资料：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;&lt;a href=&quot;http://www.ruanyifeng.com/blog/2010/04/using_this_keyword_in_javascript.html&quot;&gt;Javascript的this用法&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://www.ruanyifeng.com/blog/2009/08/learning_javascript_closures.html&quot;&gt;学习Javascript闭包（Closure）&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://www.gracecode.com/posts/2385.html&quot;&gt;闭包的秘密&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://www.crockford.com/javascript/private.html&quot;&gt;Private Members in JavaScript&lt;/a&gt;&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h2 id=&quot;dombom&quot;&gt;DOM和BOM&lt;/h2&gt;
-
-&lt;p&gt;作为网页脚本语言，需要频繁地和浏览器、文档打交道，&lt;strong&gt;BOM&lt;/strong&gt;提供了对象用来访问浏览器的功能：&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;对象&lt;/th&gt;
-      &lt;th&gt;功能&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;window&lt;/td&gt;
-      &lt;td&gt;提供浏览器大小、位置以及很多基础方法&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;localtion&lt;/td&gt;
-      &lt;td&gt;加载文档的信息&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;navigator&lt;/td&gt;
-      &lt;td&gt;用来识别浏览器、检测插件、注册处理程序&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;screen&lt;/td&gt;
-      &lt;td&gt;显示器像素&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;history&lt;/td&gt;
-      &lt;td&gt;浏览器历史&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;而&lt;strong&gt;DOM&lt;/strong&gt;则是一个多层结构，其中节点类型包括：&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;类型&lt;/th&gt;
-      &lt;th&gt;含义&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;Node&lt;/td&gt;
-      &lt;td&gt;基类，统一维护了节点的层次结构&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;Document&lt;/td&gt;
-      &lt;td&gt;文档，提供读、写元素的操作，在JavaScript操作文档时经常用到&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;Element&lt;/td&gt;
-      &lt;td&gt;元素&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;Text&lt;/td&gt;
-      &lt;td&gt;文本&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;Comment&lt;/td&gt;
-      &lt;td&gt;注释&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;CDATASection&lt;/td&gt;
-      &lt;td&gt;XML中的CDATA(这个就不用多说了)&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;DocumentType&lt;/td&gt;
-      &lt;td&gt;文档类型，能够影响到浏览器渲染时的行为(一个热乎的坑)&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;Attr&lt;/td&gt;
-      &lt;td&gt;元素的特性&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;在判断节点类型中经常会用到&lt;code class=&quot;highlighter-rouge&quot;&gt;nodeName&lt;/code&gt;和&lt;code class=&quot;highlighter-rouge&quot;&gt;nodeType&lt;/code&gt;，另外有一个属性&lt;code class=&quot;highlighter-rouge&quot;&gt;childNodes&lt;/code&gt;保存子节点：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;NodeList对象并不是Array，而是基于DOM结构动态查询得到的结果&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;其他属性（以及其他类型节点特有的属性）就不一一说了，直接用一个图来描述：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/JavaScript-Basic-1.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;用jQuery操作DOM很方便的一个原因是CSS选择器，其实在原生的JavaScript中也有类似的接口：&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;接口&lt;/th&gt;
-      &lt;th&gt;作用&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;querySelector&lt;/td&gt;
-      &lt;td&gt;接收一个CSS选择符，返回与该模式匹配的第一个元素&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;querySelectorAll&lt;/td&gt;
-      &lt;td&gt;返回所有匹配CSS选择符的元素&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;matchesSelector&lt;/td&gt;
-      &lt;td&gt;检测元素与CSS选择符是否匹配&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;HTML5规定可以为元素添加非标准的属性，但是要添加前缀&lt;code class=&quot;highlighter-rouge&quot;&gt;data-&lt;/code&gt;，目的是为元素提供渲染无关的信息，访问时可以使用&lt;code class=&quot;highlighter-rouge&quot;&gt;dataset&lt;/code&gt;：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-&amp;lt;div id=&quot;myDiv&quot; data-appId=&quot;abc&quot; data-myName=&quot;bcd&quot;&amp;gt;&amp;lt;div&amp;gt;
-var div = document.getElementById(&quot;myDiv&quot;);
-var appId = div.dataset.appId;
-var myName = div.dataset.myName;
-&lt;/pre&gt;
-
-&lt;h2 id=&quot;section-3&quot;&gt;事件&lt;/h2&gt;
-
-&lt;p&gt;JavaScript可以操作DOM，反过来DOM也可以调用JavaScript，通过事件来实现，第一种绑定方式：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-var btn = document.getElementById(&quot;myBtn&quot;);
-btn.onclick = function(){
-    alert(&quot;Clicked&quot;);
-}
-&lt;/pre&gt;
-
-&lt;p&gt;第二种绑定方式：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-var btn = document.getElementById(&quot;myBtn&quot;);
-btn.addEventListener(&quot;click&quot;, function(){
-    alert(this.id);
-}, false);
-&lt;/pre&gt;
-
-&lt;p&gt;在事件中最核心的两个概念是：&lt;strong&gt;捕获&lt;/strong&gt;和&lt;strong&gt;冒泡&lt;/strong&gt;，冒泡是指事件开始时由最具体的元素接收，然后逐级向上传播到较为不具体的节点：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/JavaScript-Basic-2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;另一种事件流就是捕获了：不太具体的节点更早地接收到事件，而最具体的节点最后收到事件，事件捕获的用意在于事件到达预定节点之前捕获它：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/JavaScript-Basic-3.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;为了阻止事件的向上冒泡常用的方法有：&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;方法&lt;/th&gt;
-      &lt;th&gt;说明&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;return false&lt;/td&gt;
-      &lt;td&gt;阻止触发事件的元素的默认动作，并且阻止冒泡&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;preventDefault&lt;/td&gt;
-      &lt;td&gt;阻止默认动作&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;stopPragation&lt;/td&gt;
-      &lt;td&gt;阻止冒泡&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;最后，可以通过模拟事件来实现快捷键的功能~~&lt;/p&gt;
-
-&lt;p&gt;参考资料&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;&lt;a href=&quot;http://www.cnblogs.com/wang_yb/archive/2013/04/11/3014767.html&quot;&gt;javascript中return false;preventDefault();stopPragation()的区别&lt;/a&gt;&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h2 id=&quot;section-4&quot;&gt;通信&lt;/h2&gt;
-
-&lt;p&gt;网页和服务器异步通信的功能是必不可少的，代码如下：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-var xhr = new XMLHttpRequest();
-xhr.onreadystatechange = function(){ // 监听状态发生变化
-    if(xhr.readyState == 4){// 完成
-        if((xhr.status &amp;gt;= 200 &amp;amp;&amp;amp; xhr.status &amp;lt; 300) || xhr.status == 304){
-            alert(xhr.responseText);
-        } else{
-            alert(xhr.status);
-        }
-    }
-}
-xhr.open(&quot;get&quot;, &quot;xxx.xxx.com&quot;, true);
-xhr.send(null);
-&lt;/pre&gt;
-
-&lt;p&gt;JavaScript对请求限制必须是相同域名的（为了安全），但是跨域的需求也是刚需，那么大家只能八仙过海各显神通，常见的方式有：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;图像Ping&lt;/li&gt;
-  &lt;li&gt;JSONP&lt;/li&gt;
-  &lt;li&gt;Comet&lt;/li&gt;
-  &lt;li&gt;服务器发送事件（SSE）&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;既然禁止跨域并不是合理的，那么就需要提供一套能够安全跨域的方案，于是有了CORS：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;发送请求时将页面的源信息设置到Origin中，服务器根据Origin来判断是否允许访问，如果允许，那么在返回的头中设置Access-Control-Allow-Origin&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;在&lt;code class=&quot;highlighter-rouge&quot;&gt;Access-Control-Allow-Origin&lt;/code&gt;与源信息匹配或者其值为*的时候，浏览器就允许跨域访问了！&lt;/p&gt;
-
-&lt;p&gt;参考资料&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;&lt;a href=&quot;https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Access_control_CORS&quot;&gt;HTTP访问控制(CORS)&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://yuguo.us/weblog/access-control-allow-origin/&quot;&gt;自定义Access-Control-Allow-Origin策略以解决字体文件跨域权限问题&lt;/a&gt;&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h2 id=&quot;section-5&quot;&gt;离线&lt;/h2&gt;
-
-&lt;p&gt;当在离线的情况下依然可以访问网页，那么Web页面和App的距离就更近一步了，而且HTML5中已经实现了，对于资源缓存使用&lt;code class=&quot;highlighter-rouge&quot;&gt;manifest&lt;/code&gt;搞定：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-&amp;lt;html manifest=&quot;/example/demo.manifest&quot;&amp;gt;
-&lt;/pre&gt;
-
-&lt;p&gt;在该文件中指定页面中资源的缓存策略：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-CACHE MANIFEST # 缓存的文件
-CACHE
-/theme.css
-/logo.gif
-/main.js
-NETWORK: # 不缓存的文件
-login.asp
-FALLBACK: # 没有网络时的替代网页
-/html5/ /404.html
-&lt;/pre&gt;
-
-&lt;p&gt;另外提供对应的JavaScript API &lt;code class=&quot;highlighter-rouge&quot;&gt;applicationCache&lt;/code&gt;来查看缓存的状态：&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;状态值&lt;/th&gt;
-      &lt;th&gt;含义&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;0&lt;/td&gt;
-      &lt;td&gt;无缓存，没有与页面相关的缓存&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;1&lt;/td&gt;
-      &lt;td&gt;闲置，应用缓存未得到更新&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;2&lt;/td&gt;
-      &lt;td&gt;检查中，正在下载描述文件并检查更新&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;3&lt;/td&gt;
-      &lt;td&gt;下载中，应用缓存正在下载描述文件中指定的资源&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;4&lt;/td&gt;
-      &lt;td&gt;更新完成，应用缓存已经更新，而且所有的资源已下载完毕，可以通过swapCache来使用&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;5&lt;/td&gt;
-      &lt;td&gt;废弃，应用缓存的描述文件已经不存在，页面无法访问应用缓存&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;应用缓存还有相关的事件来表示状态的改变：&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;事件&lt;/th&gt;
-      &lt;th&gt;含义&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;checking&lt;/td&gt;
-      &lt;td&gt;浏览器为应用缓存查找更新时触发&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;error&lt;/td&gt;
-      &lt;td&gt;检查更新或下载资源期间发生错误时触发&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;noupdate&lt;/td&gt;
-      &lt;td&gt;检查描述文件发现无变化时触发&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;downloading&lt;/td&gt;
-      &lt;td&gt;开始下载应用缓存资源时触发&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;progress&lt;/td&gt;
-      &lt;td&gt;下载的应用缓存的过程中不断地触发&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;updateready&lt;/td&gt;
-      &lt;td&gt;页面新的应用缓存下载完毕并且可以通过swapCache使用时触发&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;cached&lt;/td&gt;
-      &lt;td&gt;在应用缓存完整可用时触发&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;需要注意应用缓存机制会自动缓存引用了manifest的页面，那么这个页面在manifest文件没有发生变更的情况下会一直保持不变，这个可以用一个&lt;code class=&quot;highlighter-rouge&quot;&gt;iframe&lt;/code&gt;间接缓存来解决。&lt;/p&gt;
-
-&lt;p&gt;除了js、css等资源外还有其他数据需要缓存的话可以用下面几种方案来解决：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;Cookie&lt;/li&gt;
-  &lt;li&gt;Web Storage&lt;/li&gt;
-  &lt;li&gt;IndexedDB&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;这部分就略了。&lt;/p&gt;
-
-&lt;p&gt;参考资料&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;&lt;a href=&quot;https://www.ibm.com/developerworks/cn/web/1011_guozb_html5off/&quot;&gt;使用 HTML5 开发离线应用&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://foocoder.com/blog/web-appzhi-nan-zhi-gou-jian-html5chi-xian-ying-yong.html/&quot;&gt;Web App指南之构建html5离线应用&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://kb.cnblogs.com/page/76808/&quot;&gt;HTML5 缓存: cache manifest&lt;/a&gt;&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h2 id=&quot;section-6&quot;&gt;总结&lt;/h2&gt;
-
-&lt;p&gt;这篇笔记仅仅是对常用的功能做一些记录，另外对于CANVAS绘画等技术后面会有单独的文章来进行介绍，最后再次推荐《JavaScript高级程序设计》~~&lt;/p&gt;
-</description>
-        <pubDate>Wed, 09 Sep 2015 00:00:00 +0800</pubDate>
-        <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/09/09/JavaScript-Basic.html</link>
-        <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/09/09/JavaScript-Basic.html</guid>
         
         
         <category>编程技术</category>
