@@ -5,9 +5,234 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 21 Dec 2015 14:58:44 +0800</pubDate>
-    <lastBuildDate>Mon, 21 Dec 2015 14:58:44 +0800</lastBuildDate>
+    <pubDate>Tue, 22 Dec 2015 15:05:38 +0800</pubDate>
+    <lastBuildDate>Tue, 22 Dec 2015 15:05:38 +0800</lastBuildDate>
     <generator>Jekyll v3.0.1</generator>
+    
+      <item>
+        <title>EASYDT</title>
+        <description>&lt;!-- test --&gt;
+
+&lt;!-- test end--&gt;
+
+&lt;!-- (0) --&gt;
+&lt;section&gt;&lt;h1&gt;EASY-DT&lt;/h1&gt;&lt;/section&gt;
+&lt;!-- (1) --&gt;
+&lt;section&gt;&lt;h3&gt;方便、快速地提供标准数据接口&lt;/h3&gt;&lt;/section&gt;
+&lt;!-- (2) --&gt;
+&lt;section&gt;
+&lt;!-- (2.1) --&gt;
+&lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
+### 老的配置方式
+
+&lt;div style=&quot;display:inline-block;&quot;&gt;
+![](http://7xiz10.com1.z0.glb.clouddn.com/DOWN-TO-UP-1.png)
+![](http://7xiz10.com1.z0.glb.clouddn.com/DOWN-TO-UP-1.png)
+&lt;/div&gt;
+
+- 理想：让不会写代码的人也能配置 &lt;!-- .element: class=&quot;fragment&quot; --&gt;
+- 现实：并没有多少人会用 &lt;!-- .element: class=&quot;fragment&quot; --&gt;
+&lt;/script&gt;&lt;/section&gt;
+&lt;!-- (2.2) --&gt;
+&lt;section&gt;
+&lt;h3&gt;实际中的数据&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;
+[
+    {
+        &quot;name&quot;: &quot;拣选&quot;,
+        &quot;list&quot;: [
+            0, 0, 0, 0, 0, 0, 0, 0, 256, 6049, 5684, 3008
+        ],
+        &quot;latest_count&quot;: 4862
+    },
+    {}
+]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/section&gt;
+&lt;!-- (2.3) --&gt;
+&lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
+### 分析问题
+
+- 功能作用单一
+- 无法地将功能组件组合使用
+- 扩展复杂
+- 过多的功能容易导致混淆
+&lt;/script&gt;&lt;/section&gt;
+&lt;!-- (2.4) --&gt;
+&lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
+### 使用GROOVY组合基础功能
+
+- 调试
+- 安全控制
+- 版本控制
+- 编辑保存
+- 同步
+- 扩展性&lt;!-- .element: class=&quot;fragment highlight-red&quot; --&gt;
+&lt;/script&gt;&lt;/section&gt;
+&lt;!-- (2.5) --&gt;
+&lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
+![现在的编辑页面](http://7xiz10.com1.z0.glb.clouddn.com/DOWN-TO-UP-1.png)
+
+- 对开发来说GROOVY的学习成本应该还是比较低的
+&lt;/script&gt;&lt;/section&gt;
+&lt;!-- (2.6) --&gt;
+&lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
+### 小白用户更愿意看到的是
+
+![现在的编辑页面](http://7xiz10.com1.z0.glb.clouddn.com/DOWN-TO-UP-1.png)&lt;!-- .element: class=&quot;fragment&quot; --&gt;
+&lt;/script&gt;&lt;/section&gt;
+&lt;!-- (2.7) --&gt;
+&lt;section&gt;
+&lt;h3&gt;可能的一种扩展方法&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;
+static Object execute(){
+    def template_context = get(&quot;template_context&quot;);
+    def sql = template_context.get(&quot;sql&quot;);
+    def datasource = template_context.get(&quot;datasource&quot;);
+    // 
+}
+static void mock(){
+    // 
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/section&gt;
+&lt;!-- (2.8) --&gt;
+&lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
+### 整体结构
+&lt;/script&gt;&lt;/section&gt;
+&lt;/section&gt;
+&lt;!--(3)--&gt;
+&lt;section&gt;&lt;h3&gt;更简单的前端页面开发&lt;/h3&gt;&lt;/section&gt;
+&lt;!--(4)--&gt;
+&lt;section&gt;
+&lt;!--(4.1)--&gt;
+&lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
+### 分析问题
+
+- 后端开发不懂前端逻辑，前端很容易成为瓶颈&lt;!-- .element: class=&quot;fragment&quot; --&gt;
+- 逻辑复杂&lt;!-- .element: class=&quot;fragment&quot; --&gt;
+- 代码重复&lt;!-- .element: class=&quot;fragment&quot; --&gt;
+- 可读性和维护性不是很好&lt;!-- .element: class=&quot;fragment&quot; --&gt;
+&lt;/script&gt;&lt;/section&gt;
+&lt;!--(4.2)--&gt;
+&lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
+### 解决问题
+
+- 灵活性：生成JavaScript代码
+- 可读性：用简单的DSL来描述
+- 易用性：在组件中封装JS、CSS的依赖
+&lt;/script&gt;&lt;/section&gt;
+&lt;!--(4.3)--&gt;
+&lt;section&gt;
+&lt;h3&gt;使用组件&lt;/h3&gt;
+&lt;br /&gt;
+&lt;br /&gt;
+&lt;div class=&quot;fragment&quot;&gt;
+&lt;span style=&quot;color:red;&quot;&gt;@input&lt;/span&gt;
+(
+&lt;span style=&quot;color:green;&quot;&gt;label&lt;/span&gt;=&quot;仓库&quot; 
+&lt;span style=&quot;color:green;&quot;&gt;name&lt;/span&gt;=&quot;warehouse&quot;
+)
+&lt;/div&gt;
+&lt;/section&gt;
+&lt;!--(4.4)--&gt;
+&lt;section&gt;
+&lt;h3&gt;组件关联&lt;/h3&gt;
+&lt;br /&gt;
+&lt;pre&gt;&lt;code&gt;
+@input(name=&quot;warehouse&quot;)
+@input(name=&quot;owner&quot;)
+    @on(target=&quot;warehouse&quot; type=&quot;change&quot;)
+        // 1. 请求接口获取数据
+        // 2. 更新组件自生的数据
+        // 3. 刷新展示
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/section&gt;
+&lt;!--(4.5)--&gt;
+&lt;section&gt;
+&lt;h3&gt;定义组件&lt;/h3&gt;
+&lt;br /&gt;
+&lt;pre&gt;&lt;code&gt;
+@import(
+    &#39;bootstrap.css&#39; // 依赖的CSS文件（需要的时候也可以加JS）
+)
+@component
+    this.width = &#39;10px&#39;; // 一些默认的数据
+
+    @render  // 在render下定义渲染（有点像JSX吧）
+        &lt;ul&gt;
+            for(i in items){
+                &lt;li&gt;${items[i]}&lt;/li&gt;
+            }
+        &lt;/ul&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/section&gt;
+&lt;!-- (4.6) --&gt;
+&lt;section&gt;
+&lt;h3&gt;生成的代码&lt;/h3&gt;
+&lt;br /&gt;
+&lt;pre&gt;&lt;code&gt;
+	create(&quot;div&quot;);
+	attr(&quot;class&quot;,&quot;control-group span8&quot;);
+	push();
+	create(&quot;label&quot;);
+	attr(&quot;class&quot;,&quot;control-label&quot;);
+	push();
+	create(null, (&quot;供应商编码：&quot;));
+	pop();
+	create(&quot;div&quot;);
+	attr(&quot;id&quot;,&quot;s1&quot;+this.name);
+	attr(&quot;class&quot;,&quot;controls&quot;);
+	push();
+	pop();
+	pop();
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/section&gt;
+&lt;!--(4.7)--&gt;
+&lt;section&gt;
+&lt;h3&gt;前端&lt;/h3&gt;
+&lt;br /&gt;
+&lt;pre&gt;&lt;code&gt;
+&lt;script type=&quot;text/engine&quot;&gt;
+@layout
+    @input(label=&quot;xxx&quot; name=&quot;xxx&quot;)
+    @input(label=&quot;xxx&quot; name=&quot;xxx&quot;)
+    @input(label=&quot;xxx&quot; name=&quot;xxx&quot;)
+@layout
+    @table
+    @page
+&lt;/script&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/section&gt;
+&lt;!--(4.8)--&gt;
+&lt;section&gt;
+&lt;h3&gt;后端&lt;/h3&gt;
+&lt;br /&gt;
+&lt;pre&gt;&lt;code&gt;
+&lt;script type=&quot;text/engine&quot;&gt;
+&lt;form&gt;
+    @input(label=&quot;xxx&quot; name=&quot;xxx&quot;) // 使用组件
+    @input(label=&quot;xxx&quot; name=&quot;xxx&quot;) // 使用组件
+    @input(label=&quot;xxx&quot; name=&quot;xxx&quot;) // 使用组件
+    &lt;table&gt;&lt;/table&gt;
+&lt;/form&gt;
+&lt;/script&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/section&gt;
+&lt;!--(4.9)--&gt;
+&lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
+### 整体结构
+&lt;/script&gt;&lt;/section&gt;
+&lt;/section&gt;
+</description>
+        <pubDate>Thu, 17 Dec 2015 00:00:00 +0800</pubDate>
+        <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/12/17/ZOOKEEPER-BASIC.html</link>
+        <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/12/17/ZOOKEEPER-BASIC.html</guid>
+        
+        
+        <category>编程技术</category>
+        
+      </item>
     
       <item>
         <title>从下向上来开发</title>
@@ -308,7 +533,7 @@ engine.init(&quot;page&quot;, document.body);// 将page对应的页面渲染到b
       </item>
     
       <item>
-        <title>EASYDT</title>
+        <title>从下向上来开发(PPT)</title>
         <description>&lt;!-- test --&gt;
 
 &lt;!-- test end--&gt;
@@ -524,11 +749,11 @@ static void mock(){
 &lt;/section&gt;
 </description>
         <pubDate>Thu, 17 Dec 2015 00:00:00 +0800</pubDate>
-        <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/12/17/DOWN-TO-UP-SLIDES.html</link>
-        <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/12/17/DOWN-TO-UP-SLIDES.html</guid>
+        <link>/ppt/2015/12/17/DOWN-TO-UP-SLIDES.html</link>
+        <guid isPermaLink="true">/ppt/2015/12/17/DOWN-TO-UP-SLIDES.html</guid>
         
         
-        <category>编程技术</category>
+        <category>PPT</category>
         
       </item>
     
@@ -2356,157 +2581,6 @@ jQuery.extend( [ deep ], target , object1 [, objectN… ] )&lt;/p&gt;
         
         
         <category>工具</category>
-        
-      </item>
-    
-      <item>
-        <title>CSS基础和LESS入门</title>
-        <description>&lt;p&gt;&lt;img src=&quot;http://img3.douban.com/mpic/s2921314.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;看《CSS权威指南》的时候简单的整理了一些&lt;a href=&quot;http://naotu.baidu.com/file/ed1f91b9f4ba914a4d97e404acd71ee3?token=33581ba44ab41688&quot;&gt;笔记&lt;/a&gt;，有些东西比之前有了更深的理解，但是用这么厚的一本书来学CSS多少有些头大，只需要把一些关键的东西理解透彻，具体的设置查&lt;a href=&quot;http://www.w3chtml.com/css3/&quot;&gt;手册&lt;/a&gt;更快！&lt;/p&gt;
-
-&lt;h2 id=&quot;section&quot;&gt;布局和定位&lt;/h2&gt;
-
-&lt;p&gt;原生的HTML中元素分为两种：&lt;strong&gt;块级元素&lt;/strong&gt;和&lt;strong&gt;行内元素&lt;/strong&gt;，而CSS中用display来影响元素的展示：&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;值&lt;/th&gt;
-      &lt;th&gt;含义&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;none&lt;/td&gt;
-      &lt;td&gt;隐藏对象并且不会保留物理空间&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;inline&lt;/td&gt;
-      &lt;td&gt;行内元素&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;block&lt;/td&gt;
-      &lt;td&gt;块级元素&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;inline-block&lt;/td&gt;
-      &lt;td&gt;行内块元素，也就是说横着排列的同时可以指定宽高&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;box&lt;/td&gt;
-      &lt;td&gt;弹性盒子模型&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;inline-box&lt;/td&gt;
-      &lt;td&gt;行内弹性盒子，和inline-block有点类似&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;直接使用top、right等是不会起作用的，想要起作用得用position来配合：&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;值&lt;/th&gt;
-      &lt;th&gt;含义&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;static&lt;/td&gt;
-      &lt;td&gt;不使用定位&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;relative&lt;/td&gt;
-      &lt;td&gt;相对于父节点的位置&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;absolute&lt;/td&gt;
-      &lt;td&gt;绝对定位，会跟滚动条滚动&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;fixed&lt;/td&gt;
-      &lt;td&gt;固定定位，不会跟随滚动&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;当用relative有问题的时候可能是你的HTML结构错了导致父节点判断错误导致的:)用display+position可以把一个元素放到你想要的位置，但是一个块也不是简单的长方形，也有其结构：&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;属性&lt;/th&gt;
-      &lt;th&gt;含义&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;margin&lt;/td&gt;
-      &lt;td&gt;外补白&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;padding&lt;/td&gt;
-      &lt;td&gt;内补白&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;border&lt;/td&gt;
-      &lt;td&gt;边框&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;外补白比较特殊一点：取的双方的是max而不是sum，在chrome控制台玩一下就能很好地理解这三个的用法：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/Css-Less.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;直观上背景图片是用来做背景的，但是感觉现在都被大家玩坏了，比如经常把很多的图标放到一个图片上然后用&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-.x {
-    background-image:url(img-url);
-    background-position:-100px 100px;
-}
-&lt;/pre&gt;
-
-&lt;p&gt;就可以在对应的DIV中展示出局部图片，这个局部就可能是某个ICON，感觉这完全是在当图片使用额~ 当内容超过限制的时候可以使用&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;overflow&lt;/li&gt;
-  &lt;li&gt;overflow-x&lt;/li&gt;
-  &lt;li&gt;overflow-y&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;来进行控制，但是滚动条的默认样式实在是太丑了，在&lt;a href=&quot;http://www.webhek.com/scrollbar&quot;&gt;这里&lt;/a&gt;找到一种修改的方法，对于&lt;strong&gt;-webkit-&lt;/strong&gt;核的浏览器来说很简单，但是要去兼容IE+FX比较麻烦，可以考虑用&lt;a href=&quot;http://www.jqcool.net/demo/201404/jquery-jscrollpane/&quot;&gt;jQuery插件&lt;/a&gt;。&lt;/p&gt;
-
-&lt;h2 id=&quot;section-1&quot;&gt;变换和动画&lt;/h2&gt;
-
-&lt;h2 id=&quot;less&quot;&gt;LESS&lt;/h2&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://www.1024i.com/demo/less/images/logo.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;虽然它的口号是&lt;strong&gt;LESS IS MORE, THAN CSS&lt;/strong&gt;，但是确实感觉LESS是在CSS的基础上增加了一些扩展&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;变量&lt;/li&gt;
-  &lt;li&gt;继承&lt;/li&gt;
-  &lt;li&gt;嵌套&lt;/li&gt;
-  &lt;li&gt;运算&lt;/li&gt;
-  &lt;li&gt;函数&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;另外LESS实际兼容CSS的（也就是说你可以在里面直接写CSS代码），实际使用时可以在后端将其打包（比如Grunt）成CSS文件之后再提供给前端，具体用法可以看&lt;a href=&quot;http://www.1024i.com/demo/less/index.html&quot;&gt;这里&lt;/a&gt;的中文文档。&lt;/p&gt;
-
-&lt;h2 id=&quot;section-2&quot;&gt;总结&lt;/h2&gt;
-</description>
-        <pubDate>Fri, 11 Sep 2015 00:00:00 +0800</pubDate>
-        <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/09/11/Css-Less.html</link>
-        <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/09/11/Css-Less.html</guid>
-        
-        
-        <category>编程技术</category>
         
       </item>
     

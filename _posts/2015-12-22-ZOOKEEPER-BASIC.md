@@ -1,8 +1,8 @@
 ---
 layout: slides
-title: 从下向上来开发(PPT)
+title: EASYDT
 date: 2015-12-17
-categories: PPT
+categories: 编程技术
 
 ---
 

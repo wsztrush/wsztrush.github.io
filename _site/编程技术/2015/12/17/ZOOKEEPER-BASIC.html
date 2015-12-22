@@ -1,12 +1,17 @@
----
-layout: slides
-title: 从下向上来开发(PPT)
-date: 2015-12-17
-categories: PPT
+<!DOCTYPEhtmlPUBLIC"-//W3C//DTDXHTML1.0Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html>
+	<head>
+		<script src="http://cdn.bootcss.com/reveal.js/3.0.0/lib/js/head.min.js"></script>
+		<script src="http://cdn.bootcss.com/reveal.js/3.0.0/js/reveal.min.js"></script>
 
----
-
-<!-- test -->
+		<link rel="stylesheet" href="http://cdn.bootcss.com/reveal.js/3.0.0/css/reveal.css">
+		<link rel="stylesheet" href="http://cdn.bootcss.com/reveal.js/3.0.0/css/theme/black.min.css" id="theme">
+		<link rel="stylesheet" href="http://cdn.bootcss.com/reveal.js/3.0.0/lib/css/zenburn.min.css">
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<!-- test -->
 
 <!-- test end-->
 
@@ -17,7 +22,7 @@ categories: PPT
 <!-- (2) -->
 <section>
 <!-- (2.1) -->
-<section data-markdown><script type="text/template">
+<section data-markdown=""><script type="text/template">
 ### 老的配置方式
 
 <div style="display:inline-block;">
@@ -45,7 +50,7 @@ categories: PPT
 </code></pre>
 </section>
 <!-- (2.3) -->
-<section data-markdown><script type="text/template">
+<section data-markdown=""><script type="text/template">
 ### 分析问题
 
 - 功能作用单一
@@ -54,7 +59,7 @@ categories: PPT
 - 过多的功能容易导致混淆
 </script></section>
 <!-- (2.4) -->
-<section data-markdown><script type="text/template">
+<section data-markdown=""><script type="text/template">
 ### 使用GROOVY组合基础功能
 
 - 调试
@@ -65,13 +70,13 @@ categories: PPT
 - 扩展性<!-- .element: class="fragment highlight-red" -->
 </script></section>
 <!-- (2.5) -->
-<section data-markdown><script type="text/template">
+<section data-markdown=""><script type="text/template">
 ![现在的编辑页面](http://7xiz10.com1.z0.glb.clouddn.com/DOWN-TO-UP-1.png)
 
 - 对开发来说GROOVY的学习成本应该还是比较低的
 </script></section>
 <!-- (2.6) -->
-<section data-markdown><script type="text/template">
+<section data-markdown=""><script type="text/template">
 ### 小白用户更愿意看到的是
 
 ![现在的编辑页面](http://7xiz10.com1.z0.glb.clouddn.com/DOWN-TO-UP-1.png)<!-- .element: class="fragment" -->
@@ -92,7 +97,7 @@ static void mock(){
 </code></pre>
 </section>
 <!-- (2.8) -->
-<section data-markdown><script type="text/template">
+<section data-markdown=""><script type="text/template">
 ### 整体结构
 </script></section>
 </section>
@@ -101,7 +106,7 @@ static void mock(){
 <!--(4)-->
 <section>
 <!--(4.1)-->
-<section data-markdown><script type="text/template">
+<section data-markdown=""><script type="text/template">
 ### 分析问题
 
 - 后端开发不懂前端逻辑，前端很容易成为瓶颈<!-- .element: class="fragment" -->
@@ -110,7 +115,7 @@ static void mock(){
 - 可读性和维护性不是很好<!-- .element: class="fragment" -->
 </script></section>
 <!--(4.2)-->
-<section data-markdown><script type="text/template">
+<section data-markdown=""><script type="text/template">
 ### 解决问题
 
 - 灵活性：生成JavaScript代码
@@ -120,8 +125,8 @@ static void mock(){
 <!--(4.3)-->
 <section>
 <h3>使用组件</h3>
-<br/>
-<br/>
+<br />
+<br />
 <div class="fragment">
 <span style="color:red;">@input</span>
 (
@@ -133,7 +138,7 @@ static void mock(){
 <!--(4.4)-->
 <section>
 <h3>组件关联</h3>
-<br/>
+<br />
 <pre><code>
 @input(name="warehouse")
 @input(name="owner")
@@ -146,7 +151,7 @@ static void mock(){
 <!--(4.5)-->
 <section>
 <h3>定义组件</h3>
-<br/>
+<br />
 <pre><code>
 @import(
     'bootstrap.css' // 依赖的CSS文件（需要的时候也可以加JS）
@@ -165,7 +170,7 @@ static void mock(){
 <!-- (4.6) -->
 <section>
 <h3>生成的代码</h3>
-<br/>
+<br />
 <pre><code>
 	create("div");
 	attr("class","control-group span8");
@@ -186,7 +191,7 @@ static void mock(){
 <!--(4.7)-->
 <section>
 <h3>前端</h3>
-<br/>
+<br />
 <pre><code>
 <script type="text/engine">
 @layout
@@ -202,7 +207,7 @@ static void mock(){
 <!--(4.8)-->
 <section>
 <h3>后端</h3>
-<br/>
+<br />
 <pre><code>
 <script type="text/engine">
 <form>
@@ -215,7 +220,51 @@ static void mock(){
 </code></pre>
 </section>
 <!--(4.9)-->
-<section data-markdown><script type="text/template">
+<section data-markdown=""><script type="text/template">
 ### 整体结构
 </script></section>
 </section>
+
+			</div>
+		</div>
+	</body>
+</html>
+<script>
+//在这里对幻灯片进行配置
+Reveal.initialize({
+	// 是否显示右下角的方向盘
+	controls: true,
+	// 是否显示页面底部的进度条
+	progress: true,
+	// 是否开启快捷键
+	keyboard: true,
+	// 是否支持概览模式
+	overview: true,
+	// 是否自动居中
+	center: true,
+	// 是否循环显示幻灯片
+	loop: false,
+	// Change the presentation direction to be RTL
+	rtl: false,
+	// Number of milliseconds between automatically proceeding to the
+	// next slide, disabled when set to 0, this value can be overwritten
+	// by using a data-autoslide attribute on your slides
+	autoSlide: 0,
+	// 是否支持鼠标滚轮
+	mouseWheel: false,
+	// 是否支持链接的3D反转
+	rollingLinks: true,
+	// 翻页效果
+	transition: 'default', // default/cube/page/concave/zoom/linear/fade/none
+	// 翻页速度
+	transitionSpeed: 'default', // default/fast/slow
+	dependencies: [
+		{ src: 'http://cdn.bootcss.com/reveal.js/3.0.0/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+		{ src: 'http://cdn.bootcss.com/reveal.js/3.0.0/plugin/markdown/marked.min.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+		{ src: 'http://cdn.bootcss.com/reveal.js/3.0.0/plugin/markdown/markdown.min.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+		{ src: 'http://cdn.bootcss.com/reveal.js/3.0.0/plugin/highlight/highlight.min.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+		{ src: 'http://cdn.bootcss.com/reveal.js/3.0.0/plugin/zoom-js/zoom.min.js', async: true },
+		{ src: 'http://cdn.bootcss.com/reveal.js/3.0.0/plugin/notes/notes.min.js', async: true }
+	]
+});
+</script>
