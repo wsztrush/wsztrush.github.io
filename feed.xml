@@ -5,229 +5,149 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 22 Dec 2015 15:05:38 +0800</pubDate>
-    <lastBuildDate>Tue, 22 Dec 2015 15:05:38 +0800</lastBuildDate>
+    <pubDate>Tue, 22 Dec 2015 18:24:09 +0800</pubDate>
+    <lastBuildDate>Tue, 22 Dec 2015 18:24:09 +0800</lastBuildDate>
     <generator>Jekyll v3.0.1</generator>
     
       <item>
-        <title>EASYDT</title>
-        <description>&lt;!-- test --&gt;
+        <title>ZOOKEEPER基础</title>
+        <description>&lt;p&gt;搞数据开发的对一些产品非常熟悉，比如：&lt;/p&gt;
 
-&lt;!-- test end--&gt;
+&lt;ol&gt;
+  &lt;li&gt;HBase&lt;/li&gt;
+  &lt;li&gt;Hadoop&lt;/li&gt;
+  &lt;li&gt;…&lt;/li&gt;
+&lt;/ol&gt;
 
-&lt;!-- (0) --&gt;
-&lt;section&gt;&lt;h1&gt;EASY-DT&lt;/h1&gt;&lt;/section&gt;
-&lt;!-- (1) --&gt;
-&lt;section&gt;&lt;h3&gt;方便、快速地提供标准数据接口&lt;/h3&gt;&lt;/section&gt;
-&lt;!-- (2) --&gt;
-&lt;section&gt;
-&lt;!-- (2.1) --&gt;
-&lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
-### 老的配置方式
+&lt;p&gt;但是对它们背后共同的“男人”没有太多的了解，太不应该了。这篇是一个基础的介绍，看完之后应该会对ZOOKEEPER有大概了解。&lt;/p&gt;
 
-&lt;div style=&quot;display:inline-block;&quot;&gt;
-![](http://7xiz10.com1.z0.glb.clouddn.com/DOWN-TO-UP-1.png)
-![](http://7xiz10.com1.z0.glb.clouddn.com/DOWN-TO-UP-1.png)
-&lt;/div&gt;
+&lt;h2 id=&quot;section&quot;&gt;安装部署&lt;/h2&gt;
 
-- 理想：让不会写代码的人也能配置 &lt;!-- .element: class=&quot;fragment&quot; --&gt;
-- 现实：并没有多少人会用 &lt;!-- .element: class=&quot;fragment&quot; --&gt;
-&lt;/script&gt;&lt;/section&gt;
-&lt;!-- (2.2) --&gt;
-&lt;section&gt;
-&lt;h3&gt;实际中的数据&lt;/h3&gt;
-&lt;pre&gt;&lt;code&gt;
-[
-    {
-        &quot;name&quot;: &quot;拣选&quot;,
-        &quot;list&quot;: [
-            0, 0, 0, 0, 0, 0, 0, 0, 256, 6049, 5684, 3008
-        ],
-        &quot;latest_count&quot;: 4862
-    },
-    {}
-]
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/section&gt;
-&lt;!-- (2.3) --&gt;
-&lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
-### 分析问题
+&lt;p&gt;在&lt;a href=&quot;http://zookeeper.apache.org/releases.html&quot;&gt;这里&lt;/a&gt;下载包，放到你喜欢的目录解压缩：&lt;/p&gt;
 
-- 功能作用单一
-- 无法地将功能组件组合使用
-- 扩展复杂
-- 过多的功能容易导致混淆
-&lt;/script&gt;&lt;/section&gt;
-&lt;!-- (2.4) --&gt;
-&lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
-### 使用GROOVY组合基础功能
+&lt;blockquote&gt;
+  &lt;p&gt;sudo tar -zxvf zookeeper-3.4.7.tar.gz&lt;/p&gt;
+&lt;/blockquote&gt;
 
-- 调试
-- 安全控制
-- 版本控制
-- 编辑保存
-- 同步
-- 扩展性&lt;!-- .element: class=&quot;fragment highlight-red&quot; --&gt;
-&lt;/script&gt;&lt;/section&gt;
-&lt;!-- (2.5) --&gt;
-&lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
-![现在的编辑页面](http://7xiz10.com1.z0.glb.clouddn.com/DOWN-TO-UP-1.png)
+&lt;p&gt;配置信息在&lt;strong&gt;conf/zoo.cfg&lt;/strong&gt;中（可以在zoo_sample.cfg中看到），常用的几个设置项如下（更多看&lt;a href=&quot;http://www.cnblogs.com/ggjucheng/p/3352591.html&quot;&gt;这里&lt;/a&gt;）：&lt;/p&gt;
 
-- 对开发来说GROOVY的学习成本应该还是比较低的
-&lt;/script&gt;&lt;/section&gt;
-&lt;!-- (2.6) --&gt;
-&lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
-### 小白用户更愿意看到的是
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;配置&lt;/th&gt;
+      &lt;th&gt;作用&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;tickTime&lt;/td&gt;
+      &lt;td&gt;客户端和服务器之间的心跳间隔（毫秒）&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;initLimit&lt;/td&gt;
+      &lt;td&gt;FOLLOWER与LEADER初始连接的最大延迟心跳数&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;syncLimit&lt;/td&gt;
+      &lt;td&gt;FOLLOWER与LEADER请求应答的最大延迟心跳数&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;dataDir&lt;/td&gt;
+      &lt;td&gt;数据文件目录&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;dataLogDir&lt;/td&gt;
+      &lt;td&gt;日志文件目录&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;clientPort&lt;/td&gt;
+      &lt;td&gt;客户端连接端口&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
 
-![现在的编辑页面](http://7xiz10.com1.z0.glb.clouddn.com/DOWN-TO-UP-1.png)&lt;!-- .element: class=&quot;fragment&quot; --&gt;
-&lt;/script&gt;&lt;/section&gt;
-&lt;!-- (2.7) --&gt;
-&lt;section&gt;
-&lt;h3&gt;可能的一种扩展方法&lt;/h3&gt;
-&lt;pre&gt;&lt;code&gt;
-static Object execute(){
-    def template_context = get(&quot;template_context&quot;);
-    def sql = template_context.get(&quot;sql&quot;);
-    def datasource = template_context.get(&quot;datasource&quot;);
-    // 
-}
-static void mock(){
-    // 
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/section&gt;
-&lt;!-- (2.8) --&gt;
-&lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
-### 整体结构
-&lt;/script&gt;&lt;/section&gt;
-&lt;/section&gt;
-&lt;!--(3)--&gt;
-&lt;section&gt;&lt;h3&gt;更简单的前端页面开发&lt;/h3&gt;&lt;/section&gt;
-&lt;!--(4)--&gt;
-&lt;section&gt;
-&lt;!--(4.1)--&gt;
-&lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
-### 分析问题
+&lt;p&gt;配置安成以后使用命令启动（standalone模式）：&lt;/p&gt;
 
-- 后端开发不懂前端逻辑，前端很容易成为瓶颈&lt;!-- .element: class=&quot;fragment&quot; --&gt;
-- 逻辑复杂&lt;!-- .element: class=&quot;fragment&quot; --&gt;
-- 代码重复&lt;!-- .element: class=&quot;fragment&quot; --&gt;
-- 可读性和维护性不是很好&lt;!-- .element: class=&quot;fragment&quot; --&gt;
-&lt;/script&gt;&lt;/section&gt;
-&lt;!--(4.2)--&gt;
-&lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
-### 解决问题
+&lt;blockquote&gt;
+  &lt;p&gt;./bin/zkServer.sh start&lt;/p&gt;
+&lt;/blockquote&gt;
 
-- 灵活性：生成JavaScript代码
-- 可读性：用简单的DSL来描述
-- 易用性：在组件中封装JS、CSS的依赖
-&lt;/script&gt;&lt;/section&gt;
-&lt;!--(4.3)--&gt;
-&lt;section&gt;
-&lt;h3&gt;使用组件&lt;/h3&gt;
-&lt;br /&gt;
-&lt;br /&gt;
-&lt;div class=&quot;fragment&quot;&gt;
-&lt;span style=&quot;color:red;&quot;&gt;@input&lt;/span&gt;
-(
-&lt;span style=&quot;color:green;&quot;&gt;label&lt;/span&gt;=&quot;仓库&quot; 
-&lt;span style=&quot;color:green;&quot;&gt;name&lt;/span&gt;=&quot;warehouse&quot;
-)
-&lt;/div&gt;
-&lt;/section&gt;
-&lt;!--(4.4)--&gt;
-&lt;section&gt;
-&lt;h3&gt;组件关联&lt;/h3&gt;
-&lt;br /&gt;
-&lt;pre&gt;&lt;code&gt;
-@input(name=&quot;warehouse&quot;)
-@input(name=&quot;owner&quot;)
-    @on(target=&quot;warehouse&quot; type=&quot;change&quot;)
-        // 1. 请求接口获取数据
-        // 2. 更新组件自生的数据
-        // 3. 刷新展示
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/section&gt;
-&lt;!--(4.5)--&gt;
-&lt;section&gt;
-&lt;h3&gt;定义组件&lt;/h3&gt;
-&lt;br /&gt;
-&lt;pre&gt;&lt;code&gt;
-@import(
-    &#39;bootstrap.css&#39; // 依赖的CSS文件（需要的时候也可以加JS）
-)
-@component
-    this.width = &#39;10px&#39;; // 一些默认的数据
+&lt;p&gt;查看zookeeper的状态（看看起来没）：&lt;/p&gt;
 
-    @render  // 在render下定义渲染（有点像JSX吧）
-        &lt;ul&gt;
-            for(i in items){
-                &lt;li&gt;${items[i]}&lt;/li&gt;
-            }
-        &lt;/ul&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/section&gt;
-&lt;!-- (4.6) --&gt;
-&lt;section&gt;
-&lt;h3&gt;生成的代码&lt;/h3&gt;
-&lt;br /&gt;
-&lt;pre&gt;&lt;code&gt;
-	create(&quot;div&quot;);
-	attr(&quot;class&quot;,&quot;control-group span8&quot;);
-	push();
-	create(&quot;label&quot;);
-	attr(&quot;class&quot;,&quot;control-label&quot;);
-	push();
-	create(null, (&quot;供应商编码：&quot;));
-	pop();
-	create(&quot;div&quot;);
-	attr(&quot;id&quot;,&quot;s1&quot;+this.name);
-	attr(&quot;class&quot;,&quot;controls&quot;);
-	push();
-	pop();
-	pop();
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/section&gt;
-&lt;!--(4.7)--&gt;
-&lt;section&gt;
-&lt;h3&gt;前端&lt;/h3&gt;
-&lt;br /&gt;
-&lt;pre&gt;&lt;code&gt;
-&lt;script type=&quot;text/engine&quot;&gt;
-@layout
-    @input(label=&quot;xxx&quot; name=&quot;xxx&quot;)
-    @input(label=&quot;xxx&quot; name=&quot;xxx&quot;)
-    @input(label=&quot;xxx&quot; name=&quot;xxx&quot;)
-@layout
-    @table
-    @page
-&lt;/script&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/section&gt;
-&lt;!--(4.8)--&gt;
-&lt;section&gt;
-&lt;h3&gt;后端&lt;/h3&gt;
-&lt;br /&gt;
-&lt;pre&gt;&lt;code&gt;
-&lt;script type=&quot;text/engine&quot;&gt;
-&lt;form&gt;
-    @input(label=&quot;xxx&quot; name=&quot;xxx&quot;) // 使用组件
-    @input(label=&quot;xxx&quot; name=&quot;xxx&quot;) // 使用组件
-    @input(label=&quot;xxx&quot; name=&quot;xxx&quot;) // 使用组件
-    &lt;table&gt;&lt;/table&gt;
-&lt;/form&gt;
-&lt;/script&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/section&gt;
-&lt;!--(4.9)--&gt;
-&lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
-### 整体结构
-&lt;/script&gt;&lt;/section&gt;
-&lt;/section&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;./bin/zkServer.sh start&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;当然也可以用客户端试一下能不能连上：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;./bin/zkCli.sh 或者 ./bin/zkCli.sh -server 127.0.0.1:2181&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;现在还是单个节点，离集群还差很多，怎么办？暂时没有很多机器，在单机上搞“伪集群”应该还是简单的，这样和真正的集群差的不是太多了。刚开始看&lt;a href=&quot;http://blog.csdn.net/tanyujing/article/details/8504481&quot;&gt;这里&lt;/a&gt;感觉没啥问题，但是有点烦，于是看下./bin/zkServer.sh的代码：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+if [ &quot;x$2&quot; != &quot;x&quot; ]
+then
+    ZOOCFG=&quot;$ZOOCFGDIR/$2&quot;
+fi
+&lt;/pre&gt;
+
+&lt;p&gt;果然是可以指定配置文件的，于是创建文件&lt;strong&gt;./conf/zoo_1.cfg&lt;/strong&gt;，内容如下：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+tickTime=2000
+initLimit=10
+syncLimit=5
+dataDir=/tmp/zookeeper/1 # 新建个目录
+clientPort=3181 # 注意端口不要冲突
+server.0=127.0.0.1:2008:6008
+server.1=127.0.0.1:2007:6007
+&lt;/pre&gt;
+
+&lt;p&gt;当然需要对原来的&lt;strong&gt;./conf/zoo.cfg&lt;/strong&gt;做一点小修改：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+tickTime=2000
+initLimit=10
+syncLimit=5
+dataDir=/tmp/zookeeper/0 # 新建个目录
+clientPort=2181 # 注意端口不要冲突
+server.0=127.0.0.1:2008:6008
+server.1=127.0.0.1:2007:6007
+&lt;/pre&gt;
+
+&lt;p&gt;后面放的是ZK的服务器列表（每个节点上的列表都是一样的），格式如下：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;server.[myId]=[IP地址][通信端口][选举端口]&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;另外需要写入myid：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+echo &#39;0&#39; &amp;gt; /tmp/zookeeper/0/myid
+echo &#39;1&#39; &amp;gt; /tmp/zookeeper/1/myid
+&lt;/pre&gt;
+
+&lt;p&gt;现在可以启动了：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+./bin/zkServer.sh start ./conf/zoo.cfg
+./bin/zkServer.sh start ./conf/zoo_1.cfg
+&lt;/pre&gt;
+
+&lt;p&gt;再用命令查看状态显示&lt;strong&gt;Mode: follower&lt;/strong&gt;，启动成功（STOP的时候也需要指定配置文件）。&lt;/p&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;原理&lt;/h2&gt;
+
+&lt;h2 id=&quot;section-2&quot;&gt;使用方法&lt;/h2&gt;
+
+&lt;h2 id=&quot;section-3&quot;&gt;总结&lt;/h2&gt;
 </description>
-        <pubDate>Thu, 17 Dec 2015 00:00:00 +0800</pubDate>
-        <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/12/17/ZOOKEEPER-BASIC.html</link>
-        <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/12/17/ZOOKEEPER-BASIC.html</guid>
+        <pubDate>Tue, 22 Dec 2015 00:00:00 +0800</pubDate>
+        <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/12/22/ZOOKEEPER-BASIC.html</link>
+        <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/12/22/ZOOKEEPER-BASIC.html</guid>
         
         
         <category>编程技术</category>
