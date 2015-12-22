@@ -1,5 +1,5 @@
 ---
-layout: slides
+layout: post
 title: ZOOKEEPER基础
 date: 2015-12-22
 categories: 编程技术

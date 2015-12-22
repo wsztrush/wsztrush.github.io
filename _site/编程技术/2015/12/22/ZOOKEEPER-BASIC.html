@@ -1,17 +1,32 @@
 <!DOCTYPEhtmlPUBLIC"-//W3C//DTDXHTML1.0Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
 <html>
-	<head>
-		<script src="http://cdn.bootcss.com/reveal.js/3.0.0/lib/js/head.min.js"></script>
-		<script src="http://cdn.bootcss.com/reveal.js/3.0.0/js/reveal.min.js"></script>
+	<!-- 引入CSS/JS -->
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="/assets/css/main.css"/>
+	<script type="text/javascript" src="/assets/javascripts/main.js"></script>
 
-		<link rel="stylesheet" href="http://cdn.bootcss.com/reveal.js/3.0.0/css/reveal.css">
-		<link rel="stylesheet" href="http://cdn.bootcss.com/reveal.js/3.0.0/css/theme/black.min.css" id="theme">
-		<link rel="stylesheet" href="http://cdn.bootcss.com/reveal.js/3.0.0/lib/css/zenburn.min.css">
-	</head>
-	<body>
-		<div class="reveal">
-			<div class="slides">
-				<p>搞数据开发的对一些产品非常熟悉，比如：</p>
+	<!-- pygments代码高亮 -->
+	<!-- <link rel="stylesheet" type="text/css" href="/assets/css/pygments.css"/> -->
+	<!-- google代码高亮 -->
+	<script src="/assets/css/prettify.js"></script>
+	<link href="/assets/css/prettify.css" rel="stylesheet">
+	<title>ZOOKEEPER基础</title>
+</head>
+
+	<body onload="prettyPrint()">
+		<div class="tool">
+	<span><b>WsztRush</b></span>
+	<div class="links">
+		<a href="/index.html">Blog</a>
+		<a href="/categories.html">Categories</a>
+		<a href="/about/">About</a>		
+	</div>
+</div>
+
+		<div class="post-container">
+			<h1>ZOOKEEPER基础</h1>
+			<p>搞数据开发的对一些产品非常熟悉，比如：</p>
 
 <ol>
   <li>HBase</li>
@@ -145,46 +160,31 @@ echo '1' &gt; /tmp/zookeeper/1/myid
 
 <h2 id="section-3">总结</h2>
 
-			</div>
+			<!-- 评论组件 -->
+			<div id="disqus_thread"/>
 		</div>
 	</body>
 </html>
-<script>
-//在这里对幻灯片进行配置
-Reveal.initialize({
-	// 是否显示右下角的方向盘
-	controls: true,
-	// 是否显示页面底部的进度条
-	progress: true,
-	// 是否开启快捷键
-	keyboard: true,
-	// 是否支持概览模式
-	overview: true,
-	// 是否自动居中
-	center: true,
-	// 是否循环显示幻灯片
-	loop: false,
-	// Change the presentation direction to be RTL
-	rtl: false,
-	// Number of milliseconds between automatically proceeding to the
-	// next slide, disabled when set to 0, this value can be overwritten
-	// by using a data-autoslide attribute on your slides
-	autoSlide: 0,
-	// 是否支持鼠标滚轮
-	mouseWheel: false,
-	// 是否支持链接的3D反转
-	rollingLinks: true,
-	// 翻页效果
-	transition: 'default', // default/cube/page/concave/zoom/linear/fade/none
-	// 翻页速度
-	transitionSpeed: 'default', // default/fast/slow
-	dependencies: [
-		{ src: 'http://cdn.bootcss.com/reveal.js/3.0.0/lib/js/classList.js', condition: function() { return !document.body.classList; } },
-		{ src: 'http://cdn.bootcss.com/reveal.js/3.0.0/plugin/markdown/marked.min.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-		{ src: 'http://cdn.bootcss.com/reveal.js/3.0.0/plugin/markdown/markdown.min.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-		{ src: 'http://cdn.bootcss.com/reveal.js/3.0.0/plugin/highlight/highlight.min.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
-		{ src: 'http://cdn.bootcss.com/reveal.js/3.0.0/plugin/zoom-js/zoom.min.js', async: true },
-		{ src: 'http://cdn.bootcss.com/reveal.js/3.0.0/plugin/notes/notes.min.js', async: true }
-	]
-});
+<!-- 评论组件 -->
+<script type="text/javascript">
+	var disqus_shortname = 'wsztrush';
+	(function() {
+		var dsq = document.createElement('script');
+		dsq.type = 'text/javascript';
+		dsq.async = true;
+		dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	})();
 </script>
+<!-- 百度访问统计 -->
+<script>
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?08a976e8d7e5a20acfcb566bd22a1db1";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+
