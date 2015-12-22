@@ -1,0 +1,190 @@
+<!DOCTYPEhtmlPUBLIC"-//W3C//DTDXHTML1.0Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html>
+	<head>
+		<script src="http://cdn.bootcss.com/reveal.js/3.0.0/lib/js/head.min.js"></script>
+		<script src="http://cdn.bootcss.com/reveal.js/3.0.0/js/reveal.min.js"></script>
+
+		<link rel="stylesheet" href="http://cdn.bootcss.com/reveal.js/3.0.0/css/reveal.css">
+		<link rel="stylesheet" href="http://cdn.bootcss.com/reveal.js/3.0.0/css/theme/black.min.css" id="theme">
+		<link rel="stylesheet" href="http://cdn.bootcss.com/reveal.js/3.0.0/lib/css/zenburn.min.css">
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<p>搞数据开发的对一些产品非常熟悉，比如：</p>
+
+<ol>
+  <li>HBase</li>
+  <li>Hadoop</li>
+  <li>…</li>
+</ol>
+
+<p>但是对它们背后共同的“男人”没有太多的了解，太不应该了。这篇是一个基础的介绍，看完之后应该会对ZOOKEEPER有大概了解。</p>
+
+<h2 id="section">安装部署</h2>
+
+<p>在<a href="http://zookeeper.apache.org/releases.html">这里</a>下载包，放到你喜欢的目录解压缩：</p>
+
+<blockquote>
+  <p>sudo tar -zxvf zookeeper-3.4.7.tar.gz</p>
+</blockquote>
+
+<p>配置信息在<strong>conf/zoo.cfg</strong>中（可以在zoo_sample.cfg中看到），常用的几个设置项如下（更多看<a href="http://www.cnblogs.com/ggjucheng/p/3352591.html">这里</a>）：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>配置</th>
+      <th>作用</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>tickTime</td>
+      <td>客户端和服务器之间的心跳间隔（毫秒）</td>
+    </tr>
+    <tr>
+      <td>initLimit</td>
+      <td>FOLLOWER与LEADER初始连接的最大延迟心跳数</td>
+    </tr>
+    <tr>
+      <td>syncLimit</td>
+      <td>FOLLOWER与LEADER请求应答的最大延迟心跳数</td>
+    </tr>
+    <tr>
+      <td>dataDir</td>
+      <td>数据文件目录</td>
+    </tr>
+    <tr>
+      <td>dataLogDir</td>
+      <td>日志文件目录</td>
+    </tr>
+    <tr>
+      <td>clientPort</td>
+      <td>客户端连接端口</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>配置安成以后使用命令启动（standalone模式）：</p>
+
+<blockquote>
+  <p>./bin/zkServer.sh start</p>
+</blockquote>
+
+<p>查看zookeeper的状态（看看起来没）：</p>
+
+<blockquote>
+  <p>./bin/zkServer.sh start</p>
+</blockquote>
+
+<p>当然也可以用客户端试一下能不能连上：</p>
+
+<blockquote>
+  <p>./bin/zkCli.sh 或者 ./bin/zkCli.sh -server 127.0.0.1:2181</p>
+</blockquote>
+
+<p>现在还是单个节点，离集群还差很多，怎么办？暂时没有很多机器，在单机上搞“伪集群”应该还是简单的，这样和真正的集群差的不是太多了。刚开始看<a href="http://blog.csdn.net/tanyujing/article/details/8504481">这里</a>感觉没啥问题，但是有点烦，于是看下./bin/zkServer.sh的代码：</p>
+
+<pre class="prettyprint">
+if [ "x$2" != "x" ]
+then
+    ZOOCFG="$ZOOCFGDIR/$2"
+fi
+</pre>
+
+<p>果然是可以指定配置文件的，于是创建文件<strong>./conf/zoo_1.cfg</strong>，内容如下：</p>
+
+<pre class="prettyprint">
+tickTime=2000
+initLimit=10
+syncLimit=5
+dataDir=/tmp/zookeeper/1 # 新建个目录
+clientPort=3181 # 注意端口不要冲突
+server.0=127.0.0.1:2008:6008
+server.1=127.0.0.1:2007:6007
+</pre>
+
+<p>当然需要对原来的<strong>./conf/zoo.cfg</strong>做一点小修改：</p>
+
+<pre class="prettyprint">
+tickTime=2000
+initLimit=10
+syncLimit=5
+dataDir=/tmp/zookeeper/0 # 新建个目录
+clientPort=2181 # 注意端口不要冲突
+server.0=127.0.0.1:2008:6008
+server.1=127.0.0.1:2007:6007
+</pre>
+
+<p>后面放的是ZK的服务器列表（每个节点上的列表都是一样的），格式如下：</p>
+
+<blockquote>
+  <p>server.[myId]=[IP地址][通信端口][选举端口]</p>
+</blockquote>
+
+<p>另外需要写入myid：</p>
+
+<pre class="prettyprint">
+echo '0' &gt; /tmp/zookeeper/0/myid
+echo '1' &gt; /tmp/zookeeper/1/myid
+</pre>
+
+<p>现在可以启动了：</p>
+
+<pre class="prettyprint">
+./bin/zkServer.sh start ./conf/zoo.cfg
+./bin/zkServer.sh start ./conf/zoo_1.cfg
+</pre>
+
+<p>再用命令查看状态显示<strong>Mode: follower</strong>，启动成功（STOP的时候也需要指定配置文件）。</p>
+
+<h2 id="section-1">原理</h2>
+
+<h2 id="section-2">使用方法</h2>
+
+<h2 id="section-3">总结</h2>
+
+			</div>
+		</div>
+	</body>
+</html>
+<script>
+//在这里对幻灯片进行配置
+Reveal.initialize({
+	// 是否显示右下角的方向盘
+	controls: true,
+	// 是否显示页面底部的进度条
+	progress: true,
+	// 是否开启快捷键
+	keyboard: true,
+	// 是否支持概览模式
+	overview: true,
+	// 是否自动居中
+	center: true,
+	// 是否循环显示幻灯片
+	loop: false,
+	// Change the presentation direction to be RTL
+	rtl: false,
+	// Number of milliseconds between automatically proceeding to the
+	// next slide, disabled when set to 0, this value can be overwritten
+	// by using a data-autoslide attribute on your slides
+	autoSlide: 0,
+	// 是否支持鼠标滚轮
+	mouseWheel: false,
+	// 是否支持链接的3D反转
+	rollingLinks: true,
+	// 翻页效果
+	transition: 'default', // default/cube/page/concave/zoom/linear/fade/none
+	// 翻页速度
+	transitionSpeed: 'default', // default/fast/slow
+	dependencies: [
+		{ src: 'http://cdn.bootcss.com/reveal.js/3.0.0/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+		{ src: 'http://cdn.bootcss.com/reveal.js/3.0.0/plugin/markdown/marked.min.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+		{ src: 'http://cdn.bootcss.com/reveal.js/3.0.0/plugin/markdown/markdown.min.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+		{ src: 'http://cdn.bootcss.com/reveal.js/3.0.0/plugin/highlight/highlight.min.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+		{ src: 'http://cdn.bootcss.com/reveal.js/3.0.0/plugin/zoom-js/zoom.min.js', async: true },
+		{ src: 'http://cdn.bootcss.com/reveal.js/3.0.0/plugin/notes/notes.min.js', async: true }
+	]
+});
+</script>
