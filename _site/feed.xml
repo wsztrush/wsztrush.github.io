@@ -5,12 +5,12 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 25 Dec 2015 00:21:03 +0800</pubDate>
-    <lastBuildDate>Fri, 25 Dec 2015 00:21:03 +0800</lastBuildDate>
+    <pubDate>Sat, 26 Dec 2015 19:17:49 +0800</pubDate>
+    <lastBuildDate>Sat, 26 Dec 2015 19:17:49 +0800</lastBuildDate>
     <generator>Jekyll v3.0.1</generator>
     
       <item>
-        <title>ZOOKEEPER基础</title>
+        <title>ZOOKEEPER基础知识</title>
         <description>&lt;p&gt;搞数据开发的对一些产品非常熟悉，比如：&lt;/p&gt;
 
 &lt;ol&gt;
@@ -339,8 +339,47 @@ echo &#39;1&#39; &amp;gt; /tmp/zookeeper/1/myid
 
 &lt;h2 id=&quot;section-4&quot;&gt;使用方法&lt;/h2&gt;
 
+&lt;p&gt;看下来在ZK上保存一些配置的信息很靠谱，那么接下来来看如何在JAVA中对其进行操作，首先要连接到服务器（本地启动的ZK）：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+ZooKeeper zooKeeper = new ZooKeeper(&quot;127.0.0.1:3181&quot;, 3000, new Watcher() {
+    public void process(WatchedEvent watchedEvent) {
+        // 处理事件
+    }
+});
+// TODO 在这里写你要作的操作
+zooKeeper.close();
+&lt;/pre&gt;
+
+&lt;p&gt;连接到服务器之后就可以开始操作，在ZK中的数据用树形结构进行保存：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;做工具或者平台的时候，用这种方式来存储基本上能满足所有的组织数据的需求。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;简单的用法如下：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+// 创建节点
+zooKeeper.create(&quot;/root&quot;, &quot;root&quot;.getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+// 获取节点数据
+System.out.println(new String(zooKeeper.getData(&quot;/root&quot;, false, null)));
+// 创建子节点
+zooKeeper.create(&quot;/root/child_1&quot;, &quot;child_1&quot;.getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+// 获取子节点
+System.out.println(zooKeeper.getChildren(&quot;/root&quot;, true));
+// 修改节点数据
+zooKeeper.setData(&quot;/root/child_1&quot;, &quot;child_1&quot;.getBytes(), -1);
+// 删除节点
+zooKeeper.delete(&quot;/root/child_1&quot;, -1);
+zooKeeper.delete(&quot;/root&quot;, -1);
+&lt;/pre&gt;
+
+&lt;p&gt;对复杂的操作以及在用的过程中可能会遇到的问题后面再写文章详细写。&lt;/p&gt;
+
 &lt;h2 id=&quot;section-5&quot;&gt;总结&lt;/h2&gt;
 
+&lt;p&gt;分布式环境下的网络等问题处理起来非常复杂，数据的一致性非常头疼，有了ZK之后又可以愉快地玩耍了:)&lt;/p&gt;
 </description>
         <pubDate>Tue, 22 Dec 2015 00:00:00 +0800</pubDate>
         <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/12/22/ZOOKEEPER-BASIC.html</link>

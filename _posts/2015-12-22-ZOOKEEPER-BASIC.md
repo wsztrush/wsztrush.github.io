@@ -1,6 +1,6 @@
 ---
 layout: post
-title: ZOOKEEPER基础
+title: ZOOKEEPER基础知识
 date: 2015-12-22
 categories: 编程技术
 
@@ -199,12 +199,42 @@ OBSERVING|不参与投票
 
 ## 使用方法
 
+看下来在ZK上保存一些配置的信息很靠谱，那么接下来来看如何在JAVA中对其进行操作，首先要连接到服务器（本地启动的ZK）：
 
+<pre class="prettyprint">
+ZooKeeper zooKeeper = new ZooKeeper("127.0.0.1:3181", 3000, new Watcher() {
+    public void process(WatchedEvent watchedEvent) {
+        // 处理事件
+    }
+});
+// TODO 在这里写你要作的操作
+zooKeeper.close();
+</pre>
 
+连接到服务器之后就可以开始操作，在ZK中的数据用树形结构进行保存：
 
+> 做工具或者平台的时候，用这种方式来存储基本上能满足所有的组织数据的需求。
 
+简单的用法如下：
 
+<pre class="prettyprint">
+// 创建节点
+zooKeeper.create("/root", "root".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+// 获取节点数据
+System.out.println(new String(zooKeeper.getData("/root", false, null)));
+// 创建子节点
+zooKeeper.create("/root/child_1", "child_1".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+// 获取子节点
+System.out.println(zooKeeper.getChildren("/root", true));
+// 修改节点数据
+zooKeeper.setData("/root/child_1", "child_1".getBytes(), -1);
+// 删除节点
+zooKeeper.delete("/root/child_1", -1);
+zooKeeper.delete("/root", -1);
+</pre>
 
+对复杂的操作以及在用的过程中可能会遇到的问题后面再写文章详细写。
 
 ## 总结
 
+分布式环境下的网络等问题处理起来非常复杂，数据的一致性非常头疼，有了ZK之后又可以愉快地玩耍了:)
