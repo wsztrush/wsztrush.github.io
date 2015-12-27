@@ -1,0 +1,100 @@
+<!DOCTYPEhtmlPUBLIC"-//W3C//DTDXHTML1.0Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html>
+	<!-- 引入CSS/JS -->
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="/assets/css/main.css"/>
+	<script type="text/javascript" src="/assets/javascripts/main.js"></script>
+
+	<!-- pygments代码高亮 -->
+	<!-- <link rel="stylesheet" type="text/css" href="/assets/css/pygments.css"/> -->
+	<!-- google代码高亮 -->
+	<script src="/assets/css/prettify.js"></script>
+	<link href="/assets/css/prettify.css" rel="stylesheet">
+	<title>用数据来驱动仓库</title>
+</head>
+
+	<body onload="prettyPrint()">
+		<div class="tool">
+	<span><b>WsztRush</b></span>
+	<div class="links">
+		<a href="/index.html">Blog</a>
+		<a href="/categories.html">Categories</a>
+		<a href="/about/">About</a>		
+	</div>
+</div>
+
+		<div class="post-container">
+			<h1>用数据来驱动仓库</h1>
+			<p>双十一的时候去仓库驻仓，还是挺激动的，在十号的时候开始动员大会，由于双十一的量会比平时大很多，所以需要挺多的临时工帮忙：</p>
+
+<p><img src="http://7xiz10.com1.z0.glb.clouddn.com/DATA-DRIVEN-WAREHOUSE-2.jpg" height="300" /></p>
+
+<p>过了十一号的零点，本来大家以为会有很多的单子下来，但是并没有:(！大约过了半个小时才有第一单下来，然后陆陆续续地来了：</p>
+
+<p><img src="http://7xiz10.com1.z0.glb.clouddn.com/DATA-DRIVEN-WAREHOUSE-4.jpg" height="300" /></p>
+
+<p>双十一的单量不是盖的，大家也按照之前的准备开干，热火朝天：</p>
+
+<p><img src="http://7xiz10.com1.z0.glb.clouddn.com/DATA-DRIVEN-WAREHOUSE-3.jpg" width="300px" /></p>
+
+<p>当然，机器也很忙：</p>
+
+<p><img src="http://7xiz10.com1.z0.glb.clouddn.com/DATA-DRIVEN-WAREHOUSE-1.jpg" width="300px" /></p>
+
+<p>现在都在讲数据驱动，在仓库的时候也想了一下如何做，下面是一些简单的想法。</p>
+
+<h2 id="section">精确</h2>
+
+<p>和<a href="http://www.umeng.com/">友盟</a>的场景有很大的不同，尤其是数据准确性上：</p>
+
+<blockquote>
+  <p>PV/UV这些数据错一两个没关系，但是给生产用的报表不行！</p>
+</blockquote>
+
+<p>如果有一个订单在数据上看到的是没有完成，那么仓库管理员就会去排查到底是卡在什么环节！还有，平时看到的大部分报表都是T-1（昨天）的，这种数据很难用来帮助生产，所以要做到数据驱动还是需要<strong>实时</strong>。</p>
+
+<h2 id="section-1">展示</h2>
+
+<p>数据可视化是非常有学问的一个东西，之前看别人的思考竟然都考虑到色盲，比较佩服！但是现在要讨论的并不是这个，在仓库中一个好的展示必须是：</p>
+
+<ol>
+  <li>可查询/设置</li>
+  <li>有明细</li>
+  <li>汇总信息一目了然（尤其是大盘上）</li>
+  <li>统计逻辑清晰、没有任何歧义</li>
+</ol>
+
+<p>这些算是最起码的要求了～</p>
+
+<h2 id="section-2">报警</h2>
+
+
+			<!-- 评论组件 -->
+			<div id="disqus_thread"/>
+		</div>
+	</body>
+</html>
+<!-- 评论组件 -->
+<script type="text/javascript">
+	var disqus_shortname = 'wsztrush';
+	(function() {
+		var dsq = document.createElement('script');
+		dsq.type = 'text/javascript';
+		dsq.async = true;
+		dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	})();
+</script>
+<!-- 百度访问统计 -->
+<script>
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?08a976e8d7e5a20acfcb566bd22a1db1";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+
