@@ -5,9 +5,117 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 05 Jan 2016 18:39:23 +0800</pubDate>
-    <lastBuildDate>Tue, 05 Jan 2016 18:39:23 +0800</lastBuildDate>
+    <pubDate>Tue, 05 Jan 2016 22:58:05 +0800</pubDate>
+    <lastBuildDate>Tue, 05 Jan 2016 22:58:05 +0800</lastBuildDate>
     <generator>Jekyll v3.0.1</generator>
+    
+      <item>
+        <title>用VIM画图</title>
+        <description>&lt;p&gt;在Linux上其实并不缺少画图软件（比如yEd等），那么为什么还需要用VIM来画图：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;更轻，不需要安装太多东西&lt;/li&gt;
+  &lt;li&gt;更小，就是一些文本，比图片什么的小多了，使用起来也更简单&lt;/li&gt;
+  &lt;li&gt;更有逼格&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;首先在VIM中安装DrawIt插件（可以参考&lt;a href=&quot;http://wsztrush.github.io/%E5%B7%A5%E5%85%B7/2015/06/10/VIM.html&quot;&gt;这里&lt;/a&gt;），然后开始画图之旅，在&lt;strong&gt;命令模式&lt;/strong&gt;下：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;\di&lt;/code&gt;：开启&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;\ds&lt;/code&gt;：关闭&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;开启之后有两种模式：&lt;strong&gt;画图&lt;/strong&gt;和&lt;strong&gt;擦除&lt;/strong&gt;，他们之间通过&lt;strong&gt;空格&lt;/strong&gt;来切换。可以使用按键来控制向八个方向画线（或者擦除）：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;方向键的上、下、左、右分别对应其四个方向&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Pgup&lt;/strong&gt;：上右&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Pgdn&lt;/strong&gt;：下右&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;Home&lt;/strong&gt;：左上&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;End&lt;/strong&gt;：左下&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;如下图（其实也不需要记，和键盘上的位置是一致的）：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+                         Home    Up   Pgup
+                             \   |   / 
+                              \  |  / 
+                               \ | / 
+                                \|/ 
+                        Left----------Right
+                                /|\
+                               / | \
+                              /  |  \
+                             /   |   \
+                          End   Down  Pgdn
+
+&lt;/pre&gt;
+
+&lt;p&gt;箭头的画法也很直观，简单的箭头用&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;gt;&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;^&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;v&lt;/code&gt;就搞定了，粗的箭头可以用&lt;code class=&quot;highlighter-rouge&quot;&gt;\&amp;gt;&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;\&amp;lt;&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;\^&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;\v&lt;/code&gt;来弄（感觉粗的箭头不太好控制）：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+ &amp;gt; &amp;lt; ^ v  |&amp;gt; &amp;lt;|
+              
+   _ _      . 
+   \ /     /_\
+    &#39;         
+&lt;/pre&gt;
+
+&lt;p&gt;用鼠标可以选择块，这对后面的操作有一定的简化，利用用&lt;code class=&quot;highlighter-rouge&quot;&gt;\a&lt;/code&gt;（&lt;code class=&quot;highlighter-rouge&quot;&gt;\l&lt;/code&gt;不带箭头）来根据选中的块来画线：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+-------                               
+       \-----------                   
+                   \-----------       
+                               \-----&amp;gt;
+&lt;/pre&gt;
+
+&lt;p&gt;可以用&lt;code class=&quot;highlighter-rouge&quot;&gt;\b&lt;/code&gt;来画矩形框或者用&lt;code class=&quot;highlighter-rouge&quot;&gt;\e&lt;/code&gt;来画椭圆：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
++--------------------+          *************      
+|                    |      ****             ****  
+|                    |    **                     **
++--------------------+    *                       *
+                          **                     **
+                            ****             ****  
+                                *************      
+&lt;/pre&gt;
+
+&lt;p&gt;完事了可以用&lt;code class=&quot;highlighter-rouge&quot;&gt;\f&lt;/code&gt;来对图形进行填充：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
++------------------+
+|##################|
+|##################|
+|##################|
++------------------+
+&lt;/pre&gt;
+
+&lt;p&gt;位置有一些偏差是常有的事情，这时候不要急着重画：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;用鼠标选中要移动的块，然后按住ctrl并拖动鼠标。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;当要擦除一整快的内容时，用方向键来搞也比较蛋疼，可以用：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;用鼠标选中要擦除的部分，然后执行r &amp;lt;space&amp;gt;（相当于用空格替换）。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;体验了一下，如果能灵活运用VIM本身的强大功能（复制、粘贴等），DrawIt用起来还是比较给力的！&lt;/p&gt;
+</description>
+        <pubDate>Tue, 05 Jan 2016 00:00:00 +0800</pubDate>
+        <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2016/01/05/VIM-PAINT.html</link>
+        <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2016/01/05/VIM-PAINT.html</guid>
+        
+        
+        <category>编程技术</category>
+        
+      </item>
     
       <item>
         <title>NETTY基础知识</title>
@@ -2180,265 +2288,6 @@ var root = React.createElement(
         <pubDate>Thu, 15 Oct 2015 00:00:00 +0800</pubDate>
         <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/10/15/Template-Language.html</link>
         <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/10/15/Template-Language.html</guid>
-        
-        
-        <category>编程技术</category>
-        
-      </item>
-    
-      <item>
-        <title>xml之schema</title>
-        <description>&lt;p&gt;在网络传输中JSON和XML是最长用的两种数据格式，JSON的特点是短小、简单，但是除了这点以外就完全不能跟XML比了，所以涉及到配置方面还是优先考虑XML吧！&lt;/p&gt;
-
-&lt;p&gt;但是裸奔的XML并不好用，比如我们打出来Jar包给别人用，需要他们自己在Spring配置中添加：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-&amp;lt;bean class=&quot;xxxxxx&quot;/&amp;gt;
-&lt;/pre&gt;
-
-&lt;p&gt;功能简单的时候是没有问题的，当你做的东西比较复杂的时候就会变成：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-&amp;lt;bean class=&quot;xxx&quot;&amp;gt;
-    &amp;lt;property name=&quot;aaa&quot; value=&quot;aaa&quot;/&amp;gt;
-    &amp;lt;property name=&quot;bbb&quot; value=&quot;bbb&quot;/&amp;gt;
-    &amp;lt;property name=&quot;ccc&quot; value=&quot;ccc&quot;/&amp;gt;
-&amp;lt;/bean&amp;gt;
-&lt;/pre&gt;
-
-&lt;p&gt;除非在你的WILE里面写的非常清楚应用用哪个&lt;code class=&quot;highlighter-rouge&quot;&gt;class&lt;/code&gt;，需要设置哪些&lt;code class=&quot;highlighter-rouge&quot;&gt;property&lt;/code&gt;，哪些是必填的等等等，不然没人知道该怎么写，而更好的解决办法是编写schema来定义XML的规则！&lt;/p&gt;
-
-&lt;h2 id=&quot;xmlns&quot;&gt;命名空间（xmlns）&lt;/h2&gt;
-
-&lt;p&gt;我们在配置Spring的时候经常会这么写：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-&amp;lt;beans:beans xmlns:beans=&quot;http://www.springframework.org/schema/beans&quot;&amp;gt;
-    &amp;lt;beans:import resource=&quot;xxx&quot;/&amp;gt;
-&amp;lt;/beans:beans&amp;gt;
-&lt;/pre&gt;
-
-&lt;p&gt;其中&lt;code class=&quot;highlighter-rouge&quot;&gt;http://www.springframework.org/schema/beans&lt;/code&gt;就是一个命名空间，而&lt;code class=&quot;highlighter-rouge&quot;&gt;xmlns:beans&lt;/code&gt;相当于设置了命名空间的一个代号，在使用时&lt;code class=&quot;highlighter-rouge&quot;&gt;beans:import&lt;/code&gt;就可以表示使用该命名空间中的import元素。&lt;/p&gt;
-
-&lt;p&gt;可以不写&lt;code class=&quot;highlighter-rouge&quot;&gt;:beans&lt;/code&gt;来表示默认就用该命名空间，那么配置就更简单了：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-&amp;lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;&amp;gt;
-    &amp;lt;import resource=&quot;xxx&quot;/&amp;gt;
-&amp;lt;/beans&amp;gt;
-&lt;/pre&gt;
-
-&lt;p&gt;在schema中由下面三个属性来控制命名空间的行为：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;targetNamespace：目标命名空间&lt;/li&gt;
-  &lt;li&gt;elementFormDefault：unqualified/qualified&lt;/li&gt;
-  &lt;li&gt;attributeFormDefault：unqualified/qualified&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;当设置&lt;code class=&quot;highlighter-rouge&quot;&gt;unqualified&lt;/code&gt;时schema中除了根元素以外，其他的元素都是没有命名空间的，在使用的时候需要将其命名空间设置为空：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-&amp;lt;easydt:easydt xmlns:easydt=&quot;http://www.cainiao.com/schema/easydt&quot;&amp;gt;
-    &amp;lt;provider xmlns=&quot;&quot;/&amp;gt;&amp;lt;!-- 注意这里 --&amp;gt;
-&amp;lt;/easydt:easydt&amp;gt;
-&lt;/pre&gt;
-
-&lt;p&gt;而设置为&lt;code class=&quot;highlighter-rouge&quot;&gt;qualified&lt;/code&gt;时schema中定义的所有元素都属于&lt;code class=&quot;highlighter-rouge&quot;&gt;targetNamespace&lt;/code&gt;所定义的命名空间：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-&amp;lt;easydt:easydt xmlns=&quot;http://www.cainiao.com/schema/easydt&quot;&amp;gt;
-    &amp;lt;provider/&amp;gt;&amp;lt;!-- 看这里 --&amp;gt;
-&amp;lt;/easydt:easydt&amp;gt;
-&lt;/pre&gt;
-
-&lt;p&gt;显然用qualified看起来更简单一些，不过也是看情况的。&lt;/p&gt;
-
-&lt;h2 id=&quot;section&quot;&gt;定义元素&lt;/h2&gt;
-
-&lt;p&gt;完整的schema的定义如下：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-&amp;lt;?xml version=&quot;1.0&quot;?&amp;gt;
-&amp;lt;xs:schema xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot;
-targetNamespace=&quot;http://www.w3school.com.cn&quot;
-xmlns=&quot;http://www.w3school.com.cn&quot;
-elementFormDefault=&quot;qualified&quot;&amp;gt;
-    在这里定义元素和属性
-&amp;lt;/xs:schema&amp;gt;
-&lt;/pre&gt;
-
-&lt;p&gt;其目的就是配置出来一堆的&lt;code class=&quot;highlighter-rouge&quot;&gt;element&lt;/code&gt;和&lt;code class=&quot;highlighter-rouge&quot;&gt;attribute&lt;/code&gt;来约束XML的行为，简单来说&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-&amp;lt;yyy xxx=&quot;xxx&quot;/&amp;gt;
-&lt;/pre&gt;
-
-&lt;p&gt;其中：yyy是element、xxx是属性！最简单的元素如下：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-&amp;lt;easydt:a&amp;gt;123&amp;lt;/easydt:a&amp;gt;
-&lt;/pre&gt;
-
-&lt;p&gt;对应的配置如下：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-&amp;lt;xs:element name=&quot;a&quot; type=&quot;xs:integer&quot;/&amp;gt;
-&lt;/pre&gt;
-
-&lt;p&gt;设置type为&lt;code class=&quot;highlighter-rouge&quot;&gt;integer&lt;/code&gt;之后会对内容进行检查，如果不是数字则报错，另外可以通过&lt;code class=&quot;highlighter-rouge&quot;&gt;simpleType&lt;/code&gt;对其扩展来实现更复杂的限定：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-&amp;lt;xs:element name=&quot;age&quot;&amp;gt;
-    &amp;lt;xs:simpleType&amp;gt;
-        &amp;lt;xs:restriction base=&quot;xs:integer&quot;&amp;gt;
-            &amp;lt;xs:minInclusive value=&quot;0&quot;/&amp;gt;
-            &amp;lt;xs:maxInclusive value=&quot;100&quot;/&amp;gt;
-        &amp;lt;/xs:restriction&amp;gt;
-    &amp;lt;/xs:simpleType&amp;gt;
-&amp;lt;/xs:element&amp;gt;
-&lt;/pre&gt;
-
-&lt;p&gt;向元素中添加子元素、属性之后就不是一个简单元素，而是一个复杂元素，可以用&lt;code class=&quot;highlighter-rouge&quot;&gt;complexType&lt;/code&gt;定义其类型：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-&amp;lt;xs:element name=&quot;note&quot;&amp;gt;
-    &amp;lt;xs:complexType&amp;gt;
-        &amp;lt;xs:attribute name=&quot;app&quot; type=&quot;xs:string&quot;/&amp;gt;
-    &amp;lt;/xs:complexType&amp;gt;
-&amp;lt;/xs:element&amp;gt;
-&lt;/pre&gt;
-
-&lt;p&gt;对应的XML的配置为&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;easydt:note app=&quot;123&quot;/&amp;gt;&lt;/code&gt;，子节点的定义也很简单：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-&amp;lt;xs:element name=&quot;note&quot;&amp;gt;
-    &amp;lt;xs:complexType&amp;gt;
-        &amp;lt;xs:sequence&amp;gt;
-            &amp;lt;xs:element name=&quot;a&quot; type=&quot;xs:integer&quot;/&amp;gt;
-            &amp;lt;xs:element name=&quot;b&quot; type=&quot;xs:integer&quot;/&amp;gt;
-        &amp;lt;/xs:sequence&amp;gt;
-    &amp;lt;/xs:complexType&amp;gt;
-&amp;lt;/xs:element&amp;gt;
-&lt;/pre&gt;
-
-&lt;p&gt;对应的XML的配置为&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;note&amp;gt;&amp;lt;a&amp;gt;1&amp;lt;/a&amp;gt;&amp;lt;b&amp;gt;2&amp;lt;/b&amp;gt;&amp;lt;/note&amp;gt;&lt;/code&gt;，其中sequence的作用是&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;组中的元素以指定的顺序出现在包含元素中，每个子元素可以出现0次到任意次&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;当然还有其他的方式：&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;指示器&lt;/th&gt;
-      &lt;th&gt;含义&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;all&lt;/td&gt;
-      &lt;td&gt;子元素可以按照任意顺序出现，且每个子元素必须只出现一次&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;choice&lt;/td&gt;
-      &lt;td&gt;随便添加子元素，可以使用&lt;code class=&quot;highlighter-rouge&quot;&gt;maxOccurs&lt;/code&gt;来设置可添加子元素的数目&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;attributeGroup&lt;/td&gt;
-      &lt;td&gt;属性组&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;group&lt;/td&gt;
-      &lt;td&gt;元素组&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;元素的类型是非常复杂的，不同的类型之间很可能有一些定义是可以重用的，我们可以定义一些基础的类型，然后使用&lt;code class=&quot;highlighter-rouge&quot;&gt;extension&lt;/code&gt;对其进行扩展可以得到：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-&amp;lt;xs:complexType name=&quot;baseInfo&quot;&amp;gt;
-    &amp;lt;xs:sequence&amp;gt;
-        &amp;lt;xs:element name=&quot;id&quot; type=&quot;xs:string&quot;/&amp;gt;
-    &amp;lt;/xs:sequence&amp;gt;
-&amp;lt;/xs:complexType&amp;gt;
-&amp;lt;xs:complexType name=&quot;fullpersoninfo&quot;&amp;gt;
-    &amp;lt;xs:complexContent&amp;gt;
-        &amp;lt;xs:extension base=&quot;baseInfo&quot;&amp;gt;
-            &amp;lt;xs:sequence&amp;gt;
-                &amp;lt;xs:element name=&quot;name&quot; type=&quot;xs:string&quot;/&amp;gt;
-            &amp;lt;/xs:sequence&amp;gt;
-        &amp;lt;/xs:extension&amp;gt;
-    &amp;lt;/xs:complexContent&amp;gt;
-&amp;lt;/xs:complexType&amp;gt;
-&lt;/pre&gt;
-
-&lt;p&gt;其他元素的可以在&lt;a href=&quot;http://www.w3school.com.cn/schema/schema_elements_ref.asp&quot;&gt;这里&lt;/a&gt;查看使用方法~~&lt;/p&gt;
-
-&lt;p&gt;当上面这些不能满足你的需求时，可以使用&lt;code class=&quot;highlighter-rouge&quot;&gt;any&lt;/code&gt;、&lt;code class=&quot;highlighter-rouge&quot;&gt;anyAttribute&lt;/code&gt;来允许用户配置没有在schema中定义过的东西，然后在解析的阶段进行处理！&lt;/p&gt;
-
-&lt;h2 id=&quot;section-1&quot;&gt;解析&lt;/h2&gt;
-
-&lt;p&gt;在Spring中定义解析需要用下面两个文件来配置（需要放在META-INF目录，Spring会自动加载）：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;&lt;strong&gt;spring.schemas&lt;/strong&gt;：命名空间对应的schemas配置的位置&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;spring.handlers&lt;/strong&gt;：命名空间对应的解析类&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;来看个例子：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-// spring.schemas
-http\://www.cainiao.com/schema/easydt/easydt.xsd=META-INF/easydt.xsd
-// spring.handlers
-http\://www.cainiao.com/schema/easydt=com.cainiao.easydt.client.springTag.EasyDtNamespaceHandler
-&lt;/pre&gt;
-
-&lt;p&gt;在&lt;code class=&quot;highlighter-rouge&quot;&gt;NamespaceHandlerSupport&lt;/code&gt;中定义了遇到对应的元素的时候应该使用Parser：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-public class EasyDtNamespaceHandler extends NamespaceHandlerSupport {
-	public void init() {
-		registerBeanDefinitionParser(&quot;easydt&quot;, new EasyDtBeanDefinitionParser());
-	}
-}
-&lt;/pre&gt;
-
-&lt;p&gt;然后用&lt;code class=&quot;highlighter-rouge&quot;&gt;AbstractBeanDefinitionParser&lt;/code&gt;中拿到配置信息并使用&lt;code class=&quot;highlighter-rouge&quot;&gt;addPropertyValue&lt;/code&gt;来定义BeanDefinition：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-public class EasyDtBeanDefinitionParser extends AbstractSingleBeanDefinitionParser{
-	protected Class&amp;lt;EasyDt&amp;gt; getBeanClass(Element element) {
-		return EasyDt.class;
-	}
-	protected void doParse(Element element, ParserContext parserContext, BeanDefinitionBuilder builder) {
-		builder.addPropertyValue(&quot;domain&quot;, element.getAttribute(&quot;domain&quot;));
-	}
-}
-&lt;/pre&gt;
-
-&lt;p&gt;关于BeanDefinition的载入和解析的过程可以看&lt;a href=&quot;http://book.51cto.com/art/201203/322589.htm&quot;&gt;这里&lt;/a&gt;，具体的解析工作是交给&lt;code class=&quot;highlighter-rouge&quot;&gt;BeanDefinitionParserDelegate&lt;/code&gt;来完成的，如果子元素不是简单元素可以调用&lt;code class=&quot;highlighter-rouge&quot;&gt;parseCustomElement&lt;/code&gt;来完成解析：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-builder.addPropertyValue(&quot;provider&quot;,
-    parserContext.getDelegate().parseCustomElement(
-        DomUtils.getChildElementByTagName(element, &quot;provider&quot;),
-        builder.getRawBeanDefinition()));
-&lt;/pre&gt;
-
-&lt;p&gt;想更灵活地在Spring中玩耍XML还是要多看看Bean的解析过程。&lt;/p&gt;
-
-&lt;h2 id=&quot;section-2&quot;&gt;总结&lt;/h2&gt;
-
-&lt;p&gt;用这些最基本的用法基本可以搞定大部分的自定义schema的需求，对于复杂的还需要深入去研究。&lt;/p&gt;
-</description>
-        <pubDate>Wed, 14 Oct 2015 00:00:00 +0800</pubDate>
-        <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/10/14/Xml-Schema.html</link>
-        <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/10/14/Xml-Schema.html</guid>
         
         
         <category>编程技术</category>
