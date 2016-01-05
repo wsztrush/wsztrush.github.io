@@ -5,8 +5,8 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 05 Jan 2016 23:10:16 +0800</pubDate>
-    <lastBuildDate>Tue, 05 Jan 2016 23:10:16 +0800</lastBuildDate>
+    <pubDate>Tue, 05 Jan 2016 23:18:58 +0800</pubDate>
+    <lastBuildDate>Tue, 05 Jan 2016 23:18:58 +0800</lastBuildDate>
     <generator>Jekyll v3.0.1</generator>
     
       <item>
@@ -106,7 +106,13 @@
   &lt;p&gt;用鼠标选中要擦除的部分，然后执行r &amp;lt;space&amp;gt;（相当于用空格替换）。&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;体验了一下，如果能灵活运用VIM本身的强大功能（复制、粘贴等），DrawIt用起来还是比较给力的！&lt;/p&gt;
+&lt;p&gt;另外需要注意：ubuntu和mint上安装到VIM默认是不支持&lt;strong&gt;系统剪贴板&lt;/strong&gt;的，需要安装：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;sudo apt-get install vim-gnome&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;简单体验下来，如果能灵活运用VIM本身的强大功能（复制、粘贴等），DrawIt用起来还是挺给力的！&lt;/p&gt;
 </description>
         <pubDate>Tue, 05 Jan 2016 00:00:00 +0800</pubDate>
         <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2016/01/05/VIM-PAINT.html</link>
