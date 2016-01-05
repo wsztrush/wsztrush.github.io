@@ -28,36 +28,90 @@
 			<h1>VIM</h1>
 			<p><img src="http://7xiz10.com1.z0.glb.clouddn.com/VIM-LOGO.jpg" alt="" /></p>
 
-<p>很早之前就知道VIM很厉害，不过作为一个Java攻城狮，用起来实在是不方便，完全没有Eclipse或者IDEA写代码顺畅，比如代码提示等（怀疑自己配置有问题-.-!）。最近对golang非常感兴趣，然而默认的IDE实在是太丑了，所以决心把VIM捡起来。</p>
+<p>刚工作时搞过一段时间的VIM和EMACS，不过作为一个JAVA程序猿，用VIM来写JAVA代码还是不大现实（现在用IDEA），后面也就不了了之。最近在写前端代码和写博客时感觉VIM还是不错的，于是决定再把VIM拾起来。</p>
 
-<p>周围用Emacs的同事越来越多，但是简单用了几次，总觉得不怎么顺手，也就不了了之。</p>
+<p>裸的VIM并不是太好用，需要安装需要的插件，之前的玩法是下载对应的压缩包并修改配置，这个过程极其考验耐心和人品！</p>
 
-<h2 id="section">插件管理器</h2>
+<h2 id="vundle">使用vundle管理插件</h2>
 
-<p>相比现代编辑器，VIM缺乏默认的插件管理功能，之前在配置时不停地从网上收集插件，然后粘贴到对应的目录下。这个过程相当地考验耐心，以及人品。</p>
+<p><a href="https://github.com/VundleVim/Vundle.vim">vundle</a>让你不需要在纠结到哪里去找插件和配置，所有的插件都以相似的方式进行管理，很大程度上降低了使用成本！</p>
 
-<p>最近无意间发现了一个插件管理工具：<strong>vundle</strong>。玩了一下感觉还不错，首先从github上下载:</p>
+<p>插件存放的路径为<strong>~/.vim/bundle/</strong>，目录建好后下载vundle：</p>
 
 <blockquote>
-  <p>git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle</p>
+  <p>git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim</p>
 </blockquote>
 
-<p>然后修改<strong>vimrc</strong>文件：</p>
+<p>以后配置都可以在<strong>~/.vimrc</strong>里面完成：</p>
 
 <pre class="prettyprint">
-set nocompatible "关闭兼容模式
-filetype off "
-set rtp+=~/.vim/bundle/Vundle.vim " 写自己安装的目录
-call vundle#begin() "
-
-Bundle 'gmarik/Vundle.vim' " 插件列表
-" ... 插件列表
-
-call vundle#end() "
-filetype plugin indent on
+set nocompatible                       " 关闭所有扩展功能
+filetype off                           " 关闭对文件类型的自动检测
+set rtp+=~/.vim/bundle/Vundle.vim      " 加入运行时路径
+call vundle#begin()                    " 初始化
+" 插件列表开始
+Plugin 'VundleVim/Vundle.vim'          
+" 插件列表结束
+call vundle#end()                      " 完成
+filetype plugin indent on              " 打开文件类型检测
 </pre>
 
-<p>如果是<strong>vim-scripts</strong>下面的插件直接写名字就好了，否则为<strong>用户名/插件</strong>的格式，使用时用到的几个命令如下：</p>
+<p>常用的插件来源配置有：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>来源</th>
+      <th>说明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>github.com</td>
+      <td>github上托管的插件（Plugin ‘tpope/vim-fugitive’）</td>
+    </tr>
+    <tr>
+      <td>vim-scripts.org/vim/scripts.html</td>
+      <td>在该站维护的插件（Plugin ‘L9’）</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>配置完成后打开VIM就可以开始使用了，用到下面命令：</p>
+
+<ol>
+  <li><strong>:PluginList</strong>：打开插件列表</li>
+  <li><strong>:PluginInstall</strong>：安装插件</li>
+  <li><strong>:PluginSearch foo</strong>：搜索插件，找到之后可以选择安装</li>
+  <li><strong>:PluginClean</strong>：清理不用的插件（这个不是太懂）</li>
+</ol>
+
+<p>最后举个例子，当你想安装<strong>winmanager</strong>插件时：</p>
+
+<ol>
+  <li>在.vimrc中添加<code class="highlighter-rouge">Plugin 'winmanager'</code></li>
+  <li>打开vim</li>
+  <li>执行<code class="highlighter-rouge">:PluginList</code>就可以看到winmanager插件</li>
+  <li>执行<code class="highlighter-rouge">:PluginInstall</code>进行安装</li>
+</ol>
+
+<p>是不是比以前简单很多了？没有插件管理的繁琐，下面我们正式进入VIM之旅！</p>
+
+<h2 id="section">基本用法</h2>
+
+<p>刚从EditPlus切换到VIM时非常不适应，我只想简单地编辑文件而已，居然还要去考虑切换不同的模式：</p>
+
+<ol>
+  <li>命令模式</li>
+  <li>插入模式</li>
+  <li>可视模式</li>
+</ol>
+
+<p>时间久一点就感觉这样区分开还是很合理的，在<strong>命令模式</strong>可以通过一些简单的命令对文本进行快速的查看、修改，比用鼠标在EditPlus里面操作会更有效率。该模式用到的命令非常多，下面分类来看！</p>
+
+<h3 id="section-1">一、移动光标</h3>
+
+<p>可以在各个维度上进行随意地跳转：</p>
 
 <table>
   <thead>
@@ -68,37 +122,212 @@ filetype plugin indent on
   </thead>
   <tbody>
     <tr>
-      <td>:BundleList</td>
-      <td>列举出列表中(.vimrc中)配置的所有插件</td>
+      <td>h/j/k/l</td>
+      <td>向上/向下/向上/向右移动</td>
     </tr>
     <tr>
-      <td>:BundleInstall</td>
-      <td>安装列表中全部插件</td>
+      <td>ctrl+f/b</td>
+      <td>向上/向下翻页</td>
     </tr>
     <tr>
-      <td>:BundleInstall!</td>
-      <td>更新列表中全部插件</td>
+      <td>ctrl+d/u</td>
+      <td>向上/向下翻半页</td>
     </tr>
     <tr>
-      <td>:BundleSearch foo</td>
-      <td>查找foo插件</td>
+      <td>$/0/^</td>
+      <td>行尾/行首/首字符</td>
     </tr>
     <tr>
-      <td>:BundleSearch! foo</td>
-      <td>刷新foo插件缓存</td>
+      <td>(/)</td>
+      <td>上一句/下一句</td>
     </tr>
     <tr>
-      <td>:BundleClean</td>
-      <td>清除列表中没有的插件</td>
+      <td>w/b</td>
+      <td>上一个词/下一个词</td>
     </tr>
     <tr>
-      <td>:BundleClean!</td>
-      <td>清除列表中没有的插件</td>
+      <td>gg/G</td>
+      <td>文档开始/文档结束</td>
+    </tr>
+    <tr>
+      <td>%</td>
+      <td>括号对应的匹配处</td>
+    </tr>
+    <tr>
+      <td>ngg/nG/:n</td>
+      <td>到第n行</td>
+    </tr>
+    <tr>
+      <td>H/M/L</td>
+      <td>屏幕顶部/中间/底部</td>
+    </tr>
+    <tr>
+      <td>*/#</td>
+      <td>当前字符下一次/上一次出现的位置</td>
     </tr>
   </tbody>
 </table>
 
-<h2 id="section-1">写代码之前</h2>
+<h3 id="section-2">二、查找替换</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>命令</th>
+      <th>作用</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>:s/s1/s2</td>
+      <td>下一个s1替换为s2</td>
+    </tr>
+    <tr>
+      <td>:%s/s1/s2</td>
+      <td>s1全部替换为s2</td>
+    </tr>
+    <tr>
+      <td>:s/s1/s2/g</td>
+      <td>当前行的s1替换为s2</td>
+    </tr>
+    <tr>
+      <td>:n1,n2 s/s1/s2/g</td>
+      <td>从n1到n2行的s1替换为s2</td>
+    </tr>
+    <tr>
+      <td>/xxxx</td>
+      <td>查找xxxx，找到以后按<strong>n</strong>向下继续查找、<strong>N</strong>则向上继续查找</td>
+    </tr>
+    <tr>
+      <td>mx</td>
+      <td>插入书签（x为小写字母），以后可以用<strong>`x</strong>跳转到该书签处</td>
+    </tr>
+    <tr>
+      <td>`.</td>
+      <td>上次编辑的位置</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="section-3">三、复制、剪切、粘贴、删除</h3>
+
+<p>在VIM中存在一些寄存器用来存放复制、删除的内容：</p>
+
+<ol>
+  <li><code class="highlighter-rouge">"</code>：最近删除或复制的内容</li>
+  <li><code class="highlighter-rouge">0</code>：最近复制的内容</li>
+  <li><code class="highlighter-rouge">1、2、、9</code>：最近一次的删除内容放入1，原先1的内容放入2，以此类推</li>
+  <li><code class="highlighter-rouge">%</code>：文件名</li>
+  <li><code class="highlighter-rouge">:</code>：命令</li>
+  <li><code class="highlighter-rouge">/</code>：查找的字符串</li>
+</ol>
+
+<p>编辑时可以用<strong>:reg</strong>来查看各寄存器中的内容！为了方便选取文本VIM中引入了<strong>可视模式</strong>，使用时先移动光标到开始位置，然后用下面命令进入可视模式：</p>
+
+<ol>
+  <li><code class="highlighter-rouge">ctrl+v</code>：块</li>
+  <li><code class="highlighter-rouge">v</code>：普通</li>
+  <li><code class="highlighter-rouge">V</code>：行</li>
+</ol>
+
+<p>接着移动光标就可以选中文本并进行操作了！编辑时常用的命令有：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>命令</th>
+      <th>作用</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>y</td>
+      <td>复制选中文本，用<code class="highlighter-rouge">\"ny</code>来复制到第n号寄存器</td>
+    </tr>
+    <tr>
+      <td>x</td>
+      <td>剪切选中文本或者删除当前字符</td>
+    </tr>
+    <tr>
+      <td>d</td>
+      <td>删除选中文本</td>
+    </tr>
+    <tr>
+      <td>p</td>
+      <td>粘贴，用<code class="highlighter-rouge">\"np</code>来粘贴第n号寄存器中的内容</td>
+    </tr>
+    <tr>
+      <td>dd</td>
+      <td>删除当前行</td>
+    </tr>
+    <tr>
+      <td>dw</td>
+      <td>删除光标后的一个词</td>
+    </tr>
+    <tr>
+      <td>dl</td>
+      <td>删除一个字符</td>
+    </tr>
+    <tr>
+      <td>D/C</td>
+      <td>删除到行尾</td>
+    </tr>
+    <tr>
+      <td>yy/Y</td>
+      <td>复制一行</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>过程中可以使用<code class="highlighter-rouge">u</code>和<code class="highlighter-rouge">ctrl+r</code>来进行undo和redo。</p>
+
+<h3 id="section-4">四、宏</h3>
+
+<p>在造数据的时候常会遇到一些简单、机械的操作，这种一般是可以用宏来搞定：</p>
+
+<ol>
+  <li><code class="highlighter-rouge">px</code>：开始记录宏操作，x为小写字母</li>
+  <li>操作</li>
+  <li><code class="highlighter-rouge">q</code>：将操作记录到寄存器中</li>
+  <li><code class="highlighter-rouge">@x</code>：执行寄存器x中的操作</li>
+  <li><code class="highlighter-rouge">@@</code>：执行最近一次的录制</li>
+</ol>
+
+<p>同样可以用<strong>:reg</strong>来查看寄存器状态。</p>
+
+<h3 id="section-5">五、编辑</h3>
+
+<p>需要输入时通过下面命令进入插入模式：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>命令</th>
+      <th>说明</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>i/a</td>
+      <td>光标前/后插入</td>
+    </tr>
+    <tr>
+      <td>I/A</td>
+      <td>在行首/尾插入</td>
+    </tr>
+    <tr>
+      <td>o/O</td>
+      <td>后/前插入一行进行编辑</td>
+    </tr>
+    <tr>
+      <td>s/S</td>
+      <td>删除一个字符/一行进行编辑</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="section-6">多屏编辑</h2>
+
 
 			<!-- 评论组件 -->
 			<div class="ds-thread" data-thread-key="/%E5%B7%A5%E5%85%B7/2015/06/10/VIM.html" data-title="VIM"  data-url="/%E5%B7%A5%E5%85%B7/2015/06/10/VIM.html"></div>
