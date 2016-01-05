@@ -5,13 +5,152 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 29 Dec 2015 10:26:24 +0800</pubDate>
-    <lastBuildDate>Tue, 29 Dec 2015 10:26:24 +0800</lastBuildDate>
+    <pubDate>Tue, 05 Jan 2016 10:42:58 +0800</pubDate>
+    <lastBuildDate>Tue, 05 Jan 2016 10:42:58 +0800</lastBuildDate>
     <generator>Jekyll v3.0.1</generator>
     
       <item>
         <title>NETTY基础知识</title>
-        <description>
+        <description>&lt;p&gt;网络IO总体上分为（&lt;a href=&quot;http://www.cnblogs.com/Anker/p/3254269.html&quot;&gt;这里&lt;/a&gt;的比喻不错）：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;阻塞&lt;/li&gt;
+  &lt;li&gt;非阻塞&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;阻塞的方式写起来很简单：当链接可读的时候就读一些，不可读的时候就等待：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+ServerSocket serverSocket = new ServerSocket(8787);
+while (true) {
+    Socket socket = serverSocket.accept();
+    // TODO 交给线程池进行处理。
+}
+&lt;/pre&gt;
+
+&lt;p&gt;网络情况不好时阻塞的方式用起来有点蠢，用NIO（有点像SELECT/EPOLL）会靠谱些，当有链接可读时让工作线程来拿数据：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+Selector selector = Selector.open();
+
+ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
+serverSocketChannel.socket().bind(new InetSocketAddress(&quot;127.0.0.1&quot;, 8787));
+serverSocketChannel.configureBlocking(false);
+serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
+
+while (true) {
+    selector.select();
+    Set&amp;lt;SelectionKey&amp;gt; selectionKeySet = selector.selectedKeys();
+    Iterator&amp;lt;SelectionKey&amp;gt; iterator = selectionKeySet.iterator();
+    while (iterator.hasNext()) {
+        SelectionKey selectionKey = iterator.next();
+        if (selectionKey.isAcceptable()) {
+            ServerSocketChannel channel = (ServerSocketChannel) selectionKey.channel();
+            SocketChannel socketChannel = channel.accept();
+            socketChannel.configureBlocking(false);
+            socketChannel.register(selector, SelectionKey.OP_READ);
+        }
+        if (selectionKey.isReadable()) {
+            SocketChannel socketChannel = (SocketChannel) selectionKey.channel();
+            ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
+            int size = socketChannel.read(byteBuffer);
+            if (size &amp;lt; 0) {
+                selectionKey.cancel();
+                socketChannel.close();
+            }
+            for (int i = 0; i &amp;lt; size; i++) {
+                System.out.print((char) byteBuffer.get(i));
+            }
+        }
+        iterator.remove();
+    }
+}
+&lt;/pre&gt;
+
+&lt;p&gt;写最简单的功能都要这么多代码，维护起来也比较痛苦，下面来看如何用NETTY简化开发！&lt;/p&gt;
+
+&lt;h2 id=&quot;section&quot;&gt;用法&lt;/h2&gt;
+
+&lt;p&gt;下面的代码用来实现上面的功能：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+EventLoopGroup bossGroup = new NioEventLoopGroup();
+EventLoopGroup workerGroup = new NioEventLoopGroup();
+ServerBootstrap bootstrap = new ServerBootstrap();
+bootstrap.group(bossGroup, workerGroup)
+        .channel(NioServerSocketChannel.class)
+        .option(ChannelOption.SO_BACKLOG, 1024)
+        .childHandler(new ChannelInitializer&amp;lt;SocketChannel&amp;gt;() {
+            protected void initChannel(SocketChannel ch) throws Exception {
+                ch.pipeline().addLast(new ChannelInboundHandlerAdapter() {
+                    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+                        ByteBuf buffer = (ByteBuf) msg;
+                        int size = buffer.readableBytes();
+                        for (int i = 0; i &amp;lt; size; i++) {
+                            System.out.print((char) buffer.getByte(i));
+                        }
+                    }
+                });
+            }
+        });
+ChannelFuture future = bootstrap.bind(8787).sync();
+future.channel().closeFuture().sync();
+&lt;/pre&gt;
+
+&lt;p&gt;看起来也不怎么直观，不要急，先来了解一些NETTY中的概念：&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;概念&lt;/th&gt;
+      &lt;th&gt;含义&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Bootstrap/ServerBootstrap&lt;/td&gt;
+      &lt;td&gt;配置netty（添加组件、设置参数）&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Channel&lt;/td&gt;
+      &lt;td&gt;定义I/O操作&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;ChannelHandlerContext&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;ChannelHandler&lt;/td&gt;
+      &lt;td&gt;处理感兴趣的事件（read、readomplete、bind、flush等）&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;ChannelPipeline&lt;/td&gt;
+      &lt;td&gt;ChannelHandler的容器&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;EventLoop/EventLoopGroup&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;table&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Future/Promise&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Unsafe&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;ByteBuf&lt;/td&gt;
+      &lt;td&gt;处理缓存的工具，比byte[]或者java.nio.ByteBuffer好用一些&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
 </description>
         <pubDate>Tue, 29 Dec 2015 00:00:00 +0800</pubDate>
         <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/12/29/NETTY-BASIC.html</link>
@@ -765,24 +904,19 @@ engine.init(&quot;page&quot;, document.body);// 将page对应的页面渲染到b
 &lt;!-- (0) --&gt;
 &lt;section&gt;&lt;h1&gt;EASY-DT&lt;/h1&gt;&lt;/section&gt;
 &lt;!-- (1) --&gt;
-&lt;section&gt;&lt;h3&gt;方便、快速地提供标准数据接口&lt;/h3&gt;&lt;/section&gt;
+&lt;section&gt;&lt;h3&gt;方便、快速地提供数据&lt;/h3&gt;&lt;/section&gt;
 &lt;!-- (2) --&gt;
 &lt;section&gt;
-&lt;!-- (2.1) --&gt;
+&lt;!-- (2 类型比较多) --&gt;
 &lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
-### 老的配置方式
-
-&lt;div style=&quot;display:inline-block;&quot;&gt;
-![](http://7xiz10.com1.z0.glb.clouddn.com/DOWN-TO-UP-1.png)
-![](http://7xiz10.com1.z0.glb.clouddn.com/DOWN-TO-UP-1.png)
-&lt;/div&gt;
-
-- 理想：让不会写代码的人也能配置 &lt;!-- .element: class=&quot;fragment&quot; --&gt;
-- 现实：并没有多少人会用 &lt;!-- .element: class=&quot;fragment&quot; --&gt;
+![需要选择很多类型](http://7xiz10.com1.z0.glb.clouddn.com/DOWN-TO-UP-SLIDES-1.png)
 &lt;/script&gt;&lt;/section&gt;
-&lt;!-- (2.2) --&gt;
+&lt;!-- (2 不知道每种类型应该怎么用) --&gt;
+&lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
+![每种类型都有自己的学习成本](http://7xiz10.com1.z0.glb.clouddn.com/DOWN-TO-UP-SLIDES-2.png)
+&lt;/script&gt;&lt;/section&gt;
+&lt;!-- (2 结果数据比较灵活，可能遇到的时候就需要写代码或者增加新的组件) --&gt;
 &lt;section&gt;
-&lt;h3&gt;实际中的数据&lt;/h3&gt;
 &lt;pre&gt;&lt;code&gt;
 [
     {
@@ -796,41 +930,42 @@ engine.init(&quot;page&quot;, document.body);// 将page对应的页面渲染到b
 ]
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/section&gt;
-&lt;!-- (2.3) --&gt;
+&lt;!-- (2 分析问题到底出在哪里) --&gt;
 &lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
 ### 分析问题
 
-- 功能作用单一
-- 无法地将功能组件组合使用
-- 扩展复杂
-- 过多的功能容易导致混淆
-&lt;/script&gt;&lt;/section&gt;
-&lt;!-- (2.4) --&gt;
-&lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
-### 使用GROOVY组合基础功能
+&lt;br/&gt;
 
+- 组件生成的数据结构固定，无法灵活适应业务
+- 很难组合使用多个组件
+- 扩展较复杂
+- 上手、维护成本高
+&lt;/script&gt;&lt;/section&gt;
+&lt;!-- (2 最底层用GROOVY来写的好处) --&gt;
+&lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
+### 将GROOVY作为基础
+
+&lt;br/&gt;
+
+- 查看
+- 编辑
+- 保存
 - 调试
-- 安全控制
-- 版本控制
-- 编辑保存
+- 提交/发布
+- 权限、开关、限流
 - 同步
 - 扩展性&lt;!-- .element: class=&quot;fragment highlight-red&quot; --&gt;
 &lt;/script&gt;&lt;/section&gt;
-&lt;!-- (2.5) --&gt;
+&lt;!-- (2 脚本编辑页面) --&gt;
 &lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
-![现在的编辑页面](http://7xiz10.com1.z0.glb.clouddn.com/DOWN-TO-UP-1.png)
-
-- 对开发来说GROOVY的学习成本应该还是比较低的
+![脚本编辑页面](http://7xiz10.com1.z0.glb.clouddn.com/DOWN-TO-UP-SLIDES-3.png)
 &lt;/script&gt;&lt;/section&gt;
-&lt;!-- (2.6) --&gt;
+&lt;!-- (2 小白用户更愿意看到的配置页面) --&gt;
 &lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
-### 小白用户更愿意看到的是
-
-![现在的编辑页面](http://7xiz10.com1.z0.glb.clouddn.com/DOWN-TO-UP-1.png)&lt;!-- .element: class=&quot;fragment&quot; --&gt;
+![小白用户想看到的配置方式](http://7xiz10.com1.z0.glb.clouddn.com/DOWN-TO-UP-1.png)
 &lt;/script&gt;&lt;/section&gt;
-&lt;!-- (2.7) --&gt;
+&lt;!-- (2 实现小白配置页面的方法) --&gt;
 &lt;section&gt;
-&lt;h3&gt;可能的一种扩展方法&lt;/h3&gt;
 &lt;pre&gt;&lt;code&gt;
 static Object execute(){
     def template_context = get(&quot;template_context&quot;);
@@ -843,25 +978,27 @@ static void mock(){
 }
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/section&gt;
-&lt;!-- (2.8) --&gt;
+&lt;!-- (2 整体架构) --&gt;
 &lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
-### 整体结构
+![整体结构](http://7xiz10.com1.z0.glb.clouddn.com/DOWN-TO-UP-1.png)
 &lt;/script&gt;&lt;/section&gt;
 &lt;/section&gt;
 &lt;!--(3)--&gt;
-&lt;section&gt;&lt;h3&gt;更简单的前端页面开发&lt;/h3&gt;&lt;/section&gt;
+&lt;section&gt;&lt;h3&gt;配置报表页面&lt;/h3&gt;&lt;/section&gt;
 &lt;!--(4)--&gt;
 &lt;section&gt;
-&lt;!--(4.1)--&gt;
+&lt;!--(4 老的开发模式的问题)--&gt;
 &lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
 ### 分析问题
+
+&lt;br/&gt;
 
 - 后端开发不懂前端逻辑，前端很容易成为瓶颈&lt;!-- .element: class=&quot;fragment&quot; --&gt;
 - 逻辑复杂&lt;!-- .element: class=&quot;fragment&quot; --&gt;
 - 代码重复&lt;!-- .element: class=&quot;fragment&quot; --&gt;
 - 可读性和维护性不是很好&lt;!-- .element: class=&quot;fragment&quot; --&gt;
 &lt;/script&gt;&lt;/section&gt;
-&lt;!--(4.2)--&gt;
+&lt;!--(4 解决问题的方式)--&gt;
 &lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
 ### 解决问题
 
@@ -956,20 +1093,29 @@ static void mock(){
 &lt;h3&gt;后端&lt;/h3&gt;
 &lt;br /&gt;
 &lt;pre&gt;&lt;code&gt;
-&lt;script type=&quot;text/engine&quot;&gt;
 &lt;form&gt;
     @input(label=&quot;xxx&quot; name=&quot;xxx&quot;) // 使用组件
     @input(label=&quot;xxx&quot; name=&quot;xxx&quot;) // 使用组件
     @input(label=&quot;xxx&quot; name=&quot;xxx&quot;) // 使用组件
     &lt;table&gt;&lt;/table&gt;
 &lt;/form&gt;
-&lt;/script&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/section&gt;
 &lt;!--(4.9)--&gt;
 &lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
 ### 整体结构
 &lt;/script&gt;&lt;/section&gt;
+&lt;/section&gt;
+&lt;!--(5)--&gt;
+&lt;section&gt;&lt;h3&gt;精确的数据计算&lt;/h3&gt;&lt;/section&gt;
+&lt;!--(6)--&gt;
+&lt;section&gt;
+&lt;!--(6 可能导致错误的原因)--&gt;
+&lt;section&gt;
+&lt;/section&gt;
+&lt;!--(6 解决办法)--&gt;
+&lt;section&gt;
+&lt;/section&gt;
 &lt;/section&gt;
 </description>
         <pubDate>Thu, 17 Dec 2015 00:00:00 +0800</pubDate>
