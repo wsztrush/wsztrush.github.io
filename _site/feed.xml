@@ -5,8 +5,8 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 05 Jan 2016 22:58:05 +0800</pubDate>
-    <lastBuildDate>Tue, 05 Jan 2016 22:58:05 +0800</lastBuildDate>
+    <pubDate>Tue, 05 Jan 2016 23:10:16 +0800</pubDate>
+    <lastBuildDate>Tue, 05 Jan 2016 23:10:16 +0800</lastBuildDate>
     <generator>Jekyll v3.0.1</generator>
     
       <item>
@@ -19,11 +19,11 @@
   &lt;li&gt;更有逼格&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;p&gt;首先在VIM中安装DrawIt插件（可以参考&lt;a href=&quot;http://wsztrush.github.io/%E5%B7%A5%E5%85%B7/2015/06/10/VIM.html&quot;&gt;这里&lt;/a&gt;），然后开始画图之旅，在&lt;strong&gt;命令模式&lt;/strong&gt;下：&lt;/p&gt;
+&lt;p&gt;首先，在VIM中安装DrawIt插件（可以参考&lt;a href=&quot;http://wsztrush.github.io/%E5%B7%A5%E5%85%B7/2015/06/10/VIM.html&quot;&gt;这里&lt;/a&gt;），然后就可以开始画图之旅，在命令模式下使用：&lt;/p&gt;
 
 &lt;ol&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;\di&lt;/code&gt;：开启&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;\ds&lt;/code&gt;：关闭&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;\di&lt;/code&gt;：开启DrawIt&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;\ds&lt;/code&gt;：关闭DrawIt&lt;/li&gt;
 &lt;/ol&gt;
 
 &lt;p&gt;开启之后有两种模式：&lt;strong&gt;画图&lt;/strong&gt;和&lt;strong&gt;擦除&lt;/strong&gt;，他们之间通过&lt;strong&gt;空格&lt;/strong&gt;来切换。可以使用按键来控制向八个方向画线（或者擦除）：&lt;/p&gt;
@@ -72,7 +72,7 @@
                                \-----&amp;gt;
 &lt;/pre&gt;
 
-&lt;p&gt;可以用&lt;code class=&quot;highlighter-rouge&quot;&gt;\b&lt;/code&gt;来画矩形框或者用&lt;code class=&quot;highlighter-rouge&quot;&gt;\e&lt;/code&gt;来画椭圆：&lt;/p&gt;
+&lt;p&gt;或用&lt;code class=&quot;highlighter-rouge&quot;&gt;\b&lt;/code&gt;来画矩形框或者用&lt;code class=&quot;highlighter-rouge&quot;&gt;\e&lt;/code&gt;来画椭圆：&lt;/p&gt;
 
 &lt;pre class=&quot;prettyprint&quot;&gt;
 +--------------------+          *************      
