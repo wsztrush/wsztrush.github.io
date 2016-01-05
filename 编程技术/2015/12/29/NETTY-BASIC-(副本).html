@@ -1,0 +1,212 @@
+<!DOCTYPEhtmlPUBLIC"-//W3C//DTDXHTML1.0Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html>
+	<!-- 引入CSS/JS -->
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="/assets/css/main.css"/>
+	<script type="text/javascript" src="/assets/javascripts/main.js"></script>
+
+	<!-- pygments代码高亮 -->
+	<!-- <link rel="stylesheet" type="text/css" href="/assets/css/pygments.css"/> -->
+	<!-- google代码高亮 -->
+	<script src="/assets/css/prettify.js"></script>
+	<link href="/assets/css/prettify.css" rel="stylesheet">
+	<title>NETTY基础知识</title>
+</head>
+
+	<body onload="prettyPrint()">
+		<div class="tool">
+	<span><b>WsztRush</b></span>
+	<div class="links">
+		<a href="/index.html">Blog</a>
+		<a href="/categories.html">Categories</a>
+		<a href="/about/">About</a>		
+	</div>
+</div>
+
+		<div class="post-container">
+			<h1>NETTY基础知识</h1>
+			<p>网络IO总体上分为（<a href="http://www.cnblogs.com/Anker/p/3254269.html">这里</a>的比喻不错）：</p>
+
+<ol>
+  <li>阻塞</li>
+  <li>非阻塞</li>
+</ol>
+
+<p>阻塞的方式写起来很简单：当链接可读的时候就读一些，不可读的时候就等待：</p>
+
+<pre class="prettyprint">
+ServerSocket serverSocket = new ServerSocket(8787);
+while (true) {
+    Socket socket = serverSocket.accept();
+    // TODO 交给线程池进行处理。
+}
+</pre>
+
+<p>网络情况不好时阻塞的方式用起来有点蠢，用NIO（有点像SELECT/EPOLL）会靠谱些，当有链接可读时让工作线程来拿数据：</p>
+
+<pre class="prettyprint">
+Selector selector = Selector.open();
+
+ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
+serverSocketChannel.socket().bind(new InetSocketAddress("127.0.0.1", 8787));
+serverSocketChannel.configureBlocking(false);
+serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
+
+while (true) {
+    selector.select();
+    Set&lt;SelectionKey&gt; selectionKeySet = selector.selectedKeys();
+    Iterator&lt;SelectionKey&gt; iterator = selectionKeySet.iterator();
+    while (iterator.hasNext()) {
+        SelectionKey selectionKey = iterator.next();
+        if (selectionKey.isAcceptable()) {
+            ServerSocketChannel channel = (ServerSocketChannel) selectionKey.channel();
+            SocketChannel socketChannel = channel.accept();
+            socketChannel.configureBlocking(false);
+            socketChannel.register(selector, SelectionKey.OP_READ);
+        }
+        if (selectionKey.isReadable()) {
+            SocketChannel socketChannel = (SocketChannel) selectionKey.channel();
+            ByteBuffer byteBuffer = ByteBuffer.allocate(1024);
+            int size = socketChannel.read(byteBuffer);
+            if (size &lt; 0) {
+                selectionKey.cancel();
+                socketChannel.close();
+            }
+            for (int i = 0; i &lt; size; i++) {
+                System.out.print((char) byteBuffer.get(i));
+            }
+        }
+        iterator.remove();
+    }
+}
+</pre>
+
+<p>写最简单的功能都要这么多代码，维护起来也比较痛苦，下面来看如何用NETTY简化开发！</p>
+
+<h2 id="section">用法</h2>
+
+<p>下面的代码用来实现上面的功能：</p>
+
+<pre class="prettyprint">
+EventLoopGroup bossGroup = new NioEventLoopGroup();
+EventLoopGroup workerGroup = new NioEventLoopGroup();
+ServerBootstrap bootstrap = new ServerBootstrap();
+bootstrap.group(bossGroup, workerGroup)
+        .channel(NioServerSocketChannel.class)
+        .option(ChannelOption.SO_BACKLOG, 1024)
+        .childHandler(new ChannelInitializer&lt;SocketChannel&gt;() {
+            protected void initChannel(SocketChannel ch) throws Exception {
+                ch.pipeline().addLast(new ChannelInboundHandlerAdapter() {
+                    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+                        ByteBuf buffer = (ByteBuf) msg;
+                        int size = buffer.readableBytes();
+                        for (int i = 0; i &lt; size; i++) {
+                            System.out.print((char) buffer.getByte(i));
+                        }
+                    }
+                });
+            }
+        });
+ChannelFuture future = bootstrap.bind(8787).sync();
+future.channel().closeFuture().sync();
+</pre>
+
+<p>看起来也不怎么直观，不要急，先来了解一些NETTY中的概念：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>概念</th>
+      <th>含义</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Bootstrap/ServerBootstrap</td>
+      <td>配置netty（添加组件、设置参数）</td>
+    </tr>
+    <tr>
+      <td>Channel</td>
+      <td>定义I/O操作</td>
+    </tr>
+    <tr>
+      <td>ChannelHandlerContext</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>ChannelHandler</td>
+      <td>处理感兴趣的事件（read、readomplete、bind、flush等）</td>
+    </tr>
+    <tr>
+      <td>ChannelPipeline</td>
+      <td>ChannelHandler的容器</td>
+    </tr>
+    <tr>
+      <td>EventLoop/EventLoopGroup</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<table>
+  <tbody>
+    <tr>
+      <td>Future/Promise</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>Unsafe</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>ByteBuf</td>
+      <td>处理缓存的工具，比byte[]或者java.nio.ByteBuffer好用一些</td>
+    </tr>
+  </tbody>
+</table>
+
+
+			<!-- 评论组件 -->
+			<div class="ds-thread" data-thread-key="/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/12/29/NETTY-BASIC-(%E5%89%AF%E6%9C%AC).html" data-title="NETTY基础知识"  data-url="/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/12/29/NETTY-BASIC-(%E5%89%AF%E6%9C%AC).html"></div>
+			<!-- 评论组件 -->
+			<div id="disqus_thread"/>
+		</div>
+	</body>
+</html>
+<!-- 评论组件 -->
+<script type="text/javascript">
+	var disqus_shortname = 'wsztrush';
+	(function() {
+		var dsq = document.createElement('script');
+		dsq.type = 'text/javascript';
+		dsq.async = true;
+		dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	})();
+</script>
+<!-- 多说公共JS代码-->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"wsztrush"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+</script>
+
+<!-- 百度访问统计 -->
+<script>
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?08a976e8d7e5a20acfcb566bd22a1db1";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+
