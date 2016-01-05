@@ -103,7 +103,7 @@ filetype plugin indent on              " 打开文件类型检测
 
 <ol>
   <li>命令模式</li>
-  <li>插入模式</li>
+  <li>编辑模式</li>
   <li>可视模式</li>
 </ol>
 
@@ -242,7 +242,7 @@ filetype plugin indent on              " 打开文件类型检测
   <tbody>
     <tr>
       <td>y</td>
-      <td>复制选中文本，用<code class="highlighter-rouge">\"ny</code>来复制到第n号寄存器</td>
+      <td>复制选中文本，用<code class="highlighter-rouge">"ny</code>来复制到第n号寄存器</td>
     </tr>
     <tr>
       <td>x</td>
@@ -254,7 +254,7 @@ filetype plugin indent on              " 打开文件类型检测
     </tr>
     <tr>
       <td>p</td>
-      <td>粘贴，用<code class="highlighter-rouge">\"np</code>来粘贴第n号寄存器中的内容</td>
+      <td>粘贴，用<code class="highlighter-rouge">"np</code>来粘贴第n号寄存器中的内容</td>
     </tr>
     <tr>
       <td>dd</td>
@@ -323,10 +323,55 @@ filetype plugin indent on              " 打开文件类型检测
       <td>s/S</td>
       <td>删除一个字符/一行进行编辑</td>
     </tr>
+    <tr>
+      <td>R</td>
+      <td>替换模式，在画图的时候非常好用</td>
+    </tr>
   </tbody>
 </table>
 
-<h2 id="section-6">多屏编辑</h2>
+<h2 id="section-6">多屏操作</h2>
+
+<p>写代码的时候通过搞几个文件是常有的事，分几个屏幕来做非常舒服，开启分屏方式有：</p>
+
+<ol>
+  <li><code class="highlighter-rouge">vim -On file1 file2 ...</code>：垂直分屏打开多个文件</li>
+  <li><code class="highlighter-rouge">vim -on file1 file2 ...</code>：水平分屏打开多个文件</li>
+  <li><code class="highlighter-rouge">ctrl+w s</code>：上下分割当前文件</li>
+  <li><code class="highlighter-rouge">ctrl+w v</code>：水平分割当前文件</li>
+  <li><code class="highlighter-rouge">:sp filename</code>：上下分割打开新文件</li>
+  <li><code class="highlighter-rouge">:vsp filename</code>：水平分割打开新文件</li>
+</ol>
+
+<p>需要切换工作屏幕时可以使用命令<strong>ctrl+w h/j/k/l/w</strong>，其中h/j/k/l是按照方向移动，w是移动到下一个屏幕！当你觉得屏幕的顺序有点不爽时可以使用<strong>ctrl+w H/J/K/L</strong>来移动分屏。另外也可以调整屏幕大小：</p>
+
+<ol>
+  <li><code class="highlighter-rouge">ctrl+w =</code>：所有屏幕都一样的高度</li>
+  <li><code class="highlighter-rouge">ctrl+w -</code>：降低高度</li>
+  <li><code class="highlighter-rouge">ctrl+w +</code>：增加高度</li>
+</ol>
+
+<p>在编辑的时候可以在分屏中浏览目录：</p>
+
+<ol>
+  <li><code class="highlighter-rouge">:He</code>：上下分屏，在下面（<code class="highlighter-rouge">:He!</code>则在上面）浏览目录</li>
+  <li><code class="highlighter-rouge">:Ve</code>：左右分屏，在左面（<code class="highlighter-rouge">:Ve!</code>则在右面）浏览目录</li>
+</ol>
+
+<p>还可以使用<strong>:E</strong>在当前的屏幕中打开目录进行浏览，可以通过一些命令进行操作：</p>
+
+<ol>
+  <li><code class="highlighter-rouge">-</code>：到上级目录</li>
+  <li><code class="highlighter-rouge">s</code>：对文件排序</li>
+  <li><code class="highlighter-rouge">x</code>：执行文件</li>
+  <li><code class="highlighter-rouge">R</code>：修改文件名称</li>
+  <li><code class="highlighter-rouge">D</code>：删除文件</li>
+  <li><code class="highlighter-rouge">回车</code>：进入子目录</li>
+</ol>
+
+<p>边看编写的时候需要在多个屏幕上同步滚动，使用<code class="highlighter-rouge">:set scb</code>和<code class="highlighter-rouge">:set scb</code>来绑定和解绑（这个功能还是非常好用的）！最后，编辑完成就可以用<code class="highlighter-rouge">ctrl+w c</code>或<code class="highlighter-rouge">ctrl+w q</code>（如果是最后一个屏幕则退出VIM）来关闭分屏！</p>
+
+<h2 id="section-7">总结</h2>
 
 
 			<!-- 评论组件 -->
