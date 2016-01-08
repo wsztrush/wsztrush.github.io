@@ -25,5 +25,13 @@ title: ABOUT
 
 不可扭曲如蛆虫
 
+-----------
+
+微博：[@wsztrush](http://weibo.com/wsztrush)
+
+邮箱：wsztrush@163.com
+
+最后，如果博客有帮助到您，那我会非常开心:-)
+
 ![](http://7xiz10.com1.z0.glb.clouddn.com/ 微信收钱.jpg)
 
