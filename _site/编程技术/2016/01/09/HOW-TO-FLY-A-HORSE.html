@@ -1,0 +1,174 @@
+<!DOCTYPEhtmlPUBLIC"-//W3C//DTDXHTML1.0Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html>
+	<!-- 引入CSS/JS -->
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="/assets/css/main.css"/>
+	<script type="text/javascript" src="/assets/javascripts/main.js"></script>
+
+	<!-- pygments代码高亮 -->
+	<!-- <link rel="stylesheet" type="text/css" href="/assets/css/pygments.css"/> -->
+	<!-- google代码高亮 -->
+	<script src="/assets/css/prettify.js"></script>
+	<link href="/assets/css/prettify.css" rel="stylesheet">
+	<title>创造：只给勤奋者的创新书</title>
+</head>
+
+	<body onload="prettyPrint()">
+		<div class="tool">
+	<span><b>WsztRush</b></span>
+	<div class="links">
+		<a href="/index.html">Blog</a>
+		<a href="/categories.html">Categories</a>
+		<a href="/about/">About</a>		
+	</div>
+</div>
+
+		<div class="post-container">
+			<h1>创造：只给勤奋者的创新书</h1>
+			<p>在Linux上其实并不缺少画图软件（比如yEd等），那么为什么还需要用VIM来画图：</p>
+
+<ol>
+  <li>更轻，不需要安装太多东西</li>
+  <li>更小，就是一些文本，比图片什么的小多了，使用起来也更简单</li>
+  <li>更有逼格</li>
+</ol>
+
+<p>首先，在VIM中安装DrawIt插件（可以参考<a href="http://wsztrush.github.io/%E5%B7%A5%E5%85%B7/2015/06/10/VIM.html">这里</a>），然后就可以开始画图之旅，在命令模式下使用：</p>
+
+<ol>
+  <li><code class="highlighter-rouge">\di</code>：开启DrawIt</li>
+  <li><code class="highlighter-rouge">\ds</code>：关闭DrawIt</li>
+</ol>
+
+<p>开启之后有两种模式：<strong>画图</strong>和<strong>擦除</strong>，他们之间通过<strong>空格</strong>来切换。可以使用按键来控制向八个方向画线（或者擦除）：</p>
+
+<ol>
+  <li>方向键的上、下、左、右分别对应其四个方向</li>
+  <li><strong>Pgup</strong>：上右</li>
+  <li><strong>Pgdn</strong>：下右</li>
+  <li><strong>Home</strong>：左上</li>
+  <li><strong>End</strong>：左下</li>
+</ol>
+
+<p>如下图（其实也不需要记，和键盘上的位置是一致的）：</p>
+
+<pre class="prettyprint">
+                         Home    Up   Pgup
+                             \   |   / 
+                              \  |  / 
+                               \ | / 
+                                \|/ 
+                        Left----------Right
+                                /|\
+                               / | \
+                              /  |  \
+                             /   |   \
+                          End   Down  Pgdn
+
+</pre>
+
+<p>箭头的画法也很直观，简单的箭头用<code class="highlighter-rouge">&gt;</code>、<code class="highlighter-rouge">&lt;</code>、<code class="highlighter-rouge">^</code>、<code class="highlighter-rouge">v</code>就搞定了，粗的箭头可以用<code class="highlighter-rouge">\&gt;</code>、<code class="highlighter-rouge">\&lt;</code>、<code class="highlighter-rouge">\^</code>、<code class="highlighter-rouge">\v</code>来弄（感觉粗的箭头不太好控制）：</p>
+
+<pre class="prettyprint">
+ &gt; &lt; ^ v  |&gt; &lt;|
+              
+   _ _      . 
+   \ /     /_\
+    '         
+</pre>
+
+<p>用鼠标可以选择块，这对后面的操作有一定的简化，利用用<code class="highlighter-rouge">\a</code>（<code class="highlighter-rouge">\l</code>不带箭头）来根据选中的块来画线：</p>
+
+<pre class="prettyprint">
+-------                               
+       \-----------                   
+                   \-----------       
+                               \-----&gt;
+</pre>
+
+<p>或用<code class="highlighter-rouge">\b</code>来画矩形框或者用<code class="highlighter-rouge">\e</code>来画椭圆：</p>
+
+<pre class="prettyprint">
++--------------------+          *************      
+|                    |      ****             ****  
+|                    |    **                     **
++--------------------+    *                       *
+                          **                     **
+                            ****             ****  
+                                *************      
+</pre>
+
+<p>完事了可以用<code class="highlighter-rouge">\f</code>来对图形进行填充：</p>
+
+<pre class="prettyprint">
++------------------+
+|##################|
+|##################|
+|##################|
++------------------+
+</pre>
+
+<p>位置有一些偏差是常有的事情，这时候不要急着重画：</p>
+
+<blockquote>
+  <p>用鼠标选中要移动的块，然后按住ctrl并拖动鼠标。</p>
+</blockquote>
+
+<p>当要擦除一整快的内容时，用方向键来搞也比较蛋疼，可以用：</p>
+
+<blockquote>
+  <p>用鼠标选中要擦除的部分，然后执行r &lt;space&gt;（相当于用空格替换）。</p>
+</blockquote>
+
+<p>另外需要注意：ubuntu和mint上安装到VIM默认是不支持<strong>系统剪贴板</strong>的，需要安装：</p>
+
+<blockquote>
+  <p>sudo apt-get install vim-gnome</p>
+</blockquote>
+
+<p>简单体验下来，如果能灵活运用VIM本身的强大功能（复制、粘贴等），DrawIt用起来还是挺给力的！</p>
+
+			<!-- 评论组件 -->
+			<div class="ds-thread" data-thread-key="/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2016/01/09/HOW-TO-FLY-A-HORSE.html" data-title="创造：只给勤奋者的创新书"  data-url="/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2016/01/09/HOW-TO-FLY-A-HORSE.html"></div>
+			<!-- 评论组件 -->
+			<div id="disqus_thread"/>
+		</div>
+	</body>
+</html>
+<!-- 评论组件 -->
+<script type="text/javascript">
+	var disqus_shortname = 'wsztrush';
+	(function() {
+		var dsq = document.createElement('script');
+		dsq.type = 'text/javascript';
+		dsq.async = true;
+		dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	})();
+</script>
+<!-- 多说公共JS代码-->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"wsztrush"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+</script>
+
+<!-- 百度访问统计 -->
+<script>
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?08a976e8d7e5a20acfcb566bd22a1db1";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+
