@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 《创造:只给勤奋者的创新书》
+title: 创造:只给勤奋者的创新书
 date: 2016-01-09
 categories: 读书笔记
 
