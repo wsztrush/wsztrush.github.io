@@ -33,6 +33,8 @@ title: ABOUT
 
 邮箱：wsztrush@163.com
 
+书单：[豆瓣](http://book.douban.com/people/wszt/collect)
+
 如果对阿里巴巴或者菜鸟的职位感兴趣可以发简历到我的邮箱。最后，如果博客有帮助到您，那我会非常开心:-)
 
 ![](http://7xiz10.com1.z0.glb.clouddn.com/ 微信收钱.jpg)

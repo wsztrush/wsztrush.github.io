@@ -5,9 +5,26 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 12 Jan 2016 14:27:00 +0800</pubDate>
-    <lastBuildDate>Tue, 12 Jan 2016 14:27:00 +0800</lastBuildDate>
+    <pubDate>Wed, 13 Jan 2016 08:47:43 +0800</pubDate>
+    <lastBuildDate>Wed, 13 Jan 2016 08:47:43 +0800</lastBuildDate>
     <generator>Jekyll v3.0.1</generator>
+    
+      <item>
+        <title>必然</title>
+        <description>&lt;p&gt;&lt;img src=&quot;http://img3.douban.com/mpic/s6538162.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;section&quot;&gt;原始章&lt;/h2&gt;
+
+&lt;p&gt;夫道、德、&lt;/p&gt;
+</description>
+        <pubDate>Sun, 10 Jan 2016 00:00:00 +0800</pubDate>
+        <link>/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/2016/01/10/SU.html</link>
+        <guid isPermaLink="true">/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/2016/01/10/SU.html</guid>
+        
+        
+        <category>读书笔记</category>
+        
+      </item>
     
       <item>
         <title>必然</title>
@@ -1786,236 +1803,6 @@ var languageTools = ace.require(&quot;ace/ext/language_tools&quot;);
         <pubDate>Fri, 06 Nov 2015 00:00:00 +0800</pubDate>
         <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/11/06/ACEJS-B.html</link>
         <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/11/06/ACEJS-B.html</guid>
-        
-        
-        <category>编程技术</category>
-        
-      </item>
-    
-      <item>
-        <title>用ACE来写代码（一）</title>
-        <description>&lt;p&gt;后台应用通常会有很多的配置页面，现在在状态是直接搞一个textarea来搞：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/ACE-1.PNG&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;这种粗糙、QJ用户的行为显然不是一个有节操的程序员该干的，为了这种配置的页面好用最少应该提供三个功能：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;高亮：提示关键字、类型，可以在第一时间发现简单错误&lt;/li&gt;
-  &lt;li&gt;缩进：增加配置可读性的最简单的办法&lt;/li&gt;
-  &lt;li&gt;折叠：有一大堆的配置的时候折叠还是挺好用的&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;在网上逛了一圈发现Colud9的ACE还是挺好用的（GitHub上10000+的Star也说明了实力），可以在&lt;a href=&quot;https://ace.c9.io/build/kitchen-sink.html&quot;&gt;这里&lt;/a&gt;体验下，国内的&lt;a href=&quot;https://coding.net/&quot;&gt;coding.net&lt;/a&gt;平台所使用的也是该工具，但是做出来的效果离Colud9还是有不小的差距。。。&lt;/p&gt;
-
-&lt;p&gt;由于网上的资料不多，学习过程非常痛苦，有些东西是直接看&lt;a href=&quot;https://github.com/ajaxorg/ace&quot;&gt;代码&lt;/a&gt;去猜测运行的原理，希望对需要的人有一点帮助！&lt;/p&gt;
-
-&lt;h2 id=&quot;section&quot;&gt;使用&lt;/h2&gt;
-
-&lt;p&gt;使用方法很经典（和HighCharts等差不多）：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-&amp;lt;!DOCTYPE html&amp;gt;
-&amp;lt;head&amp;gt;
-&amp;lt;style type=&quot;text/css&quot; media=&quot;screen&quot;&amp;gt;
-    #editor {
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-    }
-&amp;lt;/style&amp;gt;
-&amp;lt;/head&amp;gt;
-&amp;lt;body&amp;gt;
-&amp;lt;div id=&quot;editor&quot;&amp;gt;function foo(items) {
-    var x = &quot;All this is syntax highlighted&quot;;
-    return x;
-}&amp;lt;/div&amp;gt;
-&amp;lt;script src=&quot;https://ace.c9.io/build/src/ace.js&quot; type=&quot;text/javascript&quot; charset=&quot;utf-8&quot;&amp;gt;&amp;lt;/script&amp;gt;
-&amp;lt;script&amp;gt;
-    var editor = ace.edit(&quot;editor&quot;);
-    editor.setTheme(&quot;ace/theme/monokai&quot;);
-	editor.getSession().setMode(&quot;ace/mode/javascript&quot;);
-&amp;lt;/script&amp;gt;
-&amp;lt;/body&amp;gt;
-&amp;lt;/html&amp;gt;
-&lt;/pre&gt;
-
-&lt;p&gt;完成后ACE会在&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;div id=&quot;editor&quot;&amp;gt;&amp;lt;/div&amp;gt;&lt;/code&gt;渲染出对应的DOM结构，其中：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;&lt;strong&gt;editor.setTheme&lt;/strong&gt;：设置主题，有点皮肤的意思&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;editor.getSession().setMode&lt;/strong&gt;：设置模式，上面这段设置的是JavaScript的模式，其中包括了高亮、缩进、折叠凳功能&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://github.com/ajaxorg/ace/tree/master/lib/ace/mode&quot;&gt;内部&lt;/a&gt;有大部分语言的模式，正常情况下你是不需要考虑后面的内容的。后来有同事用drools做规则引擎，这个没有现成的只能自己来搞！&lt;/p&gt;
-
-&lt;h2 id=&quot;section-1&quot;&gt;高亮&lt;/h2&gt;
-
-&lt;p&gt;让代码高亮显示的思路很简单，比如将关键字用&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;span class=&quot;ace_keyword&quot;&amp;gt;&amp;lt;/span&amp;gt;&lt;/code&gt;包裹起来并在CSS中设置样式即可，那么关键问题就是如何对源码进行&lt;strong&gt;词法分析&lt;/strong&gt;了。&lt;/p&gt;
-
-&lt;p&gt;在ACE中实现的时候有点像&lt;strong&gt;状态机&lt;/strong&gt;，在处理时不断地从当前状态的规则集中找到匹配&lt;code class=&quot;highlighter-rouge&quot;&gt;regex&lt;/code&gt;的规则，之后跳转到对应的&lt;code class=&quot;highlighter-rouge&quot;&gt;next&lt;/code&gt;状态：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-this.$rules = {
-    &quot;start&quot; : [
-        {
-            token: &amp;lt;token&amp;gt;, // class名称
-            regex: &amp;lt;regex&amp;gt;, // 正则匹配串
-            next:  &amp;lt;next&amp;gt;   // 下个状态
-        }
-    ]
-};
-&lt;/pre&gt;
-
-&lt;p&gt;相比普通的词法分析器，一个状态就相当于一个小的隔离环境，在这个隔离环境中在做匹配的时候难度要小很多，你只需要考虑在该状态内可能出现的TOKEN即可：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/ACE-2.PNG&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;另外比较好用的几点：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;设置&lt;strong&gt;merge:true&lt;/strong&gt;来合并连续的token&lt;/li&gt;
-  &lt;li&gt;利用&lt;strong&gt;createKeywordMapper&lt;/strong&gt;来简化关键字列表的编写&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;那么简单来做个drools高亮的Mode如下：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-ace.define(&quot;ace/mode/drools_highlight_rules&quot;, function(require, exports, module) {
-    &quot;use strict&quot;;
-    var oop = require(&quot;../lib/oop&quot;);
-    var TextHighlightRules = require(&quot;./text_highlight_rules&quot;).TextHighlightRules;
-    var DroolsHighlightRules = function(){
-        var keywordMapper = this.createKeywordMapper({
-            &quot;keyword&quot;:
-                &quot;when|then|rule|end|salience&quot;
-        }, &quot;identifier&quot;);
-        this.$rules = {
-            &quot;start&quot; :[{
-                token : keywordMapper,
-                regex : &quot;[a-zA-Z_$][a-zA-Z0-9_$]*\\b&quot;
-            }]
-        };
-    };
-    oop.inherits(DroolsHighlightRules, TextHighlightRules);
-    exports.DroolsHighlightRules = DroolsHighlightRules;
-});
- 
-ace.define(&quot;ace/mode/drools&quot;, function(require, exports, module) {
-    &quot;use strict&quot;;
-    var oop = require(&quot;../lib/oop&quot;);
-    var TextMode = require(&quot;./text&quot;).Mode;
-    var DroolsHighlightRules = require(&quot;./drools_highlight_rules&quot;).DroolsHighlightRules;
-    var DroolsMode = function(){
-        this.HighlightRules = DroolsHighlightRules;
-    };
-    oop.inherits(DroolsMode, TextMode);
-    (function() {
-        this.$id = &quot;ace/mode/drools&quot;
-    }).call(DroolsMode.prototype),
-    exports.Mode = DroolsMode;
-});
-&lt;/pre&gt;
-
-&lt;p&gt;效果如下：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/ACE-3.PNG&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;更多的功能可以在&lt;a href=&quot;https://ace.c9.io/#nav=higlighter&quot;&gt;这里&lt;/a&gt;看到，不过貌似很不稳定- -！&lt;/p&gt;
-
-&lt;h2 id=&quot;section-2&quot;&gt;缩进&lt;/h2&gt;
-
-&lt;p&gt;ACE为MODE扩展缩进预留了接口，你只需要实现&lt;strong&gt;getNextLineIndent&lt;/strong&gt;方法即可，会将其结果自动添加到新行的开头，参数含义为：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;state：状态&lt;/li&gt;
-  &lt;li&gt;line：当前行内容&lt;/li&gt;
-  &lt;li&gt;tab：缩进符号&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;来看个例子（如果是{[(结尾的，那么下一行的缩进加一）：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-(function(){
-    this.getNextLineIndent = function(state, line, tab) {
-        var indent = this.$getIndent(line);
-        if (state == &quot;start&quot;) {
-            var match = line.match(/^.*[\{\(\[]\s*$/); // 如果是{[(结尾的，那么下一行的缩进加一
-            if (match) {
-                indent += tab;
-            }
-        }
-        return indent;
-    };
-}).call(DroolsMode.prototype);
-&lt;/pre&gt;
-
-&lt;p&gt;对大部分的缩进需求这种方式完全能搞定了。&lt;/p&gt;
-
-&lt;h2 id=&quot;section-3&quot;&gt;折叠&lt;/h2&gt;
-
-&lt;p&gt;折叠的实现涉及到范围对象new Range(Number startRow, Number startColumn, Number endRow, Number endColumn)：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;startRow：开始行&lt;/li&gt;
-  &lt;li&gt;startColumn：开始列&lt;/li&gt;
-  &lt;li&gt;endRow：结束行&lt;/li&gt;
-  &lt;li&gt;endColumn：结束列&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;实现折叠需要提供两个方法：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;&lt;strong&gt;getFoldWidget&lt;/strong&gt;：折叠开始的地方&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;getFoldWidgetRange&lt;/strong&gt;：需要折叠的范围&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;下面我们为drools实现一个简单的折叠逻辑，也就是将&lt;strong&gt;rule&lt;/strong&gt;与&lt;strong&gt;end&lt;/strong&gt;之间的部分能够折叠隐藏：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-ace.define(&quot;ace/mode/folding/drools_fold&quot;, function(require, exports, module) {
-    &quot;use strict&quot;;
-    var Range = require(&quot;../../range&quot;).Range;
-    var FoldMode = exports.FoldMode = function() {};
-    (function() {
-        this.getFoldWidget = function(session, foldStyle, row) {
-            var line = session.getLine(row);
-            if (line == &quot;rule&quot;)
-                return &quot;start&quot;;
-            return &quot;&quot;;
-        };
-        this.getFoldWidgetRange = function(session, foldStyle, row) {
-            var startRow = row, startColumn = 4;
-            var endRow = row+1, endColumn = 3;
-            while(session.getLine(endRow) != &quot;end&quot;){
-                endRow += 1;
-            }
-            return new Range(startRow, startColumn, endRow, endColumn);
-        };
-    }).call(FoldMode.prototype);
-});
-&lt;/pre&gt;
-
-&lt;p&gt;然后需要在drools的Mode中设置&lt;strong&gt;foldingRules&lt;/strong&gt;：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-var DroolsFoldMode = require(&quot;ace/mode/folding/drools_fold&quot;).FoldMode;
-var DroolsMode = function(){
-    this.foldingRules = new DroolsFoldMode();
-};
-&lt;/pre&gt;
-
-&lt;p&gt;在ACE中提供了一个基本的折叠块：&lt;strong&gt;fold_mode&lt;/strong&gt;，用来折叠相同的缩进部分，如果需要直接集成即可！&lt;/p&gt;
-
-&lt;h2 id=&quot;section-4&quot;&gt;总结&lt;/h2&gt;
-
-&lt;p&gt;实现了这三部分功能已经可以大幅度提升简单配置页面的体验，但是作为一个在线的IDE才仅仅是万里长征的第一步！&lt;/p&gt;
-</description>
-        <pubDate>Mon, 19 Oct 2015 00:00:00 +0800</pubDate>
-        <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/10/19/ACEJS-A.html</link>
-        <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/10/19/ACEJS-A.html</guid>
         
         
         <category>编程技术</category>
