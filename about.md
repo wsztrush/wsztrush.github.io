@@ -5,7 +5,7 @@ title: ABOUT
 
 ---
 
-<embed src="http://music.163.com/style/swf/widget.swf?sid=153784&type=2&auto=1&width=320&height=66" width="340" height="86"  allowNetworking="all"/>
+<embed src="http://music.163.com/style/swf/widget.swf?sid=347230&type=2&auto=1&width=320&height=66" width="340" height="86"  allowNetworking="all"/>
 
 如果发出声音是危险的
 
