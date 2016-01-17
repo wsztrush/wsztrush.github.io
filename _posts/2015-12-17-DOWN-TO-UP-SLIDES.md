@@ -7,31 +7,26 @@ categories: PPT
 ---
 
 <!-- test -->
-<section>
-<pre style="text-align:center;"><code>
-+----------------------------------+ 
-|              GROOVY              | 
-+----------------------------------+ 
-+------+  +-----+  +------+  +-----+ 
-| TDDL |  | HSF |  | ODPS |  | ... | 
-+------+  +-----+  +------+  +-----+ 
-</code></pre>
-</section>
+
 <!-- test end-->
 
 <!-- (0) -->
 <section><h1>EASY-DT</h1></section>
 <!-- (1) -->
-<section><h3>方便、快速地提供数据</h3></section>
+<section><h3>获取数据</h3></section>
 <!-- (2) -->
 <section>
 <!-- (2 类型比较多) -->
 <section data-markdown><script type="text/template">
 ![需要选择很多类型](http://7xiz10.com1.z0.glb.clouddn.com/DOWN-TO-UP-SLIDES-1.png)
+
+提前做好一些读取数据和加工数据的组件
 </script></section>
 <!-- (2 不知道每种类型应该怎么用) -->
 <section data-markdown><script type="text/template">
 ![每种类型都有自己的学习成本](http://7xiz10.com1.z0.glb.clouddn.com/DOWN-TO-UP-SLIDES-2.png)
+
+用XML格式的配置文件来描述逻辑
 </script></section>
 <!-- (2 结果数据比较灵活，可能遇到的时候就需要写代码或者增加新的组件) -->
 <section>
@@ -47,6 +42,8 @@ categories: PPT
     {}
 ]
 </code></pre>
+
+格式常常无法预料：<span style="color:red;">加组件</span> or <span style="color:red;">不支持</span>
 </section>
 <!-- (2 分析问题到底出在哪里) -->
 <section data-markdown><script type="text/template">
@@ -61,26 +58,26 @@ categories: PPT
 </script></section>
 <!-- (2 最底层用GROOVY来写的好处) -->
 <section data-markdown><script type="text/template">
-### 将GROOVY作为基础
+### 解决方法（GROOVY）
 
 <br/>
 
-- 查看
-- 编辑
-- 保存
-- 调试
-- 提交/发布
-- 权限、开关、限流
-- 同步
-- 扩展性<!-- .element: class="fragment highlight-red" -->
+- 查看、编辑、保存、调试、高亮、自动补全等
+- 提交、发布
+- 权限、开关、限流（在树形结构上统一做掉）
+- 日常同步到线上
 </script></section>
 <!-- (2 脚本编辑页面) -->
 <section data-markdown><script type="text/template">
 ![脚本编辑页面](http://7xiz10.com1.z0.glb.clouddn.com/DOWN-TO-UP-SLIDES-3.png)
+
+代码编辑（ACE）
 </script></section>
 <!-- (2 小白用户更愿意看到的配置页面) -->
 <section data-markdown><script type="text/template">
-![小白用户想看到的配置方式](http://7xiz10.com1.z0.glb.clouddn.com/DOWN-TO-UP-1.png)
+![小白用户想看到的配置方式](http://7xiz10.com1.z0.glb.clouddn.com/DOWN-TO-UP-SLIDES-4.png)
+
+小白用户想看到的配置方式
 </script></section>
 <!-- (2 实现小白配置页面的方法) -->
 <section>
@@ -95,49 +92,87 @@ static void mock(){
     // 
 }
 </code></pre>
+
+可能的一种实现方式
 </section>
-<!-- (2 整体架构) -->
+<!-- (2 提供给业务应用使用) -->
 <section data-markdown><script type="text/template">
-![整体结构](http://7xiz10.com1.z0.glb.clouddn.com/DOWN-TO-UP-1.png)
+### 业务系统中使用
+
+<br/>
+
+- <span style="color:lightgray">your-domain</span><span style="color:yellow;">/easydt</span><span style="color:red;">/wms/owner</span><span style="color:lightgray">.do</span>
+- <span style="color:lightgray">Easydt.getResult("</span><span style="color:red;">/wms/owner</span><span style="color:lightgray">", param);</span>
 </script></section>
+<!-- (2 整体架构) -->
+<section>
+<pre style="text-align:center;width:120%;height:120%;box-shadow:none;">
+       1.通过HSF接口获取数据                         1、参数传递                      
+                                                     2、统一的编译、发布功能          
+ +-----------+         +-----------+                 3、统一的高亮、提示、自动补全功能
+ |    APP    |---------|   EASYDT  |                                                  
+ +-----------+         +-----+-----+                                                  
+                             |                                                        
+                       +-----+-----+                                                  
+                       |   CLASS   |                                                  
+                       +-----+-----+                                                  
+                             |                                                        
+                       +-----+-----+        +-----------+                             
+                       |  OSS/LDB  |--------|    APP    |                             
+                       +-----------+        +-----------+                             
+                                                                                      
+                              2.拿到CLASS在业务应用中执行                             
+</pre>
+</section>
+<!--(2 结束)-->
 </section>
 <!--(3)-->
-<section><h3>配置报表页面</h3></section>
+<section><h3>展示数据</h3></section>
 <!--(4)-->
 <section>
+<!--(4 好的展示并不简单)-->
+<section data-markdown><script type="text/template">
+![](http://7xiz10.com1.z0.glb.clouddn.com/DOWN-TO-UP-SLIDES-5.png)
+
+更清晰的展示数据
+</script></section>
 <!--(4 老的开发模式的问题)-->
 <section data-markdown><script type="text/template">
 ### 分析问题
 
 <br/>
 
-- 后端开发不懂前端逻辑，前端很容易成为瓶颈<!-- .element: class="fragment" -->
-- 逻辑复杂<!-- .element: class="fragment" -->
-- 代码重复<!-- .element: class="fragment" -->
-- 可读性和维护性不是很好<!-- .element: class="fragment" -->
+- 没有足够的前端资源来针对每个页面优化
+- 报表页面部分重复、部分个性
+- 逻辑无法预测
 </script></section>
+
 <!--(4 解决问题的方式)-->
 <section data-markdown><script type="text/template">
 ### 解决问题
 
-- 灵活性：生成JavaScript代码
-- 可读性：用简单的DSL来描述
-- 易用性：在组件中封装JS、CSS的依赖
+<br/>
+
+- 将能复用的抽出来生成组件
+- 用DSL来描述页面，无须拖拽也有比较好的体验
+- 在组件中封装对JS、CSS的依赖
+- 组件最终生成JS代码，保证可扩展性
 </script></section>
-<!--(4.3)-->
-<section>
-<h3>使用组件</h3>
+
+<!--(4 组件的使用方式)-->
+<section data-markdown><script type="text/template">
+### 使用组件
+
 <br/>
+
+<span style="color:red;">@input</span>(<span style="color:green;">label</span>="仓库" <span style="color:green;">name</span>="warehouse")
+
 <br/>
-<div class="fragment">
-<span style="color:red;">@input</span>
-(
-<span style="color:green;">label</span>="仓库" 
-<span style="color:green;">name</span>="warehouse"
-)
-</div>
-</section>
-<!--(4.4)-->
+
+<span style="color:red;" class="fragment">@warehouse</span>
+</script></section>
+
+<!--(4 组件之间的关联关系的实现)-->
 <section>
 <h3>组件关联</h3>
 <br/>
@@ -149,8 +184,13 @@ static void mock(){
         // 2. 更新组件自生的数据
         // 3. 刷新展示
 </code></pre>
+
+<br/>
+
+仓库发生变化时更新货主列表
 </section>
-<!--(4.5)-->
+
+<!--(4 定义组件的方式)-->
 <section>
 <h3>定义组件</h3>
 <br/>
@@ -168,10 +208,15 @@ static void mock(){
             }
         </ul>
 </code></pre>
+
+<br/>
+
+最终会生成<span style="color:red;">@init</span>和<span style="color:red;">@render</span>方法
 </section>
-<!-- (4.6) -->
+
+<!-- (4 DPL中的一个例子) -->
 <section>
-<h3>生成的代码</h3>
+<h3>生成代码</h3>
 <br/>
 <pre><code>
 	create("div");
@@ -190,7 +235,8 @@ static void mock(){
 	pop();
 </code></pre>
 </section>
-<!--(4.7)-->
+
+<!--(4 如果没有在平台上使用而是单独在JS中使用的方式)-->
 <section>
 <h3>前端</h3>
 <br/>
@@ -206,7 +252,8 @@ static void mock(){
 </script>
 </code></pre>
 </section>
-<!--(4.8)-->
+
+<!--(4 没有在平台上使用，而是单独在后端VM文件中使用的方式)-->
 <section>
 <h3>后端</h3>
 <br/>
@@ -219,19 +266,73 @@ static void mock(){
 </form>
 </code></pre>
 </section>
-<!--(4.9)-->
-<section data-markdown><script type="text/template">
-### 整体结构
-</script></section>
+<!-- (4 结束)-->
 </section>
 <!--(5)-->
-<section><h3>精确的数据计算</h3></section>
+<section><h3>加工数据</h3></section>
 <!--(6)-->
 <section>
+
+<!--(6 常规的思路)-->
+<section data-markdown><script type="text/template">
+### 常用方法
+
+<br/>
+
+- 离线分析：odps
+- 在线分析：garuda(ads)、...
+- 流计算：galaxy、tlog、jstorm、...
+
+<br/>
+
+<span style="color:red;" class="fragment">越实时越好，几乎不能有误差</span>
+</script></section>
+
+<!--(6 实时选择中的纠结)-->
+<section>
+<span style="color:red;font-size:2em;">olap&nbsp;</span>vs<span style="color:red;font-size:2em;">&nbsp;stream</span>
+</section>
+
 <!--(6 可能导致错误的原因)-->
-<section>
-</section>
+<section data-markdown><script type="text/template">
+### 误差原因
+
+<br/>
+
+- 并发
+- 重复（为了做到消息丢失，重复几乎是不可避免的）
+- 乱序
+</script></section>
+
 <!--(6 解决办法)-->
+<section data-markdown><script type="text/template">
+### 解决办法
+
+<br/>
+
+- 锁
+ - 分布式锁（等待or快速失败）
+ - 主键
+- 消息分发（让处理变得有序）来消除竞争
+ - metaq
+ - jstorm
+</script></section>
+
+<!--(6 把通用的解决方式套到JSTORM上面)-->
+<section data-markdown><script type="text/template">
+![](http://7xiz10.com1.z0.glb.clouddn.com/DOWN-TO-UP-SLIDES-6.png)
+
+尝试将通用的解决方法套在JSTORM上:)
+</script></section>
+
+<!--(6 仅仅是数据加工？)-->
 <section>
+<span style="color:lightgray;">Jstorm仅仅只能用来做数据加工？</span>
 </section>
+<!-- (6 结束) -->
+</section>
+
+<!-- (7) -->
+<section>
+<span style="font-size:2em;color:lightgray;">Thank You</span>
 </section>
