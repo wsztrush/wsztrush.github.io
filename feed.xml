@@ -5,8 +5,8 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 15 Jan 2016 21:34:59 +0800</pubDate>
-    <lastBuildDate>Fri, 15 Jan 2016 21:34:59 +0800</lastBuildDate>
+    <pubDate>Sun, 17 Jan 2016 16:02:03 +0800</pubDate>
+    <lastBuildDate>Sun, 17 Jan 2016 16:02:03 +0800</lastBuildDate>
     <generator>Jekyll v3.0.1</generator>
     
       <item>
@@ -1269,31 +1269,26 @@ engine.init(&quot;page&quot;, document.body);// 将page对应的页面渲染到b
       <item>
         <title>从下向上来开发(PPT)</title>
         <description>&lt;!-- test --&gt;
-&lt;section&gt;
-&lt;pre style=&quot;text-align:center;&quot;&gt;&lt;code&gt;
-+----------------------------------+ 
-|              GROOVY              | 
-+----------------------------------+ 
-+------+  +-----+  +------+  +-----+ 
-| TDDL |  | HSF |  | ODPS |  | ... | 
-+------+  +-----+  +------+  +-----+ 
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/section&gt;
+
 &lt;!-- test end--&gt;
 
 &lt;!-- (0) --&gt;
 &lt;section&gt;&lt;h1&gt;EASY-DT&lt;/h1&gt;&lt;/section&gt;
 &lt;!-- (1) --&gt;
-&lt;section&gt;&lt;h3&gt;方便、快速地提供数据&lt;/h3&gt;&lt;/section&gt;
+&lt;section&gt;&lt;h3&gt;获取数据&lt;/h3&gt;&lt;/section&gt;
 &lt;!-- (2) --&gt;
 &lt;section&gt;
 &lt;!-- (2 类型比较多) --&gt;
 &lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
 ![需要选择很多类型](http://7xiz10.com1.z0.glb.clouddn.com/DOWN-TO-UP-SLIDES-1.png)
+
+提前做好一些读取数据和加工数据的组件
 &lt;/script&gt;&lt;/section&gt;
 &lt;!-- (2 不知道每种类型应该怎么用) --&gt;
 &lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
 ![每种类型都有自己的学习成本](http://7xiz10.com1.z0.glb.clouddn.com/DOWN-TO-UP-SLIDES-2.png)
+
+用XML格式的配置文件来描述逻辑
 &lt;/script&gt;&lt;/section&gt;
 &lt;!-- (2 结果数据比较灵活，可能遇到的时候就需要写代码或者增加新的组件) --&gt;
 &lt;section&gt;
@@ -1309,6 +1304,8 @@ engine.init(&quot;page&quot;, document.body);// 将page对应的页面渲染到b
     {}
 ]
 &lt;/code&gt;&lt;/pre&gt;
+
+格式常常无法预料：&lt;span style=&quot;color:red;&quot;&gt;加组件&lt;/span&gt; or &lt;span style=&quot;color:red;&quot;&gt;不支持&lt;/span&gt;
 &lt;/section&gt;
 &lt;!-- (2 分析问题到底出在哪里) --&gt;
 &lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
@@ -1323,26 +1320,26 @@ engine.init(&quot;page&quot;, document.body);// 将page对应的页面渲染到b
 &lt;/script&gt;&lt;/section&gt;
 &lt;!-- (2 最底层用GROOVY来写的好处) --&gt;
 &lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
-### 将GROOVY作为基础
+### 解决方法（GROOVY）
 
 &lt;br/&gt;
 
-- 查看
-- 编辑
-- 保存
-- 调试
-- 提交/发布
-- 权限、开关、限流
-- 同步
-- 扩展性&lt;!-- .element: class=&quot;fragment highlight-red&quot; --&gt;
+- 查看、编辑、保存、调试、高亮、自动补全等
+- 提交、发布
+- 权限、开关、限流（在树形结构上统一做掉）
+- 日常同步到线上
 &lt;/script&gt;&lt;/section&gt;
 &lt;!-- (2 脚本编辑页面) --&gt;
 &lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
 ![脚本编辑页面](http://7xiz10.com1.z0.glb.clouddn.com/DOWN-TO-UP-SLIDES-3.png)
+
+代码编辑（ACE）
 &lt;/script&gt;&lt;/section&gt;
 &lt;!-- (2 小白用户更愿意看到的配置页面) --&gt;
 &lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
-![小白用户想看到的配置方式](http://7xiz10.com1.z0.glb.clouddn.com/DOWN-TO-UP-1.png)
+![小白用户想看到的配置方式](http://7xiz10.com1.z0.glb.clouddn.com/DOWN-TO-UP-SLIDES-4.png)
+
+小白用户想看到的配置方式
 &lt;/script&gt;&lt;/section&gt;
 &lt;!-- (2 实现小白配置页面的方法) --&gt;
 &lt;section&gt;
@@ -1357,49 +1354,87 @@ static void mock(){
     // 
 }
 &lt;/code&gt;&lt;/pre&gt;
+
+可能的一种实现方式
 &lt;/section&gt;
-&lt;!-- (2 整体架构) --&gt;
+&lt;!-- (2 提供给业务应用使用) --&gt;
 &lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
-![整体结构](http://7xiz10.com1.z0.glb.clouddn.com/DOWN-TO-UP-1.png)
+### 业务系统中使用
+
+&lt;br/&gt;
+
+- &lt;span style=&quot;color:lightgray&quot;&gt;your-domain&lt;/span&gt;&lt;span style=&quot;color:yellow;&quot;&gt;/easydt&lt;/span&gt;&lt;span style=&quot;color:red;&quot;&gt;/wms/owner&lt;/span&gt;&lt;span style=&quot;color:lightgray&quot;&gt;.do&lt;/span&gt;
+- &lt;span style=&quot;color:lightgray&quot;&gt;Easydt.getResult(&quot;&lt;/span&gt;&lt;span style=&quot;color:red;&quot;&gt;/wms/owner&lt;/span&gt;&lt;span style=&quot;color:lightgray&quot;&gt;&quot;, param);&lt;/span&gt;
 &lt;/script&gt;&lt;/section&gt;
+&lt;!-- (2 整体架构) --&gt;
+&lt;section&gt;
+&lt;pre style=&quot;text-align:center;width:120%;height:120%;box-shadow:none;&quot;&gt;
+       1.通过HSF接口获取数据                         1、参数传递                      
+                                                     2、统一的编译、发布功能          
+ +-----------+         +-----------+                 3、统一的高亮、提示、自动补全功能
+ |    APP    |---------|   EASYDT  |                                                  
+ +-----------+         +-----+-----+                                                  
+                             |                                                        
+                       +-----+-----+                                                  
+                       |   CLASS   |                                                  
+                       +-----+-----+                                                  
+                             |                                                        
+                       +-----+-----+        +-----------+                             
+                       |  OSS/LDB  |--------|    APP    |                             
+                       +-----------+        +-----------+                             
+                                                                                      
+                              2.拿到CLASS在业务应用中执行                             
+&lt;/pre&gt;
+&lt;/section&gt;
+&lt;!--(2 结束)--&gt;
 &lt;/section&gt;
 &lt;!--(3)--&gt;
-&lt;section&gt;&lt;h3&gt;配置报表页面&lt;/h3&gt;&lt;/section&gt;
+&lt;section&gt;&lt;h3&gt;展示数据&lt;/h3&gt;&lt;/section&gt;
 &lt;!--(4)--&gt;
 &lt;section&gt;
+&lt;!--(4 好的展示并不简单)--&gt;
+&lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
+![](http://7xiz10.com1.z0.glb.clouddn.com/DOWN-TO-UP-SLIDES-5.png)
+
+更清晰的展示数据
+&lt;/script&gt;&lt;/section&gt;
 &lt;!--(4 老的开发模式的问题)--&gt;
 &lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
 ### 分析问题
 
 &lt;br/&gt;
 
-- 后端开发不懂前端逻辑，前端很容易成为瓶颈&lt;!-- .element: class=&quot;fragment&quot; --&gt;
-- 逻辑复杂&lt;!-- .element: class=&quot;fragment&quot; --&gt;
-- 代码重复&lt;!-- .element: class=&quot;fragment&quot; --&gt;
-- 可读性和维护性不是很好&lt;!-- .element: class=&quot;fragment&quot; --&gt;
+- 没有足够的前端资源来针对每个页面优化
+- 报表页面部分重复、部分个性
+- 逻辑无法预测
 &lt;/script&gt;&lt;/section&gt;
+
 &lt;!--(4 解决问题的方式)--&gt;
 &lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
 ### 解决问题
 
-- 灵活性：生成JavaScript代码
-- 可读性：用简单的DSL来描述
-- 易用性：在组件中封装JS、CSS的依赖
+&lt;br/&gt;
+
+- 将能复用的抽出来生成组件
+- 用DSL来描述页面，无须拖拽也有比较好的体验
+- 在组件中封装对JS、CSS的依赖
+- 组件最终生成JS代码，保证可扩展性
 &lt;/script&gt;&lt;/section&gt;
-&lt;!--(4.3)--&gt;
-&lt;section&gt;
-&lt;h3&gt;使用组件&lt;/h3&gt;
-&lt;br /&gt;
-&lt;br /&gt;
-&lt;div class=&quot;fragment&quot;&gt;
-&lt;span style=&quot;color:red;&quot;&gt;@input&lt;/span&gt;
-(
-&lt;span style=&quot;color:green;&quot;&gt;label&lt;/span&gt;=&quot;仓库&quot; 
-&lt;span style=&quot;color:green;&quot;&gt;name&lt;/span&gt;=&quot;warehouse&quot;
-)
-&lt;/div&gt;
-&lt;/section&gt;
-&lt;!--(4.4)--&gt;
+
+&lt;!--(4 组件的使用方式)--&gt;
+&lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
+### 使用组件
+
+&lt;br/&gt;
+
+&lt;span style=&quot;color:red;&quot;&gt;@input&lt;/span&gt;(&lt;span style=&quot;color:green;&quot;&gt;label&lt;/span&gt;=&quot;仓库&quot; &lt;span style=&quot;color:green;&quot;&gt;name&lt;/span&gt;=&quot;warehouse&quot;)
+
+&lt;br/&gt;
+
+&lt;span style=&quot;color:red;&quot; class=&quot;fragment&quot;&gt;@warehouse&lt;/span&gt;
+&lt;/script&gt;&lt;/section&gt;
+
+&lt;!--(4 组件之间的关联关系的实现)--&gt;
 &lt;section&gt;
 &lt;h3&gt;组件关联&lt;/h3&gt;
 &lt;br /&gt;
@@ -1411,8 +1446,13 @@ static void mock(){
         // 2. 更新组件自生的数据
         // 3. 刷新展示
 &lt;/code&gt;&lt;/pre&gt;
+
+&lt;br /&gt;
+
+仓库发生变化时更新货主列表
 &lt;/section&gt;
-&lt;!--(4.5)--&gt;
+
+&lt;!--(4 定义组件的方式)--&gt;
 &lt;section&gt;
 &lt;h3&gt;定义组件&lt;/h3&gt;
 &lt;br /&gt;
@@ -1430,10 +1470,15 @@ static void mock(){
             }
         &lt;/ul&gt;
 &lt;/code&gt;&lt;/pre&gt;
+
+&lt;br /&gt;
+
+最终会生成&lt;span style=&quot;color:red;&quot;&gt;@init&lt;/span&gt;和&lt;span style=&quot;color:red;&quot;&gt;@render&lt;/span&gt;方法
 &lt;/section&gt;
-&lt;!-- (4.6) --&gt;
+
+&lt;!-- (4 DPL中的一个例子) --&gt;
 &lt;section&gt;
-&lt;h3&gt;生成的代码&lt;/h3&gt;
+&lt;h3&gt;生成代码&lt;/h3&gt;
 &lt;br /&gt;
 &lt;pre&gt;&lt;code&gt;
 	create(&quot;div&quot;);
@@ -1452,7 +1497,8 @@ static void mock(){
 	pop();
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/section&gt;
-&lt;!--(4.7)--&gt;
+
+&lt;!--(4 如果没有在平台上使用而是单独在JS中使用的方式)--&gt;
 &lt;section&gt;
 &lt;h3&gt;前端&lt;/h3&gt;
 &lt;br /&gt;
@@ -1468,7 +1514,8 @@ static void mock(){
 &lt;/script&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/section&gt;
-&lt;!--(4.8)--&gt;
+
+&lt;!--(4 没有在平台上使用，而是单独在后端VM文件中使用的方式)--&gt;
 &lt;section&gt;
 &lt;h3&gt;后端&lt;/h3&gt;
 &lt;br /&gt;
@@ -1481,21 +1528,75 @@ static void mock(){
 &lt;/form&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/section&gt;
-&lt;!--(4.9)--&gt;
-&lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
-### 整体结构
-&lt;/script&gt;&lt;/section&gt;
+&lt;!-- (4 结束)--&gt;
 &lt;/section&gt;
 &lt;!--(5)--&gt;
-&lt;section&gt;&lt;h3&gt;精确的数据计算&lt;/h3&gt;&lt;/section&gt;
+&lt;section&gt;&lt;h3&gt;加工数据&lt;/h3&gt;&lt;/section&gt;
 &lt;!--(6)--&gt;
 &lt;section&gt;
+
+&lt;!--(6 常规的思路)--&gt;
+&lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
+### 常用方法
+
+&lt;br/&gt;
+
+- 离线分析：odps
+- 在线分析：garuda(ads)、...
+- 流计算：galaxy、tlog、jstorm、...
+
+&lt;br/&gt;
+
+&lt;span style=&quot;color:red;&quot; class=&quot;fragment&quot;&gt;越实时越好，几乎不能有误差&lt;/span&gt;
+&lt;/script&gt;&lt;/section&gt;
+
+&lt;!--(6 实时选择中的纠结)--&gt;
+&lt;section&gt;
+&lt;span style=&quot;color:red;font-size:2em;&quot;&gt;olap&amp;nbsp;&lt;/span&gt;vs&lt;span style=&quot;color:red;font-size:2em;&quot;&gt;&amp;nbsp;stream&lt;/span&gt;
+&lt;/section&gt;
+
 &lt;!--(6 可能导致错误的原因)--&gt;
-&lt;section&gt;
-&lt;/section&gt;
+&lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
+### 误差原因
+
+&lt;br/&gt;
+
+- 并发
+- 重复（为了做到消息丢失，重复几乎是不可避免的）
+- 乱序
+&lt;/script&gt;&lt;/section&gt;
+
 &lt;!--(6 解决办法)--&gt;
+&lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
+### 解决办法
+
+&lt;br/&gt;
+
+- 锁
+ - 分布式锁（等待or快速失败）
+ - 主键
+- 消息分发（让处理变得有序）来消除竞争
+ - metaq
+ - jstorm
+&lt;/script&gt;&lt;/section&gt;
+
+&lt;!--(6 把通用的解决方式套到JSTORM上面)--&gt;
+&lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
+![](http://7xiz10.com1.z0.glb.clouddn.com/DOWN-TO-UP-SLIDES-6.png)
+
+尝试将通用的解决方法套在JSTORM上:)
+&lt;/script&gt;&lt;/section&gt;
+
+&lt;!--(6 仅仅是数据加工？)--&gt;
 &lt;section&gt;
+&lt;span style=&quot;color:lightgray;&quot;&gt;Jstorm仅仅只能用来做数据加工？&lt;/span&gt;
 &lt;/section&gt;
+&lt;!-- (6 结束) --&gt;
+&lt;/section&gt;
+
+&lt;!-- (7) --&gt;
+&lt;section&gt;
+&lt;span style=&quot;font-size:2em;color:lightgray;&quot;&gt;Thank You&lt;/span&gt;
 &lt;/section&gt;
 </description>
         <pubDate>Thu, 17 Dec 2015 00:00:00 +0800</pubDate>
