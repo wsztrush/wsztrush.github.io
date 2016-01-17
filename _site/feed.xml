@@ -5,9 +5,175 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 17 Jan 2016 16:02:03 +0800</pubDate>
-    <lastBuildDate>Sun, 17 Jan 2016 16:02:03 +0800</lastBuildDate>
+    <pubDate>Sun, 17 Jan 2016 19:44:31 +0800</pubDate>
+    <lastBuildDate>Sun, 17 Jan 2016 19:44:31 +0800</lastBuildDate>
     <generator>Jekyll v3.0.1</generator>
+    
+      <item>
+        <title>进入Linux的世界</title>
+        <description>&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/LINUX-MINT-1.png&quot; width=&quot;500px;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;断断续续地用过一段时间&lt;strong&gt;Ubuntu&lt;/strong&gt;，但也只是玩玩而已，一直没有勇气抛弃&lt;strong&gt;Windows&lt;/strong&gt;。后来公司要求安装的软件越来越多（各种杀毒、监控）、开机速度越来越慢、看着越来越红的C盘，是时候开启Linux了。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Ubuntu&lt;/strong&gt;的界面有点丑，于是这次尝试用&lt;strong&gt;Linux Mint Cinnamon&lt;/strong&gt;，安装方式很常规：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;下载镜像&lt;/li&gt;
+  &lt;li&gt;用dd命令刻录到U盘&lt;/li&gt;
+  &lt;li&gt;按照提示一路设置就可以了&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;接下来开始安装需要的软件。&lt;/p&gt;
+
+&lt;h3 id=&quot;section&quot;&gt;一、文本编辑&lt;/h3&gt;
+
+&lt;p&gt;自带的vi和gedit能用，但需要更强大的（VIM）：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+sudo apt-get install vim
+&lt;/pre&gt;
+
+&lt;p&gt;关于VIM的用法可以看&lt;a href=&quot;http://wsztrush.github.io/%E5%B7%A5%E5%85%B7/2015/06/10/VIM.html&quot;&gt;《VIM入门》&lt;/a&gt;，虽然强大但现在并不熟练，于是想起来在Windows上用的挺爽的&lt;strong&gt;sublime text&lt;/strong&gt;：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+sudo apt-get install sublime-text
+&lt;/pre&gt;
+
+&lt;p&gt;结果发现和Windows版的有点区别：无法输入中文。感兴趣的可以看&lt;a href=&quot;http://jingyan.baidu.com/article/f3ad7d0ff8731609c3345b3b.html&quot;&gt;这里&lt;/a&gt;，不过由于&lt;strong&gt;VSCODE&lt;/strong&gt;突然火了一把赶紧从&lt;a href=&quot;https://www.visualstudio.com/&quot;&gt;官网&lt;/a&gt;下载，用着还不错，到现在还用它来开发前端代码。&lt;/p&gt;
+
+&lt;h3 id=&quot;section-1&quot;&gt;二、浏览器&lt;/h3&gt;
+
+&lt;p&gt;自带的火狐还不错，但是团队做的系统目前只考虑兼容Chrome，只好去下载个。。。&lt;/p&gt;
+
+&lt;h3 id=&quot;section-2&quot;&gt;三、前端开发环境&lt;/h3&gt;
+
+&lt;p&gt;对前端来说&lt;strong&gt;nodejs&lt;/strong&gt;是必须的：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+sudo apt-get install nodejs
+sudo apt-get install npm
+&lt;/pre&gt;
+
+&lt;p&gt;为了顺畅使用可以考虑切成&lt;a href=&quot;http://npm.taobao.org/&quot;&gt;淘宝镜像&lt;/a&gt;：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+npm config set registry https://registry.npm.taobao.org
+&lt;/pre&gt;
+
+&lt;p&gt;打包工具使用&lt;a href=&quot;http://www.gruntjs.net/&quot;&gt;Grunt&lt;/a&gt;：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+npm install -g grunt-cli
+&lt;/pre&gt;
+
+&lt;h3 id=&quot;section-3&quot;&gt;四、后端开发环境&lt;/h3&gt;
+
+&lt;p&gt;工作中后端开发使用的是Java，貌似系统自带了JDK不过不全，只能自己动手：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+sudo apt-get install openjdk-7-jdk
+&lt;/pre&gt;
+
+&lt;p&gt;记得在&lt;strong&gt;~/.bashrc&lt;/strong&gt;设置变量：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64
+export JRE_HOME=${JAVA_HOME}/jre
+export CLASSPATH=.:${JAVA_HOME}/lib:${JRE_HOME}/lib
+export PATH=${JAVA_HOME}/bin:$PATH
+&lt;/pre&gt;
+
+&lt;p&gt;另外maven是少不了的：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+sudo apt-get install maven2
+&lt;/pre&gt;
+
+&lt;p&gt;代码编辑使用IDEA，直接从官网下载就可以了（14一直有BUG，现在用的是13）。&lt;/p&gt;
+
+&lt;h3 id=&quot;section-4&quot;&gt;五、输入法&lt;/h3&gt;
+
+&lt;p&gt;用过搜狗，但是偶尔BUG，现在用ibus：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+sudo apt-get install ibus-rime ibus-gtk* ibus-qt4
+&lt;/pre&gt;
+
+&lt;p&gt;下载之后学了一段时间双拼，后来想想为啥要在这上面浪费时间，于是果断换回全拼，囧。在排查线上问题的时候需要用到很多命令，在压力巨大的情况下不一定能打出来，那么可以在输入法上做一点文章：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/LINUX-MINT-2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;在【Edit custom phrase】里面加入：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;gc=jstat -gcutil&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;现在可以“临危不乱”了:)&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/LINUX-MINT-3.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;其实之前一直觉得配上机械键盘敲键盘熟练地敲命令挺爽的，但是最近登录跳板的那么一大串命令实在是有点烦了。。。&lt;/p&gt;
+
+&lt;h3 id=&quot;section-5&quot;&gt;六、聊天工具&lt;/h3&gt;
+
+&lt;p&gt;工作一直用旺旺，但Linux上这货BUG太多：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;刚启动CPU一直是100%&lt;/li&gt;
+  &lt;li&gt;用一段时间界面就乱了，测试了下关闭一些特效会稍微好点&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;为了旺旺尝试过用&lt;strong&gt;Oracle VM VirtualBox&lt;/strong&gt;装Windows虚拟机，但是没搞定（囧），以后有时间继续。好在公司现在要转钉钉，有WEB版，幸福感飙升。。。&lt;/p&gt;
+
+&lt;h3 id=&quot;section-6&quot;&gt;七、图片&lt;/h3&gt;
+
+&lt;p&gt;用Visio画图很方便，可惜Linxu上没有，可以考虑用yEd，从&lt;a href=&quot;http://www.yworks.com/&quot;&gt;官网&lt;/a&gt;下载后执行脚本：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;xxxxxxx_setup.sh&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;当然你可以可以考虑用VIM来画图（可以看&lt;a href=&quot;http://wsztrush.github.io/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2016/01/05/VIM-PAINT.html&quot;&gt;这里&lt;/a&gt;），用来对付简单的图还是比较给力的。&lt;/p&gt;
+
+&lt;p&gt;之前一直使用旺旺的截图，现在不行来，感觉&lt;strong&gt;shutter&lt;/strong&gt;还是不错的：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;sudo apt-get install shutter&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;section-7&quot;&gt;八、博客&lt;/h3&gt;
+
+&lt;p&gt;博客使用jekyll来搞的，需要安装ruby（因为jekyll对ruby版本有要求，只能下源码搞了）：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+tar xzvf ruby-2.2.2.tar.gz 
+cd ruby-2.2.2
+./configure –prefix=/usr/local/ruby  
+make &amp;amp;&amp;amp; make install
+&lt;/pre&gt;
+
+&lt;p&gt;刚开始因为python3没有向后兼容一直报错，把版本退回去才搞定。。。同样如果你是墙内用户可以考虑用淘宝的源：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+gem sources --remove https://rubygems.org/
+gem sources -a http://ruby.taobao.org/
+&lt;/pre&gt;
+
+&lt;h3 id=&quot;section-8&quot;&gt;九、总结&lt;/h3&gt;
+
+&lt;p&gt;用了有几个月了，平常的使用已经慢慢熟悉起来了，而且感觉【工作区】的功能还是挺炫的（Ctrl+Alt+【方向键】），也比较实用。而且使用Linux会让你有一种&lt;strong&gt;everything is under control&lt;/strong&gt;的错觉:)&lt;/p&gt;
+
+&lt;p&gt;总的来说：值得拥有！&lt;/p&gt;
+</description>
+        <pubDate>Sun, 17 Jan 2016 00:00:00 +0800</pubDate>
+        <link>/%E5%B7%A5%E4%BD%9C/2016/01/17/LINUX.html</link>
+        <guid isPermaLink="true">/%E5%B7%A5%E4%BD%9C/2016/01/17/LINUX.html</guid>
+        
+        
+        <category>工作</category>
+        
+      </item>
     
       <item>
         <title>必然</title>
@@ -1887,236 +2053,6 @@ var languageTools = ace.require(&quot;ace/ext/language_tools&quot;);
         <pubDate>Fri, 06 Nov 2015 00:00:00 +0800</pubDate>
         <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/11/06/ACEJS-B.html</link>
         <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/11/06/ACEJS-B.html</guid>
-        
-        
-        <category>编程技术</category>
-        
-      </item>
-    
-      <item>
-        <title>用ACE来写代码（一）</title>
-        <description>&lt;p&gt;后台应用通常会有很多的配置页面，现在在状态是直接搞一个textarea来搞：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/ACE-1.PNG&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;这种粗糙、QJ用户的行为显然不是一个有节操的程序员该干的，为了这种配置的页面好用最少应该提供三个功能：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;高亮：提示关键字、类型，可以在第一时间发现简单错误&lt;/li&gt;
-  &lt;li&gt;缩进：增加配置可读性的最简单的办法&lt;/li&gt;
-  &lt;li&gt;折叠：有一大堆的配置的时候折叠还是挺好用的&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;在网上逛了一圈发现Colud9的ACE还是挺好用的（GitHub上10000+的Star也说明了实力），可以在&lt;a href=&quot;https://ace.c9.io/build/kitchen-sink.html&quot;&gt;这里&lt;/a&gt;体验下，国内的&lt;a href=&quot;https://coding.net/&quot;&gt;coding.net&lt;/a&gt;平台所使用的也是该工具，但是做出来的效果离Colud9还是有不小的差距。。。&lt;/p&gt;
-
-&lt;p&gt;由于网上的资料不多，学习过程非常痛苦，有些东西是直接看&lt;a href=&quot;https://github.com/ajaxorg/ace&quot;&gt;代码&lt;/a&gt;去猜测运行的原理，希望对需要的人有一点帮助！&lt;/p&gt;
-
-&lt;h2 id=&quot;section&quot;&gt;使用&lt;/h2&gt;
-
-&lt;p&gt;使用方法很经典（和HighCharts等差不多）：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-&amp;lt;!DOCTYPE html&amp;gt;
-&amp;lt;head&amp;gt;
-&amp;lt;style type=&quot;text/css&quot; media=&quot;screen&quot;&amp;gt;
-    #editor {
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-    }
-&amp;lt;/style&amp;gt;
-&amp;lt;/head&amp;gt;
-&amp;lt;body&amp;gt;
-&amp;lt;div id=&quot;editor&quot;&amp;gt;function foo(items) {
-    var x = &quot;All this is syntax highlighted&quot;;
-    return x;
-}&amp;lt;/div&amp;gt;
-&amp;lt;script src=&quot;https://ace.c9.io/build/src/ace.js&quot; type=&quot;text/javascript&quot; charset=&quot;utf-8&quot;&amp;gt;&amp;lt;/script&amp;gt;
-&amp;lt;script&amp;gt;
-    var editor = ace.edit(&quot;editor&quot;);
-    editor.setTheme(&quot;ace/theme/monokai&quot;);
-	editor.getSession().setMode(&quot;ace/mode/javascript&quot;);
-&amp;lt;/script&amp;gt;
-&amp;lt;/body&amp;gt;
-&amp;lt;/html&amp;gt;
-&lt;/pre&gt;
-
-&lt;p&gt;完成后ACE会在&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;div id=&quot;editor&quot;&amp;gt;&amp;lt;/div&amp;gt;&lt;/code&gt;渲染出对应的DOM结构，其中：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;&lt;strong&gt;editor.setTheme&lt;/strong&gt;：设置主题，有点皮肤的意思&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;editor.getSession().setMode&lt;/strong&gt;：设置模式，上面这段设置的是JavaScript的模式，其中包括了高亮、缩进、折叠凳功能&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://github.com/ajaxorg/ace/tree/master/lib/ace/mode&quot;&gt;内部&lt;/a&gt;有大部分语言的模式，正常情况下你是不需要考虑后面的内容的。后来有同事用drools做规则引擎，这个没有现成的只能自己来搞！&lt;/p&gt;
-
-&lt;h2 id=&quot;section-1&quot;&gt;高亮&lt;/h2&gt;
-
-&lt;p&gt;让代码高亮显示的思路很简单，比如将关键字用&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;span class=&quot;ace_keyword&quot;&amp;gt;&amp;lt;/span&amp;gt;&lt;/code&gt;包裹起来并在CSS中设置样式即可，那么关键问题就是如何对源码进行&lt;strong&gt;词法分析&lt;/strong&gt;了。&lt;/p&gt;
-
-&lt;p&gt;在ACE中实现的时候有点像&lt;strong&gt;状态机&lt;/strong&gt;，在处理时不断地从当前状态的规则集中找到匹配&lt;code class=&quot;highlighter-rouge&quot;&gt;regex&lt;/code&gt;的规则，之后跳转到对应的&lt;code class=&quot;highlighter-rouge&quot;&gt;next&lt;/code&gt;状态：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-this.$rules = {
-    &quot;start&quot; : [
-        {
-            token: &amp;lt;token&amp;gt;, // class名称
-            regex: &amp;lt;regex&amp;gt;, // 正则匹配串
-            next:  &amp;lt;next&amp;gt;   // 下个状态
-        }
-    ]
-};
-&lt;/pre&gt;
-
-&lt;p&gt;相比普通的词法分析器，一个状态就相当于一个小的隔离环境，在这个隔离环境中在做匹配的时候难度要小很多，你只需要考虑在该状态内可能出现的TOKEN即可：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/ACE-2.PNG&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;另外比较好用的几点：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;设置&lt;strong&gt;merge:true&lt;/strong&gt;来合并连续的token&lt;/li&gt;
-  &lt;li&gt;利用&lt;strong&gt;createKeywordMapper&lt;/strong&gt;来简化关键字列表的编写&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;那么简单来做个drools高亮的Mode如下：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-ace.define(&quot;ace/mode/drools_highlight_rules&quot;, function(require, exports, module) {
-    &quot;use strict&quot;;
-    var oop = require(&quot;../lib/oop&quot;);
-    var TextHighlightRules = require(&quot;./text_highlight_rules&quot;).TextHighlightRules;
-    var DroolsHighlightRules = function(){
-        var keywordMapper = this.createKeywordMapper({
-            &quot;keyword&quot;:
-                &quot;when|then|rule|end|salience&quot;
-        }, &quot;identifier&quot;);
-        this.$rules = {
-            &quot;start&quot; :[{
-                token : keywordMapper,
-                regex : &quot;[a-zA-Z_$][a-zA-Z0-9_$]*\\b&quot;
-            }]
-        };
-    };
-    oop.inherits(DroolsHighlightRules, TextHighlightRules);
-    exports.DroolsHighlightRules = DroolsHighlightRules;
-});
- 
-ace.define(&quot;ace/mode/drools&quot;, function(require, exports, module) {
-    &quot;use strict&quot;;
-    var oop = require(&quot;../lib/oop&quot;);
-    var TextMode = require(&quot;./text&quot;).Mode;
-    var DroolsHighlightRules = require(&quot;./drools_highlight_rules&quot;).DroolsHighlightRules;
-    var DroolsMode = function(){
-        this.HighlightRules = DroolsHighlightRules;
-    };
-    oop.inherits(DroolsMode, TextMode);
-    (function() {
-        this.$id = &quot;ace/mode/drools&quot;
-    }).call(DroolsMode.prototype),
-    exports.Mode = DroolsMode;
-});
-&lt;/pre&gt;
-
-&lt;p&gt;效果如下：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/ACE-3.PNG&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;更多的功能可以在&lt;a href=&quot;https://ace.c9.io/#nav=higlighter&quot;&gt;这里&lt;/a&gt;看到，不过貌似很不稳定- -！&lt;/p&gt;
-
-&lt;h2 id=&quot;section-2&quot;&gt;缩进&lt;/h2&gt;
-
-&lt;p&gt;ACE为MODE扩展缩进预留了接口，你只需要实现&lt;strong&gt;getNextLineIndent&lt;/strong&gt;方法即可，会将其结果自动添加到新行的开头，参数含义为：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;state：状态&lt;/li&gt;
-  &lt;li&gt;line：当前行内容&lt;/li&gt;
-  &lt;li&gt;tab：缩进符号&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;来看个例子（如果是{[(结尾的，那么下一行的缩进加一）：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-(function(){
-    this.getNextLineIndent = function(state, line, tab) {
-        var indent = this.$getIndent(line);
-        if (state == &quot;start&quot;) {
-            var match = line.match(/^.*[\{\(\[]\s*$/); // 如果是{[(结尾的，那么下一行的缩进加一
-            if (match) {
-                indent += tab;
-            }
-        }
-        return indent;
-    };
-}).call(DroolsMode.prototype);
-&lt;/pre&gt;
-
-&lt;p&gt;对大部分的缩进需求这种方式完全能搞定了。&lt;/p&gt;
-
-&lt;h2 id=&quot;section-3&quot;&gt;折叠&lt;/h2&gt;
-
-&lt;p&gt;折叠的实现涉及到范围对象new Range(Number startRow, Number startColumn, Number endRow, Number endColumn)：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;startRow：开始行&lt;/li&gt;
-  &lt;li&gt;startColumn：开始列&lt;/li&gt;
-  &lt;li&gt;endRow：结束行&lt;/li&gt;
-  &lt;li&gt;endColumn：结束列&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;实现折叠需要提供两个方法：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;&lt;strong&gt;getFoldWidget&lt;/strong&gt;：折叠开始的地方&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;getFoldWidgetRange&lt;/strong&gt;：需要折叠的范围&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;下面我们为drools实现一个简单的折叠逻辑，也就是将&lt;strong&gt;rule&lt;/strong&gt;与&lt;strong&gt;end&lt;/strong&gt;之间的部分能够折叠隐藏：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-ace.define(&quot;ace/mode/folding/drools_fold&quot;, function(require, exports, module) {
-    &quot;use strict&quot;;
-    var Range = require(&quot;../../range&quot;).Range;
-    var FoldMode = exports.FoldMode = function() {};
-    (function() {
-        this.getFoldWidget = function(session, foldStyle, row) {
-            var line = session.getLine(row);
-            if (line == &quot;rule&quot;)
-                return &quot;start&quot;;
-            return &quot;&quot;;
-        };
-        this.getFoldWidgetRange = function(session, foldStyle, row) {
-            var startRow = row, startColumn = 4;
-            var endRow = row+1, endColumn = 3;
-            while(session.getLine(endRow) != &quot;end&quot;){
-                endRow += 1;
-            }
-            return new Range(startRow, startColumn, endRow, endColumn);
-        };
-    }).call(FoldMode.prototype);
-});
-&lt;/pre&gt;
-
-&lt;p&gt;然后需要在drools的Mode中设置&lt;strong&gt;foldingRules&lt;/strong&gt;：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-var DroolsFoldMode = require(&quot;ace/mode/folding/drools_fold&quot;).FoldMode;
-var DroolsMode = function(){
-    this.foldingRules = new DroolsFoldMode();
-};
-&lt;/pre&gt;
-
-&lt;p&gt;在ACE中提供了一个基本的折叠块：&lt;strong&gt;fold_mode&lt;/strong&gt;，用来折叠相同的缩进部分，如果需要直接集成即可！&lt;/p&gt;
-
-&lt;h2 id=&quot;section-4&quot;&gt;总结&lt;/h2&gt;
-
-&lt;p&gt;实现了这三部分功能已经可以大幅度提升简单配置页面的体验，但是作为一个在线的IDE才仅仅是万里长征的第一步！&lt;/p&gt;
-</description>
-        <pubDate>Mon, 19 Oct 2015 00:00:00 +0800</pubDate>
-        <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/10/19/ACEJS-A.html</link>
-        <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/10/19/ACEJS-A.html</guid>
         
         
         <category>编程技术</category>
