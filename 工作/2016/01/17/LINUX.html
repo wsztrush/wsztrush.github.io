@@ -1,0 +1,226 @@
+<!DOCTYPEhtmlPUBLIC"-//W3C//DTDXHTML1.0Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html>
+	<!-- 引入CSS/JS -->
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="/assets/css/main.css"/>
+	<script type="text/javascript" src="/assets/javascripts/main.js"></script>
+
+	<!-- pygments代码高亮 -->
+	<!-- <link rel="stylesheet" type="text/css" href="/assets/css/pygments.css"/> -->
+	<!-- google代码高亮 -->
+	<script src="/assets/css/prettify.js"></script>
+	<link href="/assets/css/prettify.css" rel="stylesheet">
+	<title>进入Linux的世界</title>
+</head>
+
+	<body onload="prettyPrint()">
+		<div class="tool">
+	<span><b>WsztRush</b></span>
+	<div class="links">
+		<a href="/index.html">Blog</a>
+		<a href="/categories.html">Categories</a>
+		<a href="/about/">About</a>		
+	</div>
+</div>
+
+		<div class="post-container">
+			<h1>进入Linux的世界</h1>
+			<p><img src="http://7xiz10.com1.z0.glb.clouddn.com/LINUX-MINT-1.png" width="500px;" /></p>
+
+<p>断断续续地用过一段时间<strong>Ubuntu</strong>，但也只是玩玩而已，一直没有勇气抛弃<strong>Windows</strong>。后来公司要求安装的软件越来越多（各种杀毒、监控）、开机速度越来越慢、看着越来越红的C盘，是时候开启Linux了。</p>
+
+<p><strong>Ubuntu</strong>的界面有点丑，于是这次尝试用<strong>Linux Mint Cinnamon</strong>，安装方式很常规：</p>
+
+<ol>
+  <li>下载镜像</li>
+  <li>用dd命令刻录到U盘</li>
+  <li>按照提示一路设置就可以了</li>
+</ol>
+
+<p>接下来开始安装需要的软件。</p>
+
+<h3 id="section">一、文本编辑</h3>
+
+<p>自带的vi和gedit能用，但需要更强大的（VIM）：</p>
+
+<pre class="prettyprint">
+sudo apt-get install vim
+</pre>
+
+<p>关于VIM的用法可以看<a href="http://wsztrush.github.io/%E5%B7%A5%E5%85%B7/2015/06/10/VIM.html">《VIM入门》</a>，虽然强大但现在并不熟练，于是想起来在Windows上用的挺爽的<strong>sublime text</strong>：</p>
+
+<pre class="prettyprint">
+sudo apt-get install sublime-text
+</pre>
+
+<p>结果发现和Windows版的有点区别：无法输入中文。感兴趣的可以看<a href="http://jingyan.baidu.com/article/f3ad7d0ff8731609c3345b3b.html">这里</a>，不过由于<strong>VSCODE</strong>突然火了一把赶紧从<a href="https://www.visualstudio.com/">官网</a>下载，用着还不错，到现在还用它来开发前端代码。</p>
+
+<h3 id="section-1">二、浏览器</h3>
+
+<p>自带的火狐还不错，但是团队做的系统目前只考虑兼容Chrome，只好去下载个。。。</p>
+
+<h3 id="section-2">三、前端开发环境</h3>
+
+<p>对前端来说<strong>nodejs</strong>是必须的：</p>
+
+<pre class="prettyprint">
+sudo apt-get install nodejs
+sudo apt-get install npm
+</pre>
+
+<p>为了顺畅使用可以考虑切成<a href="http://npm.taobao.org/">淘宝镜像</a>：</p>
+
+<pre class="prettyprint">
+npm config set registry https://registry.npm.taobao.org
+</pre>
+
+<p>打包工具使用<a href="http://www.gruntjs.net/">Grunt</a>：</p>
+
+<pre class="prettyprint">
+npm install -g grunt-cli
+</pre>
+
+<h3 id="section-3">四、后端开发环境</h3>
+
+<p>工作中后端开发使用的是Java，貌似系统自带了JDK不过不全，只能自己动手：</p>
+
+<pre class="prettyprint">
+sudo apt-get install openjdk-7-jdk
+</pre>
+
+<p>记得在<strong>~/.bashrc</strong>设置变量：</p>
+
+<pre class="prettyprint">
+export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64
+export JRE_HOME=${JAVA_HOME}/jre
+export CLASSPATH=.:${JAVA_HOME}/lib:${JRE_HOME}/lib
+export PATH=${JAVA_HOME}/bin:$PATH
+</pre>
+
+<p>另外maven是少不了的：</p>
+
+<pre class="prettyprint">
+sudo apt-get install maven2
+</pre>
+
+<p>代码编辑使用IDEA，直接从官网下载就可以了（14一直有BUG，现在用的是13）。</p>
+
+<h3 id="section-4">五、输入法</h3>
+
+<p>用过搜狗，但是偶尔BUG，现在用ibus：</p>
+
+<pre class="prettyprint">
+sudo apt-get install ibus-rime ibus-gtk* ibus-qt4
+</pre>
+
+<p>下载之后学了一段时间双拼，后来想想为啥要在这上面浪费时间，于是果断换回全拼，囧。在排查线上问题的时候需要用到很多命令，在压力巨大的情况下不一定能打出来，那么可以在输入法上做一点文章：</p>
+
+<p><img src="http://7xiz10.com1.z0.glb.clouddn.com/LINUX-MINT-2.png" alt="" /></p>
+
+<p>在【Edit custom phrase】里面加入：</p>
+
+<blockquote>
+  <p>gc=jstat -gcutil</p>
+</blockquote>
+
+<p>现在可以“临危不乱”了:)</p>
+
+<p><img src="http://7xiz10.com1.z0.glb.clouddn.com/LINUX-MINT-3.png" alt="" /></p>
+
+<p>其实之前一直觉得配上机械键盘敲键盘熟练地敲命令挺爽的，但是最近登录跳板的那么一大串命令实在是有点烦了。。。</p>
+
+<h3 id="section-5">六、聊天工具</h3>
+
+<p>工作一直用旺旺，但Linux上这货BUG太多：</p>
+
+<ol>
+  <li>刚启动CPU一直是100%</li>
+  <li>用一段时间界面就乱了，测试了下关闭一些特效会稍微好点</li>
+</ol>
+
+<p>为了旺旺尝试过用<strong>Oracle VM VirtualBox</strong>装Windows虚拟机，但是没搞定（囧），以后有时间继续。好在公司现在要转钉钉，有WEB版，幸福感飙升。。。</p>
+
+<h3 id="section-6">七、图片</h3>
+
+<p>用Visio画图很方便，可惜Linxu上没有，可以考虑用yEd，从<a href="http://www.yworks.com/">官网</a>下载后执行脚本：</p>
+
+<blockquote>
+  <p>xxxxxxx_setup.sh</p>
+</blockquote>
+
+<p>当然你可以可以考虑用VIM来画图（可以看<a href="http://wsztrush.github.io/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2016/01/05/VIM-PAINT.html">这里</a>），用来对付简单的图还是比较给力的。</p>
+
+<p>之前一直使用旺旺的截图，现在不行来，感觉<strong>shutter</strong>还是不错的：</p>
+
+<blockquote>
+  <p>sudo apt-get install shutter</p>
+</blockquote>
+
+<h3 id="section-7">八、博客</h3>
+
+<p>博客使用jekyll来搞的，需要安装ruby（因为jekyll对ruby版本有要求，只能下源码搞了）：</p>
+
+<pre class="prettyprint">
+tar xzvf ruby-2.2.2.tar.gz 
+cd ruby-2.2.2
+./configure –prefix=/usr/local/ruby  
+make &amp;&amp; make install
+</pre>
+
+<p>刚开始因为python3没有向后兼容一直报错，把版本退回去才搞定。。。同样如果你是墙内用户可以考虑用淘宝的源：</p>
+
+<pre class="prettyprint">
+gem sources --remove https://rubygems.org/
+gem sources -a http://ruby.taobao.org/
+</pre>
+
+<h3 id="section-8">九、总结</h3>
+
+<p>用了有几个月了，平常的使用已经慢慢熟悉起来了，而且感觉【工作区】的功能还是挺炫的（Ctrl+Alt+【方向键】），也比较实用。而且使用Linux会让你有一种<strong>everything is under control</strong>的错觉:)</p>
+
+<p>总的来说：值得拥有！</p>
+
+			<!-- 评论组件 -->
+			<div class="ds-thread" data-thread-key="/%E5%B7%A5%E4%BD%9C/2016/01/17/LINUX.html" data-title="进入Linux的世界"  data-url="/%E5%B7%A5%E4%BD%9C/2016/01/17/LINUX.html"></div>
+			<!-- 评论组件 -->
+			<div id="disqus_thread"/>
+		</div>
+	</body>
+</html>
+<!-- 评论组件 -->
+<script type="text/javascript">
+	var disqus_shortname = 'wsztrush';
+	(function() {
+		var dsq = document.createElement('script');
+		dsq.type = 'text/javascript';
+		dsq.async = true;
+		dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	})();
+</script>
+<!-- 多说公共JS代码-->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"wsztrush"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+</script>
+
+<!-- 百度访问统计 -->
+<script>
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?08a976e8d7e5a20acfcb566bd22a1db1";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+
