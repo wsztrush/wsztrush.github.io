@@ -5,9 +5,298 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 17 Jan 2016 19:44:31 +0800</pubDate>
-    <lastBuildDate>Sun, 17 Jan 2016 19:44:31 +0800</lastBuildDate>
+    <pubDate>Sat, 23 Jan 2016 12:39:25 +0800</pubDate>
+    <lastBuildDate>Sat, 23 Jan 2016 12:39:25 +0800</lastBuildDate>
     <generator>Jekyll v3.0.1</generator>
+    
+      <item>
+        <title>在velocity中自定义标签</title>
+        <description>&lt;p&gt;用velocity搞html页面很好用，通过一些标签：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;#if&lt;/li&gt;
+  &lt;li&gt;#set&lt;/li&gt;
+  &lt;li&gt;#foreach&lt;/li&gt;
+  &lt;li&gt;…&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;几乎能实现所有需要的渲染逻辑。但是，如果能自定义一些标签，就可以更灵活地在vm中玩耍了，尤其是在实现工具的时候。&lt;/p&gt;
+
+&lt;h2 id=&quot;section&quot;&gt;自定义标签&lt;/h2&gt;
+
+&lt;p&gt;标签的定义是用velocity的属性来控制的，默认标签的定义存放在：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;org/apache/velocity/runtime/defaults/directive.properties&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;其中内容为（分别对应&lt;code class=&quot;highlighter-rouge&quot;&gt;#foreach&lt;/code&gt;等标签、属性值为处理类名）：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+directive.1=org.apache.velocity.runtime.directive.Foreach
+directive.2=org.apache.velocity.runtime.directive.Include
+directive.3=org.apache.velocity.runtime.directive.Parse
+directive.4=org.apache.velocity.runtime.directive.Macro
+directive.5=org.apache.velocity.runtime.directive.Literal
+directive.6=org.apache.velocity.runtime.directive.Evaluate
+directive.7=org.apache.velocity.runtime.directive.Break
+directive.8=org.apache.velocity.runtime.directive.Define
+&lt;/pre&gt;
+
+&lt;p&gt;标签（自定义 or 系统的）对应的处理类都需要继承：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;org.apache.velocity.runtime.directive.Directive&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;并实现三个方法：&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;方法&lt;/th&gt;
+      &lt;th&gt;作用&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;getName&lt;/td&gt;
+      &lt;td&gt;返回标签名&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;getType&lt;/td&gt;
+      &lt;td&gt;类型，分为LINE和BLOCK两种&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;render&lt;/td&gt;
+      &lt;td&gt;渲染方法，所有的实现逻辑在这里实现&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;类型为&lt;strong&gt;LINE&lt;/strong&gt;的标签在使用时不需要&lt;code class=&quot;highlighter-rouge&quot;&gt;#end&lt;/code&gt;来标记结束，而且标签的内容可以分在多行：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+#test(123 \n2)
+&lt;/pre&gt;
+
+&lt;p&gt;类型为&lt;strong&gt;BLOCK&lt;/strong&gt;则需要用#end结尾：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+#test(123) abc #end
+&lt;/pre&gt;
+
+&lt;p&gt;要想让自己定义的标签生效，需要在velocity初始化时设置属性：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;属性名：&lt;strong&gt;userdirective&lt;/strong&gt;（在velocity中写死的）&lt;/li&gt;
+  &lt;li&gt;属性值：你实现的Directive的类全路径&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;现在我们来看个最简单的例子：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+public static class Test extends Directive {
+    public String getName() {
+        return &quot;test&quot;;
+    }
+    public int getType() {
+        return LINE;
+    }
+    public boolean render(InternalContextAdapter context, 
+        Writer writer, 
+        Node node) throws IOException, ResourceNotFoundException, ParseErrorException, MethodInvocationException {
+        writer.write(&quot;abc&quot;);// 啥都不做，直接输出abc
+        return true;
+    }
+}
+&lt;/pre&gt;
+
+&lt;p&gt;然后初始化一个VelocityEngine测试&lt;code class=&quot;highlighter-rouge&quot;&gt;#test&lt;/code&gt;标签：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+VelocityEngine engine = new VelocityEngine();
+//.. 省略若干属性设置
+engine.addProperty(&quot;userdirective&quot;, &quot;Test&quot;);
+
+Template template = engine.getTemplate(&quot;#test&quot;);
+StringWriter writer = new StringWriter();
+template.merge(new EasydtContext(), writer);
+System.out.println(writer.toString()); // 输出：abc
+&lt;/pre&gt;
+
+&lt;p&gt;用标签来实现的功能无非是做一些字符串的处理，处理过程中能拿到的信息都在render方法参数中：&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;参数&lt;/th&gt;
+      &lt;th&gt;含义&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;context&lt;/td&gt;
+      &lt;td&gt;保存上下文&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;writer&lt;/td&gt;
+      &lt;td&gt;用来输出字符串&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;node&lt;/td&gt;
+      &lt;td&gt;抽象语法树中和当前位置对应的节点&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;可以从节点（node）中拿到一些有意思的信息，比如：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;模板名称&lt;/li&gt;
+  &lt;li&gt;行号&lt;/li&gt;
+  &lt;li&gt;列号&lt;/li&gt;
+  &lt;li&gt;子节点&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;有了这些信息类似&lt;a href=&quot;http://www.ibm.com/developerworks/cn/java/j-lo-velocity/&quot;&gt;这里&lt;/a&gt;实现#cache时就不需要手动传入key了。回到正题，render其实是在抽象语法树上递归下降的过程，比如#foreach中：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+// render方法中
+node.jjtGetChild(3).render(context, writer);
+&lt;/pre&gt;
+
+&lt;p&gt;当然我们也可以继续用上面的例子测试，修改render方法：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+render(/* ... */){
+    StringWriter tmpWriter = new StringWriter();
+    node.jjtGetChild(0).render(context, tmpWriter); // 递归执行
+    writer.write(tmpWriter.toString());
+    return true;
+}
+&lt;/pre&gt;
+
+&lt;p&gt;测试使用的模板为&lt;code class=&quot;highlighter-rouge&quot;&gt;#test()#if(true)abc#end#end&lt;/code&gt;，输出结果依然是abc。&lt;/p&gt;
+
+&lt;h2 id=&quot;webx&quot;&gt;在webx中扩展&lt;/h2&gt;
+
+&lt;p&gt;在springmvc中设置velocity的属性还是非常简单的（略），但是webx做了相当多的约定性质的扩展（&lt;a href=&quot;http://openwebx.org/docs/springext.html&quot;&gt;参考&lt;/a&gt;），下面来看在webx中自定义velocity标签以及其他扩展的方法，创建文件：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;/META-INF/services-template-engines-velocity-plugins.bean-definition-parsers&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;其中的内容为：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+my-support=com.xxx.MySupportDefinitionParser
+&lt;/pre&gt;
+
+&lt;p&gt;其中：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;属性：标签名称&lt;/li&gt;
+  &lt;li&gt;值：解析实现类，用来解析配置&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;编辑&lt;strong&gt;my-support.xsd&lt;/strong&gt;，格式可以参考&lt;a href=&quot;http://wsztrush.github.io/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/10/14/Xml-Schema.html&quot;&gt;这里&lt;/a&gt;，这里就不写了，然后需要实现：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;com.xxx.MySupport&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;在其初始化方法（init）中可以对velocity的属性进行设置，具体的实现逻辑可以参考EscapeSupport，最后将添加到webx的配置中：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+&amp;lt;services:template xmlns=&quot;http://www.alibaba.com/schema/services/template/engines&quot; searchExtensions=&quot;true&quot;&amp;gt;
+    &amp;lt;velocity-engine&amp;gt;
+        &amp;lt;plugins&amp;gt;
+            &amp;lt;vm-plugins:my-support/&amp;gt;
+        &amp;lt;/plugins&amp;gt;
+    &amp;lt;/velocity-engine&amp;gt;
+&amp;lt;/services:template&amp;gt;
+&lt;/pre&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;思考和总结&lt;/h2&gt;
+
+&lt;p&gt;自定义标签的功能像是在velocity中开了一个口子，让我们实现自己的逻辑，甚至可以在vm中嵌套使用渲染引擎（在上面的例子中可以看出来这点吧）：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;使用velocity渲染&lt;/li&gt;
+  &lt;li&gt;使用自定义的引擎渲染，将最终的结果写到writer中&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;如果将这种看作是在velocity处理后扩展，那么：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;有没有办法在velocity之前进行扩展？&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;答案是肯定的，现在想到的比较简单的方式是在ResourceLoader上做手脚，应该还有其他的思路。&lt;/p&gt;
+</description>
+        <pubDate>Thu, 21 Jan 2016 00:00:00 +0800</pubDate>
+        <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2016/01/21/VELOCITY-DIRECTIVE.html</link>
+        <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2016/01/21/VELOCITY-DIRECTIVE.html</guid>
+        
+        
+        <category>编程技术</category>
+        
+      </item>
+    
+      <item>
+        <title>InnoDB</title>
+        <description>&lt;p&gt;在用到数据库的时候，很少有人怀疑数据的一致性，更多的是怀疑性能（为此经常在数据库上面加一层缓存）。对数据库的实现比较好奇，所以最近刷了本书：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://img3.douban.com/mpic/s26684551.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;看完后之前模糊的地方清晰了一些。&lt;/p&gt;
+
+&lt;h2 id=&quot;section&quot;&gt;写&lt;/h2&gt;
+
+&lt;p&gt;为了让数据持久化下来，需要将写操作落到磁盘，这样做到数据准确比较简单，但是性能会非常差：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;逻辑复杂&lt;/li&gt;
+  &lt;li&gt;磁盘的随机读、写就是性能的噩梦&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;写内存是最快的，但一断电就悲剧了（先忽略带电池的内存），那还得写磁盘。不过现在不是去更新数据，而是&lt;strong&gt;顺序&lt;/strong&gt;地记日志，只要把信息记录下来就可以恢复数据：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+              +-------------+               
+              |    WRITE    |               
+              +------+------+               
+                     |                      
+       +-------------+--------------+       
+       |                            |       
++------+------+              +------+------+
+|    CACHE    |              |     LOG     |
++-------------+              +-------------+
+&lt;/pre&gt;
+
+&lt;p&gt;断电重新开机之后，根据日志里面记录的操作再来一遍就可以把数据还原到内存，恢复完成后继续提供服务。刚才的问题解决了，但是缺点也很明显：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;日志占用空间越来越大&lt;/li&gt;
+  &lt;li&gt;恢复时间越来越长&lt;/li&gt;
+  &lt;li&gt;内存中不可能存放所有的数据（或者恢复到磁盘上？）&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;后台线程在脏页太多、关机、定时触发（等）时把CACHE中的脏页刷到磁盘上，刷完之后就形成一个版本（在InnoDB中有LSN来标记版本号），该版本之前的日志已经不再需要了，这就是&lt;strong&gt;checkpoint&lt;/strong&gt;技术。&lt;/p&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;读&lt;/h2&gt;
+
+&lt;h2 id=&quot;section-2&quot;&gt;总结&lt;/h2&gt;
+</description>
+        <pubDate>Mon, 18 Jan 2016 00:00:00 +0800</pubDate>
+        <link>/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/2016/01/18/INNODB.html</link>
+        <guid isPermaLink="true">/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/2016/01/18/INNODB.html</guid>
+        
+        
+        <category>学习笔记</category>
+        
+      </item>
     
       <item>
         <title>进入Linux的世界</title>
@@ -1426,633 +1715,6 @@ engine.init(&quot;page&quot;, document.body);// 将page对应的页面渲染到b
         <pubDate>Thu, 17 Dec 2015 00:00:00 +0800</pubDate>
         <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/12/17/DOWN-TO-UP.html</link>
         <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/12/17/DOWN-TO-UP.html</guid>
-        
-        
-        <category>编程技术</category>
-        
-      </item>
-    
-      <item>
-        <title>从下向上来开发(PPT)</title>
-        <description>&lt;!-- test --&gt;
-
-&lt;!-- test end--&gt;
-
-&lt;!-- (0) --&gt;
-&lt;section&gt;&lt;h1&gt;EASY-DT&lt;/h1&gt;&lt;/section&gt;
-&lt;!-- (1) --&gt;
-&lt;section&gt;&lt;h3&gt;获取数据&lt;/h3&gt;&lt;/section&gt;
-&lt;!-- (2) --&gt;
-&lt;section&gt;
-&lt;!-- (2 类型比较多) --&gt;
-&lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
-![需要选择很多类型](http://7xiz10.com1.z0.glb.clouddn.com/DOWN-TO-UP-SLIDES-1.png)
-
-提前做好一些读取数据和加工数据的组件
-&lt;/script&gt;&lt;/section&gt;
-&lt;!-- (2 不知道每种类型应该怎么用) --&gt;
-&lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
-![每种类型都有自己的学习成本](http://7xiz10.com1.z0.glb.clouddn.com/DOWN-TO-UP-SLIDES-2.png)
-
-用XML格式的配置文件来描述逻辑
-&lt;/script&gt;&lt;/section&gt;
-&lt;!-- (2 结果数据比较灵活，可能遇到的时候就需要写代码或者增加新的组件) --&gt;
-&lt;section&gt;
-&lt;pre&gt;&lt;code&gt;
-[
-    {
-        &quot;name&quot;: &quot;拣选&quot;,
-        &quot;list&quot;: [
-            0, 0, 0, 0, 0, 0, 0, 0, 256, 6049, 5684, 3008
-        ],
-        &quot;latest_count&quot;: 4862
-    },
-    {}
-]
-&lt;/code&gt;&lt;/pre&gt;
-
-格式常常无法预料：&lt;span style=&quot;color:red;&quot;&gt;加组件&lt;/span&gt; or &lt;span style=&quot;color:red;&quot;&gt;不支持&lt;/span&gt;
-&lt;/section&gt;
-&lt;!-- (2 分析问题到底出在哪里) --&gt;
-&lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
-### 分析问题
-
-&lt;br/&gt;
-
-- 组件生成的数据结构固定，无法灵活适应业务
-- 很难组合使用多个组件
-- 扩展较复杂
-- 上手、维护成本高
-&lt;/script&gt;&lt;/section&gt;
-&lt;!-- (2 最底层用GROOVY来写的好处) --&gt;
-&lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
-### 解决方法（GROOVY）
-
-&lt;br/&gt;
-
-- 查看、编辑、保存、调试、高亮、自动补全等
-- 提交、发布
-- 权限、开关、限流（在树形结构上统一做掉）
-- 日常同步到线上
-&lt;/script&gt;&lt;/section&gt;
-&lt;!-- (2 脚本编辑页面) --&gt;
-&lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
-![脚本编辑页面](http://7xiz10.com1.z0.glb.clouddn.com/DOWN-TO-UP-SLIDES-3.png)
-
-代码编辑（ACE）
-&lt;/script&gt;&lt;/section&gt;
-&lt;!-- (2 小白用户更愿意看到的配置页面) --&gt;
-&lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
-![小白用户想看到的配置方式](http://7xiz10.com1.z0.glb.clouddn.com/DOWN-TO-UP-SLIDES-4.png)
-
-小白用户想看到的配置方式
-&lt;/script&gt;&lt;/section&gt;
-&lt;!-- (2 实现小白配置页面的方法) --&gt;
-&lt;section&gt;
-&lt;pre&gt;&lt;code&gt;
-static Object execute(){
-    def template_context = get(&quot;template_context&quot;);
-    def sql = template_context.get(&quot;sql&quot;);
-    def datasource = template_context.get(&quot;datasource&quot;);
-    // 
-}
-static void mock(){
-    // 
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-可能的一种实现方式
-&lt;/section&gt;
-&lt;!-- (2 提供给业务应用使用) --&gt;
-&lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
-### 业务系统中使用
-
-&lt;br/&gt;
-
-- &lt;span style=&quot;color:lightgray&quot;&gt;your-domain&lt;/span&gt;&lt;span style=&quot;color:yellow;&quot;&gt;/easydt&lt;/span&gt;&lt;span style=&quot;color:red;&quot;&gt;/wms/owner&lt;/span&gt;&lt;span style=&quot;color:lightgray&quot;&gt;.do&lt;/span&gt;
-- &lt;span style=&quot;color:lightgray&quot;&gt;Easydt.getResult(&quot;&lt;/span&gt;&lt;span style=&quot;color:red;&quot;&gt;/wms/owner&lt;/span&gt;&lt;span style=&quot;color:lightgray&quot;&gt;&quot;, param);&lt;/span&gt;
-&lt;/script&gt;&lt;/section&gt;
-&lt;!-- (2 整体架构) --&gt;
-&lt;section&gt;
-&lt;pre style=&quot;text-align:center;width:120%;height:120%;box-shadow:none;&quot;&gt;
-       1.通过HSF接口获取数据                         1、参数传递                      
-                                                     2、统一的编译、发布功能          
- +-----------+         +-----------+                 3、统一的高亮、提示、自动补全功能
- |    APP    |---------|   EASYDT  |                                                  
- +-----------+         +-----+-----+                                                  
-                             |                                                        
-                       +-----+-----+                                                  
-                       |   CLASS   |                                                  
-                       +-----+-----+                                                  
-                             |                                                        
-                       +-----+-----+        +-----------+                             
-                       |  OSS/LDB  |--------|    APP    |                             
-                       +-----------+        +-----------+                             
-                                                                                      
-                              2.拿到CLASS在业务应用中执行                             
-&lt;/pre&gt;
-&lt;/section&gt;
-&lt;!--(2 结束)--&gt;
-&lt;/section&gt;
-&lt;!--(3)--&gt;
-&lt;section&gt;&lt;h3&gt;展示数据&lt;/h3&gt;&lt;/section&gt;
-&lt;!--(4)--&gt;
-&lt;section&gt;
-&lt;!--(4 好的展示并不简单)--&gt;
-&lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
-![](http://7xiz10.com1.z0.glb.clouddn.com/DOWN-TO-UP-SLIDES-5.png)
-
-更清晰的展示数据
-&lt;/script&gt;&lt;/section&gt;
-&lt;!--(4 老的开发模式的问题)--&gt;
-&lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
-### 分析问题
-
-&lt;br/&gt;
-
-- 没有足够的前端资源来针对每个页面优化
-- 报表页面部分重复、部分个性
-- 逻辑无法预测
-&lt;/script&gt;&lt;/section&gt;
-
-&lt;!--(4 解决问题的方式)--&gt;
-&lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
-### 解决问题
-
-&lt;br/&gt;
-
-- 将能复用的抽出来生成组件
-- 用DSL来描述页面，无须拖拽也有比较好的体验
-- 在组件中封装对JS、CSS的依赖
-- 组件最终生成JS代码，保证可扩展性
-&lt;/script&gt;&lt;/section&gt;
-
-&lt;!--(4 组件的使用方式)--&gt;
-&lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
-### 使用组件
-
-&lt;br/&gt;
-
-&lt;span style=&quot;color:red;&quot;&gt;@input&lt;/span&gt;(&lt;span style=&quot;color:green;&quot;&gt;label&lt;/span&gt;=&quot;仓库&quot; &lt;span style=&quot;color:green;&quot;&gt;name&lt;/span&gt;=&quot;warehouse&quot;)
-
-&lt;br/&gt;
-
-&lt;span style=&quot;color:red;&quot; class=&quot;fragment&quot;&gt;@warehouse&lt;/span&gt;
-&lt;/script&gt;&lt;/section&gt;
-
-&lt;!--(4 组件之间的关联关系的实现)--&gt;
-&lt;section&gt;
-&lt;h3&gt;组件关联&lt;/h3&gt;
-&lt;br /&gt;
-&lt;pre&gt;&lt;code&gt;
-@input(name=&quot;warehouse&quot;)
-@input(name=&quot;owner&quot;)
-    @on(target=&quot;warehouse&quot; type=&quot;change&quot;)
-        // 1. 请求接口获取数据
-        // 2. 更新组件自生的数据
-        // 3. 刷新展示
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;br /&gt;
-
-仓库发生变化时更新货主列表
-&lt;/section&gt;
-
-&lt;!--(4 定义组件的方式)--&gt;
-&lt;section&gt;
-&lt;h3&gt;定义组件&lt;/h3&gt;
-&lt;br /&gt;
-&lt;pre&gt;&lt;code&gt;
-@import(
-    &#39;bootstrap.css&#39; // 依赖的CSS文件（需要的时候也可以加JS）
-)
-@component
-    this.width = &#39;10px&#39;; // 一些默认的数据
-
-    @render  // 在render下定义渲染（有点像JSX吧）
-        &lt;ul&gt;
-            for(i in items){
-                &lt;li&gt;${items[i]}&lt;/li&gt;
-            }
-        &lt;/ul&gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;br /&gt;
-
-最终会生成&lt;span style=&quot;color:red;&quot;&gt;@init&lt;/span&gt;和&lt;span style=&quot;color:red;&quot;&gt;@render&lt;/span&gt;方法
-&lt;/section&gt;
-
-&lt;!-- (4 DPL中的一个例子) --&gt;
-&lt;section&gt;
-&lt;h3&gt;生成代码&lt;/h3&gt;
-&lt;br /&gt;
-&lt;pre&gt;&lt;code&gt;
-	create(&quot;div&quot;);
-	attr(&quot;class&quot;,&quot;control-group span8&quot;);
-	push();
-	create(&quot;label&quot;);
-	attr(&quot;class&quot;,&quot;control-label&quot;);
-	push();
-	create(null, (&quot;供应商编码：&quot;));
-	pop();
-	create(&quot;div&quot;);
-	attr(&quot;id&quot;,&quot;s1&quot;+this.name);
-	attr(&quot;class&quot;,&quot;controls&quot;);
-	push();
-	pop();
-	pop();
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/section&gt;
-
-&lt;!--(4 如果没有在平台上使用而是单独在JS中使用的方式)--&gt;
-&lt;section&gt;
-&lt;h3&gt;前端&lt;/h3&gt;
-&lt;br /&gt;
-&lt;pre&gt;&lt;code&gt;
-&lt;script type=&quot;text/engine&quot;&gt;
-@layout
-    @input(label=&quot;xxx&quot; name=&quot;xxx&quot;)
-    @input(label=&quot;xxx&quot; name=&quot;xxx&quot;)
-    @input(label=&quot;xxx&quot; name=&quot;xxx&quot;)
-@layout
-    @table
-    @page
-&lt;/script&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/section&gt;
-
-&lt;!--(4 没有在平台上使用，而是单独在后端VM文件中使用的方式)--&gt;
-&lt;section&gt;
-&lt;h3&gt;后端&lt;/h3&gt;
-&lt;br /&gt;
-&lt;pre&gt;&lt;code&gt;
-&lt;form&gt;
-    @input(label=&quot;xxx&quot; name=&quot;xxx&quot;) // 使用组件
-    @input(label=&quot;xxx&quot; name=&quot;xxx&quot;) // 使用组件
-    @input(label=&quot;xxx&quot; name=&quot;xxx&quot;) // 使用组件
-    &lt;table&gt;&lt;/table&gt;
-&lt;/form&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/section&gt;
-&lt;!-- (4 结束)--&gt;
-&lt;/section&gt;
-&lt;!--(5)--&gt;
-&lt;section&gt;&lt;h3&gt;加工数据&lt;/h3&gt;&lt;/section&gt;
-&lt;!--(6)--&gt;
-&lt;section&gt;
-
-&lt;!--(6 常规的思路)--&gt;
-&lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
-### 常用方法
-
-&lt;br/&gt;
-
-- 离线分析：odps
-- 在线分析：garuda(ads)、...
-- 流计算：galaxy、tlog、jstorm、...
-
-&lt;br/&gt;
-
-&lt;span style=&quot;color:red;&quot; class=&quot;fragment&quot;&gt;越实时越好，几乎不能有误差&lt;/span&gt;
-&lt;/script&gt;&lt;/section&gt;
-
-&lt;!--(6 实时选择中的纠结)--&gt;
-&lt;section&gt;
-&lt;span style=&quot;color:red;font-size:2em;&quot;&gt;olap&amp;nbsp;&lt;/span&gt;vs&lt;span style=&quot;color:red;font-size:2em;&quot;&gt;&amp;nbsp;stream&lt;/span&gt;
-&lt;/section&gt;
-
-&lt;!--(6 可能导致错误的原因)--&gt;
-&lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
-### 误差原因
-
-&lt;br/&gt;
-
-- 并发
-- 重复（为了做到消息丢失，重复几乎是不可避免的）
-- 乱序
-&lt;/script&gt;&lt;/section&gt;
-
-&lt;!--(6 解决办法)--&gt;
-&lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
-### 解决办法
-
-&lt;br/&gt;
-
-- 锁
- - 分布式锁（等待or快速失败）
- - 主键
-- 消息分发（让处理变得有序）来消除竞争
- - metaq
- - jstorm
-&lt;/script&gt;&lt;/section&gt;
-
-&lt;!--(6 把通用的解决方式套到JSTORM上面)--&gt;
-&lt;section data-markdown=&quot;&quot;&gt;&lt;script type=&quot;text/template&quot;&gt;
-![](http://7xiz10.com1.z0.glb.clouddn.com/DOWN-TO-UP-SLIDES-6.png)
-
-尝试将通用的解决方法套在JSTORM上:)
-&lt;/script&gt;&lt;/section&gt;
-
-&lt;!--(6 仅仅是数据加工？)--&gt;
-&lt;section&gt;
-&lt;span style=&quot;color:lightgray;&quot;&gt;Jstorm仅仅只能用来做数据加工？&lt;/span&gt;
-&lt;/section&gt;
-&lt;!-- (6 结束) --&gt;
-&lt;/section&gt;
-
-&lt;!-- (7) --&gt;
-&lt;section&gt;
-&lt;span style=&quot;font-size:2em;color:lightgray;&quot;&gt;Thank You&lt;/span&gt;
-&lt;/section&gt;
-</description>
-        <pubDate>Thu, 17 Dec 2015 00:00:00 +0800</pubDate>
-        <link>/ppt/2015/12/17/DOWN-TO-UP-SLIDES.html</link>
-        <guid isPermaLink="true">/ppt/2015/12/17/DOWN-TO-UP-SLIDES.html</guid>
-        
-        
-        <category>PPT</category>
-        
-      </item>
-    
-      <item>
-        <title>用ACE来写代码（二）</title>
-        <description>&lt;p&gt;仅仅把代码高亮了还不够，在正常的编辑器中当输入少量的几个字符串就可以根据它来提示可能的输入：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/ACE-4.PNG&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;这样用起来能极大地提高输入的效率，而实现起来非常简单：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-ace.require(&quot;ace/ext/language_tools&quot;);
-var editor = ace.edit(&quot;editor&quot;);
-editor.session.setMode(&quot;ace/mode/groovy&quot;);
-editor.setTheme(&quot;ace/theme/tomorrow&quot;);
-editor.setOptions({
-    enableBasicAutocompletion: true,
-    enableSnippets: true,
-    enableLiveAutocompletion: true
-});
-&lt;/pre&gt;
-
-&lt;p&gt;另外注意需要引入&lt;strong&gt;ext-language_tools.js&lt;/strong&gt;文件！感觉看英文的文档有些地方不是很清楚（可能是英语水平的问题☺），于是我们继续开始读源码。&lt;/p&gt;
-
-&lt;h2 id=&quot;section&quot;&gt;源码分析&lt;/h2&gt;
-
-&lt;p&gt;我们设置了&lt;strong&gt;enableLiveAutocompletion&lt;/strong&gt;后输入内容时会执行&lt;a href=&quot;https://github.com/ajaxorg/ace/blob/36e6744a5f40df0da52ff22b3bc729657c056e09/lib/ace/ext/language_tools.js#L156&quot;&gt;doLiveAutocomplete&lt;/a&gt;方法：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-var doLiveAutocomplete = function(e) {
-    var editor = e.editor;
-    var hasCompleter = editor.completer &amp;amp;&amp;amp; editor.completer.activated;
-    if (e.command.name === &quot;backspace&quot;) {// 删除动作
-        if (hasCompleter &amp;amp;&amp;amp; !getCompletionPrefix(editor))
-            editor.completer.detach();
-    } else if (e.command.name === &quot;insertstring&quot;) {// 输入动作
-        var prefix = getCompletionPrefix(editor);
-        if (prefix &amp;amp;&amp;amp; !hasCompleter) {
-            if (!editor.completer) {
-                editor.completer = new Autocomplete();
-            }
-            editor.completer.autoInsert = false;
-            editor.completer.showPopup(editor);// 入口方法
-        }
-    }
-};
-&lt;/pre&gt;
-
-&lt;p&gt;对操作的类型及内容做一些简单的过滤之后就交由&lt;a href=&quot;https://github.com/ajaxorg/ace/blob/36e6744a5f40df0da52ff22b3bc729657c056e09/lib/ace/autocomplete.js&quot;&gt;Autocomplete&lt;/a&gt;来完成实质性的工作：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-this.showPopup = function(editor) {
-    // 初始化
-    if (this.editor)
-        this.detach();
-    this.activated = true;
-    this.editor = editor;
-    if (editor.completer != this) {
-        if (editor.completer)
-            editor.completer.detach();
-        editor.completer = this;
-    }
-    // 绑定方法
-    editor.on(&quot;changeSelection&quot;, this.changeListener);
-    editor.on(&quot;blur&quot;, this.blurListener);
-    editor.on(&quot;mousedown&quot;, this.mousedownListener);
-    editor.on(&quot;mousewheel&quot;, this.mousewheelListener);
-    // 更新补全信息列表
-    this.updateCompletions();
-};
-&lt;/pre&gt;
-
-&lt;p&gt;方法&lt;a href=&quot;https://github.com/ajaxorg/ace/blob/36e6744a5f40df0da52ff22b3bc729657c056e09/lib/ace/autocomplete.js#L253&quot;&gt;showPopup&lt;/a&gt;中先进行初始化：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;使用detach进行清理；&lt;/li&gt;
-  &lt;li&gt;绑定事件；&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;接下来就使用&lt;a href=&quot;https://github.com/ajaxorg/ace/blob/36e6744a5f40df0da52ff22b3bc729657c056e09/lib/ace/autocomplete.js#L274&quot;&gt;updateCompletions&lt;/a&gt;来获取补全列表信息并进行展示：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-this.updateCompletions = function(keepPopupPosition) {
-    if (keepPopupPosition &amp;amp;&amp;amp; this.base &amp;amp;&amp;amp; this.completions) {
-        var pos = this.editor.getCursorPosition();
-        var prefix = this.editor.session.getTextRange({start: this.base, end: pos});
-        // 内容没有发生变化
-        if (prefix == this.completions.filterText)
-            return;
-        this.completions.setFilter(prefix);
-        if (!this.completions.filtered.length)
-            return this.detach();
-        if (this.completions.filtered.length == 1
-            &amp;amp;&amp;amp; this.completions.filtered[0].value == prefix
-            &amp;amp;&amp;amp; !this.completions.filtered[0].snippet)
-            return this.detach();
-        this.openPopup(this.editor, prefix, keepPopupPosition);
-        return;
-    }
-    var _id = this.gatherCompletionsId;
-    // 收集所有的补全信息并执行（全部用回调函数来搞看着好累- -!）
-    this.gatherCompletions(this.editor, function(err, results) {
-        var detachIfFinished = function() {
-            if (!results.finished) return;
-            return this.detach();
-        }.bind(this);
-        // 获取前缀
-        var prefix = results.prefix;
-        var matches = results &amp;amp;&amp;amp; results.matches;
-        // 没有匹配到的时候就可以清理一下然后返回了
-        if (!matches || !matches.length)
-            return detachIfFinished();
-        if (prefix.indexOf(results.prefix) !== 0 || _id != this.gatherCompletionsId)
-            return;
-        this.completions = new FilteredList(matches);
-        // 是否精确匹配
-        if (this.exactMatch)
-            this.completions.exactMatch = true;
-        // 过滤，过滤完的结果保存在filtered中
-        this.completions.setFilter(prefix);
-        var filtered = this.completions.filtered;
-        // 检查过滤完的结果，没有匹配到的就清理并返回
-        if (!filtered.length)
-            return detachIfFinished();
-        if (filtered.length == 1 &amp;amp;&amp;amp; filtered[0].value == prefix &amp;amp;&amp;amp; !filtered[0].snippet)
-            return detachIfFinished();
-        if (this.autoInsert &amp;amp;&amp;amp; filtered.length == 1 &amp;amp;&amp;amp; results.finished)
-            return this.insertMatch(filtered[0]);
-        // 展示内容
-        this.openPopup(this.editor, prefix, keepPopupPosition);
-    }.bind(this));
-};
-&lt;/pre&gt;
-
-&lt;p&gt;其中参数&lt;strong&gt;keepPopupPosition&lt;/strong&gt;表示是否保持弹出框的位置保持不变：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;补全框中的内容会随着你的输入变化而变化，但是位置却保持不变就是这个参数在起作用！&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;其中比较关键的用&lt;a href=&quot;https://github.com/ajaxorg/ace/blob/36e6744a5f40df0da52ff22b3bc729657c056e09/lib/ace/autocomplete.js#L224&quot;&gt;gatherCompletions&lt;/a&gt;来收集所有补全器提供的数据（感觉是用这个方法把language_tools.js和autocomplete.js打通）：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-this.gatherCompletions = function(editor, callback) {
-    var session = editor.getSession();
-    var pos = editor.getCursorPosition();
-    var line = session.getLine(pos.row);
-    var prefix = util.retrievePrecedingIdentifier(line, pos.column);
-    this.base = session.doc.createAnchor(pos.row, pos.column - prefix.length);
-    this.base.$insertRight = true;
-    var matches = [];
-    var total = editor.completers.length;
-    // 遍历执行每个补全器
-    editor.completers.forEach(function(completer, i) {
-        // 获取补全列表
-        completer.getCompletions(editor, session, pos, prefix, function(err, results) {
-            // 在没有发生错误的时候，将结果合并到matchs中
-            if (!err)
-                matches = matches.concat(results);
-            var pos = editor.getCursorPosition();
-            var line = session.getLine(pos.row);
-            // 调用回调函数
-            callback(null, {
-                prefix: util.retrievePrecedingIdentifier(line, pos.column, results[0] &amp;amp;&amp;amp; results[0].identifierRegex),
-                matches: matches,
-                finished: (--total === 0)
-            });
-        });
-    });
-    return true;
-};
-&lt;/pre&gt;
-
-&lt;p&gt;在每个补全器的&lt;strong&gt;getCompletions&lt;/strong&gt;方法中都会调用callback方法：将自己的结果合并到全局的数据中。获取补全器的数据之后就会调用&lt;a href=&quot;https://github.com/ajaxorg/ace/blob/36e6744a5f40df0da52ff22b3bc729657c056e09/lib/ace/autocomplete.js#L81&quot;&gt;openPopup&lt;/a&gt;方法来更新展示：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-this.openPopup = function(editor, prefix, keepPopupPosition) {
-    if (!this.popup)
-        this.$init();
-    this.popup.setData(this.completions.filtered);
-    editor.keyBinding.addKeyboardHandler(this.keyboardHandler);
-    var renderer = editor.renderer;
-    this.popup.setRow(this.autoSelect ? 0 : -1);
-    if (!keepPopupPosition) {
-        // 设置展示
-        this.popup.setTheme(editor.getTheme());
-        this.popup.setFontSize(editor.getFontSize());
-        var lineHeight = renderer.layerConfig.lineHeight;
-        // 设置位置
-        var pos = renderer.$cursorLayer.getPixelPosition(this.base, true);
-        pos.left -= this.popup.getTextLeftOffset();
-        var rect = editor.container.getBoundingClientRect();
-        pos.top += rect.top - renderer.layerConfig.offset;
-        pos.left += rect.left - editor.renderer.scrollLeft;
-        pos.left += renderer.gutterWidth;
-        // 展示内容
-        this.popup.show(pos, lineHeight);
-    } else if (keepPopupPosition &amp;amp;&amp;amp; !prefix) {
-        this.detach();
-    }
-};
-&lt;/pre&gt;
-
-&lt;p&gt;回过头再来看language_tools.js中的补全器：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;&lt;strong&gt;getCompletions&lt;/strong&gt;：获取补全列表；&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;getDocTooltip&lt;/strong&gt;：返回HTML格式的提示内容；&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;每个补全列表中的元素包含如下信息：&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;strong&gt;caption&lt;/strong&gt;：字幕，也就是展示在列表中的内容&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;meta&lt;/strong&gt;：展示类型&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;name&lt;/strong&gt;：名称&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;value&lt;/strong&gt;：值&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;score&lt;/strong&gt;：分数，越大的排在越上面&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;而getDocTooltip感觉又进一步地提升了写代码时候的体验（在写代码的时候就知道输入的是什么）：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/ACE-5.PNG&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;具体是怎么实现的呢？接着来看代码，&lt;strong&gt;Mode&lt;/strong&gt;中的&lt;a href=&quot;https://github.com/ajaxorg/ace/blob/36e6744a5f40df0da52ff22b3bc729657c056e09/lib/ace/mode/text.js#L370&quot;&gt;getCompletions&lt;/a&gt;如下：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-this.getCompletions = function(state, session, pos, prefix) {
-    // 获取当前Mode的关键字
-    var keywords = this.$keywordList || this.$createKeywordList();
-    // 根据关键字组装补全列表
-    return keywords.map(function(word) {
-        return {
-            name: word,
-            value: word,
-            score: 0,
-            meta: &quot;keyword&quot;
-        };
-    });
-};
-&lt;/pre&gt;
-
-&lt;p&gt;在当前文件中写过的单词被自动提示补全的逻辑在&lt;a href=&quot;https://github.com/ajaxorg/ace/blob/36e6744a5f40df0da52ff22b3bc729657c056e09/lib/ace/autocomplete/text_completer.js&quot;&gt;text_completer.js&lt;/a&gt;中实现（逻辑很简单），比较麻烦的是&lt;strong&gt;enableSnippets&lt;/strong&gt;，这个后面有时间再看。&lt;/p&gt;
-
-&lt;h2 id=&quot;section-1&quot;&gt;自定义补全&lt;/h2&gt;
-
-&lt;p&gt;知道了ACE的补全运行的原理，那么现在扩展起来就比较简单了：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-var languageTools = ace.require(&quot;ace/ext/language_tools&quot;);
-    languageTools.addCompleter({
-        getCompletions: function(editor, session, pos, prefix, callback) {
-        callback(null,  [
-            {
-                name : &quot;test&quot;,
-                value : &quot;test&quot;,
-                caption: &quot;test&quot;,
-                meta: &quot;test&quot;,
-                type: &quot;local&quot;,
-                score : 1000 // 让test排在最上面
-            }
-        ]);
-    }
-});
-&lt;/pre&gt;
-
-&lt;p&gt;虽然看到的例子都是同步执行callback方法，但用异步来做也是完全没有问题的：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;在上面看源码的时候还不明白为啥每次回调的时候都要更新显示而不是等全部执行完后更新一次~&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;在事件驱动的系统中接口的设计还是需要多思考、多推敲的啊！&lt;/p&gt;
-
-&lt;h2 id=&quot;section-2&quot;&gt;总结&lt;/h2&gt;
-
-&lt;p&gt;有了自动补全之后与IDE的距离又近了一步，不仅仅能加快脚步编写的速度，更重要的是代码的准确性也会有所提高，当然这还是不够的！&lt;/p&gt;
-</description>
-        <pubDate>Fri, 06 Nov 2015 00:00:00 +0800</pubDate>
-        <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/11/06/ACEJS-B.html</link>
-        <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/11/06/ACEJS-B.html</guid>
         
         
         <category>编程技术</category>
