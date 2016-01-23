@@ -1,0 +1,114 @@
+<!DOCTYPEhtmlPUBLIC"-//W3C//DTDXHTML1.0Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html>
+	<!-- 引入CSS/JS -->
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="/assets/css/main.css"/>
+	<script type="text/javascript" src="/assets/javascripts/main.js"></script>
+
+	<!-- pygments代码高亮 -->
+	<!-- <link rel="stylesheet" type="text/css" href="/assets/css/pygments.css"/> -->
+	<!-- google代码高亮 -->
+	<script src="/assets/css/prettify.js"></script>
+	<link href="/assets/css/prettify.css" rel="stylesheet">
+	<title>InnoDB</title>
+</head>
+
+	<body onload="prettyPrint()">
+		<div class="tool">
+	<span><b>WsztRush</b></span>
+	<div class="links">
+		<a href="/index.html">Blog</a>
+		<a href="/categories.html">Categories</a>
+		<a href="/about/">About</a>		
+	</div>
+</div>
+
+		<div class="post-container">
+			<h1>InnoDB</h1>
+			<p>在用到数据库的时候，很少有人怀疑数据的一致性，更多的是怀疑性能（为此经常在数据库上面加一层缓存）。对数据库的实现比较好奇，所以最近刷了本书：</p>
+
+<p><img src="http://img3.douban.com/mpic/s26684551.jpg" alt="" /></p>
+
+<p>看完后之前模糊的地方清晰了一些。</p>
+
+<h2 id="section">写</h2>
+
+<p>为了让数据持久化下来，需要将写操作落到磁盘，这样做到数据准确比较简单，但是性能会非常差：</p>
+
+<ol>
+  <li>逻辑复杂</li>
+  <li>磁盘的随机读、写就是性能的噩梦</li>
+</ol>
+
+<p>写内存是最快的，但一断电就悲剧了（先忽略带电池的内存），那还得写磁盘。不过现在不是去更新数据，而是<strong>顺序</strong>地记日志，只要把信息记录下来就可以恢复数据：</p>
+
+<pre class="prettyprint">
+              +-------------+               
+              |    WRITE    |               
+              +------+------+               
+                     |                      
+       +-------------+--------------+       
+       |                            |       
++------+------+              +------+------+
+|    CACHE    |              |     LOG     |
++-------------+              +-------------+
+</pre>
+
+<p>断电重新开机之后，根据日志里面记录的操作再来一遍就可以把数据还原到内存，恢复完成后继续提供服务。刚才的问题解决了，但是缺点也很明显：</p>
+
+<ol>
+  <li>日志占用空间越来越大</li>
+  <li>恢复时间越来越长</li>
+  <li>内存中不可能存放所有的数据（或者恢复到磁盘上？）</li>
+</ol>
+
+<p>后台线程在脏页太多、关机、定时触发（等）时把CACHE中的脏页刷到磁盘上，刷完之后就形成一个版本（在InnoDB中有LSN来标记版本号），该版本之前的日志已经不再需要了，这就是<strong>checkpoint</strong>技术。</p>
+
+<h2 id="section-1">读</h2>
+
+<h2 id="section-2">总结</h2>
+
+			<!-- 评论组件 -->
+			<div class="ds-thread" data-thread-key="/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/2016/01/18/INNODB.html" data-title="InnoDB"  data-url="/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/2016/01/18/INNODB.html"></div>
+			<!-- 评论组件 -->
+			<div id="disqus_thread"/>
+		</div>
+	</body>
+</html>
+<!-- 评论组件 -->
+<script type="text/javascript">
+	var disqus_shortname = 'wsztrush';
+	(function() {
+		var dsq = document.createElement('script');
+		dsq.type = 'text/javascript';
+		dsq.async = true;
+		dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	})();
+</script>
+<!-- 多说公共JS代码-->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"wsztrush"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+</script>
+
+<!-- 百度访问统计 -->
+<script>
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?08a976e8d7e5a20acfcb566bd22a1db1";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+
