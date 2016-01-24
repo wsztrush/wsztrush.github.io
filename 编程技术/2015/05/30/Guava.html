@@ -124,7 +124,7 @@ System.out.println(table.column("b")); // {a=1}
 System.out.println(table.row("a")); // {b=1, c=2}
 </pre>
 
-<p>在Guava中还配套了一些集合相关的工具类，比如<a href="https://github.com/google/guava/wiki/CollectionUtilitiesExplained#maps">Maps</a>：</p>
+<p>在Guava中还配套了一些集合相关的工具类，比如<a href="https://github.com/google/guava/wiki/CollectionUtilitiesExplained#maps">Maps</a>（现在创建集合基本不用new了）：</p>
 
 <pre class="prettyprint">
 Map&lt;Integer, Map&lt;String, Integer&gt;&gt; map = Maps.newHashMap();
