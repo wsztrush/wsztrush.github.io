@@ -11,7 +11,7 @@
 	<!-- google代码高亮 -->
 	<script src="/assets/css/prettify.js"></script>
 	<link href="/assets/css/prettify.css" rel="stylesheet">
-	<title>Guava</title>
+	<title>让Guava来加速开发</title>
 </head>
 
 	<body onload="prettyPrint()">
@@ -25,18 +25,116 @@
 </div>
 
 		<div class="post-container">
-			<h1>Guava</h1>
-			<h2 id="section">写在前面</h2>
+			<h1>让Guava来加速开发</h1>
+			<p>在Java开发时，有很多事情比较繁琐：</p>
 
-<h2 id="section-1">用法</h2>
+<ol>
+  <li>判空</li>
+  <li>校验</li>
+  <li>集合处理</li>
+  <li>等等</li>
+</ol>
 
-<h2 id="section-2">学习</h2>
+<p>比较简单的就是封装工具类，更简单呢，就是用现成的工具类，Guava（<a href="https://github.com/google/guava/wiki">WIKI</a>）就是这样一套工具，让你的代码“如丝般顺滑”。</p>
 
-<h2 id="section-3">总结</h2>
+<h2 id="section">基础</h2>
+
+<p>在代码中无处不再的NULL容易让人抓狂，处理的不好就来个NPE，而且处理的过程免不了加入一堆的if-else（丑丑的），此时<a href="https://github.com/google/guava/wiki/UsingAndAvoidingNullExplained">Optional</a>可以帮上忙：</p>
+
+<pre class="prettyprint">
+Optional&lt;Integer&gt; optional = Optional.of(5);
+System.out.println(optional.isPresent()); // true
+System.out.println(optional.get());// 5
+System.out.println(optional.or(123));// 5 (默认值是123)
+</pre>
+
+<p><a href="https://github.com/google/guava/wiki/CommonObjectUtilitiesExplained">Objects</a>中也有处理NULL的方法：</p>
+
+<pre class="prettyprint">
+Objects.firstNonNull(1, 2);// 1 // 返回第一个非空的，类似first.or(second);
+Objects.equal(null, null); // true
+</pre>
+
+<p>排序时考虑多个字段比较麻烦，搞完的代码基本看不大懂，用<a href="https://github.com/google/guava/wiki/CommonObjectUtilitiesExplained#comparecompareto">ComparisonChain</a>简化为：</p>
+
+<pre class="prettyprint">
+static class Test {
+    int a, b;
+    Test(int a, int b) { this.a = a; this.b = b;}
+}
+public static void main(String[] args) throws Exception {
+    Test t1 = new Test(1, 2), t2 = new Test(1, 3);
+    System.out.println(ComparisonChain.start().compare(t1.a, t2.a).compare(t1.b, t2.b).result());// -1
+}
+</pre>
+
+<p>有更多的排序逻辑时可以用<a href="https://github.com/google/guava/wiki/OrderingExplained">Ordering</a>。异常机制在向上传错误非常好用，但多了不少if-throw的代码，可以用<a href="https://github.com/google/guava/wiki/PreconditionsExplained">Preconditions</a>缩成一行：</p>
+
+<pre class="prettyprint">
+Preconditions.checkState(false, "异常信息！"); // 第一个参数为false时抛异常
+</pre>
+
+<p>这些工具扩展了原生的不好用的地方，但其中很多在后续版本中已经完善了。</p>
+
+<h2 id="section-1">集合</h2>
+
+<p>原生的集合类用起来有时候不那么顺手，Guava封装了一些通用的复杂结构的实现。经常需要对数据做一些聚合，用原生的集合类有点繁琐，举个例子：</p>
+
+<blockquote>
+  <p>把批量查询的数据根据某个字段分组。</p>
+</blockquote>
+
+<p>需要用Map&lt;Integer, List&lt;Integer&gt;&gt; map = new HashMap&lt;Integer, List&lt;Integer&gt;&gt;()来组织（过程中免不了判空等逻辑），类似情况可以用<a href="http://google.github.io/guava/releases/snapshot/api/docs/com/google/common/collect/Multimap.html">Multimap</a>来减少工作量了：</p>
+
+<pre class="prettyprint">
+Multimap&lt;Integer, Integer&gt; multimap = ArrayListMultimap.create();
+multimap.put(1, 1);
+multimap.put(1, 2);
+multimap.put(1, 3);
+System.out.println(multimap.get(1)); // [1, 2, 3]
+</pre>
+
+<p>而Multimap并不是一个Map（java.util.Map），但是用起来和Map差不多，而且需要时可以用<strong>asMap</strong>转换。根据值集合的不同需求有不同的实现（<a href="https://github.com/google/guava/wiki/NewCollectionTypesExplained#implementations-1">WIKI</a>）。类似的工具还有<a href="https://github.com/google/guava/wiki/NewCollectionTypesExplained#multiset">Multiset</a>：</p>
+
+<pre class="prettyprint">
+Multiset&lt;Integer&gt; multiset = HashMultiset.create();
+multiset.add(1);
+multiset.add(1);
+multiset.add(1);
+System.out.println(multiset.count(1)); // 3
+</pre>
+
+<p>一般情况都是key-&gt;value，用Map可以搞定，但如果同时需要value-&gt;key，此时可以用两个Map，也可以用一个<a href="https://github.com/google/guava/wiki/NewCollectionTypesExplained#bimap">BiMap</a>：</p>
+
+<pre class="prettyprint">
+BiMap&lt;String, Integer&gt; userId = HashBiMap.create();
+userId.put("a", 1);
+userId.put("b", 2);
+System.out.println(userId.inverse().get(2));// b
+</pre>
+
+<p>很多时候key是两个值拼起来的，可以用拼接成一个字符串，也可以用<a href="https://github.com/google/guava/wiki/NewCollectionTypesExplained#table">Table</a>搞定（感觉有点浪费）：</p>
+
+<pre class="prettyprint">
+Table&lt;String, String, Integer&gt; table = HashBasedTable.create();
+table.put("a", "b", 1);
+table.put("a", "c", 2);
+System.out.println(table.get("a", "b")); // 1
+System.out.println(table.column("b")); // {a=1}
+System.out.println(table.row("a")); // {b=1, c=2}
+</pre>
+
+<p>在Guava中还配套了一些集合相关的工具类，比如<a href="https://github.com/google/guava/wiki/CollectionUtilitiesExplained#maps">Maps</a>：</p>
+
+<pre class="prettyprint">
+Map&lt;Integer, Map&lt;String, Integer&gt;&gt; map = Maps.newHashMap();
+</pre>
+
+<h2 id="section-2">缓存</h2>
 
 
 			<!-- 评论组件 -->
-			<div class="ds-thread" data-thread-key="/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/05/30/Guava.html" data-title="Guava"  data-url="/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/05/30/Guava.html"></div>
+			<div class="ds-thread" data-thread-key="/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/05/30/Guava.html" data-title="让Guava来加速开发"  data-url="/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/05/30/Guava.html"></div>
 			<!-- 评论组件 -->
 			<div id="disqus_thread"/>
 		</div>
