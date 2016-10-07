@@ -5,9 +5,132 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 14 Feb 2016 11:47:25 +0800</pubDate>
-    <lastBuildDate>Sun, 14 Feb 2016 11:47:25 +0800</lastBuildDate>
-    <generator>Jekyll v3.0.1</generator>
+    <pubDate>Fri, 07 Oct 2016 23:24:19 +0800</pubDate>
+    <lastBuildDate>Fri, 07 Oct 2016 23:24:19 +0800</lastBuildDate>
+    <generator>Jekyll v3.3.0</generator>
+    
+      <item>
+        <title>JSTORM-概述</title>
+        <description>&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/JSTORM-1-1.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;常见的实时计算方面有两种方案：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;在线分析型数据库（OLAP）&lt;/li&gt;
+  &lt;li&gt;流计算&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;用阿里云的ADS做OLAP还是很不错的，但是消耗的资源比较大，而流计算的方案则相对比较廉价。因为工作中用JSTORM做实时计算比较多，而且去年JSTORM也正式加入了APACHE（说明其实力不一般啊），所以最近打算总结一下。&lt;/p&gt;
+
+&lt;h2 id=&quot;section&quot;&gt;编程&lt;/h2&gt;
+
+&lt;p&gt;消息从源头（spout）流出来以后，流入处理节点（bolt），在处理节点完成之后有可能产生新的消息并流到后面的处理节点，如下图：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt; 
+           +-------+    +------+    +------+    
+message---&amp;gt;| spout |---&amp;gt;| bolt |---&amp;gt;| bolt |---&amp;gt;
+           +-------+    +------+    +------+    
+&lt;/pre&gt;
+
+&lt;p&gt;在spout节点需要实现的方法（以IRichSpout为例）如下：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+public class MySpout implements IRichSpout{
+    public void open(Map map, TopologyContext topologyContext, SpoutOutputCollector spoutOutputCollector){
+        // 初始化
+    }
+    public void nextTuple(){
+        // 发送消息
+    }
+    public void ack(Object messageId){
+        // 消息消费成功
+    }
+    public void fail(Object messageId){
+        // 消息消费失败
+    }
+}
+&lt;/pre&gt;
+
+&lt;p&gt;相应的bolt节点需要实现的方法（以IRichBolt为例）就要少一些：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+public class MyBolt implements IRichBolt {
+    public void prepare(Map map, TopologyContext topologyContext, OutputCollector outputCollector) {
+        // 初始化
+    }
+	public void execute(Tuple tuple) {
+        // 处理消息
+    }
+}
+&lt;/pre&gt;
+
+&lt;p&gt;在框架中通过调用指定的main方法来创建任务（Topology），下面来看个在本地运行的例子：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+public static void main(String[] args) throws Exception {
+    // 开始构建任务结构
+    TopologyBuilder builder = new TopologyBuilder();
+    builder.setSpout(&quot;my_spout&quot;, new MySpout(), 10); // 设置源头节点及其并发度
+    builder.setBolt(&quot;my_bolt&quot;, new MyBolt(), 10).shuffleGrouping(&quot;my_spout&quot;);// 设置处理节点及其并发度
+    
+    // 伪集群方式运行
+    LocalCluster cluster = new LocalCluster();
+    cluster.submitTopology(&quot;my_topology&quot;, config, builder.createTopology());
+
+    // 执行一段时间后停止
+    Thread.sleep(6000000);
+    cluster.shutdown();
+}
+&lt;/pre&gt;
+
+&lt;p&gt;到这里就明白最简单的JSTORM的任务的在编程时的结构了，下面可以来看其整体上的架构。&lt;/p&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;架构&lt;/h2&gt;
+
+</description>
+        <pubDate>Thu, 25 Feb 2016 00:00:00 +0800</pubDate>
+        <link>/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/2016/02/25/JSTORM-1.html</link>
+        <guid isPermaLink="true">/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/2016/02/25/JSTORM-1.html</guid>
+        
+        
+        <category>学习笔记</category>
+        
+      </item>
+    
+      <item>
+        <title>SSL/TLS与安全</title>
+        <description>&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/SSL-2.jpg&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;坏蛋不会放过任何一丝作恶的机会，当信息在互联网上裸奔时，可能被：&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;窃听&lt;/li&gt;
+  &lt;li&gt;篡改&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;于是有了SSL(Secure Sockets Layer)及TLS(Transport Layer Security)对数据的传输进行加密。&lt;/p&gt;
+
+&lt;h2 id=&quot;section&quot;&gt;数字证书&lt;/h2&gt;
+
+&lt;p&gt;在网络中可能有人冒充服务器：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+客户 to 冒牌服务器：你好
+冒牌服务器 to 客户：你好，我是服务器
+客户 to 冒牌服务器：我的密码是xxx  
+&lt;/pre&gt;
+
+&lt;p&gt;现在悲剧了：密码告诉别人等于把所有的信息都告诉了别人。&lt;/p&gt;
+
+</description>
+        <pubDate>Mon, 22 Feb 2016 00:00:00 +0800</pubDate>
+        <link>/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/2016/02/22/SSL.html</link>
+        <guid isPermaLink="true">/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/2016/02/22/SSL.html</guid>
+        
+        
+        <category>学习笔记</category>
+        
+      </item>
     
       <item>
         <title>在velocity中自定义标签</title>
@@ -772,7 +895,7 @@ gem sources -a http://ruby.taobao.org/
               
    _ _      . 
    \ /     /_\
-    &#39;         
+    '         
 &lt;/pre&gt;
 
 &lt;p&gt;用鼠标可以选择块，这对后面的操作有一定的简化，利用用&lt;code class=&quot;highlighter-rouge&quot;&gt;\a&lt;/code&gt;（&lt;code class=&quot;highlighter-rouge&quot;&gt;\l&lt;/code&gt;不带箭头）来根据选中的块来画线：&lt;/p&gt;
@@ -827,11 +950,11 @@ gem sources -a http://ruby.taobao.org/
 &lt;p&gt;简单体验下来，如果能灵活运用VIM本身的强大功能（复制、粘贴等），DrawIt用起来还是挺给力的！&lt;/p&gt;
 </description>
         <pubDate>Tue, 05 Jan 2016 00:00:00 +0800</pubDate>
-        <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2016/01/05/VIM-PAINT.html</link>
-        <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2016/01/05/VIM-PAINT.html</guid>
+        <link>/%E5%B7%A5%E5%85%B7/2016/01/05/VIM-PAINT.html</link>
+        <guid isPermaLink="true">/%E5%B7%A5%E5%85%B7/2016/01/05/VIM-PAINT.html</guid>
         
         
-        <category>编程技术</category>
+        <category>工具</category>
         
       </item>
     
@@ -1039,685 +1162,6 @@ future.channel().closeFuture().sync();
         
         
         <category>其他</category>
-        
-      </item>
-    
-      <item>
-        <title>ZOOKEEPER基础知识</title>
-        <description>&lt;p&gt;搞数据开发的对一些产品非常熟悉，比如：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;HBase&lt;/li&gt;
-  &lt;li&gt;Hadoop&lt;/li&gt;
-  &lt;li&gt;…&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;但是对它们背后共同的“男人”没有太多的了解，太不应该了。这篇是一个基础的介绍，看完之后应该会对ZOOKEEPER有大概了解。&lt;/p&gt;
-
-&lt;h2 id=&quot;section&quot;&gt;安装部署&lt;/h2&gt;
-
-&lt;p&gt;在&lt;a href=&quot;http://zookeeper.apache.org/releases.html&quot;&gt;这里&lt;/a&gt;下载包，放到你喜欢的目录解压缩：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;sudo tar -zxvf zookeeper-3.4.7.tar.gz&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;配置信息在&lt;strong&gt;conf/zoo.cfg&lt;/strong&gt;中（可以在zoo_sample.cfg中看到），常用的几个设置项如下（更多看&lt;a href=&quot;http://www.cnblogs.com/ggjucheng/p/3352591.html&quot;&gt;这里&lt;/a&gt;）：&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;配置&lt;/th&gt;
-      &lt;th&gt;作用&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;tickTime&lt;/td&gt;
-      &lt;td&gt;客户端和服务器之间的心跳间隔（毫秒）&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;initLimit&lt;/td&gt;
-      &lt;td&gt;FOLLOWER与LEADER初始连接的最大延迟心跳数&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;syncLimit&lt;/td&gt;
-      &lt;td&gt;FOLLOWER与LEADER请求应答的最大延迟心跳数&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;dataDir&lt;/td&gt;
-      &lt;td&gt;数据文件目录&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;dataLogDir&lt;/td&gt;
-      &lt;td&gt;日志文件目录&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;clientPort&lt;/td&gt;
-      &lt;td&gt;客户端连接端口&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;配置安成以后使用命令启动（standalone模式）：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;./bin/zkServer.sh start&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;查看zookeeper的状态（看看起来没）：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;./bin/zkServer.sh start&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;当然也可以用客户端试一下能不能连上：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;./bin/zkCli.sh 或者 ./bin/zkCli.sh -server 127.0.0.1:2181&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;现在还是单个节点，离集群还差很多，怎么办？暂时没有很多机器，在单机上搞“伪集群”应该还是简单的，这样和真正的集群差的不是太多了。刚开始看&lt;a href=&quot;http://blog.csdn.net/tanyujing/article/details/8504481&quot;&gt;这里的方法&lt;/a&gt;感觉没啥问题，但是有点烦，于是看下./bin/zkServer.sh的代码：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-if [ &quot;x$2&quot; != &quot;x&quot; ]
-then
-    ZOOCFG=&quot;$ZOOCFGDIR/$2&quot;
-fi
-&lt;/pre&gt;
-
-&lt;p&gt;发现果然是可以指定配置文件的，于是创建文件&lt;strong&gt;./conf/zoo_1.cfg&lt;/strong&gt;，内容如下：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-tickTime=2000
-initLimit=10
-syncLimit=5
-dataDir=/tmp/zookeeper/1 # 新建个目录
-clientPort=3181 # 注意端口不要冲突
-server.0=127.0.0.1:2008:6008
-server.1=127.0.0.1:2007:6007
-&lt;/pre&gt;
-
-&lt;p&gt;当然需要对原来的&lt;strong&gt;./conf/zoo.cfg&lt;/strong&gt;做一点小修改：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-tickTime=2000
-initLimit=10
-syncLimit=5
-dataDir=/tmp/zookeeper/0 # 新建个目录
-clientPort=2181 # 注意端口不要冲突
-server.0=127.0.0.1:2008:6008
-server.1=127.0.0.1:2007:6007
-&lt;/pre&gt;
-
-&lt;p&gt;后面放的是ZK的服务器列表（每个节点上的列表都是一样的），格式如下：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;server.[myId]=[IP地址][通信端口][选举端口]&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;另外需要写入myid：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-echo &#39;0&#39; &amp;gt; /tmp/zookeeper/0/myid
-echo &#39;1&#39; &amp;gt; /tmp/zookeeper/1/myid
-&lt;/pre&gt;
-
-&lt;p&gt;现在可以启动了：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-./bin/zkServer.sh start ./conf/zoo.cfg
-./bin/zkServer.sh start ./conf/zoo_1.cfg
-&lt;/pre&gt;
-
-&lt;p&gt;再用命令查看状态显示&lt;strong&gt;Mode: follower&lt;/strong&gt;，启动成功（STOP的时候也需要指定配置文件）。&lt;/p&gt;
-
-&lt;h2 id=&quot;section-1&quot;&gt;实现原理&lt;/h2&gt;
-
-&lt;p&gt;在分布式的环境中保证数据的一致是比较困难的，比如用主备方式（两个都是中心）：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;主机挂了备如何自动起来？备也挂了怎么办？&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;下面来看ZK如何做到&lt;strong&gt;去中心化&lt;/strong&gt;的，在集群中有下面几种角色：&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;角色&lt;/th&gt;
-      &lt;th&gt;作用&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;LEADER&lt;/td&gt;
-      &lt;td&gt;数据同步、发起选举&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;FOLLOWER&lt;/td&gt;
-      &lt;td&gt;响应客户端请求，并在选举的过程中投票&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;OBSERVER&lt;/td&gt;
-      &lt;td&gt;响应客户端请求，不参与投票（不影响写性能、提高读性能）&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;CLIENT&lt;/td&gt;
-      &lt;td&gt;发送请求&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;在他们之间流转的消息有：&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;消息&lt;/th&gt;
-      &lt;th&gt;作用&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;PING&lt;/td&gt;
-      &lt;td&gt;心跳&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;REQUEST&lt;/td&gt;
-      &lt;td&gt;FOLLOWER发出的提议（写请求、同步请求）&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;PROPOSAL&lt;/td&gt;
-      &lt;td&gt;LEADER发起的提案，要求FOLLOWER投票&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;ACK&lt;/td&gt;
-      &lt;td&gt;FOLLOWER对提案的回复（超过半数就算通过）&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;REVALIDATE&lt;/td&gt;
-      &lt;td&gt;用来延长SESSION有效时间&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;COMMIT&lt;/td&gt;
-      &lt;td&gt;服务端最新一次提案的信息，FOLLOWER收到后更新本地数据&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;UPTODATE&lt;/td&gt;
-      &lt;td&gt;同步完成&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;总体上是通过选举机制来保证集群中LEADER的唯一性（就算集群被分成两半），然后用LEADER来保证数据的一致性。时刻记着&lt;strong&gt;过半就安全&lt;/strong&gt;会比较好理解一些，下面来看一些主要流程。&lt;/p&gt;
-
-&lt;h3 id=&quot;section-2&quot;&gt;一、写入&lt;/h3&gt;
-
-&lt;p&gt;客户端连的可能是FOLLOWER，也可能是LEADER，写操作引发的消息如下：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/ZOOKEEPER-1.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;所有的都会交给LEADER来顺序处理，因此就没有“同时”写入这么一说了。我们知道ZK一个典型的使用场景&lt;strong&gt;分布式锁&lt;/strong&gt;，那么：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;是否所有的分布式锁都适合用ZK来实现？&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;每个写入都需要投票，只有收到过半的同意才算完，当ZK集群数量较多时IO的压力还是比较大的，那么如果我想在每个写操作上加锁（防止多台机器并发），而且TPS峰值会比较高，用ZK来实现是不怎么合适的。&lt;/p&gt;
-
-&lt;p&gt;另外，如果太高的TPS峰值把ZK给压挂了，重新进行选举，那选举的过程中你也是加不了锁的:D。接着看，ZK保证高可用是因为必然会有FOLLOWER保存了数据，那么：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;FOLLOWER中的数据是什么时候写进去的？&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;当FOLLOWER收到PROPOSAL消息后会将其写入日志文件并发送ACK消息，ZK相关的文件包括（格式参考&lt;a href=&quot;http://blog.csdn.net/pwlazy/article/details/8080626&quot;&gt;这里&lt;/a&gt;）：&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;文件&lt;/th&gt;
-      &lt;th&gt;作用&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;SNAPSHOT&lt;/td&gt;
-      &lt;td&gt;内存数据的快照（FUZZY），当日志写到一定数量开始用异步线程执行&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;LOG&lt;/td&gt;
-      &lt;td&gt;日志文件，类似MYSQL的BINLOG，记录每次写操作&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;在恢复数据的时候需要配合使用这两个文件！在LEADER发出提案以后可能面临的情况有：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;收集到过半的ACK：LEADER更新自己的数据以后发送COMMIT和INFORM来更新其他服务器的消息；&lt;/li&gt;
-  &lt;li&gt;没有收集到过半的ACK：一直等，等到成功或者新一轮的投票选举；&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;处理流程可以在&lt;a href=&quot;http://blog.csdn.net/dengsilinming/article/details/18224925&quot;&gt;这里&lt;/a&gt;看到（真正想完全了解还是得读源码）。&lt;/p&gt;
-
-&lt;h3 id=&quot;section-3&quot;&gt;二、投票&lt;/h3&gt;
-
-&lt;p&gt;当PING的时候发现FOLLOWER的“存活数”没有过半（或者其他异常）时，那么此时需要进行新的一轮选举，那么问题来了：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;既然存活的FOLLOWER都没过半，再选也解决不了问题啊？&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;这就不对了，比如LEADER所在机房的网线被挖断了而已，其他机器互相之间连得好好的，那么此时仍然是可能选出一个新LEADER的。选举过程中节点有四种状态：&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;状态&lt;/th&gt;
-      &lt;th&gt;含义&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;LOOKING&lt;/td&gt;
-      &lt;td&gt;启动时，还没有找到LEADER&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;FOLLOWING&lt;/td&gt;
-      &lt;td&gt;参与投票，但没有成为LEADER&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;LEADING&lt;/td&gt;
-      &lt;td&gt;参与投票，并且成为了LEADER&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;OBSERVING&lt;/td&gt;
-      &lt;td&gt;不参与投票&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;刚开始大家都处于LOOKING状态，通过互相之间发送消息来决定谁是LEADER，默认的&lt;strong&gt;FastLeader&lt;/strong&gt;算法从单个机器的角度来看运行流程如下：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/ZOOKEEPER-2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;本地记录中保存了所有机器的投票，比如刚开始都投选自己，那么内容就是：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/ZOOKEEPER-3.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;收到别人的投票信息后，与自己的投票对象对比，如果别人的更优，那么自己重新投票并广播。经过几轮通信优秀的人获得的投票数会过半，此时LEADER就选出来了：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/ZOOKEEPER-4.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;详细过程可以看这几篇文章（&lt;a href=&quot;http://www.open-open.com/lib/view/open1413796647528.html&quot;&gt;1&lt;/a&gt;、&lt;a href=&quot;http://blog.csdn.net/xhh198781/article/details/6619203&quot;&gt;2&lt;/a&gt;、&lt;a href=&quot;http://www.cnblogs.com/yuyijq/p/4116365.html&quot;&gt;3&lt;/a&gt;）如果仅仅是从ID来判断谁优谁劣，那么C、D、E都有可能成为LEADER，那么：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;有这么多可能性，ZK重启后集群上的最新数据能保证和之前是一样的吗？&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;从上面写入的过程发现：如果写入成功必然是有过半的机器保存来数据，而选举的时候同样需要过半达成一致，那么：&lt;strong&gt;过半与过半之间必然有重叠的部分&lt;/strong&gt;。而在选举过程中根据数据新旧决定是否更优，那么有最新数据的机器必然会被选举出来。感觉&lt;strong&gt;Paxos&lt;/strong&gt;算法要稍复杂一些：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/ZOOKEEPER-5.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;整个执行流程分成两个阶段：&lt;strong&gt;准备&lt;/strong&gt;（绿色）和&lt;strong&gt;批准&lt;/strong&gt;（黄色），详细的内容可以在&lt;a href=&quot;http://blog.sina.com.cn/s/blog_3dbab28401014lt4.html&quot;&gt;这里&lt;/a&gt;看到，不过&lt;a href=&quot;http://www.open-open.com/lib/view/open1420635646984.html&quot;&gt;这里&lt;/a&gt;的最后一张图还是给力啊（推荐）！通过这么纠结的过程做到了两个限制：&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;strong&gt;P2c&lt;/strong&gt;：如果一个编号为N的提案具有VALUE V，那么存在一个多数派：要么他们中所有人都没有接受编号小于N的任何提案，要么他们已经接受的所有编号小于N的提案中编号最大的那个提案具有VALUE V；&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;P1a&lt;/strong&gt;：当且仅当ACCEPTOR没有回应过编号大于N的PREPARE请求时，ACCEPTOR接受编号为N的提案；&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;有了这些限制集群就不会通过两个不一样的结果（不管消息的顺序是怎么样的）。&lt;/p&gt;
-
-&lt;h2 id=&quot;section-4&quot;&gt;使用方法&lt;/h2&gt;
-
-&lt;p&gt;看下来在ZK上保存一些配置的信息很靠谱，那么接下来来看如何在JAVA中对其进行操作，首先要连接到服务器（本地启动的ZK）：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-ZooKeeper zooKeeper = new ZooKeeper(&quot;127.0.0.1:3181&quot;, 3000, new Watcher() {
-    public void process(WatchedEvent watchedEvent) {
-        // 处理事件
-    }
-});
-// TODO 在这里写你要作的操作
-zooKeeper.close();
-&lt;/pre&gt;
-
-&lt;p&gt;连接到服务器之后就可以开始操作，在ZK中的数据用树形结构进行保存：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;做工具或者平台的时候，用这种方式来存储基本上能满足所有的组织数据的需求。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;简单的用法如下：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-// 创建节点
-zooKeeper.create(&quot;/root&quot;, &quot;root&quot;.getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
-// 获取节点数据
-System.out.println(new String(zooKeeper.getData(&quot;/root&quot;, false, null)));
-// 创建子节点
-zooKeeper.create(&quot;/root/child_1&quot;, &quot;child_1&quot;.getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
-// 获取子节点
-System.out.println(zooKeeper.getChildren(&quot;/root&quot;, true));
-// 修改节点数据
-zooKeeper.setData(&quot;/root/child_1&quot;, &quot;child_1&quot;.getBytes(), -1);
-// 删除节点
-zooKeeper.delete(&quot;/root/child_1&quot;, -1);
-zooKeeper.delete(&quot;/root&quot;, -1);
-&lt;/pre&gt;
-
-&lt;p&gt;对复杂的操作以及在用的过程中可能会遇到的问题后面再写文章详细写。&lt;/p&gt;
-
-&lt;h2 id=&quot;section-5&quot;&gt;总结&lt;/h2&gt;
-
-&lt;p&gt;分布式环境下的网络等问题处理起来非常复杂，数据的一致性非常头疼，有了ZK之后又可以愉快地玩耍了:)&lt;/p&gt;
-</description>
-        <pubDate>Tue, 22 Dec 2015 00:00:00 +0800</pubDate>
-        <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/12/22/ZOOKEEPER-BASIC.html</link>
-        <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/12/22/ZOOKEEPER-BASIC.html</guid>
-        
-        
-        <category>编程技术</category>
-        
-      </item>
-    
-      <item>
-        <title>从下向上来开发</title>
-        <description>&lt;p&gt;因为在公司接触业务比较少，更多的是在想办法做一些工具来帮助快速开发，过程中感觉做业务的思路与做工具（系统）的思路差别比较大。下面分享一下在两个模块中的思考过程。&lt;/p&gt;
-
-&lt;h2 id=&quot;section&quot;&gt;获取数据&lt;/h2&gt;
-
-&lt;p&gt;团队做的业务复杂无比，几百张的数据表导致有非常非常多的报表，通常的做法是这样的：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;iBatis(SQL)&lt;/li&gt;
-  &lt;li&gt;DAO+DO&lt;/li&gt;
-  &lt;li&gt;Manager&lt;/li&gt;
-  &lt;li&gt;Web+VO&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;几十张报表开发起来非常痛苦，而且大部分的代码实现的功能都是&lt;strong&gt;相似&lt;/strong&gt;的！说到相似，那么是不是把不同的部分（取数逻辑）独立出来，相同部分进行复用即可：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;配置一个数据接口只需要填写一段SQL就可以了！&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;其他的操作（数据库、返回数据）不需要你再关心了。YY了一下大部分的需求用SQL绝对绰绰有余，这件事情就这样结束了！&lt;strong&gt;图样图森破啊&lt;/strong&gt;！！马上遇到了这样的需求：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-{
-    title : &quot;xxx&quot;,
-    data : [1, 2, 3, 4, 5, 6, 7, 8]
-}
-&lt;/pre&gt;
-
-&lt;p&gt;还有这样（一些常量）：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-[
-    {text : &#39;A&#39;, value : 1},
-    {text : &#39;B&#39;, value : 2}
-]
-&lt;/pre&gt;
-
-&lt;p&gt;于是火速开发了更多的功能组件来解决问题：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;MYSQL&lt;/li&gt;
-  &lt;li&gt;MYSQL-XXX&lt;/li&gt;
-  &lt;li&gt;JSON&lt;/li&gt;
-  &lt;li&gt;VELOCITY&lt;/li&gt;
-  &lt;li&gt;XXXX&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;组件越来越多，“新手”进来已经不是特别了解每个的具体含义，配置的成本也越来越大。感觉系统用起来并不想当初想的那么美好！&lt;/p&gt;
-
-&lt;p&gt;停下来想一下，从一开始的目标：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;我要一个可以干啥干啥的功能！&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;在实现起来没有任何的拐弯抹角，一步到位完成之后没有考虑过：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;系统有多少的灵活性、可以从哪些方面扩展？&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;仔细想了一想，我们对系统进行了简单的改造：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/DOWN-TO-UP-1.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;利用GROOVY脚本极大的灵活性，让系统的适应能力也有所提高！虽然花了很多业务时间来研究ACE的功能来提高编辑体验，但是还是有非常多的同一种吐槽：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;写脚本的学习成本太高！&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;更郁闷的是来吐槽的都是“资深”JAVA开发工程师（GROOVY和JAVA不是很像么）！在现在的系统上面只需要实现一个方法：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-static Ojbect execute(){
-    return [1, 2, 3];
-}
-&lt;/pre&gt;
-
-&lt;p&gt;即可通过RPC或者HTTP获取数据（在底层已经将参数传递等东西都封装完成），作为一个程序猿对这样写一小段脚本就能实现的方式挺亲切的，不明白为啥其他的同是开发对这种方式极其的排斥，以至于我几乎没有机会去讲我夹下来要做的事情。&lt;/p&gt;
-
-&lt;p&gt;接下来要做什么呢？&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;脚本再简单也只能开发来写，那像原来只会SQL的人就用不来这个系统了。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;显然不能让这种情况发生，解决办法也非常简单：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;写一个通用解决问题的脚本&lt;/li&gt;
-  &lt;li&gt;在执行时，将SQL、数据源信息通过参数传给对应的通用脚本执行&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;比如一个查询数据库的脚本如下：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-static Object execute(sql, datasource){
-    // 1. 根据datasource获取数据源
-    // 2. 指定sql
-    // 3. 返回执行结果
-}
-&lt;/pre&gt;
-
-&lt;p&gt;而此时用户看到的配置页面就小白很多了：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/DOWN-TO-UP-2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;保存时会将其填写的信息以及要使用的目标脚本一起保存下来，执行时将参数传给指定的脚本执行即可（是不是有点像带参数的ln）。&lt;/p&gt;
-
-&lt;p&gt;将该功能开放给各个业务系统，那么就可以自己去做各自需要的小白配置页面了。&lt;/p&gt;
-
-&lt;h2 id=&quot;section-1&quot;&gt;组装页面&lt;/h2&gt;
-
-&lt;p&gt;缺前端是个普遍的问题，如果能将前端的开发简化到后端也能参与，也许能在一定程度上得到解决。&lt;/p&gt;
-
-&lt;p&gt;首先，把页面上的各个部分抽象成组件：&lt;strong&gt;组件=数据+动作+展示&lt;/strong&gt;。比如带下拉列表的选择输入框：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;数据：列表中的内容以及当前展示的内容&lt;/li&gt;
-  &lt;li&gt;动作：内容发生改变&lt;/li&gt;
-  &lt;li&gt;展示：可以用bootstrap等前段框架实现&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;在使用的时候就非常简单了（一行代码相当于原来20行左右的HTML+JS）：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-@input(label=&quot;仓库&quot; name=&quot;warehouse&quot; items=[{text:&quot;A&quot;, value:&quot;1&quot;},{text:&quot;B&quot;, value:&quot;2&quot;}])
-&lt;/pre&gt;
-
-&lt;p&gt;直观上干了两件事情：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;使用组件输入框（input）&lt;/li&gt;
-  &lt;li&gt;设置一些属性（label、name、items）&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;那展示呢？这个显然不应该交给用户来操心，比如：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;需要引入哪些CSS、JS？&lt;/li&gt;
-  &lt;li&gt;对应的DOM结构应该是什么样的？&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;为了达到这种效果，一个组件的定义可以是这样的：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-@import(
-    &#39;bootstrap.css&#39; // 依赖的CSS文件（需要的时候也可以加JS）
-)
-@component
-    this.width = &#39;10px&#39;; // 一些默认的数据
-
-    @render  // 在render下定义渲染（有点像JSX吧）
-    &amp;lt;ul&amp;gt;
-        for(i in items){
-            &amp;lt;li&amp;gt;${items[i]}&amp;lt;/li&amp;gt;
-        }
-    &amp;lt;/ul&amp;gt;
-&lt;/pre&gt;
-
-&lt;p&gt;在做的过程中发现一些好玩的问题：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;JS的资源不一定适合SEAJS来加载，因为JS之间可能有依赖关系。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;渲染DOM的部分类似JSX，但更暴力：&lt;strong&gt;支持JavaScript的各种控制结构&lt;/strong&gt;，但这一点是有代价的。仔细想一下：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;JavaScript和HTML的语法之间天然就是彼此隔离的，除了‘&amp;lt;’之外。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;那做到上面这种模板语法也就比较简单自然了。到这里组件就变为一个&lt;strong&gt;方便定制&lt;/strong&gt;、&lt;strong&gt;高度聚合&lt;/strong&gt;的东西了！但是光聚合没用啊，需要把他们拼装成一个页面，需要解决：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;布局（把组件拼装成一个完整的区块甚至页面）&lt;/li&gt;
-  &lt;li&gt;数据交互（组件之间建立关联）&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;简单想了一种方案：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;利用&lt;strong&gt;缩进&lt;/strong&gt;来控制层次关系&lt;/li&gt;
-  &lt;li&gt;利用&lt;strong&gt;@on&lt;/strong&gt;来进行组件关联&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;举个例子：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-@layout// 布局
-    @input(name=&quot;a&quot;)
-    @input(name=&quot;b&quot;)
-    @input(name=&quot;c&quot;)
-    @button(label=&#39;查询&#39;)// 查询
-        @on(click)
-            // 1. 获取a、b、c的数据
-            // 2. 请求数据
-            // 3. 更新table、page的展示
-@layout
-    @table // 表格
-    @page// 分页
-&lt;/pre&gt;
-
-&lt;p&gt;当点击查询按钮时，根据三个输入框（a、b、c）的内容查询数据并更新表格的展示。最后我们需要将该页面放到业务系统中，做法也非常的‘土’：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-&amp;lt;script&amp;gt;
-engine.init(&quot;page&quot;, document.body);// 将page对应的页面渲染到body下面。
-&amp;lt;/script&amp;gt;
-&lt;/pre&gt;
-
-&lt;p&gt;渲染的位置你可以随意指定。到这里用法就说完了，下面来看如何实现：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/DOWN-TO-UP-3.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;模块很简单，我用SEAJS的方法，但是作了一些简化和定制。组件的操作包括：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;使用组件（添加到父组件的children列表中）&lt;/li&gt;
-  &lt;li&gt;设置属性&lt;/li&gt;
-  &lt;li&gt;绑定事件&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;HTML的操作包括：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;创建标签&lt;/li&gt;
-  &lt;li&gt;设置属性&lt;/li&gt;
-  &lt;li&gt;绑定事件&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;既然想为以后留好扩展性，那么JavaScript作为中间层应该是一个不错的选择，将对应的HTML操作可以翻译成下面几个方法（组件的也类似）：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;create   // 创建HTML标签&lt;/li&gt;
-  &lt;li&gt;attr     // 设置属性&lt;/li&gt;
-  &lt;li&gt;listen   // 绑定事件&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;为了处理层次还需要&lt;strong&gt;push&lt;/strong&gt;、&lt;strong&gt;pop&lt;/strong&gt;方法。为了实现这些我们需要一个翻译器：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/DOWN-TO-UP-4.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;将生成的JS文件保存到CDN上面，再结合HTTP缓存，性能应该还是可以的！我们继续，在此基础上可以扩展出更多的玩法：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/DOWN-TO-UP-5.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;现在是将结果渲染到某个DOM节点下面，那是否可以直接在Velocity中使用某个组件，像这样:&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-&amp;lt;div&amp;gt;
-    @input(label=&quot;xxx&quot; name=&quot;xxx&quot;)
-&amp;lt;/div&amp;gt;
-&lt;/pre&gt;
-
-&lt;p&gt;上面是对后端Javaer敞开大门，那前端工程师是否可以得到好处，像这样：&lt;/p&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;
-&amp;lt;script type=&quot;text/engine&quot;&amp;gt;
-@input(label=&quot;xxx&quot; name=&quot;xxx&quot;)
-&amp;lt;/script&amp;gt;
-&lt;/pre&gt;
-
-&lt;p&gt;因为每一步前后都没有耦合，你完全可以去扩展自己想要的东西。&lt;/p&gt;
-
-&lt;h2 id=&quot;section-2&quot;&gt;总结&lt;/h2&gt;
-
-&lt;p&gt;远古时期的程序员在实现业务时可能把：取数据、业务逻辑、渲染都放在一个代码中完成，后来逐渐分成几层来做：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;Model&lt;/li&gt;
-  &lt;li&gt;View&lt;/li&gt;
-  &lt;li&gt;Controller&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;不仅结构更清晰，而且在任何一层你都可以选择不同的方案来实现。我们在做工具时也可以参考这种思路，多分几步来做。&lt;/p&gt;
-
-&lt;p&gt;那什么是从下到上呢？和上面的分层的角度不一样：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;越下越灵活，但门槛越高&lt;/li&gt;
-  &lt;li&gt;越上越好用，但扩展起来不是很容易&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;在对一些场景实现工具，根据灵活度和易用性来分成几步来做，这样不同的技术背景的人都可以使用，而且最关键的是可以扩展出更多的使用场景！:-)&lt;/p&gt;
-</description>
-        <pubDate>Thu, 17 Dec 2015 00:00:00 +0800</pubDate>
-        <link>/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/12/17/DOWN-TO-UP.html</link>
-        <guid isPermaLink="true">/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/12/17/DOWN-TO-UP.html</guid>
-        
-        
-        <category>编程技术</category>
         
       </item>
     

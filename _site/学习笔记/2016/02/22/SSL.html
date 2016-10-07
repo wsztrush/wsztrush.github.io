@@ -11,7 +11,7 @@
 	<!-- google代码高亮 -->
 	<script src="/assets/css/prettify.js"></script>
 	<link href="/assets/css/prettify.css" rel="stylesheet">
-	<title>必然</title>
+	<title>SSL/TLS与安全</title>
 </head>
 
 	<body onload="prettyPrint()">
@@ -25,15 +25,33 @@
 </div>
 
 		<div class="post-container">
-			<h1>必然</h1>
-			<p><img src="http://img3.douban.com/mpic/s6538162.jpg" alt="" /></p>
+			<h1>SSL/TLS与安全</h1>
+			<p><img src="http://7xiz10.com1.z0.glb.clouddn.com/SSL-2.jpg" alt="" /></p>
 
-<h2 id="section">原始章</h2>
+<p>坏蛋不会放过任何一丝作恶的机会，当信息在互联网上裸奔时，可能被：</p>
 
-<p>夫道、德、</p>
+<ol>
+  <li>窃听</li>
+  <li>篡改</li>
+</ol>
+
+<p>于是有了SSL(Secure Sockets Layer)及TLS(Transport Layer Security)对数据的传输进行加密。</p>
+
+<h2 id="section">数字证书</h2>
+
+<p>在网络中可能有人冒充服务器：</p>
+
+<pre class="prettyprint">
+客户 to 冒牌服务器：你好
+冒牌服务器 to 客户：你好，我是服务器
+客户 to 冒牌服务器：我的密码是xxx  
+</pre>
+
+<p>现在悲剧了：密码告诉别人等于把所有的信息都告诉了别人。</p>
+
 
 			<!-- 评论组件 -->
-			<div class="ds-thread" data-thread-key="/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/2016/01/10/SU.html" data-title="必然"  data-url="/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/2016/01/10/SU.html"></div>
+			<div class="ds-thread" data-thread-key="/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/2016/02/22/SSL.html" data-title="SSL/TLS与安全"  data-url="/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/2016/02/22/SSL.html"></div>
 			<!-- 评论组件 -->
 			<div id="disqus_thread"/>
 		</div>

@@ -47,19 +47,19 @@ ActiveTestSuite创建一个新的线程来执行：</p>
 
 <pre class="prettyprint">
 public class TestSuite {
-    private Vector<test> fTests = new Vector<test>(10);
+    private Vector<Test> fTests = new Vector<Test>(10);
 }
-
+&lt;/pre&gt;
 
 
 TestResult
 <pre class="prettyprint">
 public class TestResult{
-    protected List<testfailure> fFailures;
-    protected List<testfailure> fErrors;
-    protected List<testlistener> fListeners;
+    protected List<TestFailure> fFailures;
+    protected List<TestFailure> fErrors;
+    protected List<TestListener> fListeners;
 }
-
+&lt;/pre&gt;
 
 
 TestCase
@@ -73,7 +73,7 @@ public void runBare() throws Throwable {
     }
 }
 </pre>
-</testlistener></testfailure></testfailure></pre></test></test></pre>
+</TestListener></TestFailure></TestFailure></pre></Test></Test></pre>
 
 			<!-- 评论组件 -->
 			<div class="ds-thread" data-thread-key="/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/09/02/Junit.html" data-title="junit"  data-url="/%E7%BC%96%E7%A8%8B%E6%8A%80%E6%9C%AF/2015/09/02/Junit.html"></div>
