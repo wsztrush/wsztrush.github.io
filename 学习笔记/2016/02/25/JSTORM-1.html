@@ -1,0 +1,148 @@
+<!DOCTYPEhtmlPUBLIC"-//W3C//DTDXHTML1.0Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html>
+	<!-- 引入CSS/JS -->
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="/assets/css/main.css"/>
+	<script type="text/javascript" src="/assets/javascripts/main.js"></script>
+
+	<!-- pygments代码高亮 -->
+	<!-- <link rel="stylesheet" type="text/css" href="/assets/css/pygments.css"/> -->
+	<!-- google代码高亮 -->
+	<script src="/assets/css/prettify.js"></script>
+	<link href="/assets/css/prettify.css" rel="stylesheet">
+	<title>JSTORM-概述</title>
+</head>
+
+	<body onload="prettyPrint()">
+		<div class="tool">
+	<span><b>WsztRush</b></span>
+	<div class="links">
+		<a href="/index.html">Blog</a>
+		<a href="/categories.html">Categories</a>
+		<a href="/about/">About</a>		
+	</div>
+</div>
+
+		<div class="post-container">
+			<h1>JSTORM-概述</h1>
+			<p><img src="http://7xiz10.com1.z0.glb.clouddn.com/JSTORM-1-1.jpg" alt="" /></p>
+
+<p>常见的实时计算方面有两种方案：</p>
+
+<ol>
+  <li>在线分析型数据库（OLAP）</li>
+  <li>流计算</li>
+</ol>
+
+<p>用阿里云的ADS做OLAP还是很不错的，但是消耗的资源比较大，而流计算的方案则相对比较廉价。因为工作中用JSTORM做实时计算比较多，而且去年JSTORM也正式加入了APACHE（说明其实力不一般啊），所以最近打算总结一下。</p>
+
+<h2 id="section">编程</h2>
+
+<p>消息从源头（spout）流出来以后，流入处理节点（bolt），在处理节点完成之后有可能产生新的消息并流到后面的处理节点，如下图：</p>
+
+<pre class="prettyprint"> 
+           +-------+    +------+    +------+    
+message---&gt;| spout |---&gt;| bolt |---&gt;| bolt |---&gt;
+           +-------+    +------+    +------+    
+</pre>
+
+<p>在spout节点需要实现的方法（以IRichSpout为例）如下：</p>
+
+<pre class="prettyprint">
+public class MySpout implements IRichSpout{
+    public void open(Map map, TopologyContext topologyContext, SpoutOutputCollector spoutOutputCollector){
+        // 初始化
+    }
+    public void nextTuple(){
+        // 发送消息
+    }
+    public void ack(Object messageId){
+        // 消息消费成功
+    }
+    public void fail(Object messageId){
+        // 消息消费失败
+    }
+}
+</pre>
+
+<p>相应的bolt节点需要实现的方法（以IRichBolt为例）就要少一些：</p>
+
+<pre class="prettyprint">
+public class MyBolt implements IRichBolt {
+    public void prepare(Map map, TopologyContext topologyContext, OutputCollector outputCollector) {
+        // 初始化
+    }
+	public void execute(Tuple tuple) {
+        // 处理消息
+    }
+}
+</pre>
+
+<p>在框架中通过调用指定的main方法来创建任务（Topology），下面来看个在本地运行的例子：</p>
+
+<pre class="prettyprint">
+public static void main(String[] args) throws Exception {
+    // 开始构建任务结构
+    TopologyBuilder builder = new TopologyBuilder();
+    builder.setSpout("my_spout", new MySpout(), 10); // 设置源头节点及其并发度
+    builder.setBolt("my_bolt", new MyBolt(), 10).shuffleGrouping("my_spout");// 设置处理节点及其并发度
+    
+    // 伪集群方式运行
+    LocalCluster cluster = new LocalCluster();
+    cluster.submitTopology("my_topology", config, builder.createTopology());
+
+    // 执行一段时间后停止
+    Thread.sleep(6000000);
+    cluster.shutdown();
+}
+</pre>
+
+<p>到这里就明白最简单的JSTORM的任务的在编程时的结构了，下面可以来看其整体上的架构。</p>
+
+<h2 id="section-1">架构</h2>
+
+
+			<!-- 评论组件 -->
+			<div class="ds-thread" data-thread-key="/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/2016/02/25/JSTORM-1.html" data-title="JSTORM-概述"  data-url="/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/2016/02/25/JSTORM-1.html"></div>
+			<!-- 评论组件 -->
+			<div id="disqus_thread"/>
+		</div>
+	</body>
+</html>
+<!-- 评论组件 -->
+<script type="text/javascript">
+	var disqus_shortname = 'wsztrush';
+	(function() {
+		var dsq = document.createElement('script');
+		dsq.type = 'text/javascript';
+		dsq.async = true;
+		dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	})();
+</script>
+<!-- 多说公共JS代码-->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"wsztrush"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+</script>
+
+<!-- 百度访问统计 -->
+<script>
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?08a976e8d7e5a20acfcb566bd22a1db1";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+
