@@ -5,9 +5,196 @@
     <description></description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sat, 08 Oct 2016 20:40:43 +0800</pubDate>
-    <lastBuildDate>Sat, 08 Oct 2016 20:40:43 +0800</lastBuildDate>
+    <pubDate>Sat, 08 Oct 2016 22:21:48 +0800</pubDate>
+    <lastBuildDate>Sat, 08 Oct 2016 22:21:48 +0800</lastBuildDate>
     <generator>Jekyll v3.3.0</generator>
+    
+      <item>
+        <title>用HESSIAN时的属性丢失</title>
+        <description>&lt;p&gt;在使用hessian将一个对象序列化、反序列化之后，发现原本有值的一个属性变成了NULL，观察发现在子类、父类有同名属性时会出现。&lt;/p&gt;
+
+&lt;h2 id=&quot;section&quot;&gt;问题重现&lt;/h2&gt;
+
+&lt;p&gt;构造测试类：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+// 父类
+class A implements Serializable {
+    public Integer a;
+}
+// 子类
+class B extends A {
+    public Integer a;
+}
+&lt;/pre&gt;
+
+&lt;p&gt;序列化方法如下：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+public static byte[] serialize(Object obj) throws IOException {
+    ByteArrayOutputStream os = new ByteArrayOutputStream();
+    HessianOutput ho = new HessianOutput(os);
+    ho.writeObject(obj);
+    return os.toByteArray();
+}
+&lt;/pre&gt;
+
+&lt;p&gt;反序列化方法如下：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+public static Object deserialize(byte[] by) throws IOException {
+    ByteArrayInputStream is = new ByteArrayInputStream(by);
+    HessianInput hi = new HessianInput(is);
+    return hi.readObject();
+}
+&lt;/pre&gt;
+
+&lt;p&gt;测试代码：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+@Test
+public void testHessian() throws Exception {
+    B obj = new B();
+    obj.a = 0;
+    byte[] bytes = serialize(obj); // 序列化
+    obj = (B) deserialize(bytes); // 反序列化
+    System.out.println(obj.a); // null
+}
+&lt;/pre&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;原因分析&lt;/h2&gt;
+
+&lt;p&gt;首先看序列化的过程，在构造&lt;strong&gt;UnsafeSerializer&lt;/strong&gt;时会遍历类及其父类的所有属性：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+protected void introspect(Class&amp;lt;?&amp;gt; cl) {
+    ArrayList&amp;lt;Field&amp;gt; primitiveFields = new ArrayList&amp;lt;Field&amp;gt;();
+    ArrayList&amp;lt;Field&amp;gt; compoundFields = new ArrayList&amp;lt;Field&amp;gt;();
+    // 遍历所有父类
+    for (; cl != null; cl = cl.getSuperclass()) {
+        // 通过反射获取所有的属性
+        Field[] fields = cl.getDeclaredFields();
+        for (int i = 0; i &amp;lt; fields.length; i++) {
+            Field field = fields[i];
+            // 忽略transient和static的变量
+            if (Modifier.isTransient(field.getModifiers()) || Modifier.isStatic(field.getModifiers()))
+                continue;
+            field.setAccessible(true);
+            // 基本类型和复杂类型分开（这段代码是不是写残了）
+            if (field.getType().isPrimitive() || (field.getType().getName().startsWith(&quot;java.lang.&quot;) &amp;amp;&amp;amp; !field.getType().equals(Object.class)))
+                primitiveFields.add(field);
+            else
+                compoundFields.add(field);
+        }
+    }
+    ArrayList&amp;lt;Field&amp;gt; fields = new ArrayList&amp;lt;Field&amp;gt;();
+    fields.addAll(primitiveFields);
+    fields.addAll(compoundFields);
+    _fields = new Field[fields.size()];
+    fields.toArray(_fields);
+    _fieldSerializers = new FieldSerializer[_fields.length];
+    // 构造序列化实现类
+    for (int i = 0; i &amp;lt; _fields.length; i++) {
+        _fieldSerializers[i] = getFieldSerializer(_fields[i]);
+    }
+}
+&lt;/pre&gt;
+
+&lt;p&gt;然后，遍历序列化各个属性字段来分别进行序列化：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+protected void writeObject10(Object obj, AbstractHessianOutput out) throws IOException {
+    // 遍历属性
+    for (int i = 0; i &amp;lt; _fields.length; i++) {
+        Field field = _fields[i];
+        out.writeString(field.getName());
+        _fieldSerializers[i].serialize(out, obj); // 序列化
+    }
+    out.writeMapEnd();
+}
+&lt;/pre&gt;
+
+&lt;p&gt;处理完的结果如下：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://git.cn-hangzhou.oss.aliyun-inc.com/uploads/tianchi.gzt/note/3851da49069dca6c95d6d59ef9f729f2/image.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;接下来看反序列化，拿到值之后设置属性：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+public Object readMap(AbstractHessianInput in, Object obj) throws IOException {
+    // ....
+    // 循环读取序列化的内容。
+    while (!in.isEnd()) {
+        Object key = in.readObject();
+        // 相同名字的两个属性，拿到的是同一个desrializer。
+        FieldDeserializer deser = (FieldDeserializer) _fieldMap.get(key);
+        if (deser != null)
+            deser.deserialize(in, obj); // 在这里拿到value后设置到对应的属性中。
+        else
+            in.readObject();
+    }
+    // .....
+}
+&lt;/pre&gt;
+
+&lt;p&gt;序列化之后字节中对属性a有两个值，第一个非空，第二个空，那么在反序列化时会对a做两次赋值，第一次的结果为：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://git.cn-hangzhou.oss.aliyun-inc.com/uploads/tianchi.gzt/note/5dfebe57b317a098df5d26982e3fbc65/image.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;第二次的结果为：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://git.cn-hangzhou.oss.aliyun-inc.com/uploads/tianchi.gzt/note/d33314b2337611bd8f20e709e23435c7/image.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;到这里，就已经知道了为啥属性值会丢了。&lt;/p&gt;
+
+&lt;h3 id=&quot;section-2&quot;&gt;解决方法&lt;/h3&gt;
+
+&lt;p&gt;比较简单的办法：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;避免在子类中出现与父类同名的属性&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;然并卵，现实中往往还是会出现，再想想办法：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;找一个没有BUG得HESSION版本或者自己动手改改代码重新打个包&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;相对简单的改法是：在出现同名时，如果子类中已经有了，那么父类中对应属性直接忽略，代码量很少，只需要加一个&lt;strong&gt;continue&lt;/strong&gt;即可，但是这样改容易挖坑。&lt;/p&gt;
+
+&lt;p&gt;最笨的一个解决办法是：&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;直接用Java原生的序列化方法&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;代码如下：&lt;/p&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;
+B obj = new B();
+obj.setA(0);
+// 序列化
+ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+objectOutputStream.writeObject(obj);
+// 反序列化
+ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+ObjectInputStream objectInputStream = new ObjectInputStream(byteArrayInputStream);
+obj = (B) objectInputStream.readObject();
+System.out.println(obj.a); // 0
+&lt;/pre&gt;
+
+&lt;p&gt;貌似原生的实现效率还是蛮高的，为啥现在都喜欢用hessian呢？&lt;/p&gt;
+</description>
+        <pubDate>Sat, 08 Oct 2016 00:00:00 +0800</pubDate>
+        <link>/%E5%A1%AB%E5%9D%91%E8%AE%B0/2016/10/08/HESSIAN-BUG.html</link>
+        <guid isPermaLink="true">/%E5%A1%AB%E5%9D%91%E8%AE%B0/2016/10/08/HESSIAN-BUG.html</guid>
+        
+        
+        <category>填坑记</category>
+        
+      </item>
     
       <item>
         <title>JSTORM-概述</title>
@@ -1107,61 +1294,6 @@ future.channel().closeFuture().sync();
         
         
         <category>编程技术</category>
-        
-      </item>
-    
-      <item>
-        <title>用数据来驱动仓库</title>
-        <description>&lt;p&gt;双十一的时候去仓库驻仓，还是挺激动的，在十号的时候开始动员大会，由于双十一的量会比平时大很多，所以需要挺多的临时工帮忙：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/DATA-DRIVEN-WAREHOUSE-2.jpg&quot; height=&quot;300&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;过了十一号的零点，本来大家以为会有很多的单子下来，但是并没有:(！大约过了半个小时才有第一单下来，然后陆陆续续地来了：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/DATA-DRIVEN-WAREHOUSE-4.jpg&quot; height=&quot;300&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;双十一的单量不是盖的，大家也按照之前的准备开干，热火朝天：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/DATA-DRIVEN-WAREHOUSE-3.jpg&quot; width=&quot;300px&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;当然，机器也很忙：&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;http://7xiz10.com1.z0.glb.clouddn.com/DATA-DRIVEN-WAREHOUSE-1.jpg&quot; width=&quot;300px&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;现在都在讲数据驱动，在仓库的时候也想了一下如何做，下面是一些简单的想法。&lt;/p&gt;
-
-&lt;h2 id=&quot;section&quot;&gt;精确&lt;/h2&gt;
-
-&lt;p&gt;和&lt;a href=&quot;http://www.umeng.com/&quot;&gt;友盟&lt;/a&gt;的场景有很大的不同，尤其是数据准确性上：&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;PV/UV这些数据错一两个没关系，但是给生产用的报表不行！&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;如果有一个订单在数据上看到的是没有完成，那么仓库管理员就会去排查到底是卡在什么环节！还有，平时看到的大部分报表都是T-1（昨天）的，这种数据很难用来帮助生产，所以要做到数据驱动还是需要&lt;strong&gt;实时&lt;/strong&gt;。&lt;/p&gt;
-
-&lt;h2 id=&quot;section-1&quot;&gt;展示&lt;/h2&gt;
-
-&lt;p&gt;数据可视化是非常有学问的一个东西，之前看别人的思考竟然都考虑到色盲，比较佩服！但是现在要讨论的并不是这个，在仓库中一个好的展示必须是：&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;可查询/设置&lt;/li&gt;
-  &lt;li&gt;有明细&lt;/li&gt;
-  &lt;li&gt;汇总信息一目了然（尤其是大盘上）&lt;/li&gt;
-  &lt;li&gt;统计逻辑清晰、没有任何歧义&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;这些算是最起码的要求了!&lt;/p&gt;
-
-&lt;h2 id=&quot;section-2&quot;&gt;报警&lt;/h2&gt;
-
-</description>
-        <pubDate>Sat, 26 Dec 2015 00:00:00 +0800</pubDate>
-        <link>/%E5%85%B6%E4%BB%96/2015/12/26/DATA-DRIVEN-WAREHOUSE.html</link>
-        <guid isPermaLink="true">/%E5%85%B6%E4%BB%96/2015/12/26/DATA-DRIVEN-WAREHOUSE.html</guid>
-        
-        
-        <category>其他</category>
         
       </item>
     
